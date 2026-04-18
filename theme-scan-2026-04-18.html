@@ -1,0 +1,972 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Daily Theme Scanner — 2026-04-18</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0a0e17;
+    --bg2: #0f1623;
+    --bg3: #141c2e;
+    --bg4: #1a2438;
+    --border: #1e2d47;
+    --text: #e2e8f0;
+    --text-muted: #8899b4;
+    --text-dim: #4a5568;
+    --high: #10b981;
+    --medium: #f59e0b;
+    --low: #ef4444;
+    --accent: #3b82f6;
+    --accent2: #8b5cf6;
+    --ticker: #67e8f9;
+  }
+
+  html { font-size: 15px; scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'JetBrains Mono', monospace;
+    line-height: 1.7;
+    min-height: 100vh;
+    padding: 0 0 60px;
+  }
+
+  /* HEADER */
+  .header {
+    background: linear-gradient(135deg, #0a0e17 0%, #0d1829 50%, #0a0e17 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 36px 40px 28px;
+    position: relative;
+    overflow: hidden;
+  }
+  .header::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: radial-gradient(ellipse at 20% 50%, rgba(59,130,246,0.06) 0%, transparent 60%),
+                radial-gradient(ellipse at 80% 50%, rgba(16,185,129,0.04) 0%, transparent 60%);
+    pointer-events: none;
+  }
+  .header-label {
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 8px;
+  }
+  .header h1 {
+    font-size: 1.85rem;
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: -0.02em;
+    margin-bottom: 10px;
+  }
+  .header-meta {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+  .header-meta span { display: flex; align-items: center; gap: 5px; }
+  .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--high); display: inline-block; }
+  .dot.amber { background: var(--medium); }
+  .dot.red { background: var(--low); }
+
+  /* NAV */
+  .nav {
+    background: var(--bg2);
+    border-bottom: 1px solid var(--border);
+    padding: 0 40px;
+    display: flex;
+    gap: 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .nav::-webkit-scrollbar { display: none; }
+  .nav a {
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 0.7rem;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 14px 18px;
+    border-bottom: 2px solid transparent;
+    transition: color 0.2s, border-color 0.2s;
+    white-space: nowrap;
+  }
+  .nav a:hover { color: var(--text); border-bottom-color: var(--accent); }
+
+  /* LAYOUT */
+  .container { max-width: 1100px; margin: 0 auto; padding: 0 40px; }
+
+  /* SECTION HEADER */
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin: 48px 0 24px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--border);
+  }
+  .section-num {
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    color: var(--accent);
+    background: rgba(59,130,246,0.1);
+    border: 1px solid rgba(59,130,246,0.2);
+    padding: 3px 9px;
+    border-radius: 3px;
+  }
+  .section-header h2 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #fff;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  /* CARDS */
+  .card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 28px 32px;
+    margin-bottom: 18px;
+    position: relative;
+    transition: border-color 0.2s;
+  }
+  .card:hover { border-color: #2a3a55; }
+  .card-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 18px;
+    flex-wrap: wrap;
+  }
+  .card-title {
+    font-size: 1.0rem;
+    font-weight: 600;
+    color: #fff;
+    letter-spacing: -0.01em;
+    flex: 1;
+  }
+  .card-badges {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    flex-shrink: 0;
+  }
+  .badge {
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    padding: 3px 10px;
+    border-radius: 3px;
+    text-transform: uppercase;
+  }
+  .badge-high { color: var(--high); background: rgba(16,185,129,0.1); border: 1px solid rgba(16,185,129,0.25); }
+  .badge-medium { color: var(--medium); background: rgba(245,158,11,0.1); border: 1px solid rgba(245,158,11,0.25); }
+  .badge-low { color: var(--low); background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.25); }
+  .badge-stage { color: var(--accent2); background: rgba(139,92,246,0.1); border: 1px solid rgba(139,92,246,0.25); }
+  .badge-strong { color: var(--high); background: rgba(16,185,129,0.1); border: 1px solid rgba(16,185,129,0.25); }
+  .badge-moderate { color: var(--medium); background: rgba(245,158,11,0.1); border: 1px solid rgba(245,158,11,0.25); }
+  .badge-weak { color: var(--low); background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.25); }
+
+  /* META GRID */
+  .meta-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 12px;
+    margin-bottom: 18px;
+  }
+  .meta-item {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 12px 14px;
+  }
+  .meta-label {
+    font-size: 0.62rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-bottom: 6px;
+  }
+  .meta-value {
+    font-size: 0.8rem;
+    color: var(--text);
+    line-height: 1.5;
+  }
+
+  /* TICKER LISTS */
+  .ticker { color: var(--ticker); font-weight: 600; }
+  .ticker-group { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+  .ticker-pill {
+    background: rgba(103,232,249,0.07);
+    border: 1px solid rgba(103,232,249,0.2);
+    color: var(--ticker);
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 2px 9px;
+    border-radius: 3px;
+    letter-spacing: 0.05em;
+  }
+  .ticker-pill.loser {
+    background: rgba(239,68,68,0.07);
+    border-color: rgba(239,68,68,0.2);
+    color: #fca5a5;
+  }
+  .ticker-pill.secondary {
+    background: rgba(139,92,246,0.07);
+    border-color: rgba(139,92,246,0.2);
+    color: #c4b5fd;
+  }
+
+  /* EVIDENCE */
+  .evidence-list { margin: 0; padding: 0; list-style: none; }
+  .evidence-list li {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    padding: 7px 0 7px 18px;
+    border-left: 2px solid var(--border);
+    margin-bottom: 6px;
+    line-height: 1.6;
+  }
+  .evidence-list li::before { content: '▸ '; color: var(--accent); margin-left: -18px; }
+
+  /* SUMMARY */
+  .summary {
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    line-height: 1.75;
+    padding: 16px 20px;
+    background: var(--bg3);
+    border-left: 3px solid var(--accent);
+    border-radius: 0 6px 6px 0;
+    margin-top: 16px;
+  }
+
+  /* TRADE IDEA */
+  .trade-idea {
+    font-size: 0.78rem;
+    color: var(--high);
+    padding: 12px 16px;
+    background: rgba(16,185,129,0.05);
+    border: 1px solid rgba(16,185,129,0.15);
+    border-radius: 6px;
+    margin-top: 14px;
+  }
+  .trade-idea::before { content: '💡 TRADE IDEA: '; font-weight: 700; }
+
+  /* CATALYST */
+  .cat-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin: 14px 0;
+  }
+  @media (max-width: 680px) { .cat-grid { grid-template-columns: 1fr; } }
+  .cat-cell {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 12px 14px;
+  }
+  .cat-cell .meta-label { margin-bottom: 5px; }
+  .cat-cell .meta-value { font-size: 0.78rem; line-height: 1.55; }
+  .cat-cell.surprise { border-color: rgba(245,158,11,0.3); }
+  .cat-cell.surprise .meta-value { color: var(--medium); }
+  .cat-date-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.68rem;
+    font-weight: 700;
+    color: var(--accent);
+    background: rgba(59,130,246,0.1);
+    border: 1px solid rgba(59,130,246,0.2);
+    padding: 3px 10px;
+    border-radius: 3px;
+    letter-spacing: 0.08em;
+    margin-bottom: 10px;
+  }
+
+  /* ACTION ITEMS */
+  .action-section {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 28px 32px;
+    margin-top: 48px;
+  }
+  .action-title {
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--high);
+    margin-bottom: 22px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .action-title::before { content: ''; display: block; width: 20px; height: 1px; background: var(--high); }
+  .action-cols { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; }
+  @media (max-width: 800px) { .action-cols { grid-template-columns: 1fr; } }
+  .action-col h4 {
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+  }
+  .action-item {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    padding: 9px 0;
+    border-bottom: 1px solid rgba(30,45,71,0.5);
+    line-height: 1.55;
+  }
+  .action-item:last-child { border-bottom: none; }
+  .action-num {
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+    background: rgba(59,130,246,0.15);
+    color: var(--accent);
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-align: center;
+    line-height: 18px;
+    border-radius: 3px;
+    margin-right: 6px;
+    flex-shrink: 0;
+  }
+
+  /* FOOTER */
+  .footer {
+    margin-top: 60px;
+    padding: 20px 40px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .footer p { font-size: 0.68rem; color: var(--text-dim); }
+
+  /* DIVIDER */
+  .divider { border: none; border-top: 1px solid var(--border); margin: 14px 0; }
+
+  /* SECTION LABEL inline */
+  .field-label {
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-bottom: 6px;
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="container" style="position:relative;z-index:1;">
+    <div class="header-label">Automated Pre-Market Scan</div>
+    <h1>Daily Theme Scanner — 2026-04-18</h1>
+    <div class="header-meta">
+      <span><span class="dot"></span> 5 Emerging Narratives</span>
+      <span><span class="dot amber"></span> 5 Earnings Signals</span>
+      <span><span class="dot red"></span> 5 Upcoming Catalysts</span>
+      <span style="color:#4a5568;">Generated Saturday April 18, 2026 · Pre-Market</span>
+    </div>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav class="nav">
+  <a href="#narratives">Narratives</a>
+  <a href="#signals">Earnings Signals</a>
+  <a href="#catalysts">Catalysts</a>
+  <a href="#actions">Action Items</a>
+</nav>
+
+<div class="container">
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       SECTION 1 — EMERGING NARRATIVES
+  ════════════════════════════════════════════════════════════════ -->
+  <div id="narratives" class="section-header">
+    <span class="section-num">01</span>
+    <h2>Emerging Narratives</h2>
+  </div>
+
+  <!-- N1 -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">1. Energy Shock / Strait of Hormuz Crisis Lingers</div>
+      <div class="card-badges">
+        <span class="badge badge-high">HIGH Conviction</span>
+        <span class="badge badge-stage">DEVELOPING</span>
+      </div>
+    </div>
+    <div class="meta-grid">
+      <div class="meta-item">
+        <div class="meta-label">Timeline for Impact</div>
+        <div class="meta-value">Immediate — Q2 2026 guidance decisive</div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">Primary Beneficiaries</div>
+        <div class="ticker-group">
+          <span class="ticker-pill">XOM</span><span class="ticker-pill">CVX</span><span class="ticker-pill">COP</span><span class="ticker-pill">OXY</span><span class="ticker-pill">PSX</span><span class="ticker-pill">SLB</span><span class="ticker-pill">HAL</span>
+        </div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">Secondary Beneficiaries</div>
+        <div class="ticker-group">
+          <span class="ticker-pill secondary">LNG</span><span class="ticker-pill secondary">LMT</span><span class="ticker-pill secondary">RTX</span><span class="ticker-pill secondary">NOC</span><span class="ticker-pill secondary">FRO</span>
+        </div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">Losers / Disrupted</div>
+        <div class="ticker-group">
+          <span class="ticker-pill loser">DAL</span><span class="ticker-pill loser">UAL</span><span class="ticker-pill loser">AAL</span><span class="ticker-pill loser">ODFL</span><span class="ticker-pill loser">TGT</span>
+        </div>
+      </div>
+    </div>
+    <div class="field-label">Evidence</div>
+    <ul class="evidence-list">
+      <li>IEA characterizes the Hormuz disruption as the "largest supply disruption in the history of the global oil market." ~20% of global oil supply cut off; front-month Brent near $125/bbl with $15–$40/bbl risk premium. (IEA Oil Market Report, April 2026)</li>
+      <li>As of April 9, ships still blocked despite nominal ceasefire. ADNOC CEO Sultan Al Jaber confirmed the strait was not functionally open — Iran conditioning traffic. (Kpler, April 7, 2026)</li>
+      <li>US gas prices hit $4/gallon by end of March, +30% from pre-war levels. IMF cut global growth to 3.1% in adverse energy scenario; stagflation risk raised. (Wikipedia – 2026 Iran War Fuel Crisis; IMF WEO April 2026)</li>
+    </ul>
+    <div class="summary">The 2026 Iran war and Strait of Hormuz closure have triggered an unprecedented energy supply shock. Despite a nominal ceasefire, the strait remains partially closed as of mid-April, and oil holds well above $100/bbl. If the closure persists through Q2, energy cost inflation will bleed into consumer prices, corporate margins, and potentially force the Fed's hand. Energy producers are the obvious near-term winners — but the non-consensus trade may be in pricing the knock-on effects to consumer discretionary and transportation sectors, which have not yet fully repriced the sustained fuel cost shock. The 1970s stagflation analogy is being invoked by the IMF in its April 2026 World Economic Outlook.</div>
+  </div>
+
+  <!-- N2 -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">2. AI Chip Supercycle: Demand Intact, Supply Tightening</div>
+      <div class="card-badges">
+        <span class="badge badge-high">HIGH Conviction</span>
+        <span class="badge badge-stage">DEVELOPING</span>
+      </div>
+    </div>
+    <div class="meta-grid">
+      <div class="meta-item">
+        <div class="meta-label">Timeline for Impact</div>
+        <div class="meta-value">Q1 2026 (reported) → Q2 guidance season</div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">Primary Beneficiaries</div>
+        <div class="ticker-group">
+          <span class="ticker-pill">TSM</span><span class="ticker-pill">NVDA</span><span class="ticker-pill">ASML</span><span class="ticker-pill">AMAT</span><span class="ticker-pill">LRCX</span><span class="ticker-pill">KLAC</span><span class="ticker-pill">AVGO</span>
+        </div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">Secondary Beneficiaries</div>
+        <div class="ticker-group">
+          <span class="ticker-pill secondary">EQIX</span><span class="ticker-pill secondary">DLR</span><span class="ticker-pill secondary">VST</span><span class="ticker-pill secondary">CEG</span><span class="ticker-pill secondary">GEV</span>
+        </div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">Losers / Disrupted</div>
+        <div class="ticker-group">
+          <span class="ticker-pill loser">INTC</span><span class="ticker-pill loser">SMIC</span>
+        </div>
+      </div>
+    </div>
+    <div class="field-label">Evidence</div>
+    <ul class="evidence-list">
+      <li>TSMC Q1 2026: 58% YoY profit surge to $18B net income — fourth consecutive record quarter. HPC/AI now 61% of revenue. Full-year 2026 revenue guidance raised to >30% YoY in USD terms. (CNBC, April 16, 2026)</li>
+      <li>ASML beat Q1 estimates (€8.8B revenue vs. €8.5B expected; €2.8B profit vs. €2.5B expected) and raised full-year sales guidance. SK Hynix placed record multi-billion euro orders; Samsung committed through at least 2027. (TechBuzz AI, CNBC, April 2026)</li>
+      <li>3nm chips grew from 6% of TSMC revenue in Q3 2023 to 25% in Q1 2026 — accelerating adoption pace confirms sustained capex from hyperscalers. (QZ.com, Intellectia)</li>
+    </ul>
+    <div class="summary">TSMC's blowout Q1 confirms the AI infrastructure buildout is not pausing. The >30% full-year revenue guidance raise is the strongest signal yet that hyperscaler capex commitments — from MSFT, GOOGL, AMZN, META — are translating into actual chip orders. The key non-consensus insight is that second-order beneficiaries — power grid infrastructure, advanced packaging, AI memory (HBM) — may be more attractively valued than the headline semiconductor names that have already run. ASML's China headwind is real, but the rest of the book is expanding faster than that headwind. The risk to this theme is any signal of hyperscaler capex deceleration in upcoming MSFT/GOOGL/META earnings.</div>
+  </div>
+
+  <!-- N3 -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">3. Dollar Debasement / Non-Dollar Asset Rotation Accelerating</div>
+      <div class="card-badges">
+        <span class="badge badge-medium">MEDIUM Conviction</span>
+        <span class="badge badge-stage">DEVELOPING</span>
+      </div>
+    </div>
+    <div class="meta-grid">
+      <div class="meta-item">
+        <div class="meta-label">Timeline for Impact</div>
+        <div class="meta-value">2–3 quarters (FX translation Q2 guidance)</div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">Primary Beneficiaries</div>
+        <div class="ticker-group">
+          <span class="ticker-pill">EEM</span><span class="ticker-pill">GEM</span><span class="ticker-pill">EWZ</span><span class="ticker-pill">INDA</span><span class="ticker-pill">VWO</span><span class="ticker-pill">EMLC</span>
+        </div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">Secondary Beneficiaries</div>
+        <div class="ticker-group">
+          <span class="ticker-pill secondary">GLD</span><span class="ticker-pill secondary">GDX</span>
+        </div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">Losers / Disrupted</div>
+        <div class="ticker-group">
+          <span class="ticker-pill loser">IWM</span><span class="ticker-pill loser">UUP</span>
+        </div>
+      </div>
+    </div>
+    <div class="field-label">Evidence</div>
+    <ul class="evidence-list">
+      <li>Dollar has weakened materially in 2026 amid "US exceptionalism" fatigue. Global investors increasing hedging of US exposures, reversing years of reduced hedging. (ING Think, Morningstar, April 2026)</li>
+      <li>IMF data: EM ex-China gross/net allocations from hedge funds reached record highs in 2025; EMBI spreads finished 2025 ~70bps tighter. (IMF GFSR April 2026)</li>
+      <li>Trump's threat of 50% tariffs on China combined with Iran war uncertainty is driving capital toward politically neutral EM sovereigns (Brazil, India, Indonesia, Mexico). (IMF Blog, April 14, 2026)</li>
+    </ul>
+    <div class="summary">A structural rotation away from dollar-denominated assets is gathering pace. The confluence of geopolitical fragmentation (Iran war, US-China tariff escalation), Fed leadership uncertainty (Powell → Warsh transition), and above-target inflation is eroding the "safe haven" premium historically embedded in the dollar. A more dovish Warsh-led Fed — if confirmed — could add a structural leg to dollar weakness. EM debt and local-currency assets benefit directly from a weaker dollar via spread compression and currency translation. The non-consensus trade is long EM over developed-market fixed income, particularly in countries with improving fiscal discipline and commodity exposure that benefits from elevated energy prices.</div>
+  </div>
+
+  <!-- N4 -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">4. Semiconductor Export Control Escalation: China Decoupling Accelerates</div>
+      <div class="card-badges">
+        <span class="badge badge-medium">MEDIUM Conviction</span>
+        <span class="badge badge-stage">EARLY</span>
+      </div>
+    </div>
+    <div class="meta-grid">
+      <div class="meta-item">
+        <div class="meta-label">Timeline for Impact</div>
+        <div class="meta-value">Q2–Q3 2026 (bill implementation timing)</div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">Primary Beneficiaries</div>
+        <div class="ticker-group">
+          <span class="ticker-pill">AMAT</span><span class="ticker-pill">LRCX</span><span class="ticker-pill">KLAC</span><span class="ticker-pill">GFS</span>
+        </div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">Secondary Beneficiaries</div>
+        <div class="ticker-group">
+          <span class="ticker-pill secondary">Samsung</span><span class="ticker-pill secondary">SK Hynix</span>
+        </div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">Losers / Disrupted</div>
+        <div class="ticker-group">
+          <span class="ticker-pill loser">ASML</span><span class="ticker-pill loser">MU</span><span class="ticker-pill loser">QCOM</span>
+        </div>
+      </div>
+    </div>
+    <div class="field-label">Evidence</div>
+    <ul class="evidence-list">
+      <li>Bipartisan MATCH Act introduced April 2026, targeting ASML's DUV tools — China's last accessible chipmaking equipment category. Targets: SMIC, Hua Hong, Huawei, CXMT, YMTC. (Bloomberg, CNBC, April 2026)</li>
+      <li>ASML stock fell 6% post-earnings despite beat and guidance raise — China restriction overhang dominated. China to account for ~20% of ASML sales in 2026, down from 33% in 2025. (CNBC April 15, 2026)</li>
+      <li>Analysis: MATCH Act could reduce ASML EPS by up to 10% if passed. Korean makers (SK Hynix, Samsung) rushing to lock in ASML capacity ahead of restrictions, creating near-term demand tailwind. (Yahoo Finance, CNBC)</li>
+    </ul>
+    <div class="summary">The MATCH Act represents a significant escalation in US-China semiconductor decoupling. ASML's DUV tools — previously exempt from export controls — are now explicitly targeted, which would effectively cut China off from advanced chip manufacturing entirely if passed. Markets have not priced this risk into ASML's forward estimates, which still assume ~20% China revenue in 2026. Given bipartisan support in an election-year national security environment, the legislative timeline is likely shorter than the market is assuming. The secondary effect — Korean manufacturers rushing to lock in ASML capacity pre-restriction — creates near-term demand tailwinds for ASML despite the China headwind.</div>
+  </div>
+
+  <!-- N5 -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">5. Fed Leadership Transition: Policy Uncertainty Premium Underpriced</div>
+      <div class="card-badges">
+        <span class="badge badge-medium">MEDIUM Conviction</span>
+        <span class="badge badge-stage">EARLY</span>
+      </div>
+    </div>
+    <div class="meta-grid">
+      <div class="meta-item">
+        <div class="meta-label">Timeline for Impact</div>
+        <div class="meta-value">May 2026 → H2 2026</div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">Primary Beneficiaries</div>
+        <div class="ticker-group">
+          <span class="ticker-pill">JPM</span><span class="ticker-pill">BAC</span><span class="ticker-pill">WFC</span><span class="ticker-pill">GS</span><span class="ticker-pill">MS</span>
+        </div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">Secondary Beneficiaries</div>
+        <div class="ticker-group">
+          <span class="ticker-pill secondary">Value ETFs</span><span class="ticker-pill secondary">XLE</span><span class="ticker-pill secondary">XLF</span>
+        </div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">Losers / Disrupted</div>
+        <div class="ticker-group">
+          <span class="ticker-pill loser">VNQ</span><span class="ticker-pill loser">XLU</span><span class="ticker-pill loser">ARKK</span><span class="ticker-pill loser">TLT</span>
+        </div>
+      </div>
+    </div>
+    <div class="field-label">Evidence</div>
+    <ul class="evidence-list">
+      <li>Powell term expires May 15, 2026. Kevin Warsh nominated as successor. Powell committed to "chairman pro tempore" status until Warsh confirmed — unprecedented arrangement creating institutional ambiguity at a critical juncture. (Axios, CNBC, March 18, 2026)</li>
+      <li>April 28–29 FOMC meeting expected to hold at 3.50–3.75%. Futures: 45% probability of cut at this meeting; bond market pricing 50bps total cuts in 2026. (EBC Financial, CME FedWatch)</li>
+      <li>Warsh is hawkish — was critical of QE. His confirmation could push back the 2 priced-in 2026 cuts to 2027. FOMC already split on rate path; Warsh may struggle to build consensus. (Schwab, GV Wire)</li>
+    </ul>
+    <div class="summary">The Powell-to-Warsh transition is the most underappreciated macro catalyst for the remainder of 2026. Markets have priced in 2 rate cuts this year — but a newly confirmed hawkish Warsh, inheriting a split FOMC amid Iranian-war-driven energy inflation and tariff pressure, may push those cuts to 2027. The "pro tempore" arrangement is unprecedented and creates a leadership vacuum exactly when clear central bank signaling is most needed. The April 29 press conference may be Powell's last meaningful statement, making it a high-stakes event. Position in financials benefiting from a higher-for-longer rate environment and reduce exposure to REIT/utility names pricing in 2 cuts this year.</div>
+  </div>
+
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       SECTION 2 — EARNINGS SIGNALS
+  ════════════════════════════════════════════════════════════════ -->
+  <div id="signals" class="section-header">
+    <span class="section-num">02</span>
+    <h2>Earnings Signals</h2>
+  </div>
+
+  <!-- S1 -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">Banks Printing on Volatility — Trading Revenue Surge</div>
+      <div class="card-badges">
+        <span class="badge badge-strong">STRONG</span>
+        <span class="badge" style="color:#8899b4;background:rgba(136,153,180,0.08);border:1px solid rgba(136,153,180,0.2);">Recurring Theme</span>
+      </div>
+    </div>
+    <div class="meta-grid" style="grid-template-columns: 1fr 1fr;">
+      <div class="meta-item">
+        <div class="meta-label">Companies Involved</div>
+        <div class="ticker-group" style="margin-top:4px;">
+          <span class="ticker-pill">JPM</span><span class="ticker-pill">MS</span><span class="ticker-pill">GS</span>
+        </div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">Read-Through</div>
+        <div class="meta-value">Regional banks (KRE, PNC, USB) most exposed to NII compression without trading offset</div>
+      </div>
+    </div>
+    <div class="summary">JPMorgan reported fixed income trading revenue +21% to $7.08B on volatility in commodities, credit, currencies, and EM. Goldman posted 19% profit growth with record equities trading revenue. Morgan Stanley reported $20.6B in Q1 revenue (record), with $118.4B in net new wealth management assets. All three beat EPS and revenue. However, JPMorgan cut full-year NII guidance from $104.5B to ~$103B — a subtle signal that the loan book is under pressure. Market volatility from the Iran war is a direct profit engine for bulge bracket banks. The NII guidance cut is a key read-through for regional banks where trading revenue is smaller and NII is the dominant driver.</div>
+    <div class="trade-idea">Long GS, MS (trading leverage to volatility); Short KRE (regional banks most exposed to NII compression without trading offset)</div>
+  </div>
+
+  <!-- S2 -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">Netflix Guidance Miss — Streaming Revenue Ceiling Signal</div>
+      <div class="card-badges">
+        <span class="badge badge-moderate">MODERATE</span>
+        <span class="badge" style="color:#8899b4;background:rgba(136,153,180,0.08);border:1px solid rgba(136,153,180,0.2);">Price Action Anomaly</span>
+      </div>
+    </div>
+    <div class="meta-grid" style="grid-template-columns: 1fr 1fr;">
+      <div class="meta-item">
+        <div class="meta-label">Companies Involved</div>
+        <div class="ticker-group" style="margin-top:4px;">
+          <span class="ticker-pill">NFLX</span>
+        </div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">Read-Through Tickers</div>
+        <div class="ticker-group" style="margin-top:4px;">
+          <span class="ticker-pill loser">DIS</span><span class="ticker-pill loser">WBD</span><span class="ticker-pill loser">PARA</span><span class="ticker-pill">TTD</span>
+        </div>
+      </div>
+    </div>
+    <div class="summary">Netflix beat Q1 revenue ($12.25B vs $12.18B expected, +16% YoY) with nearly doubled EPS, but Q2 revenue guidance of $12.57B missed the $12.63B consensus by a tiny margin — sending shares down 10% pre-market, the largest single-day drop since October 2022. Reed Hastings simultaneously announced his retirement after 29 years as co-founder. The advertising business is growing rapidly (on track for $3B in 2026 ad revenue, doubling YoY), but subscriber revenue is decelerating post-price-increases. The market's violent reaction reveals streaming stocks are priced for perfection. Read-through is negative for DIS, WBD, and PARA. Advertising revenue growth benefits ad-tech intermediaries like TTD and GOOGL's YouTube.</div>
+    <div class="trade-idea">Short WBD (most vulnerable streaming pure-play); Long TTD (streaming ad inventory beneficiary)</div>
+  </div>
+
+  <!-- S3 -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">TSMC &gt;30% Revenue Guidance Raise — AI Demand Confirmation</div>
+      <div class="card-badges">
+        <span class="badge badge-strong">STRONG</span>
+        <span class="badge" style="color:#8899b4;background:rgba(136,153,180,0.08);border:1px solid rgba(136,153,180,0.2);">Unusual Guidance</span>
+      </div>
+    </div>
+    <div class="meta-grid" style="grid-template-columns: 1fr 1fr;">
+      <div class="meta-item">
+        <div class="meta-label">Company</div>
+        <div class="ticker-group" style="margin-top:4px;"><span class="ticker-pill">TSM</span></div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">Read-Through Tickers</div>
+        <div class="ticker-group" style="margin-top:4px;">
+          <span class="ticker-pill">NVDA</span><span class="ticker-pill">AMAT</span><span class="ticker-pill">LRCX</span><span class="ticker-pill">AVGO</span><span class="ticker-pill">MRVL</span>
+        </div>
+      </div>
+    </div>
+    <div class="summary">TSMC raised full-year 2026 revenue growth guidance to >30% YoY (USD terms) after posting Q1 profit of NT$572.48B, up 58% YoY — the fourth consecutive record quarter. 3nm chips now represent 25% of revenue (vs. 6% in Q3 2023). HPC/AI segment is 61% of total revenue. No mention of demand moderation on the earnings call — a sharp contrast to prior years where TSMC signaled caution about customer inventory digestion. A >30% raise from TSMC is the single most important AI supply chain signal of Q1 earnings season. It validates hyperscaler capex commitments and directly supports NVDA's forward order book. Second-order beneficiaries — AMAT, LRCX, KLAC, AVGO, MRVL — are the non-consensus expressions of this theme.</div>
+    <div class="trade-idea">Long AMAT, KLAC (semiconductor equipment — direct AI capacity build beneficiary with lower valuation than NVDA); Reduce INTC (losing foundry share at pace)</div>
+  </div>
+
+  <!-- S4 -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">ASML Beat-and-Raise Sells Off — China Overhang Dominates</div>
+      <div class="card-badges">
+        <span class="badge badge-moderate">MODERATE</span>
+        <span class="badge" style="color:#8899b4;background:rgba(136,153,180,0.08);border:1px solid rgba(136,153,180,0.2);">Price Anomaly</span>
+      </div>
+    </div>
+    <div class="meta-grid" style="grid-template-columns: 1fr 1fr;">
+      <div class="meta-item">
+        <div class="meta-label">Company</div>
+        <div class="ticker-group" style="margin-top:4px;"><span class="ticker-pill">ASML</span></div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">Read-Through</div>
+        <div class="ticker-group" style="margin-top:4px;">
+          <span class="ticker-pill">AMAT</span><span class="ticker-pill">KLAC</span><span class="ticker-pill">LRCX</span>
+        </div>
+      </div>
+    </div>
+    <div class="summary">ASML reported Q1 revenue of €8.8B (vs. €8.5B expected) and net profit of €2.8B (vs. €2.5B expected), and raised full-year 2026 sales guidance — yet shares fell 6%. The reason: tightening export controls via the MATCH Act, threatening ASML's remaining ~20% China revenue (DUV tools). The "beat-and-fall" pattern signals the market is pricing China restriction risk as a multi-year overhang rather than a one-time event. ASML's ex-China business is growing strongly — the valuation dislocation creates an opportunity in competing equipment makers (AMAT, LRCX, KLAC) with lower China exposure relative to their total book.</div>
+    <div class="trade-idea">Pair trade: Long KLAC / Short ASML — express "semi equipment bullish, China exposure bearish" without concentration risk</div>
+  </div>
+
+  <!-- S5 -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">JPMorgan NII Guidance Cut — Regional Bank Red Flag</div>
+      <div class="card-badges">
+        <span class="badge badge-moderate">MODERATE</span>
+        <span class="badge" style="color:#8899b4;background:rgba(136,153,180,0.08);border:1px solid rgba(136,153,180,0.2);">Language Shift</span>
+      </div>
+    </div>
+    <div class="meta-grid" style="grid-template-columns: 1fr 1fr;">
+      <div class="meta-item">
+        <div class="meta-label">Company</div>
+        <div class="ticker-group" style="margin-top:4px;"><span class="ticker-pill">JPM</span></div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">Read-Through</div>
+        <div class="ticker-group" style="margin-top:4px;">
+          <span class="ticker-pill loser">KRE</span><span class="ticker-pill loser">PNC</span><span class="ticker-pill loser">USB</span><span class="ticker-pill loser">BAC</span>
+        </div>
+      </div>
+    </div>
+    <div class="summary">Despite a strong headline beat ($5.94 EPS vs. $5.45 estimate), JPMorgan cut full-year 2026 NII guidance from $104.5B to ~$103B. CFO language cited "increased deposit competition" and a flatter-than-expected yield curve trajectory. For a bank of JPM's size, a $1.5B NII cut implies real pressure on deposit repricing — a pressure that is disproportionately larger for regional banks that lack a trading revenue offset. If JPM is feeling NII compression at current rate levels, regional banks in KRE are in a materially more difficult position. The market has not fully priced this read-through into regional bank valuations, which have partially recovered on "rates higher for longer" optimism.</div>
+    <div class="trade-idea">Underweight KRE vs. XLF; within large banks, prefer MS and GS (trading leverage) over JPM and BAC (more NII-dependent)</div>
+  </div>
+
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       SECTION 3 — CATALYST MAP
+  ════════════════════════════════════════════════════════════════ -->
+  <div id="catalysts" class="section-header">
+    <span class="section-num">03</span>
+    <h2>Upcoming Catalyst Map</h2>
+  </div>
+
+  <!-- C1 -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">FOMC Meeting — April 28–29, 2026</div>
+      <div class="card-badges">
+        <span class="badge" style="color:#67e8f9;background:rgba(103,232,249,0.08);border:1px solid rgba(103,232,249,0.2);">Policy Decision</span>
+      </div>
+    </div>
+    <div class="cat-date-tag">📅 April 29, 2026 · 2:00 PM ET Statement · 2:30 PM ET Press Conference</div>
+    <div class="cat-grid">
+      <div class="cat-cell">
+        <div class="meta-label">Consensus Expectation</div>
+        <div class="meta-value">Hold rates at 3.50–3.75%; dovish-leaning press conference; preserve optionality for June cut. 45% probability of cut priced by futures markets.</div>
+      </div>
+      <div class="cat-cell surprise">
+        <div class="meta-label">Surprise Scenario</div>
+        <div class="meta-value">Powell signals Iran war energy inflation forces hawkish pivot; OR explicitly defers all guidance to incoming Chair Warsh, creating policy vacuum.</div>
+      </div>
+    </div>
+    <div class="meta-grid" style="grid-template-columns: 1fr;">
+      <div class="meta-item">
+        <div class="meta-label">Exposed Tickers</div>
+        <div class="ticker-group" style="margin-top:4px;">
+          <span class="ticker-pill loser">TLT</span><span class="ticker-pill loser">XLU</span><span class="ticker-pill loser">VNQ</span><span class="ticker-pill loser">ARKK</span>
+          <span class="ticker-pill">JPM</span><span class="ticker-pill">GS</span><span class="ticker-pill">XLF</span>
+        </div>
+      </div>
+    </div>
+    <div class="summary">This is likely one of Powell's final press conferences as Fed Chair, creating extraordinary narrative weight. The Iran war energy shock creates a genuine dilemma — cut to support slowing growth, or hold to prevent second-round inflation effects. If Powell signals that energy price inflation precludes near-term easing, the rate-cut trade unwinds violently. The "pro tempore" arrangement adds a wrinkle: markets may view Powell's statements as non-binding on incoming Chair Warsh, reducing the directional impact of dovish language.</div>
+  </div>
+
+  <!-- C2 -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">Powell Term Expiry & Warsh Confirmation — May 15, 2026</div>
+      <div class="card-badges">
+        <span class="badge" style="color:#67e8f9;background:rgba(103,232,249,0.08);border:1px solid rgba(103,232,249,0.2);">Policy / Leadership</span>
+      </div>
+    </div>
+    <div class="cat-date-tag">📅 May 15, 2026 · Powell Term Expires</div>
+    <div class="cat-grid">
+      <div class="cat-cell">
+        <div class="meta-label">Consensus Expectation</div>
+        <div class="meta-value">Warsh confirmed with minimal disruption; markets assume continuity in rate policy through H1 2026.</div>
+      </div>
+      <div class="cat-cell surprise">
+        <div class="meta-label">Surprise Scenario</div>
+        <div class="meta-value">Confirmation delayed past May 15 creating governance limbo; OR Warsh explicitly signals he will eliminate 2026 rate cuts, repricing TLT, XLU, VNQ sharply lower.</div>
+      </div>
+    </div>
+    <div class="meta-grid" style="grid-template-columns: 1fr;">
+      <div class="meta-item">
+        <div class="meta-label">Exposed Tickers</div>
+        <div class="ticker-group" style="margin-top:4px;">
+          <span class="ticker-pill loser">TLT</span><span class="ticker-pill loser">XLU</span><span class="ticker-pill loser">VNQ</span>
+          <span class="ticker-pill">GLD</span><span class="ticker-pill">XLF</span><span class="ticker-pill">GS</span>
+        </div>
+      </div>
+    </div>
+    <div class="summary">The precedent of a "chairman pro tempore" arrangement is historically unprecedented and legally ambiguous. If Senate Republicans delay Warsh's hearing for political leverage, the Fed operates in governance limbo during the most uncertain energy and geopolitical environment since 2022. Warsh is known as a hawk who was critical of QE — his initial public statements as Chair designate could reset rate expectations for all of 2026-2027. The market is underpricing this transition risk; vol surface shows limited Warsh premium in rate options.</div>
+  </div>
+
+  <!-- C3 -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">Big Tech Q1 Earnings — Week of April 21–30, 2026</div>
+      <div class="card-badges">
+        <span class="badge" style="color:#67e8f9;background:rgba(103,232,249,0.08);border:1px solid rgba(103,232,249,0.2);">Earnings Event</span>
+      </div>
+    </div>
+    <div class="cat-date-tag">📅 April 22–30, 2026 · MSFT / GOOGL / META / AMZN</div>
+    <div class="cat-grid">
+      <div class="cat-cell">
+        <div class="meta-label">Consensus Expectation</div>
+        <div class="meta-value">Strong results; AI capex guidance maintained or raised; AMZN cloud growth reaccelerating; TSMC 30% growth thesis validated.</div>
+      </div>
+      <div class="cat-cell surprise">
+        <div class="meta-label">Surprise Scenario</div>
+        <div class="meta-value">Any capex moderation signal (even flat YoY) invalidates the TSMC 30% growth thesis and reprices the entire semiconductor complex sharply lower.</div>
+      </div>
+    </div>
+    <div class="meta-grid" style="grid-template-columns: 1fr;">
+      <div class="meta-item">
+        <div class="meta-label">Exposed Tickers</div>
+        <div class="ticker-group" style="margin-top:4px;">
+          <span class="ticker-pill">MSFT</span><span class="ticker-pill">GOOGL</span><span class="ticker-pill">META</span><span class="ticker-pill">AMZN</span>
+          <span class="ticker-pill secondary">NVDA</span><span class="ticker-pill secondary">TSM</span><span class="ticker-pill secondary">AMAT</span><span class="ticker-pill secondary">LRCX</span>
+        </div>
+      </div>
+    </div>
+    <div class="summary">This is the most binary catalyst cluster of the next 4 weeks. TSMC's 30% guidance is entirely predicated on continued hyperscaler capex — the moment any of MSFT, GOOGL, META, or AMZN signals capex flattening, the AI chip supercycle thesis cracks. Conversely, if all four raise AI infrastructure guidance, it validates the entire equipment supply chain. The non-consensus risk: Netflix's Q2 guidance miss may signal a broader consumer-facing digital deceleration bleeding into cloud growth expectations at AMZN and GOOGL. Asymmetric downside risk — market is positioned for strength.</div>
+  </div>
+
+  <!-- C4 -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">Strait of Hormuz Status — Ongoing Binary</div>
+      <div class="card-badges">
+        <span class="badge" style="color:#67e8f9;background:rgba(103,232,249,0.08);border:1px solid rgba(103,232,249,0.2);">Geopolitical</span>
+      </div>
+    </div>
+    <div class="cat-date-tag">📅 Ongoing · Next checkpoint April 20–21 weekend naval talks</div>
+    <div class="cat-grid">
+      <div class="cat-cell">
+        <div class="meta-label">Consensus Expectation</div>
+        <div class="meta-value">Partial reopening over next 2–4 weeks; oil retreats toward $100/bbl. Energy sector softens from current peak pricing.</div>
+      </div>
+      <div class="cat-cell surprise">
+        <div class="meta-label">Surprise Scenario</div>
+        <div class="meta-value">Ceasefire collapses / new Iranian provocation; Brent spikes above $140. OR full reopening sends oil to $80 and deflates energy sector gains.</div>
+      </div>
+    </div>
+    <div class="meta-grid" style="grid-template-columns: 1fr;">
+      <div class="meta-item">
+        <div class="meta-label">Exposed Tickers</div>
+        <div class="ticker-group" style="margin-top:4px;">
+          <span class="ticker-pill">XOM</span><span class="ticker-pill">CVX</span><span class="ticker-pill">COP</span><span class="ticker-pill">XOP</span><span class="ticker-pill">USO</span>
+          <span class="ticker-pill secondary">DAL</span><span class="ticker-pill secondary">UAL</span><span class="ticker-pill secondary">AAL</span>
+        </div>
+      </div>
+    </div>
+    <div class="summary">The Hormuz situation is the market's highest-impact binary in the near term. As of April 9, ships were still being blocked despite a nominal ceasefire — meaning either the ceasefire implementation is credible (bullish airlines, bearish energy) or it collapses (bullish energy, bearish risk assets broadly). Options skew on oil shows call premium elevated; airlines are underowned and undervalued relative to a normalized oil scenario. The asymmetry favors owning cheap airlines as a partial hedge against the oil correction scenario, since airlines have not recovered their pre-war levels despite oil stabilizing from its initial spike.</div>
+  </div>
+
+  <!-- C5 -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">MATCH Act Legislative Progress — Semis Policy Risk</div>
+      <div class="card-badges">
+        <span class="badge" style="color:#67e8f9;background:rgba(103,232,249,0.08);border:1px solid rgba(103,232,249,0.2);">Regulatory</span>
+      </div>
+    </div>
+    <div class="cat-date-tag">📅 Committee hearings expected May 2026</div>
+    <div class="cat-grid">
+      <div class="cat-cell">
+        <div class="meta-label">Consensus Expectation</div>
+        <div class="meta-value">Bill advances to committee but delayed by lobbying and trade negotiation dynamics. Implementation timeline pushed to late 2026 or 2027.</div>
+      </div>
+      <div class="cat-cell surprise">
+        <div class="meta-label">Surprise Scenario</div>
+        <div class="meta-value">Fast-tracked on national security grounds; becomes law before summer recess, triggering ASML China revenue write-downs and forcing renegotiation of supply contracts.</div>
+      </div>
+    </div>
+    <div class="meta-grid" style="grid-template-columns: 1fr;">
+      <div class="meta-item">
+        <div class="meta-label">Exposed Tickers</div>
+        <div class="ticker-group" style="margin-top:4px;">
+          <span class="ticker-pill loser">ASML</span><span class="ticker-pill loser">SMIC</span>
+          <span class="ticker-pill">AMAT</span><span class="ticker-pill">LRCX</span><span class="ticker-pill">GFS</span><span class="ticker-pill">INTC</span>
+        </div>
+      </div>
+    </div>
+    <div class="summary">The bipartisan MATCH Act is the most underappreciated legislative catalyst in tech/semi markets. It targets ASML's DUV tools — the last tool category China can still access — effectively completing the semiconductor decoupling cycle. Unlike previous export control bills, this has explicit bipartisan support in the context of Iran war-heightened national security sentiment. If it advances faster than expected, ASML faces a revenue cliff and Chinese chipmakers lose the ability to produce even legacy-node chips at scale. Markets are pricing this as a 2027 event; a May committee hearing schedule announcement would pull that timeline materially forward.</div>
+  </div>
+
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       ACTION ITEMS
+  ════════════════════════════════════════════════════════════════ -->
+  <div id="actions" class="action-section">
+    <div class="action-title">Action Items</div>
+    <div class="action-cols">
+      <div class="action-col">
+        <h4>Top 3 Tickers to Research Today</h4>
+        <div class="action-item"><span class="action-num">1</span><span class="ticker">AMAT</span> — Applied Materials. Beneficiary of AI chip supercycle AND redirect of ex-China ASML orders. Lower valuation than pure-play names with upcoming earnings catalyst.</div>
+        <div class="action-item"><span class="action-num">2</span><span class="ticker">DAL / UAL</span> — Airlines are the non-consensus hedge on Strait of Hormuz reopening. Underowned, underpriced relative to oil normalization scenario.</div>
+        <div class="action-item"><span class="action-num">3</span><span class="ticker">KLAC</span> — Best risk/reward in semiconductor equipment. Less China exposure than ASML. Direct beneficiary of TSMC capacity ramp. Pair trade vs. ASML opportunity.</div>
+      </div>
+      <div class="action-col">
+        <h4>Suggested Position Adjustments</h4>
+        <div class="action-item">Reduce rate-sensitive exposure (<span class="ticker">XLU</span>, <span class="ticker">VNQ</span>, long-duration growth) ahead of April 29 FOMC and Warsh transition uncertainty.</div>
+        <div class="action-item">Increase energy selectively (<span class="ticker">COP</span>, <span class="ticker">OXY</span>) — Hormuz remains functionally closed; oil risk premium has further room if reopening stalls.</div>
+        <div class="action-item">Trim <span class="ticker">NFLX</span> or add put protection — Reed Hastings departure + Q2 guidance miss dynamic creates sustained overhang.</div>
+        <div class="action-item">Underweight <span class="ticker">KRE</span> vs. <span class="ticker">XLF</span>; within large banks, prefer <span class="ticker">MS</span> and <span class="ticker">GS</span> (trading) over <span class="ticker">JPM</span>, <span class="ticker">BAC</span> (NII-dependent).</div>
+      </div>
+      <div class="action-col">
+        <h4>Key Dates This Week</h4>
+        <div class="action-item"><strong style="color:#e2e8f0;">Apr 21–25</strong> — Big Tech earnings begin (MSFT, GOOGL, META). Check exact dates; AI capex guidance is the key variable.</div>
+        <div class="action-item"><strong style="color:#e2e8f0;">Apr 22</strong> — Market opens after weekend Hormuz update. Watch oil price action at Monday open for binary catalyst signal.</div>
+        <div class="action-item"><strong style="color:#e2e8f0;">Apr 28–29</strong> — FOMC meeting. Powell's likely last major press conference. Rate decision + guidance critical for rate-sensitive sector positioning.</div>
+        <div class="action-item"><strong style="color:#e2e8f0;">Apr 29 (post-close)</strong> — Monitor for Warsh confirmation hearing schedule announcement. Any acceleration in timing is a vol event for rates.</div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /container -->
+
+<!-- FOOTER -->
+<div class="footer">
+  <p>Daily Theme Scanner · Pre-Market Edition · Saturday April 18, 2026</p>
+  <p>Sources: CNBC · IMF GFSR · IEA · Bloomberg · ASML IR · TSMC IR · FactSet · Goldman Sachs · Kpler · Morningstar · CME FedWatch · Axios · Yahoo Finance · Variety · Deadline</p>
+  <p style="color:#2a3a55;">Automated thematic research scan. Not investment advice.</p>
+</div>
+
+</body>
+</html>
