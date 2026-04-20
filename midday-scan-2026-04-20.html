@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Midday Catalyst Scan — April 20, 2026</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg:        #0a0e17;
+      --surface:   #111827;
+      --border:    #1e2d40;
+      --text:      #e2e8f0;
+      --muted:     #64748b;
+      --urgent:    #ef4444;
+      --urgent-bg: rgba(239,68,68,0.10);
+      --watch:     #f59e0b;
+      --watch-bg:  rgba(245,158,11,0.10);
+      --confirm:   #22c55e;
+      --confirm-bg:rgba(34,197,94,0.10);
+      --noise:     #94a3b8;
+      --noise-bg:  rgba(148,163,184,0.08);
+      --accent:    #38bdf8;
+      --accent-bg: rgba(56,189,248,0.10);
+    }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'JetBrains Mono', 'Courier New', monospace;
+      font-size: 13px;
+      line-height: 1.65;
+      padding: 0 0 60px 0;
+    }
+    /* ─── HEADER ─── */
+    .header {
+      background: linear-gradient(135deg, #0d1b2a 0%, #0a0e17 100%);
+      border-bottom: 2px solid var(--border);
+      padding: 28px 32px 22px;
+    }
+    .header-top {
+      display: flex;
+      align-items: baseline;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .header h1 {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--accent);
+      letter-spacing: 0.02em;
+    }
+    .header .date {
+      color: var(--muted);
+      font-size: 12px;
+    }
+    .header .tagline {
+      margin-top: 6px;
+      color: var(--muted);
+      font-size: 11px;
+    }
+    .macro-bar {
+      margin-top: 14px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .macro-pill {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 4px 10px;
+      font-size: 11px;
+      color: var(--text);
+    }
+    .macro-pill.red   { border-color: var(--urgent); color: var(--urgent); }
+    .macro-pill.amber { border-color: var(--watch);  color: var(--watch);  }
+    .macro-pill.green { border-color: var(--confirm); color: var(--confirm); }
+
+    /* ─── LAYOUT ─── */
+    .container { max-width: 1100px; margin: 0 auto; padding: 0 24px; }
+    .section { margin-top: 32px; }
+    .section-title {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 8px;
+      margin-bottom: 16px;
+    }
+    .section-title span { color: var(--accent); margin-right: 8px; }
+
+    /* ─── CARDS ─── */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 16px 18px;
+      margin-bottom: 12px;
+    }
+    .card.urgent  { border-left: 3px solid var(--urgent);  background: var(--urgent-bg); }
+    .card.watch   { border-left: 3px solid var(--watch);   background: var(--watch-bg);  }
+    .card.confirm { border-left: 3px solid var(--confirm); background: var(--confirm-bg);}
+    .card.noise   { border-left: 3px solid var(--noise);   background: var(--noise-bg);  }
+    .card.neutral { border-left: 3px solid var(--accent);  background: var(--accent-bg); }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 8px;
+      flex-wrap: wrap;
+    }
+    .ticker {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text);
+    }
+    .badge {
+      font-size: 10px;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 3px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+    .badge.urgent  { background: var(--urgent-bg);  color: var(--urgent);  border: 1px solid var(--urgent);  }
+    .badge.watch   { background: var(--watch-bg);   color: var(--watch);   border: 1px solid var(--watch);   }
+    .badge.confirm { background: var(--confirm-bg); color: var(--confirm); border: 1px solid var(--confirm); }
+    .badge.noise   { background: var(--noise-bg);   color: var(--noise);   border: 1px solid var(--noise);   }
+    .badge.bullish { background: rgba(34,197,94,0.15); color: #4ade80; border: 1px solid #22c55e; }
+    .badge.bearish { background: rgba(239,68,68,0.15); color: #f87171; border: 1px solid #ef4444; }
+    .badge.neutral-b{ background: rgba(148,163,184,0.15); color: #94a3b8; border: 1px solid #475569; }
+    .badge.yes { background: rgba(239,68,68,0.2); color: #f87171; border: 1px solid var(--urgent); }
+    .badge.watch-a { background: rgba(245,158,11,0.2); color: #fbbf24; border: 1px solid var(--watch); }
+    .badge.no  { background: rgba(148,163,184,0.1); color: #94a3b8; border: 1px solid #334155; }
+
+    .card-headline { font-weight: 600; color: var(--text); margin-bottom: 4px; }
+    .card-body { color: var(--muted); font-size: 12px; line-height: 1.6; }
+    .card-body strong { color: var(--text); }
+    .card-meta {
+      margin-top: 8px;
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+      font-size: 11px;
+      color: var(--muted);
+    }
+    .card-meta a { color: var(--accent); text-decoration: none; }
+    .card-meta a:hover { text-decoration: underline; }
+
+    /* ─── TABLE ─── */
+    .tbl-wrap { overflow-x: auto; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+    }
+    th {
+      background: #131e2e;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-size: 10px;
+      padding: 8px 12px;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+    td {
+      padding: 9px 12px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
+    }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: rgba(56,189,248,0.04); }
+    .bull { color: #4ade80; font-weight: 600; }
+    .bear { color: #f87171; font-weight: 600; }
+    .neutral-t { color: #94a3b8; }
+
+    /* ─── DASHBOARD TABLE ─── */
+    .dash-table td:first-child { min-width: 60px; }
+    .dash-table td:nth-child(2) { font-weight: 600; color: var(--text); min-width: 120px; }
+
+    /* ─── RISK BOX ─── */
+    .risk-box {
+      background: rgba(239,68,68,0.07);
+      border: 1px solid rgba(239,68,68,0.3);
+      border-radius: 6px;
+      padding: 14px 18px;
+      margin-bottom: 10px;
+    }
+    .risk-box .risk-title {
+      color: var(--urgent);
+      font-weight: 700;
+      font-size: 12px;
+      margin-bottom: 4px;
+    }
+    .risk-box .risk-body {
+      color: var(--muted);
+      font-size: 12px;
+    }
+    .risk-box .risk-body strong { color: var(--text); }
+
+    /* ─── POSTURE BANNER ─── */
+    .posture {
+      background: linear-gradient(90deg, rgba(239,68,68,0.12), rgba(245,158,11,0.12));
+      border: 1px solid rgba(239,68,68,0.3);
+      border-radius: 6px;
+      padding: 14px 20px;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text);
+      margin-bottom: 24px;
+    }
+    .posture span { color: var(--urgent); font-weight: 700; }
+
+    /* ─── FOOTER ─── */
+    .footer {
+      margin-top: 48px;
+      padding: 16px 24px;
+      border-top: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 10px;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+<!-- ══════════════════ HEADER ══════════════════ -->
+<div class="header">
+  <div class="container">
+    <div class="header-top">
+      <h1>🕐 MIDDAY CATALYST CHECK</h1>
+      <div class="date">April 20, 2026 · ~Midday EST</div>
+    </div>
+    <div class="tagline">Sources: Benzinga · Yahoo Finance · CNBC · CoinDesk · StockTitan · SEC EDGAR</div>
+    <div class="macro-bar">
+      <div class="macro-pill red">⚠ Iran / Hormuz Closure</div>
+      <div class="macro-pill red">🛢 WTI Crude +5.7% → $87</div>
+      <div class="macro-pill amber">⚡ Trump vs. Powell Ongoing</div>
+      <div class="macro-pill amber">💵 Dollar 3-Yr Low</div>
+      <div class="macro-pill amber">📅 TSLA Earnings April 22</div>
+      <div class="macro-pill">🟡 S&P 500 −0.6% · Nasdaq −1.0% · Dow −0.3%</div>
+      <div class="macro-pill">₿ BTC $75,136 (+0.65%)</div>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+
+<!-- ══════════════════ POSTURE ══════════════════ -->
+<div class="section">
+  <div class="posture">
+    <span>OVERALL POSTURE: RISK-OFF</span> — Iran/Hormuz oil shock + Trump/Powell uncertainty → Favor energy longs, reduce tech exposure, manage TSLA before Wednesday earnings.
+  </div>
+</div>
+
+<!-- ══════════════════ STEP 1: WATCHLIST ══════════════════ -->
+<div class="section">
+  <div class="section-title"><span>01</span>WATCHLIST ALERTS</div>
+
+  <!-- TSLA -->
+  <div class="card urgent">
+    <div class="card-header">
+      <div class="ticker">TSLA</div>
+      <span class="badge urgent">🔴 URGENT</span>
+      <span class="badge watch-a">WATCH</span>
+      <span class="badge bullish">BULLISH SHORT-TERM</span>
+    </div>
+    <div class="card-headline">Tesla Q1 2026 Earnings: April 22 at 5:30 PM EDT — Pre-earnings run with asymmetric risk</div>
+    <div class="card-body">
+      Price ~<strong>$437.18 (+1.85%)</strong>. Mean analyst target: <strong>$401</strong> — stock is trading 9% ABOVE consensus. EPS estimate: $0.36. Revenue: $21.9B. Q1 deliveries: 358,023 (below prior year). Capex $20B+ in 2026 = cash flow headwind. Analysts divided: consensus "Hold." 43 analysts polled.<br><br>
+      <strong>Signal:</strong> If long TSLA — REDUCE or HEDGE into April 22 close. Above-target price = asymmetric downside on any miss. Do NOT add new longs here.
+    </div>
+    <div class="card-meta">
+      <span>📅 Earnings: April 22, 5:30 PM EDT</span>
+      <a href="https://finance.yahoo.com/markets/stocks/articles/tesla-earnings-preview-expect-tesla-152521074.html">Yahoo Finance Preview →</a>
+      <a href="https://www.cnbc.com/2026/04/19/earnings-playbook-tsla-ba-lead-a-big-week-of-reports.html">CNBC Earnings Playbook →</a>
+      <a href="https://www.stocktitan.net/sec-filings/TSLA/8-k-tesla-inc-reports-material-event-bd24215592e0.html">StockTitan 8-K →</a>
+    </div>
+  </div>
+
+  <!-- NVDA -->
+  <div class="card watch">
+    <div class="card-header">
+      <div class="ticker">NVDA</div>
+      <span class="badge watch">🟡 WATCH</span>
+      <span class="badge bearish">-0.96%</span>
+    </div>
+    <div class="card-headline">NVDA below key $200 psychological level — buyers need $200.75 reclaim</div>
+    <div class="card-body">
+      Price ~<strong>$179.73 (−0.96%)</strong>. Benchmark PT $250 (March 31, 2026). Semiconductor market forecast to grow 25%+ to $975B in 2026. AI inference = 2/3 of total AI compute by 2026 (Deloitte). NVDA/SMH thesis intact long-term, but short-term headwind from risk-off + Iran macro.<br><br>
+      <strong>Signal:</strong> No ADD. Wait for reclaim of <strong>$200.75</strong> before adding. Hold existing positions if thesis intact.
+    </div>
+    <div class="card-meta">
+      <a href="https://finance.yahoo.com/quote/NVDA/">Yahoo Finance NVDA →</a>
+      <a href="https://finance.yahoo.com/news/why-smh-etf-could-core-022600402.html">SMH/AI 2026 Outlook →</a>
+    </div>
+  </div>
+
+  <!-- AMD -->
+  <div class="card watch">
+    <div class="card-header">
+      <div class="ticker">AMD</div>
+      <span class="badge watch">🟡 WATCH</span>
+      <span class="badge bearish">BEARISH FLOW</span>
+    </div>
+    <div class="card-headline">Unusual BEARISH options flow today: 600 CALLS $290 May 29 — contradicts long thesis</div>
+    <div class="card-body">
+      Unusual options today: <strong>600 CALLS at $290 strike, May 29 expiry</strong> — classified BEARISH by Benzinga (likely short call or spread positioning). This is a warning signal for AMD near-term. $290 is well above current market — smart money selling upside.<br><br>
+      <strong>Signal:</strong> AVOID new AMD longs today. If long, evaluate stop placement carefully.
+    </div>
+    <div class="card-meta">
+      <a href="https://www.benzinga.com/calendars/unusual-options-activity">Benzinga Options Flow →</a>
+    </div>
+  </div>
+
+  <!-- MARA -->
+  <div class="card watch">
+    <div class="card-header">
+      <div class="ticker">MARA</div>
+      <span class="badge watch">🟡 WATCH</span>
+      <span class="badge neutral-b">AI PIVOT</span>
+    </div>
+    <div class="card-headline">MARA sold $1.1B BTC, pivoting to AI data centers with Starwood Capital deal</div>
+    <div class="card-body">
+      MARA sold 15,133 BTC to retire $1B in convertible notes. Partnership with Starwood Capital converting mining sites to AI data center facilities. Stock up 6–19% on various news days. <strong>No longer a pure Bitcoin proxy.</strong> Market divided on the pivot.<br><br>
+      <strong>Signal:</strong> HOLD. AI pivot story developing. Watch BTC price for secondary moves on MARA.
+    </div>
+    <div class="card-meta">
+      <a href="https://finance.yahoo.com/markets/crypto/articles/mara-selling-bitcoin-firing-staff-070224323.html">Yahoo Finance →</a>
+      <a href="https://www.coindesk.com/markets/2026/02/26/bitcoin-miner-mara-jumps-17-after-striking-a-deal-with-starwood-to-build-ai-data-centers">CoinDesk →</a>
+    </div>
+  </div>
+
+  <!-- SOFI -->
+  <div class="card confirm">
+    <div class="card-header">
+      <div class="ticker">SOFI</div>
+      <span class="badge confirm">🟢 CONFIRM</span>
+      <span class="badge bullish">BULLISH</span>
+    </div>
+    <div class="card-headline">SoFiUSD stablecoin live; Cramer buy April 2. Thesis intact, no new intraday catalyst.</div>
+    <div class="card-body">
+      SoFiUSD stablecoin backed 1:1 by cash at SoFi Bank launched Dec 2025. Crypto as catalyst for SoFi Invest revenue. Jim Cramer buy recommendation April 2. No fresh catalyst today but narrative intact.<br><br>
+      <strong>Signal:</strong> Hold. No action needed.
+    </div>
+    <div class="card-meta">
+      <a href="https://www.stocktitan.net/news/SOFI/">StockTitan SOFI →</a>
+      <a href="https://finance.yahoo.com/news/3-predictions-sofi-2026-122000092.html">Yahoo Finance →</a>
+    </div>
+  </div>
+
+  <!-- SNDK -->
+  <div class="card confirm">
+    <div class="card-header">
+      <div class="ticker">SNDK</div>
+      <span class="badge confirm">🟢 CONFIRM</span>
+      <span class="badge bullish">STRUCTURAL BULL</span>
+    </div>
+    <div class="card-headline">Memory market undersupplied through 2026; AI/data center SSD demand surging</div>
+    <div class="card-body">
+      Production cuts + AI training/inference demand = favorable supply-demand for enterprise SSDs. No intraday catalyst today — structural thesis intact.<br><br>
+      <strong>Signal:</strong> Hold. No action needed today.
+    </div>
+    <div class="card-meta">
+      <a href="https://www.benzinga.com/money/sndk-stock-price-prediction">Benzinga SNDK →</a>
+    </div>
+  </div>
+
+  <!-- AMZN -->
+  <div class="card watch">
+    <div class="card-header">
+      <div class="ticker">AMZN</div>
+      <span class="badge watch">🟡 WATCH</span>
+      <span class="badge bearish">-1.13% TODAY</span>
+      <span class="badge bullish">LEAPS BULL FLOW</span>
+    </div>
+    <div class="card-headline">Down on macro risk-off but institutional LEAPS call buying signals smart money bull thesis</div>
+    <div class="card-body">
+      Price ~<strong>$231.78 (−1.13%)</strong>. Unusual options today: <strong>767 CALLS at $250 strike, Dec 18 2026</strong> — BULLISH. Institutional money positioning for a recovery by year-end even as intraday is weak.<br><br>
+      <strong>Signal:</strong> WATCH for dip-buy entry on macro stabilization. Don't add into the Iran risk-off.
+    </div>
+    <div class="card-meta">
+      <a href="https://www.benzinga.com/calendars/unusual-options-activity">Benzinga Options →</a>
+      <a href="https://finance.yahoo.com/quote/AMZN/">Yahoo Finance AMZN →</a>
+    </div>
+  </div>
+
+  <!-- COIN -->
+  <div class="card noise">
+    <div class="card-header">
+      <div class="ticker">COIN</div>
+      <span class="badge noise">⚪ NOISE</span>
+    </div>
+    <div class="card-headline">No verified catalyst today. BTC flat at $75,136 (+0.65%).</div>
+    <div class="card-body">
+      Bitcoin ceasefire boost fading. No intraday catalyst for COIN. BTC at $75K, muted reaction to Iran geopolitics.<br><br>
+      <strong>Signal:</strong> Ignore today.
+    </div>
+    <div class="card-meta">
+      <a href="https://www.coindesk.com/daybook-us/2026/04/17/bitcoin-s-ceasefire-boost-is-starting-to-fizzle-out-as-investors-look-for-real-world-results">CoinDesk →</a>
+    </div>
+  </div>
+
+</div><!-- /watchlist -->
+
+<!-- ══════════════════ STEP 2: SECTORS ══════════════════ -->
+<div class="section">
+  <div class="section-title"><span>02</span>SECTOR &amp; THEME ETF MIDDAY CHECK</div>
+
+  <div class="card urgent">
+    <div class="card-header">
+      <div class="ticker">XLE / UCO / USO</div>
+      <span class="badge urgent">🔴 URGENT</span>
+      <span class="badge bullish">RIPPING</span>
+    </div>
+    <div class="card-headline">Iran closes Strait of Hormuz → WTI Crude +5.7% to ~$87/bbl — Energy is the #1 sector today</div>
+    <div class="card-body">
+      US Navy seized Iranian vessel; Iran responded by halting ALL Hormuz traffic (20–30% of global oil supply). Energy ETFs (XLE, UCO, USO) are catching a confirmed bullish tailwind. Tanker shipping (BWET) already +620% YTD in 2026.<br><br>
+      <strong>Signal:</strong> Long energy positions CONFIRMED. Watch for ceasefire language as exit signal.
+    </div>
+    <div class="card-meta">
+      <a href="https://finance.yahoo.com/markets/stocks/live/stock-market-today-p-500-230354361.html">Yahoo Finance Live →</a>
+      <a href="https://www.cnbc.com/2026/04/19/stock-market-today-live-updates.html">CNBC April 19 →</a>
+      <a href="https://www.benzinga.com/etfs/sector-etfs/26/04/51666066/ditching-spy-qqq-these-unconventional-etfs-lead-2026-gains">Benzinga ETF Leaders →</a>
+    </div>
+  </div>
+
+  <div class="card watch">
+    <div class="card-header">
+      <div class="ticker">GLD / SLV</div>
+      <span class="badge watch">🟡 WATCH</span>
+      <span class="badge bullish">ELEVATED</span>
+    </div>
+    <div class="card-headline">"Sell America" trade + Trump/Powell = dollar at 3-year lows → Gold structurally bid</div>
+    <div class="card-body">
+      Options today: 119 GLD CALLS at $600 strike Dec 2028 — marked BEARISH (very OTM long-dated, likely short call hedge). Trend remains bullish. Any escalation in Trump/Powell or Iran conflict amplifies gold.<br><br>
+      <strong>Signal:</strong> Hold gold exposure. No chase here.
+    </div>
+  </div>
+
+  <div class="card watch">
+    <div class="card-header">
+      <div class="ticker">SMH / XLK</div>
+      <span class="badge watch">🟡 WATCH</span>
+      <span class="badge bearish">MILD PRESSURE</span>
+    </div>
+    <div class="card-headline">Semis and tech under mild risk-off pressure; XLK longest rally since 2020 intact</div>
+    <div class="card-body">
+      NVDA −0.96%, general tech down ~1% with Nasdaq. SMH semi thesis intact for 2026 (25%+ global market growth). XLK in its longest rally since 2020. Any intraday dip may be buyable if Iran risk stabilizes.<br><br>
+      <strong>Signal:</strong> No ADD until macro settles. Watch NVDA $200 as canary.
+    </div>
+    <div class="card-meta">
+      <a href="https://finance.yahoo.com/news/tech-etf-xlk-way-longest-040000893.html">XLK Rally — Yahoo Finance →</a>
+    </div>
+  </div>
+
+  <div class="card watch">
+    <div class="card-header">
+      <div class="ticker">EEM (Emerging Markets)</div>
+      <span class="badge watch">🟡 WATCH</span>
+      <span class="badge bullish">LARGE BULL FLOW</span>
+    </div>
+    <div class="card-headline">2,500 EEM CALLS at $64 June 18 — largest options position today. "Sell America" → EM rotation</div>
+    <div class="card-body">
+      Dollar at 3-year lows is historically bullish for emerging markets. Institutional flow of 2,500 contracts into EEM CALLS signals rotation from US assets → EM. Confirms "sell America" trade is institutional, not just retail.<br><br>
+      <strong>Signal:</strong> NEW SETUP. EEM or EM-focused names catching structural tailwind. Dollar weakness = catalyst.
+    </div>
+    <div class="card-meta">
+      <a href="https://www.benzinga.com/calendars/unusual-options-activity">Benzinga Options →</a>
+    </div>
+  </div>
+
+  <div class="card noise">
+    <div class="card-header">
+      <div class="ticker">IBIT / BTC</div>
+      <span class="badge noise">⚪ NOISE</span>
+    </div>
+    <div class="card-headline">Bitcoin $75,136 (+0.65%) — flat/muted. Ceasefire boost fading. No actionable setup.</div>
+    <div class="card-body">No notable intraday move or catalyst for crypto ETFs today.</div>
+  </div>
+
+  <div class="card neutral">
+    <div class="card-header">
+      <div class="ticker">SECTOR ROTATION SUMMARY</div>
+    </div>
+    <div class="card-body">
+      <strong>LEADING:</strong> XLE (energy — Iran/oil spike) · XLU/XLP likely bid (defensive rotation)<br>
+      <strong>LAGGING:</strong> XLK · QQQ · XLY (tech/discretionary down ~1%)<br>
+      <strong>KEY DIVERGENCE:</strong> Energy ripping while tech sells off = clear risk-off rotation away from growth<br>
+      <strong>SPY/QQQ:</strong> ~$30B / $11B in 2026 outflows. Broad index underperformance vs. targeted sectors/commodities.
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════ STEP 3: BREAKING CATALYSTS ══════════════════ -->
+<div class="section">
+  <div class="section-title"><span>03</span>BREAKING CATALYSTS (LAST 4 HOURS)</div>
+
+  <div class="risk-box">
+    <div class="risk-title">🔴 #1 CATALYST — US-Iran / Strait of Hormuz Closure</div>
+    <div class="risk-body">
+      Iran halted ALL Hormuz traffic Saturday after US Navy seized and damaged Iranian vessel. <strong>20–30% of global oil transits this waterway.</strong> WTI +5.7% to ~$87. Markets opened lower: S&amp;P −0.6%, Nasdaq −1.0%, Dow −0.3%. Any further escalation = additional equity selloff + oil spike. Any ceasefire signal = oil reversal + tech bounce.<br>
+      <a href="https://finance.yahoo.com/markets/stocks/live/stock-market-today-p-500-230354361.html" style="color:#38bdf8">Source: Yahoo Finance Live Updates →</a> | <a href="https://www.cnbc.com/2026/04/19/stock-market-today-live-updates.html" style="color:#38bdf8">CNBC April 19 →</a>
+    </div>
+  </div>
+
+  <div class="risk-box">
+    <div class="risk-title">🟡 #2 ONGOING — Trump vs. Powell / Fed Independence</div>
+    <div class="risk-body">
+      Trump renewed attacks on Powell April 16. Powell term ends <strong>May 15, 2026</strong>. Kevin Warsh nominated as successor. Dollar at 3-year lows. Bonds selling. Gold elevated. Any Trump statement this afternoon can spike VIX immediately. DOJ investigation of Powell reported in January 2026 added earlier chaos.<br>
+      <a href="https://finance.yahoo.com/news/trump-renews-attacks-federal-chair-153229966.html" style="color:#38bdf8">Yahoo Finance →</a> | <a href="https://www.cnbc.com/2026/04/16/us-treasury-yields-mixed-as-trump-again-threatens-fed-chair-powell.html" style="color:#38bdf8">CNBC April 16 →</a>
+    </div>
+  </div>
+
+  <div class="card watch">
+    <div class="card-header">
+      <div class="ticker">EARNINGS WEEK</div>
+      <span class="badge watch">🟡 WATCH</span>
+    </div>
+    <div class="card-headline">39 reports today (AGNC, STLD, CLF). 123 reports Wednesday — TSLA the crown jewel.</div>
+    <div class="card-body">
+      AGNC Investment (mortgage REIT) reports today — relevant for XLF/rate-sensitive names. Steel Dynamics (STLD) and Cleveland-Cliffs (CLF) report — relevant for XLB/steel. <strong>TSLA April 22</strong> is the marquee event.<br><br>
+      Boeing (BA) also reports this week — watch for defense narrative given Iran tensions.
+    </div>
+    <div class="card-meta">
+      <a href="https://www.benzinga.com/insights/earnings/26/04/51908320/earnings-scheduled-for-april-20-2026">Benzinga Earnings →</a>
+      <a href="https://www.benzinga.com/trading-ideas/movers/26/04/51912090/earnings-volatility-watch-options-implied-moves-april-20-24-2026">Implied Moves Watch →</a>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════ STEP 4: OPTIONS FLOW ══════════════════ -->
+<div class="section">
+  <div class="section-title"><span>04</span>OPTIONS FLOW ALERTS</div>
+
+  <div class="tbl-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Ticker</th>
+          <th>Direction</th>
+          <th>Contracts</th>
+          <th>Strike</th>
+          <th>Expiry</th>
+          <th>Sentiment</th>
+          <th>Signal</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>EEM</strong></td>
+          <td class="bull">CALLS</td>
+          <td>2,500</td>
+          <td>$64</td>
+          <td>06/18/26</td>
+          <td class="bull">BULLISH</td>
+          <td>🔑 Largest position today. EM bull bet = "sell America" → EM rotation signal</td>
+        </tr>
+        <tr>
+          <td><strong>AMZN</strong></td>
+          <td class="bull">CALLS</td>
+          <td>767</td>
+          <td>$250</td>
+          <td>12/18/26</td>
+          <td class="bull">BULLISH</td>
+          <td>LEAPS buying = institutional recovery thesis</td>
+        </tr>
+        <tr>
+          <td><strong>NKE</strong></td>
+          <td class="bear">PUTS</td>
+          <td>3,000</td>
+          <td>$42.50</td>
+          <td>06/17/27</td>
+          <td class="bull">BULLISH</td>
+          <td>Large PUT SELLING = bullish NKE (put writing)</td>
+        </tr>
+        <tr>
+          <td><strong>AMD</strong></td>
+          <td class="bull">CALLS</td>
+          <td>600</td>
+          <td>$290</td>
+          <td>05/29/26</td>
+          <td class="bear">BEARISH</td>
+          <td>⚠ Short call / spread — bearish near-term signal</td>
+        </tr>
+        <tr>
+          <td><strong>MSFT</strong></td>
+          <td class="bull">CALLS</td>
+          <td>500</td>
+          <td>$420</td>
+          <td>09/18/26</td>
+          <td class="bear">BEARISH</td>
+          <td>Bearish call spread positioning</td>
+        </tr>
+        <tr>
+          <td><strong>AAPL</strong></td>
+          <td class="bull">CALLS</td>
+          <td>80</td>
+          <td>$200</td>
+          <td>01/15/27</td>
+          <td class="bull">BULLISH</td>
+          <td>Modest institutional bull position</td>
+        </tr>
+        <tr>
+          <td><strong>GLD</strong></td>
+          <td class="bull">CALLS</td>
+          <td>119</td>
+          <td>$600</td>
+          <td>12/15/28</td>
+          <td class="bear">BEARISH</td>
+          <td>Very OTM long-dated — likely short call hedge on gold position</td>
+        </tr>
+        <tr>
+          <td><strong>GEV</strong></td>
+          <td class="bear">PUTS</td>
+          <td>60</td>
+          <td>$1,000</td>
+          <td>07/17/26</td>
+          <td class="bull">BULLISH</td>
+          <td>Put selling = bullish GE Vernova (energy/defense)</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card neutral" style="margin-top:12px">
+    <div class="card-header"><div class="ticker">KEY OBSERVATIONS</div></div>
+    <div class="card-body">
+      <strong>⚠ CONTRADICTION ALERT:</strong> AMD bearish call flow CONTRADICTS any long AMD thesis. Smart money selling AMD upside calls.<br>
+      <strong>🔑 STANDOUT:</strong> EEM 2,500 CALLS is institutional scale — confirms dollar-weakness → EM rotation is a real trade, not noise.<br>
+      <strong>📊 OVERALL FLOW BIAS:</strong> MIXED — bullish on AMZN/EEM/NKE, bearish on AMD/MSFT near-term. No clear directional sweep on SPY/QQQ retrieved today.<br>
+      <strong>VIX NOTE:</strong> VIX rose +9.67% in the last major Trump/Powell selloff — assume elevated hedging environment today with Iran risk stacked on top.
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════ STEP 5: POSITION SIGNALS ══════════════════ -->
+<div class="section">
+  <div class="section-title"><span>05</span>POSITION CHECK SIGNALS</div>
+
+  <div class="risk-box">
+    <div class="risk-title">🔴 EXIT / REDUCE: TSLA longs before April 22</div>
+    <div class="risk-body">
+      TSLA trading ~9% above mean analyst target of $401. Pre-earnings +1.85% run. Any miss on EPS ($0.36E) or revenue ($21.9BE) will punish the stock hard from elevated levels. Capex $20B+ in 2026 = cash flow bear case. <strong>Reduce or hedge into Wednesday's close.</strong>
+    </div>
+  </div>
+
+  <div class="card urgent">
+    <div class="card-header">
+      <div class="ticker">🔴 ADD / CONFIRM: XLE / UCO / USO</div>
+      <span class="badge urgent">ACTIVE CATALYST</span>
+    </div>
+    <div class="card-body">
+      Iran/Hormuz = live, ongoing supply disruption. WTI +5.7% is the real deal. <strong>Existing energy longs are confirmed. Watch for de-escalation language as the exit trigger.</strong> Boeing (BA) also may catch defense/geopolitics bid this week.
+    </div>
+  </div>
+
+  <div class="card watch">
+    <div class="card-header">
+      <div class="ticker">🟡 NEW SETUP: EEM — "Sell America" Rotation</div>
+      <span class="badge watch">EMERGED TODAY</span>
+    </div>
+    <div class="card-body">
+      2,500 EEM CALLS (institutional) + dollar at 3-year lows = EM rotation thesis confirmed. Dollar weakness is a structural tailwind for emerging market equities. <strong>EEM or single-name EM plays = new setup since open.</strong>
+    </div>
+  </div>
+
+  <div class="card confirm">
+    <div class="card-header">
+      <div class="ticker">🟢 HOLD: NVDA — Wait for $200.75 Reclaim</div>
+    </div>
+    <div class="card-body">
+      Thesis intact (25%+ semi market growth 2026, AI inference demand). Below $200 = no add. Reclaim of $200.75 is the trigger for upside continuation to $206.50.
+    </div>
+  </div>
+
+  <div class="card noise">
+    <div class="card-header">
+      <div class="ticker">⚪ NO NEW SETUPS: COIN, META, PLTR</div>
+    </div>
+    <div class="card-body">
+      No fresh catalysts found for COIN, META, or PLTR today. Hold existing positions per prior thesis. No new entries.
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════ STEP 6: DASHBOARD ══════════════════ -->
+<div class="section">
+  <div class="section-title"><span>06</span>SUMMARY DASHBOARD</div>
+
+  <div class="tbl-wrap">
+    <table class="dash-table">
+      <thead>
+        <tr>
+          <th>Label</th>
+          <th>Ticker / Theme</th>
+          <th>Signal</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="badge urgent">🔴 URGENT</span></td>
+          <td>TSLA</td>
+          <td>Reduce / hedge before April 22 earnings — trading 9% above mean target</td>
+        </tr>
+        <tr>
+          <td><span class="badge urgent">🔴 URGENT</span></td>
+          <td>XLE / UCO / USO</td>
+          <td>Iran/Hormuz oil shock — long energy positions CONFIRMED</td>
+        </tr>
+        <tr>
+          <td><span class="badge watch-a">🟡 WATCH</span></td>
+          <td>NVDA</td>
+          <td>Hold — wait for $200.75 reclaim before adding</td>
+        </tr>
+        <tr>
+          <td><span class="badge watch-a">🟡 WATCH</span></td>
+          <td>AMD</td>
+          <td>Bearish options flow — avoid new longs, evaluate stops</td>
+        </tr>
+        <tr>
+          <td><span class="badge watch-a">🟡 WATCH</span></td>
+          <td>AMZN</td>
+          <td>Institutional LEAPS bull flow — dip-buy candidate on macro stabilization</td>
+        </tr>
+        <tr>
+          <td><span class="badge watch-a">🟡 WATCH</span></td>
+          <td>EEM</td>
+          <td>NEW SETUP — 2,500-contract institutional bull flow + dollar weakness → EM rotation</td>
+        </tr>
+        <tr>
+          <td><span class="badge watch-a">🟡 WATCH</span></td>
+          <td>Iran / Oil / XLE</td>
+          <td>Primary macro driver today — monitor for ceasefire language as exit signal</td>
+        </tr>
+        <tr>
+          <td><span class="badge confirm">🟢 CONFIRM</span></td>
+          <td>MARA</td>
+          <td>AI pivot thesis intact — no action needed</td>
+        </tr>
+        <tr>
+          <td><span class="badge confirm">🟢 CONFIRM</span></td>
+          <td>SOFI / SNDK</td>
+          <td>Structural theses intact — no new catalysts today</td>
+        </tr>
+        <tr>
+          <td><span class="badge noise">⚪ NOISE</span></td>
+          <td>COIN · META · PLTR</td>
+          <td>No intraday catalyst — ignore</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ══════════════════ RISK EVENTS ══════════════════ -->
+<div class="section">
+  <div class="section-title"><span>⚠</span>RISK EVENTS — NEXT 2 HOURS</div>
+  <div class="card urgent">
+    <div class="card-body">
+      <strong>1. Iran/Hormuz Escalation</strong> — Any new development (military action, ship seizure) = further equity selloff + oil spike above $90<br>
+      <strong>2. Trump Statement on Powell/Tariffs</strong> — Trump social media = VIX immediate spike risk. Powell term ends May 15.<br>
+      <strong>3. AGNC Earnings (today)</strong> — Mortgage REIT reporting. Rate-sensitive. Could move XLF/financials this afternoon.<br>
+      <strong>4. MOPEX Gamma</strong> — Options expiry week = expect pin-risk behavior near SPY 703–708 range
+    </div>
+  </div>
+</div>
+
+</div><!-- /container -->
+
+<div class="footer">
+  Midday Catalyst Scan · April 20, 2026 · Generated ~Midday EST<br>
+  Sources: Benzinga · Yahoo Finance · CNBC · CoinDesk · StockTitan · Barchart · SEC EDGAR<br>
+  ⚠ For informational purposes only. Not financial advice. Verify all data before trading.
+</div>
+
+</body>
+</html>
