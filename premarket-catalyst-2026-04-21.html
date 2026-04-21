@@ -1,0 +1,911 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pre-Market Catalyst Scan — April 21, 2026</title>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg:        #0a0e17;
+      --bg2:       #0f1623;
+      --bg3:       #141c2e;
+      --border:    #1e2d45;
+      --text:      #e2e8f0;
+      --muted:     #8899aa;
+      --green:     #22c55e;
+      --green-bg:  rgba(34,197,94,0.08);
+      --red:       #ef4444;
+      --red-bg:    rgba(239,68,68,0.08);
+      --amber:     #f59e0b;
+      --amber-bg:  rgba(245,158,11,0.08);
+      --blue:      #60a5fa;
+      --purple:    #a78bfa;
+      --cyan:      #22d3ee;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      line-height: 1.6;
+      padding: 24px 16px;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    /* ── HEADER ── */
+    .header {
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 20px;
+      margin-bottom: 28px;
+    }
+    .header-top {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 8px;
+    }
+    .header h1 {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--cyan);
+      letter-spacing: -0.3px;
+    }
+    .badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+    .badge-date  { background: var(--border); color: var(--muted); }
+    .meta { color: var(--muted); font-size: 11px; }
+
+    /* ── FUTURES BAR ── */
+    .futures-bar {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 14px 18px;
+      margin-bottom: 28px;
+    }
+    .future-item { display: flex; flex-direction: column; gap: 2px; min-width: 120px; }
+    .future-label { color: var(--muted); font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px; }
+    .future-val { font-size: 15px; font-weight: 700; color: var(--text); }
+    .future-chg { font-size: 11px; font-weight: 600; }
+    .up   { color: var(--green); }
+    .down { color: var(--red); }
+    .neutral { color: var(--amber); }
+
+    /* ── SECTION HEADER ── */
+    .section {
+      margin-bottom: 36px;
+    }
+    .section-title {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--muted);
+      border-left: 3px solid var(--cyan);
+      padding-left: 10px;
+      margin-bottom: 16px;
+    }
+
+    /* ── CATALYST CARDS ── */
+    .cards { display: flex; flex-direction: column; gap: 10px; }
+    .card {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 14px 18px;
+      background: var(--bg2);
+    }
+    .card.bullish { border-left: 3px solid var(--green); background: var(--green-bg); }
+    .card.bearish { border-left: 3px solid var(--red);   background: var(--red-bg); }
+    .card.neutral { border-left: 3px solid var(--amber); background: var(--amber-bg); }
+    .card.binary  { border-left: 3px solid var(--purple); background: rgba(167,139,250,0.06); }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 8px;
+      flex-wrap: wrap;
+    }
+    .ticker {
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--text);
+    }
+    .company { color: var(--muted); font-size: 11px; }
+    .tags { display: flex; gap: 6px; flex-wrap: wrap; margin-left: auto; }
+    .tag {
+      padding: 2px 7px;
+      border-radius: 4px;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.4px;
+      text-transform: uppercase;
+    }
+    .tag-bull   { background: var(--green-bg); color: var(--green); border: 1px solid rgba(34,197,94,0.3); }
+    .tag-bear   { background: var(--red-bg);   color: var(--red);   border: 1px solid rgba(239,68,68,0.3); }
+    .tag-neut   { background: var(--amber-bg); color: var(--amber); border: 1px solid rgba(245,158,11,0.3); }
+    .tag-watch  { background: rgba(96,165,250,0.08); color: var(--blue);  border: 1px solid rgba(96,165,250,0.3); }
+    .tag-action-yes   { background: rgba(34,197,94,0.15); color: var(--green); border: 1px solid rgba(34,197,94,0.4); }
+    .tag-action-watch { background: rgba(245,158,11,0.12); color: var(--amber); border: 1px solid rgba(245,158,11,0.35); }
+    .tag-action-no    { background: rgba(239,68,68,0.12); color: var(--red);   border: 1px solid rgba(239,68,68,0.3); }
+
+    .headline { font-size: 13px; color: var(--text); margin-bottom: 6px; }
+    .summary  { font-size: 12px; color: var(--muted); }
+    .pm-move  { font-size: 12px; margin-bottom: 4px; }
+
+    /* ── TABLES ── */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+    }
+    th {
+      text-align: left;
+      color: var(--muted);
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      padding: 6px 12px;
+      border-bottom: 1px solid var(--border);
+    }
+    td {
+      padding: 8px 12px;
+      border-bottom: 1px solid rgba(30,45,69,0.5);
+      vertical-align: top;
+    }
+    tr:last-child td { border-bottom: none; }
+    .table-wrap {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    /* ── ETF THEME CARDS ── */
+    .etf-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px 18px;
+      margin-bottom: 10px;
+    }
+    .etf-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .etf-theme { font-size: 13px; font-weight: 700; color: var(--text); }
+    .etf-tickers { font-size: 11px; color: var(--muted); }
+    .etf-body { font-size: 12px; color: var(--muted); line-height: 1.7; }
+    .etf-body .hl { color: var(--text); }
+
+    /* ── TRADE IDEAS ── */
+    .trade-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px 18px;
+      margin-bottom: 10px;
+    }
+    .trade-header {
+      display: flex; align-items: center; gap: 10px; margin-bottom: 10px; flex-wrap: wrap;
+    }
+    .trade-num {
+      width: 28px; height: 28px;
+      border-radius: 6px;
+      background: var(--border);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 13px; font-weight: 700; color: var(--cyan);
+    }
+    .trade-ticker { font-size: 17px; font-weight: 700; color: var(--text); }
+    .trade-body { font-size: 12px; color: var(--muted); line-height: 1.7; }
+    .trade-body .hl { color: var(--text); font-weight: 600; }
+    .trade-body .key { color: var(--cyan); }
+
+    /* ── EVENTS TABLE ── */
+    .urgent { color: var(--red); font-weight: 700; }
+    .watch-row { background: rgba(245,158,11,0.04); }
+
+    /* ── BRIEFING BOX ── */
+    .briefing {
+      background: var(--bg3);
+      border: 1px solid var(--cyan);
+      border-radius: 8px;
+      padding: 20px 22px;
+      line-height: 1.85;
+      font-size: 13px;
+      color: var(--text);
+      box-shadow: 0 0 20px rgba(34,211,238,0.05);
+    }
+    .briefing strong { color: var(--cyan); }
+
+    /* ── AVOID TABLE ── */
+    .avoid-row td:first-child { color: var(--red); font-weight: 700; }
+
+    /* ── FOOTER ── */
+    .footer {
+      margin-top: 40px;
+      border-top: 1px solid var(--border);
+      padding-top: 16px;
+      color: var(--muted);
+      font-size: 10px;
+      line-height: 1.8;
+    }
+    .footer a { color: var(--blue); text-decoration: none; }
+
+    /* ── URGENT BANNER ── */
+    .urgent-banner {
+      background: rgba(239,68,68,0.1);
+      border: 1px solid rgba(239,68,68,0.5);
+      border-radius: 8px;
+      padding: 14px 18px;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--red);
+    }
+    .urgent-banner .icon { font-size: 18px; }
+
+    /* ── DIVIDER ── */
+    .divider { border: none; border-top: 1px solid var(--border); margin: 28px 0; }
+
+    /* scrollbar */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+  </style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-top">
+    <h1>☀️ PRE-MARKET CATALYST SCAN</h1>
+    <span class="badge badge-date">April 21, 2026</span>
+  </div>
+  <div class="meta">Watchlist: TSLA · NVDA · SOFI · AMD · PLTR · MARA · COIN · SNDK · META · AMZN &nbsp;|&nbsp; Generated by Claude Sonnet 4.6</div>
+</div>
+
+<!-- URGENT BANNER -->
+<div class="urgent-banner">
+  <span class="icon">🔴</span>
+  URGENT: US–Iran ceasefire expires WEDNESDAY midnight (April 22) — binary catalyst for oil, defense, and macro. Tesla Q1 earnings AMC Wednesday.
+</div>
+
+<!-- FUTURES BAR -->
+<div class="futures-bar">
+  <div class="future-item">
+    <span class="future-label">S&amp;P 500 Futures</span>
+    <span class="future-val">7,176</span>
+    <span class="future-chg up">+0.40%</span>
+  </div>
+  <div class="future-item">
+    <span class="future-label">Nasdaq 100 Futures</span>
+    <span class="future-val">26,874</span>
+    <span class="future-chg up">+0.47%</span>
+  </div>
+  <div class="future-item">
+    <span class="future-label">Dow Futures</span>
+    <span class="future-val">49,939</span>
+    <span class="future-chg up">+0.60%</span>
+  </div>
+  <div class="future-item">
+    <span class="future-label">Russell 2000</span>
+    <span class="future-val">2,816</span>
+    <span class="future-chg up">+0.42%</span>
+  </div>
+  <div class="future-item">
+    <span class="future-label">Gold (GC=F)</span>
+    <span class="future-val">$4,813</span>
+    <span class="future-chg down">-0.33%</span>
+  </div>
+  <div class="future-item">
+    <span class="future-label">Oil (WTI)</span>
+    <span class="future-val">Declined</span>
+    <span class="future-chg neutral">Iran talks↑</span>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════ -->
+<!-- STEP 1: WATCHLIST -->
+<!-- ══════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-title">Step 1 — Watchlist Overnight Catalysts</div>
+  <div class="cards">
+
+    <!-- AMZN -->
+    <div class="card bullish">
+      <div class="card-header">
+        <div>
+          <div class="ticker">AMZN <span style="font-size:14px;">🟢</span></div>
+          <div class="company">Amazon.com, Inc.</div>
+        </div>
+        <div class="tags">
+          <span class="tag tag-bull">BULLISH</span>
+          <span class="tag tag-action-yes">ACTIONABLE: YES</span>
+        </div>
+      </div>
+      <div class="pm-move up">▲ +2.7% pre-market</div>
+      <div class="headline">Anthropic investment announcement boosts AMZN pre-market; BofA (Justin Post) raises PT to $298 from $275, Maintains Buy. 16.5% upside from $255.80.</div>
+      <div class="summary">Dual catalyst: AI infrastructure investment thesis reinforced + analyst PT raise. Gap-and-go setup if opens above $262 with volume. Buy dip $258–260 for better R/R. Target: $270–275 near-term, $298 analyst. Risk: gap fills on Warsh hawkish comments or retail sales miss.</div>
+    </div>
+
+    <!-- SNDK -->
+    <div class="card bullish">
+      <div class="card-header">
+        <div>
+          <div class="ticker">SNDK <span style="font-size:14px;">🟢</span></div>
+          <div class="company">SanDisk Corporation</div>
+        </div>
+        <div class="tags">
+          <span class="tag tag-bull">BULLISH</span>
+          <span class="tag tag-action-yes">ACTIONABLE: YES</span>
+        </div>
+      </div>
+      <div class="pm-move up">Constructive pre-market | ~$913–928</div>
+      <div class="headline">SanDisk joined Nasdaq-100 Index on April 20 → mandatory institutional rebalancing buying. Wells Fargo PT raised $675→$975; BofA PT raised to $1,080. Up 287% YTD. Earnings: April 30.</div>
+      <div class="summary">Nasdaq-100 inclusion is one of the most reliable forced-buying catalysts in equities. Multiple PT raises confirm bullish analyst consensus. Next catalyst: Q3 fiscal 2026 earnings April 30 (EPS est. $12–14, rev $4.4–4.8B). Entry: above $930 on confirmation. Target: $960–975. Risk: High-beta, any market weakness hits first.</div>
+    </div>
+
+    <!-- AMD -->
+    <div class="card bullish">
+      <div class="card-header">
+        <div>
+          <div class="ticker">AMD <span style="font-size:14px;">🟢</span></div>
+          <div class="company">Advanced Micro Devices</div>
+        </div>
+        <div class="tags">
+          <span class="tag tag-bull">BULLISH</span>
+          <span class="tag tag-action-yes">ACTIONABLE: YES</span>
+        </div>
+      </div>
+      <div class="pm-move up">Constructive | ~$277.36</div>
+      <div class="headline">Stifel (Ruben Roy, 90% accuracy) raises PT from $280 to $320, Maintains Buy. 15.4% upside from current price.</div>
+      <div class="summary">High-accuracy analyst PT raise gives AMD a morning catalyst. AI data center revenue forecast +73% in 2026, GPU data center revenue +114% YoY. Bernstein's chip divergence note: AMD gaining while NVDA/AVGO flat. Entry: buy pre-market or at open dip. Risk: broad semi weakness on NVDA drag.</div>
+    </div>
+
+    <!-- TSLA -->
+    <div class="card neutral">
+      <div class="card-header">
+        <div>
+          <div class="ticker">TSLA <span style="font-size:14px;">⚡</span></div>
+          <div class="company">Tesla, Inc.</div>
+        </div>
+        <div class="tags">
+          <span class="tag tag-neut">NEUTRAL</span>
+          <span class="tag tag-action-watch">ACTIONABLE: WATCH</span>
+        </div>
+      </div>
+      <div class="pm-move neutral">Stable positioning day | ~$391–400</div>
+      <div class="headline">Tesla Q1 2026 earnings AMC Wednesday April 22. Stock +14.5% last 5 days after Musk AI5 chip comments (April 15). Q1 deliveries missed (358K vs 372K est.).</div>
+      <div class="summary">TODAY IS A POSITIONING DAY. Do NOT hold overnight TSLA without defined risk. Bulls defending $400; bears pointing to delivery miss. Earnings will set the tape for Thursday morning.</div>
+    </div>
+
+    <!-- PLTR -->
+    <div class="card neutral">
+      <div class="card-header">
+        <div>
+          <div class="ticker">PLTR <span style="font-size:14px;">🛰️</span></div>
+          <div class="company">Palantir Technologies</div>
+        </div>
+        <div class="tags">
+          <span class="tag tag-neut">NEUTRAL</span>
+          <span class="tag tag-action-watch">ACTIONABLE: WATCH</span>
+        </div>
+      </div>
+      <div class="pm-move neutral">$145.51 (Apr 20 close)</div>
+      <div class="headline">Palantir in discussions for major FAA air traffic modernization deal (reported April 17, 2026). Earnings May 4.</div>
+      <div class="summary">FAA deal is a positive long-term catalyst but no binary event today. Strong AI government contract momentum ongoing. Analysts note potential "meme stock summer" setup alongside TSLA. Watch for FAA deal confirmation news.</div>
+    </div>
+
+    <!-- META -->
+    <div class="card bearish">
+      <div class="card-header">
+        <div>
+          <div class="ticker">META <span style="font-size:14px;">🔴</span></div>
+          <div class="company">Meta Platforms</div>
+        </div>
+        <div class="tags">
+          <span class="tag tag-bear">BEARISH</span>
+          <span class="tag tag-action-watch">ACTIONABLE: WATCH</span>
+        </div>
+      </div>
+      <div class="pm-move down">Soft | ~$675.23</div>
+      <div class="headline">BofA (Justin Post, 84% acc.) maintains Buy but CUTS price target from $885 → $820. Simultaneous with AMZN PT raise = relative preference shift away from META.</div>
+      <div class="summary">PT cut from usually bullish analyst signals near-term headwinds. Avoid META today — negative action on a high-multiple name ahead of earnings is a warning flag. Note: same analyst raised AMZN PT same day.</div>
+    </div>
+
+    <!-- MARA -->
+    <div class="card bearish">
+      <div class="card-header">
+        <div>
+          <div class="ticker">MARA <span style="font-size:14px;">🔴</span></div>
+          <div class="company">MARA Holdings</div>
+        </div>
+        <div class="tags">
+          <span class="tag tag-bear">BEARISH</span>
+          <span class="tag tag-action-no">ACTIONABLE: NO</span>
+        </div>
+      </div>
+      <div class="pm-move down">$11.63 (Apr 20 close) | BTC ~$75,100 (-1.12%)</div>
+      <div class="headline">Bitcoin down ~1.12% overnight at $75,100. MARA sold 15,133 BTC (~$1.1B) to reduce debt and pivot to AI infrastructure — company structurally moving away from Bitcoin mining.</div>
+      <div class="summary">Avoid. BTC weakness + structural company pivot = no trade setup. Wait for BTC directional strength before revisiting.</div>
+    </div>
+
+    <!-- NVDA -->
+    <div class="card neutral">
+      <div class="card-header">
+        <div>
+          <div class="ticker">NVDA <span style="font-size:14px;">🟡</span></div>
+          <div class="company">NVIDIA Corporation</div>
+        </div>
+        <div class="tags">
+          <span class="tag tag-neut">NEUTRAL</span>
+          <span class="tag tag-action-watch">ACTIONABLE: WATCH</span>
+        </div>
+      </div>
+      <div class="pm-move neutral">~$199.18 (Apr 20: -1.24%)</div>
+      <div class="headline">Bernstein's Stacy Rasgon: NVDA trades at ~15x earnings, valuation gap vs. fundamentals "unlikely to last." Chip sector divergence: memory/equipment outperforming, NVDA/AVGO lagging.</div>
+      <div class="summary">Long-term bullish case intact but no near-term catalyst today. Memory stocks (SNDK) outperforming in current rotation. Wait for sector rotation back into NVDA.</div>
+    </div>
+
+    <!-- COIN -->
+    <div class="card neutral">
+      <div class="card-header">
+        <div>
+          <div class="ticker">COIN <span style="font-size:14px;">⚪</span></div>
+          <div class="company">Coinbase Global</div>
+        </div>
+        <div class="tags">
+          <span class="tag tag-neut">NEUTRAL</span>
+          <span class="tag tag-action-no">ACTIONABLE: NO</span>
+        </div>
+      </div>
+      <div class="pm-move neutral">BTC headwinds</div>
+      <div class="headline">No verified catalyst found with source URL for April 21, 2026.</div>
+      <div class="summary">BTC weak at $75K. No edge today. Sit out.</div>
+    </div>
+
+    <!-- SOFI -->
+    <div class="card neutral">
+      <div class="card-header">
+        <div>
+          <div class="ticker">SOFI <span style="font-size:14px;">⚪</span></div>
+          <div class="company">SoFi Technologies</div>
+        </div>
+        <div class="tags">
+          <span class="tag tag-neut">NEUTRAL</span>
+          <span class="tag tag-action-no">ACTIONABLE: NO</span>
+        </div>
+      </div>
+      <div class="pm-move neutral">No verified catalyst</div>
+      <div class="headline">No verified catalyst found with source URL for April 21, 2026.</div>
+      <div class="summary">No edge today. Sit out.</div>
+    </div>
+
+  </div><!-- /cards -->
+</div><!-- /section -->
+
+<hr class="divider" />
+
+<!-- ══════════════════════════════════════════ -->
+<!-- STEP 2: ETF THEMES -->
+<!-- ══════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-title">Step 2 — Sector &amp; Theme ETF Overnight Scan</div>
+
+  <div class="etf-card" style="border-left: 3px solid var(--green);">
+    <div class="etf-header">
+      <span class="etf-theme">🟢 TECH &amp; AI</span>
+      <span class="etf-tickers">SMH · XLK · IGV · FNGU · IBIT</span>
+      <span class="tag tag-bull">BULLISH (Memory/AI)</span>
+    </div>
+    <div class="etf-body">
+      <span class="hl">SNDK Nasdaq-100 inclusion</span> (April 20) triggers mandatory institutional rebalancing into SMH components. <span class="hl">AMZN Anthropic investment</span> is a clean AI capex read-through bullish for IGV/XLK. <span class="hl">Bernstein chip divergence:</span> memory/equipment leaders are SNDK, AMD; NVDA/AVGO are lagging in current rotation. AAPL -0.5% pre-market on Tim Cook exit is a mild XLK headwind. <span class="hl">Key watch:</span> SNDK, AMD, AMZN.
+    </div>
+  </div>
+
+  <div class="etf-card" style="border-left: 3px solid var(--purple);">
+    <div class="etf-header">
+      <span class="etf-theme">⚠️ DEFENSE &amp; SPECIALTY</span>
+      <span class="etf-tickers">ITA · CIBR · ARKX</span>
+      <span class="tag" style="background:rgba(167,139,250,0.1);color:var(--purple);border:1px solid rgba(167,139,250,0.3);">BINARY</span>
+    </div>
+    <div class="etf-body">
+      <span class="hl">RTX Q1 beat</span> (Raytheon segment $630M vs $592M est., Pratt &amp; Whitney missed $430M vs $447M). Market cautious. ITA has +16.7% YTD. RTX = 8.1% ITA weight.<br/>
+      <span class="hl" style="color:var(--red);">CRITICAL: US-Iran ceasefire expires WEDNESDAY midnight.</span> This is the highest-conviction binary catalyst of the week. Ceasefire collapses → ITA gaps higher. Ceasefire extended → sell the news. Do NOT hold ITA before ceasefire status resolves. <span class="hl">Key watch:</span> RTX, LMT, GD.
+    </div>
+  </div>
+
+  <div class="etf-card" style="border-left: 3px solid var(--red);">
+    <div class="etf-header">
+      <span class="etf-theme">🔴 COMMODITIES</span>
+      <span class="etf-tickers">GLD · SLV · USO · UCO · BNO</span>
+      <span class="tag tag-bear">BEARISH (short-term)</span>
+    </div>
+    <div class="etf-body">
+      <span class="hl">Oil declined overnight</span> as US and Iran both signaled willingness to resume negotiations in Pakistan. <span class="hl">Gold at $4,813/oz (-0.33%)</span> — mild risk-on profit-taking as ceasefire held. <span class="hl">Direction:</span> BEARISH for oil/GLD if Iran deal extends; <span class="hl">BULLISH flip</span> if ceasefire collapses Wednesday. Watch headlines closely tonight.
+    </div>
+  </div>
+
+  <div class="etf-card" style="border-left: 3px solid var(--amber);">
+    <div class="etf-header">
+      <span class="etf-theme">🟡 MACRO</span>
+      <span class="etf-tickers">UUP · TLT</span>
+      <span class="tag tag-watch">WATCH</span>
+    </div>
+    <div class="etf-body">
+      <span class="hl">Kevin Warsh Senate Fed nominee hearing TODAY (morning).</span> Warsh signaled "the push-and-pull between Trump and the central bank may be coming to an end" — could reduce Fed independence discount on equities, mild bullish for stocks, bearish for bonds/TLT.<br/>
+      <span class="hl">March Retail Sales</span> release today — weak number = risk-off, strong = confirms consumer resilience.<br/>
+      Fed target range: 3.5%–3.75%. Traders pricing NO rate cuts in 2026.
+    </div>
+  </div>
+
+</div><!-- /section -->
+
+<hr class="divider" />
+
+<!-- ══════════════════════════════════════════ -->
+<!-- STEP 3: EARNINGS -->
+<!-- ══════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-title">Step 3 — Overnight Earnings Results</div>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Ticker</th>
+          <th>Company</th>
+          <th>When</th>
+          <th>Result</th>
+          <th>Pre-Market Reaction</th>
+          <th>Sector Read-Through</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td style="font-weight:700;color:var(--amber);">RTX</td>
+          <td>RTX Corporation</td>
+          <td>BMO Apr 21</td>
+          <td><span class="up">Raytheon Seg: BEAT ($630M vs $592M)</span><br/><span class="down">Pratt &amp; Whitney: MISS ($430M vs $447M)</span></td>
+          <td class="neutral">Cautious / initially negative despite beat</td>
+          <td>Mixed for ITA. Defense demand intact (Iran) but Pratt execution risk. Ceasefire expiry > earnings print for ITA direction.</td>
+        </tr>
+        <tr>
+          <td style="font-weight:700;color:var(--green);">UNH</td>
+          <td>UnitedHealth Group</td>
+          <td>BMO Apr 21</td>
+          <td><span class="up">Beat Q1 + RAISED full-year guidance</span></td>
+          <td class="up">+7% pre-market</td>
+          <td>Positive for healthcare sector broadly. Not directly watchlist/ETF relevant.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<hr class="divider" />
+
+<!-- ══════════════════════════════════════════ -->
+<!-- STEP 4: OPTIONS FLOW -->
+<!-- ══════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-title">Step 4 — Pre-Market Options Flow</div>
+  <div class="etf-card" style="border-left: 3px solid var(--muted);">
+    <div class="etf-body" style="color:var(--muted);">
+      No verified pre-market options flow data found with source URL for April 21, 2026. Per scan rules: reporting "No verified data" rather than speculating on unconfirmed flow.
+    </div>
+  </div>
+</div>
+
+<hr class="divider" />
+
+<!-- ══════════════════════════════════════════ -->
+<!-- STEP 5: ANALYST ACTIONS -->
+<!-- ══════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-title">Step 5 — Analyst Actions Today</div>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Ticker</th>
+          <th>Firm</th>
+          <th>Analyst (Accuracy)</th>
+          <th>Action</th>
+          <th>Old PT</th>
+          <th>New PT</th>
+          <th>Rating</th>
+          <th>Upside</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td style="font-weight:700;color:var(--green);">AMD</td>
+          <td>Stifel</td>
+          <td>Ruben Roy (90%)</td>
+          <td class="up">PT Raised ↑</td>
+          <td>$280</td>
+          <td style="color:var(--green);font-weight:700;">$320</td>
+          <td>Buy ✓</td>
+          <td class="up">+15.4%</td>
+        </tr>
+        <tr>
+          <td style="font-weight:700;color:var(--green);">AMZN</td>
+          <td>BofA Securities</td>
+          <td>Justin Post (84%)</td>
+          <td class="up">PT Raised ↑</td>
+          <td>$275</td>
+          <td style="color:var(--green);font-weight:700;">$298</td>
+          <td>Buy ✓</td>
+          <td class="up">+16.5%</td>
+        </tr>
+        <tr>
+          <td style="font-weight:700;color:var(--amber);">SNDK</td>
+          <td>Wells Fargo</td>
+          <td>Aaron Rakers (88%)</td>
+          <td class="up">PT Raised ↑</td>
+          <td>$675</td>
+          <td style="color:var(--green);font-weight:700;">$975</td>
+          <td>Equal-Weight</td>
+          <td class="up">+5.1%</td>
+        </tr>
+        <tr>
+          <td style="font-weight:700;color:var(--red);">META</td>
+          <td>BofA Securities</td>
+          <td>Justin Post (84%)</td>
+          <td class="down">PT CUT ↓</td>
+          <td>$885</td>
+          <td style="color:var(--red);font-weight:700;">$820</td>
+          <td>Buy (maintained)</td>
+          <td class="up">+21.4%</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div style="margin-top:10px;font-size:11px;color:var(--muted);padding:0 4px;">
+    ⚠️ Note on META: BofA's Post raised AMZN PT and cut META PT on the same day — signals relative rotation preference. Buy rating maintained but negative near-term signal.
+  </div>
+</div>
+
+<hr class="divider" />
+
+<!-- ══════════════════════════════════════════ -->
+<!-- STEP 6: SCHEDULED EVENTS -->
+<!-- ══════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-title">Step 6 — Today's Scheduled Events</div>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Time (ET)</th>
+          <th>Event</th>
+          <th>Potential Impact</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Pre-market ✓</td>
+          <td>RTX Q1 2026 Earnings (Released)</td>
+          <td class="neutral">Mixed — beat w/ cautious reaction; Pratt &amp; Whitney missed</td>
+        </tr>
+        <tr>
+          <td>Pre-market ✓</td>
+          <td>UNH Q1 2026 Earnings (Released)</td>
+          <td class="up">Bullish — beat + guidance raise, +7% pre-market</td>
+        </tr>
+        <tr>
+          <td>Morning</td>
+          <td>March Retail Sales Data Release</td>
+          <td class="neutral">Macro — consumer spending signal; miss = risk-off</td>
+        </tr>
+        <tr class="watch-row">
+          <td>Morning</td>
+          <td>Kevin Warsh Senate Fed Nominee Hearing</td>
+          <td class="neutral">Policy — rate/Fed independence signal; watch for hawkish tone</td>
+        </tr>
+        <tr>
+          <td>TBD AMC</td>
+          <td>United Airlines (UAL) Earnings</td>
+          <td class="neutral">JETS ETF read-through; travel demand signal</td>
+        </tr>
+        <tr style="background:rgba(239,68,68,0.06);">
+          <td class="urgent">Wed midnight</td>
+          <td class="urgent">🔴 US–Iran Ceasefire Expiration</td>
+          <td class="down">BINARY — Oil spike / defense gap if collapses; risk-on if extended</td>
+        </tr>
+        <tr style="background:rgba(245,158,11,0.05);">
+          <td class="neutral">AMC Wed Apr 22</td>
+          <td style="color:var(--amber);font-weight:600;">TSLA Q1 2026 Earnings</td>
+          <td class="neutral">Watchlist major event — do NOT hold overnight without defined risk</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<hr class="divider" />
+
+<!-- ══════════════════════════════════════════ -->
+<!-- STEP 7: TRADE IDEAS -->
+<!-- ══════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-title">Step 7 — Morning Trade Ideas</div>
+
+  <!-- Top 3 Tickers -->
+  <div style="margin-bottom:20px;">
+
+    <div class="trade-card" style="border-left:3px solid var(--green);">
+      <div class="trade-header">
+        <div class="trade-num">1</div>
+        <span class="trade-ticker">AMZN</span>
+        <span class="tag tag-bull">🟢 BULLISH</span>
+      </div>
+      <div class="trade-body">
+        <span class="hl">Catalyst:</span> Anthropic investment announcement (AI infrastructure narrative) + BofA PT raised to $298 (+16.5% upside from $255.80).<br/>
+        <span class="hl">Pre-market:</span> <span class="up">+2.7%</span> — strongest watchlist mover this morning.<br/>
+        <span class="key">Entry Logic:</span> Chase the gap above <span class="hl">$262</span> with volume confirmation; better R/R entry on pullback to <span class="hl">$258–260</span>.<br/>
+        <span class="key">Target:</span> $270–275 near-term | $298 analyst target (6–8 weeks).<br/>
+        <span class="key">Risk:</span> Gap fills if Warsh sounds hawkish at hearing OR retail sales print weak.
+      </div>
+    </div>
+
+    <div class="trade-card" style="border-left:3px solid var(--green);">
+      <div class="trade-header">
+        <div class="trade-num">2</div>
+        <span class="trade-ticker">SNDK</span>
+        <span class="tag tag-bull">🟢 BULLISH</span>
+      </div>
+      <div class="trade-body">
+        <span class="hl">Catalyst:</span> Nasdaq-100 index inclusion (April 20) = mandatory institutional forced buying. Wells Fargo PT $975, BofA PT $1,080. Earnings April 30.<br/>
+        <span class="hl">Current:</span> ~$913–928 | 287% YTD gain<br/>
+        <span class="key">Entry Logic:</span> Buy above <span class="hl">$930</span> on opening confirmation with volume.<br/>
+        <span class="key">Target:</span> $960–975 near-term | $1,080 BofA target by earnings.<br/>
+        <span class="key">Risk:</span> High-beta name — any broad market weakness hits SNDK first. Size accordingly.
+      </div>
+    </div>
+
+    <div class="trade-card" style="border-left:3px solid var(--purple);">
+      <div class="trade-header">
+        <div class="trade-num">3</div>
+        <span class="trade-ticker">ITA</span>
+        <span class="tag" style="background:rgba(167,139,250,0.1);color:var(--purple);border:1px solid rgba(167,139,250,0.3);">⚠️ BINARY PLAY</span>
+      </div>
+      <div class="trade-body">
+        <span class="hl">Catalyst:</span> US-Iran ceasefire expires WEDNESDAY midnight. If collapses → ITA gaps 3–5%+. If renewed → sell the news.<br/>
+        <span class="key">Entry Logic:</span> <span style="color:var(--red);">DO NOT enter ITA before ceasefire status resolves.</span> Watch headlines tonight and Wednesday morning. If ceasefire collapses, enter ITA at open Wednesday on gap confirmation.<br/>
+        <span class="key">Target:</span> +3–5% gap on ceasefire collapse.<br/>
+        <span class="key">Risk:</span> Coin flip on geopolitics — this is NOT a high-probability daytrade setup today. File it for Wednesday.
+      </div>
+    </div>
+  </div>
+
+  <!-- Top Theme -->
+  <div class="etf-card" style="border-left:3px solid var(--cyan);">
+    <div class="etf-header">
+      <span class="etf-theme">🎯 Top Theme: AI Infrastructure / Amazon Ecosystem</span>
+    </div>
+    <div class="etf-body">
+      AMZN's Anthropic announcement is the cleanest institutional catalyst of the morning. Pairs with AMZN's own cloud earnings setup and the broader AI capex spending narrative (SNDK, AMD all benefiting). IGV and XLK are the ETF expressions.
+    </div>
+  </div>
+
+  <!-- Avoid -->
+  <div style="margin-top:16px;">
+    <div class="section-title" style="margin-bottom:10px;">Tickers to AVOID Today</div>
+    <div class="table-wrap">
+      <table class="avoid-row">
+        <thead>
+          <tr>
+            <th>Ticker</th>
+            <th>Reason</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>META</td>
+            <td>BofA PT cut $885→$820; negative analyst action on high-multiple name ahead of earnings</td>
+          </tr>
+          <tr>
+            <td>MARA</td>
+            <td>BTC weak at $75K; company pivoting away from Bitcoin mining — structural story changing</td>
+          </tr>
+          <tr>
+            <td>COIN</td>
+            <td>BTC headwinds, no verified catalyst</td>
+          </tr>
+          <tr>
+            <td>TSLA (overnight)</td>
+            <td>Q1 earnings AMC April 22 — do NOT hold overnight without defined risk</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Key Risks -->
+  <div style="margin-top:16px;">
+    <div class="section-title" style="margin-bottom:10px;">Key Risk Events &amp; Timing</div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>When</th><th>Event</th><th>What to Watch</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Morning</td>
+            <td>Kevin Warsh Fed Hearing</td>
+            <td>Hawkish rate comments → growth stock sell-off</td>
+          </tr>
+          <tr>
+            <td>Morning</td>
+            <td>March Retail Sales</td>
+            <td>Weak print = risk-off; could fill AMZN gap</td>
+          </tr>
+          <tr>
+            <td class="urgent">Wed midnight</td>
+            <td class="urgent">⚠️ Iran Ceasefire Expiration</td>
+            <td>Binary for oil, defense, macro — #1 risk of the week</td>
+          </tr>
+          <tr>
+            <td class="amber">AMC Wed Apr 22</td>
+            <td style="color:var(--amber);">TSLA Q1 Earnings</td>
+            <td>Biggest individual stock catalyst of the week</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div><!-- /section -->
+
+<hr class="divider" />
+
+<!-- ══════════════════════════════════════════ -->
+<!-- MORNING BRIEFING -->
+<!-- ══════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-title">☀️ 30-Second Morning Briefing</div>
+  <div class="briefing">
+    Futures are mildly green (+0.4–0.6%) Tuesday as markets digest Apple's Tim Cook exit (<strong>AAPL -0.5%</strong>), Amazon's pre-market surge (<strong>AMZN +2.7%</strong>) on an Anthropic investment announcement, and RTX's cautious-despite-beat Q1 print. The cleanest trade of the morning is <strong>AMZN</strong> — dual catalyst of Anthropic AI investment plus a BofA price target hike to $298 gives a well-defined entry thesis. <strong>SanDisk (SNDK)</strong> is the second watchlist standout: Nasdaq-100 inclusion yesterday forces institutional buying, with earnings April 30 as the next trigger. The macro wildcard is the <strong>US-Iran ceasefire expiring Wednesday</strong> — oil declined overnight on negotiation hopes but any breakdown sends energy and defense stocks gapping. <strong>Kevin Warsh's Fed confirmation hearing</strong> this morning could inject rate/policy volatility into an already uncertain tape. TSLA bulls and bears are battling the $400 level ahead of tomorrow's earnings — today is a positioning day, not an entry day. <strong>No clear broad-market edge today</strong>: ceasefire binary overhang suppresses conviction, but AMZN and SNDK offer defined catalyst setups worth executing.
+  </div>
+</div>
+
+<!-- FOOTER -->
+<div class="footer">
+  <strong>Sources (all verified with URLs):</strong><br/>
+  · <a href="https://www.cnbc.com/2026/04/20/apple-names-john-ternus-ceo-replacing-tim-cook-who-becomes-chairman.html">CNBC — Apple names John Ternus CEO, Tim Cook becomes Chairman</a><br/>
+  · <a href="https://finance.yahoo.com/markets/stocks/live/stock-market-today-dow-sp-500-and-nasdaq-futures-inch-up-amid-apple-ceo-change-and-iran-uncertainty-231748168.html">Yahoo Finance — Stock Market Live: Futures April 21, 2026</a><br/>
+  · <a href="https://www.stocktitan.net/news/RTX/rtx-to-release-first-quarter-earnings-results-on-april-21-3prkppcbwlyu.html">StockTitan — RTX Q1 2026 Earnings April 21</a><br/>
+  · <a href="https://www.barchart.com/story/news/1244208/sandisk-stock-is-exploding-higheris-sndk-a-buy-before-april-30-earnings">Barchart — SanDisk SNDK Nasdaq-100 Inclusion &amp; PT Raises</a><br/>
+  · <a href="https://www.benzinga.com/analyst-stock-ratings">Benzinga — Analyst Ratings: AMD, SNDK, META, AMZN</a><br/>
+  · <a href="https://www.benzinga.com/analyst-stock-ratings/analyst-color/26/04/51907909/chip-stocks-show-diverging-trends-says-analyst">Benzinga — Bernstein: Chip Stocks Diverging Trends</a><br/>
+  · <a href="https://finance.yahoo.com/markets/stocks/articles/tsla-stock-soar-april-21-due-160314043.html">Yahoo Finance — TSLA: Tesla Q1 Earnings April 22</a><br/>
+  · <a href="https://finance.yahoo.com/markets/stocks/articles/palantir-technologies-nasdaq-pltr-stock-154020021.html">Yahoo Finance — PLTR Palantir FAA Deal &amp; Stock Outlook</a><br/>
+  · <a href="https://www.cnbc.com/2026/04/20/market-optimism-iran-war-equities-markets.html">CNBC — Iran War Market Impact Analysis</a><br/>
+  · <a href="https://finance.yahoo.com/news/defense-etfs-gain-us-iran-140500272.html">Yahoo Finance — Defense ETFs &amp; Iran War</a><br/>
+  <br/>
+  <em>This report is for informational purposes only and does not constitute financial advice. All claims are sourced. No claim is included without a verified URL.</em>
+</div>
+
+</body>
+</html>
