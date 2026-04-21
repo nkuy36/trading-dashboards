@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>AI Bottleneck Terminal · Research Dashboard</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.3.1/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.3.1/umd/react-dom.production.min.js"></script>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.25.6/babel.min.js"></script>
+<style>
+  body {
+    font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    background: #0a0a0a;
+    color: #e5e5e5;
+    margin: 0;
+  }
+  ::-webkit-scrollbar { width: 8px; height: 8px; }
+  ::-webkit-scrollbar-track { background: #0a0a0a; }
+  ::-webkit-scrollbar-thumb { background: #404040; border-radius: 4px; }
+  ::-webkit-scrollbar-thumb:hover { background: #525252; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script type="text/babel">
+const { useState, useMemo } = React;
+
+function AIBottleneckDashboard() {
+  const [selectedTheme, setSelectedTheme] = useState('all');
+  const [selectedClass, setSelectedClass] = useState('all');
+  const [searchTerm, setSearchTerm] = useState('');
+
+  const themes = [
+    {
+      id: 'memory', code: 'T1', name: 'HBM / Memory', classification: 'ON-TIME',
+      cyclePeak: 'Mid-to-late 2027', color: 'amber',
+      bottleneck: 'HBM requires specialized TSV processes, 3x wafer consumption per GB vs DRAM. SK Hynix 2026 sold out. DRAM supply meets only ~60% of demand through 2027.',
+      supply: 'SK Hynix Yongin Feb 2027. Samsung P4L full production post-2027. Micron Idaho/Singapore 2027, Hiroshima 2028.',
+      stocks: [
+        { ticker: 'MU', category: 'Pure-play', note: 'Only US HBM manufacturer, HBM4 ramp', classification: 'ON-TIME' },
+        { ticker: 'WDC', category: 'Pure-play', note: 'Storage/NAND-leveraged', classification: 'ON-TIME' },
+        { ticker: 'STX', category: 'Pure-play', note: 'Enterprise storage beneficiary', classification: 'ON-TIME' },
+        { ticker: 'LRCX', category: 'Equipment', note: '~34% rev from memory equip', classification: 'ON-TIME' },
+        { ticker: 'AMAT', category: 'Equipment', note: 'TSV/packaging equipment', classification: 'ON-TIME' },
+        { ticker: 'KLAC', category: 'Equipment', note: 'Inspection/metrology', classification: 'ON-TIME' },
+        { ticker: 'ACMR', category: 'Equipment', note: 'Cleaning, China risk', classification: 'ON-TIME' },
+        { ticker: 'ONTO', category: 'Equipment', note: 'HBM metrology/inspection', classification: 'EARLY' },
+        { ticker: 'AEHR', category: 'Equipment', note: 'Wafer-level burn-in', classification: 'EARLY' },
+        { ticker: 'COHU', category: 'Equipment', note: 'Test handling', classification: 'ON-TIME' },
+        { ticker: 'FORM', category: 'Equipment', note: 'Probe cards for HBM', classification: 'ON-TIME' },
+        { ticker: 'ENTG', category: 'Materials', note: 'Specialty materials/filtration', classification: 'ON-TIME' },
+        { ticker: 'MTRN', category: 'Materials', note: 'Specialty materials', classification: 'ON-TIME' },
+        { ticker: 'UCTT', category: 'Materials', note: 'Sub-fab equipment', classification: 'ON-TIME' },
+        { ticker: 'ICHR', category: 'Materials', note: 'Fluid delivery systems', classification: 'ON-TIME' },
+        { ticker: 'AXTI', category: 'Materials', note: 'Substrate materials', classification: 'ON-TIME' },
+      ]
+    },
+    {
+      id: 'packaging', code: 'T2', name: 'Advanced Packaging / CoWoS', classification: 'EARLY',
+      cyclePeak: 'H2 2027', color: 'emerald',
+      bottleneck: 'Nvidia 60% of 2026 CoWoS. TSMC CoWoS-L/S fully booked. TSMC outsourcing 240-270K wafers to Amkor/SPIL in 2026.',
+      supply: 'TSMC AP7/AP8 ramping. Amkor Arizona online 2027-2028. CoPoS mass production late 2027.',
+      stocks: [
+        { ticker: 'AMKR', category: 'Pure-play', note: 'Only Western OSAT at scale, $2.5-3B capex 2026', classification: 'EARLY' },
+        { ticker: 'ACLS', category: 'Equipment', note: 'Implant for advanced packaging', classification: 'EARLY' },
+        { ticker: 'ONTO', category: 'Equipment', note: 'HBM stacking metrology', classification: 'EARLY' },
+        { ticker: 'CAMT', category: 'Equipment', note: 'Inspection 500M bumps/wafer', classification: 'EARLY' },
+        { ticker: 'KLAC', category: 'Equipment', note: 'Hybrid bonding metrology', classification: 'ON-TIME' },
+        { ticker: 'AMAT', category: 'Equipment', note: 'Bonding/deposition', classification: 'ON-TIME' },
+        { ticker: 'LRCX', category: 'Equipment', note: 'TSV etch', classification: 'ON-TIME' },
+        { ticker: 'AEHR', category: 'Equipment', note: 'Wafer-level test', classification: 'EARLY' },
+        { ticker: 'NVMI', category: 'Equipment', note: 'Process control metrology', classification: 'EARLY' },
+        { ticker: 'COHU', category: 'Equipment', note: 'Test handling', classification: 'ON-TIME' },
+        { ticker: 'ASML', category: 'Foundry', note: 'EUV litho, ADR', classification: 'ON-TIME' },
+        { ticker: 'INTC', category: 'Foundry', note: 'EMIB/Foveros alternative', classification: 'LATE' },
+        { ticker: 'GFS', category: 'Foundry', note: 'Silicon photonics platforms', classification: 'ON-TIME' },
+        { ticker: 'TSM', category: 'Foundry', note: 'Direct TSMC exposure, ADR', classification: 'ON-TIME' },
+      ]
+    },
+    {
+      id: 'fabric', code: 'T3', name: 'AI Fabric / Connectivity', classification: 'ON-TIME',
+      cyclePeak: 'H1 2027', color: 'cyan',
+      bottleneck: '72-GPU racks, 1000+ GPU clusters. PCIe 6.0 doubles silicon content per server. Copper reaching physical limits.',
+      supply: 'NVLink Fusion, UALink consortium, custom ASIC fabrics, photonics transition 2027+.',
+      stocks: [
+        { ticker: 'ALAB', category: 'Pure-play', note: 'PCIe 6.0 retimers/Scorpio switches', classification: 'ON-TIME' },
+        { ticker: 'CRDO', category: 'Pure-play', note: 'Retimers + Active Electrical Cables', classification: 'ON-TIME' },
+        { ticker: 'MRVL', category: 'High-exposure', note: '$2B Nvidia NVLink Fusion partnership', classification: 'ON-TIME' },
+        { ticker: 'AVGO', category: 'High-exposure', note: 'Meta MTIA + Tomahawk, record ASIC backlog', classification: 'ON-TIME' },
+        { ticker: 'ANET', category: 'High-exposure', note: 'AI Ethernet, $5.4B deferred rev', classification: 'ON-TIME' },
+        { ticker: 'CSCO', category: 'High-exposure', note: '$2.1B hyperscaler AI orders', classification: 'ON-TIME' },
+        { ticker: 'MTSI', category: 'High-exposure', note: 'RF/mixed-signal interconnect', classification: 'ON-TIME' },
+        { ticker: 'MCHP', category: 'Diversified', note: 'PCIe Gen 6 switch, small DC exposure', classification: 'LATE' },
+        { ticker: 'DIOD', category: 'Diversified', note: 'PCIe switches', classification: 'ON-TIME' },
+        { ticker: 'RMBS', category: 'Diversified', note: 'Memory/interconnect IP', classification: 'ON-TIME' },
+        { ticker: 'SMTC', category: 'Diversified', note: 'High-speed signal integrity', classification: 'ON-TIME' },
+        { ticker: 'MXL', category: 'Diversified', note: 'Connectivity ICs', classification: 'ON-TIME' },
+      ]
+    },
+    {
+      id: 'labor', code: 'T4', name: 'MEP Labor / Skilled Trades', classification: 'ON-TIME',
+      cyclePeak: 'Persistent 2028+', color: 'orange',
+      bottleneck: 'Electrical 45-70% of DC cost. 300K+ electricians needed, 20K retiring/yr. 102 leave for every 100 entering. Apprenticeships 4-5 yrs.',
+      supply: 'None in window. Siemens/OpenAI programs add capacity 2028-2030.',
+      stocks: [
+        { ticker: 'EME', category: 'Pure-play', note: 'Mechanical/electrical, cheaper vs FIX', classification: 'ON-TIME' },
+        { ticker: 'FIX', category: 'Pure-play', note: '$11.9B backlog, extended', classification: 'LATE' },
+        { ticker: 'MTZ', category: 'Pure-play', note: 'Infrastructure + DC sites', classification: 'ON-TIME' },
+        { ticker: 'PWR', category: 'Pure-play', note: 'Grid + electrical', classification: 'ON-TIME' },
+        { ticker: 'APG', category: 'Pure-play', note: 'Fire/life safety', classification: 'ON-TIME' },
+        { ticker: 'DY', category: 'Higher-beta', note: 'Telecom/fiber infra', classification: 'ON-TIME' },
+        { ticker: 'IESC', category: 'Higher-beta', note: 'Electrical, highest beta', classification: 'EARLY' },
+        { ticker: 'PRIM', category: 'Higher-beta', note: 'Industrial piping + energy', classification: 'ON-TIME' },
+        { ticker: 'MYRG', category: 'Higher-beta', note: 'Electrical construction', classification: 'ON-TIME' },
+        { ticker: 'ROAD', category: 'Higher-beta', note: 'Infrastructure', classification: 'ON-TIME' },
+        { ticker: 'J', category: 'Design', note: 'Engineering design', classification: 'ON-TIME' },
+        { ticker: 'ACM', category: 'Design', note: 'Infrastructure design', classification: 'ON-TIME' },
+        { ticker: 'FLR', category: 'Design', note: 'Large industrial EPC', classification: 'ON-TIME' },
+      ]
+    },
+    {
+      id: 'glass', code: 'T5', name: 'Glass Cloth / Substrates', classification: 'EARLY',
+      cyclePeak: '2028+', color: 'violet',
+      bottleneck: 'Nittobo controls ~90% T-Glass. Specialized 1,600-1,700°C furnaces. Capacity doubles only by 2028, gap still widens per Prismark.',
+      supply: 'Nittobo $530M through 2028. Chinese quartz alternatives emerging. Corning/Unimicron glass substrate JV.',
+      stocks: [
+        { ticker: 'GLW', category: 'Proxy', note: 'Unimicron JV, 2nm samples Q2 2027', classification: 'EARLY' },
+        { ticker: 'APH', category: 'Downstream', note: 'Connector/PCB downstream', classification: 'ON-TIME' },
+        { ticker: 'TEL', category: 'Downstream', note: 'Connector/substrate downstream', classification: 'ON-TIME' },
+      ]
+    },
+    {
+      id: 'orchestration', code: 'T6', name: 'CPU Orchestration / Agentic', classification: 'EARLY',
+      cyclePeak: 'Late 2027', color: 'rose',
+      bottleneck: 'Agentic AI = 15x more tokens/user, 24/7. CPU = 90.6% of latency. Arm: CPU cores per GW going 30M to 120M (4x). CPU:GPU shifting to 1:1.',
+      supply: 'Arm AGI CPU launched March 2026. AMD EPYC share gains on Intel yields. Nvidia Vera CPU. Hyperscaler custom Arm.',
+      stocks: [
+        { ticker: 'ARM', category: 'Primary', note: 'AGI CPU, first merchant silicon', classification: 'EARLY' },
+        { ticker: 'AMD', category: 'Primary', note: 'EPYC share gainer', classification: 'ON-TIME' },
+        { ticker: 'NVDA', category: 'Primary', note: 'Vera CPU + Rubin GPUs', classification: 'ON-TIME' },
+        { ticker: 'INTC', category: 'Primary', note: 'Yield issues = risk not reward', classification: 'LATE' },
+        { ticker: 'AVGO', category: 'Secondary', note: 'Hyperscaler custom Arm design', classification: 'ON-TIME' },
+        { ticker: 'MRVL', category: 'Secondary', note: 'Custom ASIC exposure', classification: 'ON-TIME' },
+        { ticker: 'NOW', category: 'Software', note: 'Agentic orchestration platform', classification: 'ON-TIME' },
+        { ticker: 'PATH', category: 'Software', note: 'RPA pivoting to agents (Maestro)', classification: 'EARLY' },
+        { ticker: 'PLTR', category: 'Software', note: 'Agent orchestration via AIP', classification: 'ON-TIME' },
+        { ticker: 'MDB', category: 'Software', note: 'Data layer for agents', classification: 'ON-TIME' },
+        { ticker: 'SNOW', category: 'Software', note: 'Data platform for agent workloads', classification: 'ON-TIME' },
+        { ticker: 'DDOG', category: 'Software', note: 'Observability for agent fleets', classification: 'ON-TIME' },
+        { ticker: 'CFLT', category: 'Software', note: 'Data streaming for agents', classification: 'ON-TIME' },
+        { ticker: 'ESTC', category: 'Software', note: 'Search + observability', classification: 'ON-TIME' },
+      ]
+    },
+    {
+      id: 'cooling', code: 'T7', name: 'Liquid Cooling / AI Plumbers', classification: 'ON-TIME',
+      cyclePeak: 'Through 2027+', color: 'sky',
+      bottleneck: 'Microsoft mandated direct-to-chip liquid for Azure AI. Every B200/Rubin rack needs wet plumbing. Pipefitter apprenticeships = 5 yrs.',
+      supply: 'Products ramping (VRT $15B backlog). Labor side zero near-term response.',
+      stocks: [
+        { ticker: 'VRT', category: 'Systems', note: '$15B backlog, 252% Q4 order surge', classification: 'ON-TIME' },
+        { ticker: 'MOD', category: 'Systems', note: 'Chillers + direct-to-chip', classification: 'ON-TIME' },
+        { ticker: 'NVT', category: 'Systems', note: '~30% DC exposure, Nvidia partnership', classification: 'ON-TIME' },
+        { ticker: 'ETN', category: 'Systems', note: 'Boyd acquisition = cold plate', classification: 'ON-TIME' },
+        { ticker: 'CARR', category: 'Systems', note: 'HVAC late entrant', classification: 'LATE' },
+        { ticker: 'FLS', category: 'Fluid-handling', note: 'Industrial pumps for coolant loops', classification: 'EARLY' },
+        { ticker: 'WTS', category: 'Fluid-handling', note: 'Valves/fluid control', classification: 'EARLY' },
+        { ticker: 'IEX', category: 'Fluid-handling', note: 'Fluid handling niches', classification: 'EARLY' },
+        { ticker: 'ROP', category: 'Fluid-handling', note: 'Fluid handling subsidiaries', classification: 'ON-TIME' },
+        { ticker: 'GGG', category: 'Fluid-handling', note: 'Industrial fluid equipment', classification: 'EARLY' },
+        { ticker: 'AOS', category: 'Fluid-handling', note: 'Water heating/treatment', classification: 'ON-TIME' },
+        { ticker: 'SMCI', category: 'Integrator', note: 'Liquid-cooled servers', classification: 'ON-TIME' },
+        { ticker: 'DELL', category: 'Integrator', note: 'AI server liquid cooling', classification: 'ON-TIME' },
+      ]
+    },
+    {
+      id: 'photonics', code: 'T8', name: 'Silicon Photonics', classification: 'ON-TIME',
+      cyclePeak: '2027-2028', color: 'lime',
+      bottleneck: 'Copper hitting physical limits. Photonics required for multi-rack AI scaling. Nvidia invested $4B into photonics firms.',
+      supply: '2026 = year of design wins per Wells Fargo. TAM $10-12B by 2030.',
+      stocks: [
+        { ticker: 'LITE', category: 'Pure-play', note: 'Top holding in THNQ ETF', classification: 'ON-TIME' },
+        { ticker: 'COHR', category: 'Pure-play', note: 'Lasers/optical components', classification: 'ON-TIME' },
+        { ticker: 'AAOI', category: 'Pure-play', note: 'Data center transceivers', classification: 'ON-TIME' },
+        { ticker: 'POET', category: 'Story stock', note: 'HIGH-RISK, active Wolfpack short', classification: 'STORY' },
+        { ticker: 'LWLG', category: 'Story stock', note: 'HIGH-RISK, pre-revenue', classification: 'STORY' },
+        { ticker: 'ONDS', category: 'Enabler', note: 'Photonics-adjacent', classification: 'ON-TIME' },
+        { ticker: 'AEVA', category: 'Enabler', note: 'FMCW LiDAR', classification: 'ON-TIME' },
+      ]
+    },
+    {
+      id: 'datacenter', code: 'T9', name: 'DC REITs / Infrastructure', classification: 'ON-TIME',
+      cyclePeak: '2026-2028', color: 'fuchsia',
+      bottleneck: 'Secondary exposure - leases GPU capacity, specialized AI hosting.',
+      supply: 'Hyperscaler capex continues $650B+ in 2026.',
+      stocks: [
+        { ticker: 'EQIX', category: 'REIT', note: 'Vertiv immersion cooling partnership', classification: 'ON-TIME' },
+        { ticker: 'DLR', category: 'REIT', note: 'Hyperscale leasing', classification: 'ON-TIME' },
+        { ticker: 'IRM', category: 'REIT', note: 'Data center expansion', classification: 'ON-TIME' },
+        { ticker: 'CRWV', category: 'Cloud', note: '$12-13B 2026 guide', classification: 'ON-TIME' },
+        { ticker: 'APLD', category: 'Cloud', note: 'Specialized AI hosting', classification: 'STORY' },
+        { ticker: 'WULF', category: 'Cloud', note: 'AI compute hosting pivot', classification: 'STORY' },
+        { ticker: 'IREN', category: 'Cloud', note: 'AI compute', classification: 'STORY' },
+        { ticker: 'BTDR', category: 'Cloud', note: 'AI compute pivot', classification: 'STORY' },
+      ]
+    },
+  ];
+
+  const allStocks = useMemo(() => {
+    return themes.flatMap(t => t.stocks.map(s => ({ ...s, themeId: t.id, themeName: t.name, themeCode: t.code })));
+  }, []);
+
+  const filteredThemes = useMemo(() => {
+    if (selectedTheme === 'all') return themes;
+    return themes.filter(t => t.id === selectedTheme);
+  }, [selectedTheme]);
+
+  const filteredStocks = useMemo(() => {
+    let s = allStocks;
+    if (selectedTheme !== 'all') s = s.filter(x => x.themeId === selectedTheme);
+    if (selectedClass !== 'all') s = s.filter(x => x.classification === selectedClass);
+    if (searchTerm) s = s.filter(x => x.ticker.toLowerCase().includes(searchTerm.toLowerCase()) || x.note.toLowerCase().includes(searchTerm.toLowerCase()));
+    return s;
+  }, [allStocks, selectedTheme, selectedClass, searchTerm]);
+
+  const stats = useMemo(() => {
+    const all = allStocks;
+    return {
+      total: all.length,
+      early: all.filter(s => s.classification === 'EARLY').length,
+      onTime: all.filter(s => s.classification === 'ON-TIME').length,
+      late: all.filter(s => s.classification === 'LATE').length,
+      story: all.filter(s => s.classification === 'STORY').length,
+      themes: themes.length,
+    };
+  }, [allStocks]);
+
+  const catalysts = [
+    { date: 'Apr 27', event: 'AMKR Q1 earnings (after close)', tickers: ['AMKR'] },
+    { date: 'Early May', event: 'AMD Q1 earnings', tickers: ['AMD', 'ARM'] },
+    { date: 'Early May', event: 'MRVL / ALAB quarterly', tickers: ['MRVL', 'ALAB', 'CRDO'] },
+    { date: 'May 4', event: 'SYM earnings (robotics, not bottleneck)', tickers: ['SYM'] },
+    { date: 'May 7', event: 'LWLG earnings', tickers: ['LWLG'] },
+    { date: 'May 21', event: 'LWLG shareholder meeting', tickers: ['LWLG'] },
+    { date: 'Late May', event: 'NVDA Q1 earnings (supply chain read)', tickers: ['NVDA', 'ARM', 'AMKR'] },
+    { date: 'Early June', event: 'Computex - cooling + ASIC updates', tickers: ['MRVL', 'AVGO', 'VRT'] },
+    { date: 'Jun 26', event: 'POET redomicile vote', tickers: ['POET'] },
+    { date: 'Late June', event: 'MU FQ3 earnings', tickers: ['MU', 'LRCX', 'ONTO'] },
+    { date: 'Mid-July', event: 'TSMC Q2 - CoWoS commentary', tickers: ['AMKR', 'ASML'] },
+    { date: 'Late July', event: 'CAMT earnings - AMKR read-through', tickers: ['CAMT', 'AMKR'] },
+  ];
+
+  const exitSignals = [
+    { signal: '"Sold out" language disappears from memory earnings', action: 'Trim MU, LRCX, ONTO' },
+    { signal: 'AAII bulls > 50% on high volume', action: 'Broad AI trim signal' },
+    { signal: 'Huang comments like "cooling spec changing"', action: 'VRT, MOD, NVT risk' },
+    { signal: 'Wolfpack follow-up on POET', action: 'Kill POET exposure' },
+    { signal: 'AMKR Kim family secondary completes', action: 'Overhang removed, bullish' },
+    { signal: 'Hyperscaler capex guide cut', action: 'Entire stack pressure' },
+    { signal: 'TSMC says CoWoS "in balance"', action: 'Trim AMKR, CAMT, ONTO' },
+  ];
+
+  const classColors = {
+    'EARLY':   { bg: 'bg-emerald-500/10', border: 'border-emerald-500/40', text: 'text-emerald-400', solid: 'bg-emerald-500' },
+    'ON-TIME': { bg: 'bg-amber-500/10',   border: 'border-amber-500/40',   text: 'text-amber-400',   solid: 'bg-amber-500' },
+    'LATE':    { bg: 'bg-red-500/10',     border: 'border-red-500/40',     text: 'text-red-400',     solid: 'bg-red-500' },
+    'STORY':   { bg: 'bg-violet-500/10',  border: 'border-violet-500/40',  text: 'text-violet-400',  solid: 'bg-violet-500' },
+  };
+
+  const themeColorMap = {
+    amber:   { border: 'border-amber-500/30',   text: 'text-amber-300',   bg: 'bg-amber-500/5',   accent: 'bg-amber-500' },
+    emerald: { border: 'border-emerald-500/30', text: 'text-emerald-300', bg: 'bg-emerald-500/5', accent: 'bg-emerald-500' },
+    cyan:    { border: 'border-cyan-500/30',    text: 'text-cyan-300',    bg: 'bg-cyan-500/5',    accent: 'bg-cyan-500' },
+    orange:  { border: 'border-orange-500/30',  text: 'text-orange-300',  bg: 'bg-orange-500/5',  accent: 'bg-orange-500' },
+    violet:  { border: 'border-violet-500/30',  text: 'text-violet-300',  bg: 'bg-violet-500/5',  accent: 'bg-violet-500' },
+    rose:    { border: 'border-rose-500/30',    text: 'text-rose-300',    bg: 'bg-rose-500/5',    accent: 'bg-rose-500' },
+    sky:     { border: 'border-sky-500/30',     text: 'text-sky-300',     bg: 'bg-sky-500/5',     accent: 'bg-sky-500' },
+    lime:    { border: 'border-lime-500/30',    text: 'text-lime-300',    bg: 'bg-lime-500/5',    accent: 'bg-lime-500' },
+    fuchsia: { border: 'border-fuchsia-500/30', text: 'text-fuchsia-300', bg: 'bg-fuchsia-500/5', accent: 'bg-fuchsia-500' },
+  };
+
+  return (
+    <div className="min-h-screen bg-neutral-950 text-neutral-200">
+      {/* Header */}
+      <header className="border-b border-neutral-800 bg-black px-6 py-4">
+        <div className="flex items-center justify-between flex-wrap gap-4">
+          <div className="flex items-center gap-6">
+            <div className="flex items-center gap-3">
+              <div className="w-2 h-8 bg-amber-500"></div>
+              <div>
+                <h1 className="text-xl font-bold tracking-tight text-white">AI BOTTLENECK TERMINAL</h1>
+                <div className="text-xs text-neutral-500 mt-0.5">US EQUITY UNIVERSE · RESEARCH DASHBOARD</div>
+              </div>
+            </div>
+          </div>
+          <div className="flex items-center gap-6 text-xs">
+            <div>
+              <div className="text-neutral-500 uppercase tracking-wider">Last Update</div>
+              <div className="text-white font-bold">Apr 21, 2026</div>
+            </div>
+            <div>
+              <div className="text-neutral-500 uppercase tracking-wider">SPY Context</div>
+              <div className="text-red-400 font-bold">⚠ ALL-TIME HIGHS</div>
+            </div>
+            <div>
+              <div className="text-neutral-500 uppercase tracking-wider">Sizing</div>
+              <div className="text-amber-400 font-bold">HALF SIZE DEFAULT</div>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      {/* Stats Bar */}
+      <div className="border-b border-neutral-800 bg-neutral-900/50 px-6 py-3">
+        <div className="grid grid-cols-2 md:grid-cols-6 gap-4 text-sm">
+          <div>
+            <div className="text-[10px] text-neutral-500 uppercase tracking-widest">Themes</div>
+            <div className="text-2xl font-bold text-white">{stats.themes}</div>
+          </div>
+          <div>
+            <div className="text-[10px] text-neutral-500 uppercase tracking-widest">Total Names</div>
+            <div className="text-2xl font-bold text-white">{stats.total}</div>
+          </div>
+          <div>
+            <div className="text-[10px] text-neutral-500 uppercase tracking-widest">Early</div>
+            <div className="text-2xl font-bold text-emerald-400">{stats.early}</div>
+          </div>
+          <div>
+            <div className="text-[10px] text-neutral-500 uppercase tracking-widest">On-Time</div>
+            <div className="text-2xl font-bold text-amber-400">{stats.onTime}</div>
+          </div>
+          <div>
+            <div className="text-[10px] text-neutral-500 uppercase tracking-widest">Late</div>
+            <div className="text-2xl font-bold text-red-400">{stats.late}</div>
+          </div>
+          <div>
+            <div className="text-[10px] text-neutral-500 uppercase tracking-widest">Story/High-Risk</div>
+            <div className="text-2xl font-bold text-violet-400">{stats.story}</div>
+          </div>
+        </div>
+      </div>
+
+      {/* Filters */}
+      <div className="border-b border-neutral-800 bg-neutral-900/30 px-6 py-3">
+        <div className="flex items-center gap-3 flex-wrap">
+          <div className="text-xs text-neutral-500 uppercase tracking-widest">Filter:</div>
+          <select
+            value={selectedTheme}
+            onChange={(e) => setSelectedTheme(e.target.value)}
+            className="bg-neutral-900 border border-neutral-700 text-white px-3 py-1.5 text-xs rounded focus:outline-none focus:border-amber-500"
+          >
+            <option value="all">All Themes</option>
+            {themes.map(t => (
+              <option key={t.id} value={t.id}>{t.code} · {t.name}</option>
+            ))}
+          </select>
+          <div className="flex gap-1">
+            {['all', 'EARLY', 'ON-TIME', 'LATE', 'STORY'].map(c => (
+              <button
+                key={c}
+                onClick={() => setSelectedClass(c)}
+                className={`px-3 py-1.5 text-xs rounded border transition-all ${
+                  selectedClass === c
+                    ? 'bg-white text-black border-white font-bold'
+                    : 'bg-neutral-900 text-neutral-400 border-neutral-700 hover:border-neutral-500'
+                }`}
+              >
+                {c === 'all' ? 'ALL CLASS' : c}
+              </button>
+            ))}
+          </div>
+          <input
+            type="text"
+            placeholder="Search ticker or note..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="bg-neutral-900 border border-neutral-700 text-white px-3 py-1.5 text-xs rounded focus:outline-none focus:border-amber-500 flex-1 min-w-[200px] max-w-xs placeholder:text-neutral-600"
+          />
+          <div className="text-xs text-neutral-500 ml-auto">
+            Showing <span className="text-white font-bold">{filteredStocks.length}</span> of {stats.total}
+          </div>
+        </div>
+      </div>
+
+      {/* Main Content */}
+      <div className="px-6 py-6 space-y-6">
+
+        {/* Themes Grid */}
+        <section>
+          <div className="flex items-baseline justify-between mb-4">
+            <h2 className="text-sm font-bold text-white tracking-widest uppercase">Bottleneck Themes</h2>
+            <div className="text-xs text-neutral-500">Classification · Cycle Peak · Stock Count</div>
+          </div>
+          <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-3">
+            {filteredThemes.map(theme => {
+              const color = themeColorMap[theme.color];
+              const stockCount = theme.stocks.length;
+              const earlyCount = theme.stocks.filter(s => s.classification === 'EARLY').length;
+              const clsBadge = classColors[theme.classification];
+              return (
+                <div
+                  key={theme.id}
+                  className={`border ${color.border} ${color.bg} rounded-sm p-4 hover:bg-neutral-900 transition-colors cursor-pointer`}
+                  onClick={() => setSelectedTheme(theme.id === selectedTheme ? 'all' : theme.id)}
+                >
+                  <div className="flex items-start justify-between gap-3 mb-3">
+                    <div className="flex items-center gap-2 min-w-0">
+                      <div className={`${color.accent} text-black text-[10px] font-bold px-1.5 py-0.5 rounded-sm`}>
+                        {theme.code}
+                      </div>
+                      <h3 className={`font-bold text-sm ${color.text} truncate`}>{theme.name}</h3>
+                    </div>
+                    <div className={`text-[10px] px-2 py-0.5 rounded-sm border ${clsBadge?.border} ${clsBadge?.text} ${clsBadge?.bg} flex-shrink-0 font-bold`}>
+                      {theme.classification}
+                    </div>
+                  </div>
+                  <div className="space-y-2 text-[11px]">
+                    <div>
+                      <div className="text-neutral-500 uppercase tracking-wider text-[9px] mb-0.5">Bottleneck</div>
+                      <div className="text-neutral-300 leading-relaxed">{theme.bottleneck}</div>
+                    </div>
+                    <div>
+                      <div className="text-neutral-500 uppercase tracking-wider text-[9px] mb-0.5">Supply Response</div>
+                      <div className="text-neutral-400 leading-relaxed">{theme.supply}</div>
+                    </div>
+                    <div className="flex items-center justify-between pt-2 border-t border-neutral-800">
+                      <div>
+                        <span className="text-neutral-500 text-[9px] uppercase tracking-wider">Peak: </span>
+                        <span className="text-white font-bold text-[10px]">{theme.cyclePeak}</span>
+                      </div>
+                      <div className="text-[10px]">
+                        <span className="text-white font-bold">{stockCount}</span>
+                        <span className="text-neutral-500"> names · </span>
+                        <span className="text-emerald-400 font-bold">{earlyCount}</span>
+                        <span className="text-neutral-500"> early</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </section>
+
+        {/* Stocks Table */}
+        <section>
+          <div className="flex items-baseline justify-between mb-4">
+            <h2 className="text-sm font-bold text-white tracking-widest uppercase">Stock Universe</h2>
+            <div className="text-xs text-neutral-500">Ticker · Theme · Category · Classification</div>
+          </div>
+          <div className="border border-neutral-800 rounded-sm overflow-hidden">
+            <div className="overflow-x-auto">
+              <table className="w-full text-xs">
+                <thead className="bg-neutral-900 border-b border-neutral-800">
+                  <tr>
+                    <th className="text-left px-3 py-2.5 font-bold text-neutral-400 uppercase tracking-wider text-[10px]">Ticker</th>
+                    <th className="text-left px-3 py-2.5 font-bold text-neutral-400 uppercase tracking-wider text-[10px]">Theme</th>
+                    <th className="text-left px-3 py-2.5 font-bold text-neutral-400 uppercase tracking-wider text-[10px]">Category</th>
+                    <th className="text-left px-3 py-2.5 font-bold text-neutral-400 uppercase tracking-wider text-[10px]">Thesis</th>
+                    <th className="text-left px-3 py-2.5 font-bold text-neutral-400 uppercase tracking-wider text-[10px]">Class</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filteredStocks.map((stock, i) => {
+                    const cls = classColors[stock.classification];
+                    return (
+                      <tr
+                        key={`${stock.ticker}-${stock.themeId}-${i}`}
+                        className="border-b border-neutral-900 hover:bg-neutral-900/50 transition-colors"
+                      >
+                        <td className="px-3 py-2 font-bold text-white">{stock.ticker}</td>
+                        <td className="px-3 py-2 text-neutral-500">
+                          <span className="text-neutral-600 mr-1">{stock.themeCode}</span>
+                          {stock.themeName}
+                        </td>
+                        <td className="px-3 py-2 text-neutral-400">{stock.category}</td>
+                        <td className="px-3 py-2 text-neutral-300">{stock.note}</td>
+                        <td className="px-3 py-2">
+                          <span className={`inline-block px-2 py-0.5 rounded-sm text-[10px] font-bold border ${cls?.border} ${cls?.text} ${cls?.bg}`}>
+                            {stock.classification}
+                          </span>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        {/* Bottom grid: Catalysts + Exit Signals */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <section>
+            <div className="flex items-baseline justify-between mb-4">
+              <h2 className="text-sm font-bold text-white tracking-widest uppercase">90-Day Catalyst Calendar</h2>
+            </div>
+            <div className="border border-neutral-800 rounded-sm overflow-hidden">
+              {catalysts.map((c, i) => (
+                <div
+                  key={i}
+                  className="flex items-start gap-3 px-3 py-2.5 border-b border-neutral-900 last:border-b-0 hover:bg-neutral-900/50 transition-colors"
+                >
+                  <div className="w-20 flex-shrink-0 text-amber-400 font-bold text-xs">{c.date}</div>
+                  <div className="flex-1 text-xs text-neutral-200">{c.event}</div>
+                  <div className="flex flex-wrap gap-1 flex-shrink-0">
+                    {c.tickers.map(t => (
+                      <span key={t} className="text-[9px] bg-neutral-800 text-white font-bold px-1.5 py-0.5 rounded-sm">{t}</span>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
+
+          <section>
+            <div className="flex items-baseline justify-between mb-4">
+              <h2 className="text-sm font-bold text-white tracking-widest uppercase">Exit Signals</h2>
+            </div>
+            <div className="border border-neutral-800 rounded-sm overflow-hidden">
+              {exitSignals.map((s, i) => (
+                <div
+                  key={i}
+                  className="px-3 py-2.5 border-b border-neutral-900 last:border-b-0 hover:bg-neutral-900/50 transition-colors"
+                >
+                  <div className="text-xs text-neutral-200 mb-1">▸ {s.signal}</div>
+                  <div className="text-[11px] text-amber-400 font-bold ml-3">→ {s.action}</div>
+                </div>
+              ))}
+            </div>
+          </section>
+        </div>
+
+        {/* Legend */}
+        <section className="border-t border-neutral-800 pt-4">
+          <div className="flex items-baseline gap-6 flex-wrap text-xs">
+            <div className="text-neutral-500 uppercase tracking-widest text-[10px]">Classification Key:</div>
+            <div className="flex items-center gap-2">
+              <div className="w-3 h-3 bg-emerald-500 rounded-sm"></div>
+              <span className="text-neutral-300"><span className="text-emerald-400 font-bold">EARLY</span> - Under-discovered, highest asymmetry</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="w-3 h-3 bg-amber-500 rounded-sm"></div>
+              <span className="text-neutral-300"><span className="text-amber-400 font-bold">ON-TIME</span> - Valid setups, known narrative</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="w-3 h-3 bg-red-500 rounded-sm"></div>
+              <span className="text-neutral-300"><span className="text-red-400 font-bold">LATE</span> - Extended, wait for flush</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="w-3 h-3 bg-violet-500 rounded-sm"></div>
+              <span className="text-neutral-300"><span className="text-violet-400 font-bold">STORY</span> - Binary/high-risk, not EP setup</span>
+            </div>
+          </div>
+        </section>
+
+        {/* Footer */}
+        <footer className="border-t border-neutral-800 pt-4 text-[10px] text-neutral-600 flex items-center justify-between flex-wrap gap-2">
+          <div>
+            RESEARCH DASHBOARD · NOT INVESTMENT ADVICE · EP FRAMEWORK APPLIED · ERR ON INCLUSION · PURE AI BOTTLENECK SCOPE
+          </div>
+          <div className="font-bold text-neutral-500">
+            v1.0 · Apr 2026
+          </div>
+        </footer>
+
+      </div>
+    </div>
+  );
+}
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(<AIBottleneckDashboard />);
+</script>
+</body>
+</html>
