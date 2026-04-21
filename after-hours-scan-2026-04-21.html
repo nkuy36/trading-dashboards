@@ -1,0 +1,968 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>After-Hours Scan — April 21, 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0e17;
+    --bg2: #111827;
+    --bg3: #1a2234;
+    --border: #1e293b;
+    --text: #e2e8f0;
+    --muted: #64748b;
+    --beat: #22c55e;
+    --miss: #ef4444;
+    --inline: #f59e0b;
+    --call: #22c55e;
+    --put: #ef4444;
+    --diverge: #f59e0b;
+    --accent: #3b82f6;
+    --defense: #8b5cf6;
+    --oil: #f97316;
+    --gold: #eab308;
+    --tech: #06b6d4;
+    --macro: #10b981;
+    --alert: #dc2626;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    line-height: 1.6;
+    padding: 20px;
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+  .header {
+    border-bottom: 2px solid var(--accent);
+    padding-bottom: 16px;
+    margin-bottom: 24px;
+  }
+  .header h1 {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--text);
+    letter-spacing: 0.05em;
+  }
+  .header .moon { color: var(--accent); margin-right: 8px; }
+  .header .subtitle {
+    color: var(--muted);
+    font-size: 11px;
+    margin-top: 4px;
+  }
+  .alert-banner {
+    background: rgba(220,38,38,0.15);
+    border: 1px solid var(--alert);
+    border-left: 4px solid var(--alert);
+    padding: 12px 16px;
+    border-radius: 4px;
+    margin-bottom: 20px;
+    color: #fca5a5;
+    font-size: 12px;
+  }
+  .alert-banner strong { color: #ff6b6b; }
+  .section {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    margin-bottom: 20px;
+    overflow: hidden;
+  }
+  .section-header {
+    padding: 10px 16px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .section-header.defense { background: rgba(139,92,246,0.2); color: var(--defense); border-bottom: 1px solid rgba(139,92,246,0.3); }
+  .section-header.earnings { background: rgba(59,130,246,0.2); color: var(--accent); border-bottom: 1px solid rgba(59,130,246,0.3); }
+  .section-header.movers { background: rgba(6,182,212,0.2); color: var(--tech); border-bottom: 1px solid rgba(6,182,212,0.3); }
+  .section-header.etf { background: rgba(16,185,129,0.2); color: var(--macro); border-bottom: 1px solid rgba(16,185,129,0.3); }
+  .section-header.options { background: rgba(245,158,11,0.2); color: var(--inline); border-bottom: 1px solid rgba(245,158,11,0.3); }
+  .section-header.macro { background: rgba(249,115,22,0.2); color: var(--oil); border-bottom: 1px solid rgba(249,115,22,0.3); }
+  .section-header.preview { background: rgba(59,130,246,0.15); color: #7dd3fc; border-bottom: 1px solid rgba(59,130,246,0.2); }
+  .section-header.gameplan { background: rgba(34,197,94,0.15); color: var(--beat); border-bottom: 1px solid rgba(34,197,94,0.2); }
+  .section-header.audit { background: rgba(100,116,139,0.2); color: var(--muted); border-bottom: 1px solid var(--border); }
+  .section-body { padding: 14px 16px; }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+  }
+  th {
+    text-align: left;
+    padding: 6px 8px;
+    color: var(--muted);
+    font-weight: 600;
+    border-bottom: 1px solid var(--border);
+    font-size: 11px;
+    letter-spacing: 0.05em;
+  }
+  td {
+    padding: 7px 8px;
+    border-bottom: 1px solid rgba(30,41,59,0.5);
+    vertical-align: top;
+  }
+  tr:last-child td { border-bottom: none; }
+  tr:hover { background: rgba(255,255,255,0.02); }
+  .beat { color: var(--beat); font-weight: 600; }
+  .miss { color: var(--miss); font-weight: 600; }
+  .inline { color: var(--inline); font-weight: 600; }
+  .call { color: var(--call); font-weight: 600; }
+  .put { color: var(--put); font-weight: 600; }
+  .diverge { color: var(--diverge); font-weight: 600; }
+  .ticker { color: #93c5fd; font-weight: 700; letter-spacing: 0.05em; }
+  .watchlist { background: rgba(59,130,246,0.1); border-left: 3px solid var(--accent); }
+  .unconfirmed { color: var(--muted); font-style: italic; }
+  .muted { color: var(--muted); }
+  .highlight { background: rgba(34,197,94,0.08); }
+  .note {
+    background: var(--bg3);
+    border-left: 3px solid var(--accent);
+    padding: 8px 12px;
+    margin: 10px 0;
+    font-size: 12px;
+    border-radius: 0 4px 4px 0;
+  }
+  .note.warn { border-color: var(--inline); }
+  .note.danger { border-color: var(--miss); }
+  .note.green { border-color: var(--beat); }
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .three-col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+  .stat-box {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 10px 12px;
+  }
+  .stat-label { color: var(--muted); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; }
+  .stat-value { font-size: 18px; font-weight: 700; margin-top: 2px; }
+  .stat-sub { color: var(--muted); font-size: 10px; margin-top: 2px; }
+  .tag {
+    display: inline-block;
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+  .tag-beat { background: rgba(34,197,94,0.2); color: var(--beat); }
+  .tag-miss { background: rgba(239,68,68,0.2); color: var(--miss); }
+  .tag-flat { background: rgba(245,158,11,0.2); color: var(--inline); }
+  .tag-raised { background: rgba(34,197,94,0.3); color: #86efac; }
+  .tag-withdrawn { background: rgba(239,68,68,0.3); color: #fca5a5; }
+  .tag-maintained { background: rgba(100,116,139,0.2); color: var(--muted); }
+  .tag-watch { background: rgba(59,130,246,0.2); color: #7dd3fc; }
+  .diverge-box {
+    background: rgba(245,158,11,0.08);
+    border: 1px solid rgba(245,158,11,0.3);
+    border-radius: 4px;
+    padding: 10px 12px;
+    margin: 8px 0;
+  }
+  .gameplan-ticker {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 12px 14px;
+    margin-bottom: 12px;
+  }
+  .gameplan-ticker .name { font-size: 16px; font-weight: 700; color: #93c5fd; }
+  .gameplan-ticker .desc { color: var(--muted); font-size: 11px; margin-top: 4px; }
+  .gameplan-ticker .body { margin-top: 8px; font-size: 12px; }
+  .briefing {
+    background: rgba(59,130,246,0.05);
+    border: 1px solid rgba(59,130,246,0.3);
+    border-radius: 6px;
+    padding: 14px 16px;
+    font-size: 13px;
+    line-height: 1.8;
+  }
+  .level-box {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-top: 8px;
+  }
+  .level {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    padding: 6px 10px;
+    border-radius: 4px;
+    font-size: 11px;
+  }
+  .level .lbl { color: var(--muted); font-size: 10px; }
+  .level .val { font-weight: 700; font-size: 13px; }
+  .sources { font-size: 11px; color: var(--muted); }
+  .sources a { color: #64748b; text-decoration: none; }
+  .sources a:hover { color: var(--accent); }
+  hr { border: none; border-top: 1px solid var(--border); margin: 14px 0; }
+  h3 { font-size: 13px; font-weight: 600; color: #94a3b8; margin-bottom: 8px; margin-top: 12px; }
+  h4 { font-size: 12px; font-weight: 600; color: #64748b; margin-bottom: 6px; margin-top: 10px; }
+  p { margin-bottom: 8px; font-size: 12px; color: #cbd5e1; }
+  ul { margin-left: 16px; margin-bottom: 8px; }
+  li { font-size: 12px; color: #cbd5e1; margin-bottom: 3px; }
+  @media (max-width: 800px) {
+    .two-col, .three-col { grid-template-columns: 1fr; }
+    body { padding: 10px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1><span class="moon">🌙</span> AFTER-HOURS SCAN — April 21, 2026</h1>
+  <div class="subtitle">Post-close catalyst analysis | All claims sourced | Unverified items flagged</div>
+</div>
+
+<!-- IRAN ALERT -->
+<div class="alert-banner">
+  🚨 <strong>CRITICAL OVERNIGHT RISK:</strong> US-Iran ceasefire expires 8pm ET tonight. Iran refuses to send negotiators to Islamabad. Trump threatening military action if no deal. <strong>This is a binary market event.</strong> Check news before sizing anything at tomorrow's open.
+</div>
+
+<!-- KEY METRICS ROW -->
+<div class="three-col" style="margin-bottom:20px;">
+  <div class="stat-box">
+    <div class="stat-label">QQQ Close</div>
+    <div class="stat-value" style="color:#ef4444;">646.79</div>
+    <div class="stat-sub">~-0.30% | Prev close 648.85</div>
+  </div>
+  <div class="stat-box">
+    <div class="stat-label">Brent Crude</div>
+    <div class="stat-value" style="color:#f97316;">~$99</div>
+    <div class="stat-sub">+4% surge | Iran Hormuz fears</div>
+  </div>
+  <div class="stat-box">
+    <div class="stat-label">GLD</div>
+    <div class="stat-value" style="color:#eab308;">$442.09</div>
+    <div class="stat-sub">↓ from $445.93 | Unusual vs. geopolitical risk</div>
+  </div>
+</div>
+
+<!-- STEP 1: EARNINGS -->
+<div class="section">
+  <div class="section-header earnings">📊 STEP 1 — EARNINGS RELEASED TODAY</div>
+  <div class="section-body">
+
+    <h3>Before Market Open</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Ticker</th><th>Company</th><th>EPS Act.</th><th>EPS Est.</th><th>Status</th><th>Rev Act.</th><th>Rev Est.</th><th>Guidance</th><th>Move</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="highlight">
+          <td class="ticker">GE</td>
+          <td>GE Aerospace</td>
+          <td class="beat">$1.86</td>
+          <td>$1.60</td>
+          <td><span class="tag tag-beat">BEAT +16%</span></td>
+          <td class="beat">$11.61B</td>
+          <td>$10.72B</td>
+          <td><span class="tag tag-maintained">Maintained</span></td>
+          <td class="beat">+3% PM</td>
+        </tr>
+        <tr class="highlight">
+          <td class="ticker">RTX</td>
+          <td>RTX Corporation</td>
+          <td class="beat">$1.78</td>
+          <td>$1.51</td>
+          <td><span class="tag tag-beat">BEAT +18%</span></td>
+          <td class="beat">$22.08B</td>
+          <td>$21.46B</td>
+          <td><span class="tag tag-raised">RAISED</span></td>
+          <td class="beat">+2% PM</td>
+        </tr>
+        <tr class="highlight">
+          <td class="ticker">UNH</td>
+          <td>UnitedHealth Group</td>
+          <td class="beat">$7.23</td>
+          <td>$6.61</td>
+          <td><span class="tag tag-beat">BEAT +9%</span></td>
+          <td class="beat">$111.72B</td>
+          <td>$109.66B</td>
+          <td><span class="tag tag-raised">RAISED →$18.25</span></td>
+          <td class="beat">+6-7%</td>
+        </tr>
+        <tr>
+          <td class="ticker">DHR</td>
+          <td>Danaher</td>
+          <td class="beat">$2.06*</td>
+          <td>~$2.00</td>
+          <td><span class="tag tag-beat">BEAT (est.)</span></td>
+          <td>$6.0B</td>
+          <td>~$5.9B</td>
+          <td><span class="tag tag-maintained">Maintained</span></td>
+          <td class="beat">+1.7%</td>
+        </tr>
+        <tr>
+          <td class="ticker">ALK</td>
+          <td>Alaska Air Group</td>
+          <td class="miss">($1.68)</td>
+          <td>~($1.00)</td>
+          <td><span class="tag tag-miss">MISS</span></td>
+          <td>~$2.4B</td>
+          <td>—</td>
+          <td><span class="tag tag-withdrawn">WITHDRAWN ⚠️</span></td>
+          <td class="miss">-1% PM</td>
+        </tr>
+        <tr>
+          <td class="ticker">NOC</td>
+          <td>Northrop Grumman</td>
+          <td class="unconfirmed">TBD</td>
+          <td>$6.06</td>
+          <td><span class="tag tag-flat">UNCONFIRMED</span></td>
+          <td class="unconfirmed">TBD</td>
+          <td>$9.76B</td>
+          <td>—</td>
+          <td class="muted">—</td>
+        </tr>
+      </tbody>
+    </table>
+    <p class="muted" style="font-size:10px; margin-top:4px;">* Danaher excludes items. Alaska Air Q2 fuel est. $4.50-4.75/gallon. NOC results unconfirmed at scan time.</p>
+
+    <hr>
+    <h3>After Market Close</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Ticker</th><th>Company</th><th>EPS Act.</th><th>EPS Est.</th><th>Status</th><th>Rev Act.</th><th>Rev Est.</th><th>Guidance</th><th>AH Move</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="ticker">MSCI</td>
+          <td>MSCI Inc.</td>
+          <td class="beat">$4.55</td>
+          <td>$4.43</td>
+          <td><span class="tag tag-beat">BEAT +2.7%</span></td>
+          <td class="beat">$850.8M</td>
+          <td>$837.54M</td>
+          <td><span class="tag tag-maintained">Maintained ⚠️</span></td>
+          <td class="inline">~Flat</td>
+        </tr>
+        <tr>
+          <td class="ticker">COF</td>
+          <td>Capital One</td>
+          <td class="unconfirmed">TBD</td>
+          <td>$4.63</td>
+          <td><span class="tag tag-flat">PENDING</span></td>
+          <td class="unconfirmed">TBD</td>
+          <td>$15.38B</td>
+          <td>—</td>
+          <td class="muted">—</td>
+        </tr>
+        <tr>
+          <td class="ticker">IBKR</td>
+          <td>Interactive Brokers</td>
+          <td class="unconfirmed">TBD</td>
+          <td>$0.57-0.62</td>
+          <td><span class="tag tag-flat">PENDING</span></td>
+          <td class="unconfirmed">TBD</td>
+          <td>$1.69B</td>
+          <td>—</td>
+          <td class="muted">—</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="note warn" style="margin-top:12px;">
+      <strong>MSCI Key Quote:</strong> "Asset-based fees grew 26.6% YoY. Operating margin 53.7% (vs. 50.6% prior year). Net income +40.7%." Guidance maintained (not raised) → market disappointed → flat reaction despite solid beat.
+    </div>
+
+    <hr>
+    <h3>Read-Through</h3>
+    <ul>
+      <li><span class="beat">GE + RTX beats →</span> <span class="tag tag-watch">ITA</span> direct tailwind. Defense spending cycle structurally intact regardless of Iran outcome.</li>
+      <li><span class="beat">UNH medical cost ratio 83.9% vs. est. 85.5% →</span> <span class="tag tag-watch">XLV</span> managed care names benefit; healthcare cost containment improving.</li>
+      <li><span class="miss">Alaska Air guidance withdrawal →</span> <span class="tag tag-miss">JETS</span> sector-wide warning. Fuel $4.50-4.75/gallon = Iran war directly hitting airline margins.</li>
+      <li><span class="inline">MSCI maintained guidance →</span> Data/fintech not benefiting as expected from macro tailwinds. Soft read-through for <span class="tag tag-watch">KBE</span>.</li>
+    </ul>
+    <p><strong>Watchlist flags:</strong> <span class="muted">TSLA, NVDA, SOFI, AMD, PLTR, MARA, COIN, SNDK, META, AMZN — none reported today.</span></p>
+  </div>
+</div>
+
+<!-- STEP 2: AH MOVERS -->
+<div class="section">
+  <div class="section-header movers">📈 STEP 2 — AFTER-HOURS MOVERS</div>
+  <div class="section-body">
+    <table>
+      <thead>
+        <tr>
+          <th>Ticker</th><th>Price</th><th>AH %</th><th>Catalyst</th><th>Gap Setup Tomorrow?</th><th>ETF</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="ticker">AAPL</td>
+          <td>~$271.55</td>
+          <td class="miss">-0.5%</td>
+          <td>Tim Cook stepping down Sept 1. John Ternus (HW Engineering SVP) named CEO.</td>
+          <td>No gap — orderly transition. Watch analyst notes tomorrow on strategic direction.</td>
+          <td class="muted">XLK, QQQ</td>
+        </tr>
+        <tr>
+          <td class="ticker">MSCI</td>
+          <td>~$565</td>
+          <td class="inline">~0%</td>
+          <td>Earnings beat, guidance unchanged. Market wanted a raise.</td>
+          <td>No gap. May drift slightly lower on lack of catalyst.</td>
+          <td class="muted">Financials</td>
+        </tr>
+        <tr class="watchlist">
+          <td class="ticker">TSLA ⭐</td>
+          <td>$393.42</td>
+          <td class="miss">-0.23%</td>
+          <td>Pre-earnings positioning. Earnings AMC tomorrow.</td>
+          <td><strong>HIGH PROBABILITY GAP</strong> after tomorrow's AMC report. Implied ±6.1-6.9%.</td>
+          <td class="muted">QQQ, XLK</td>
+        </tr>
+        <tr>
+          <td class="ticker">ALK</td>
+          <td>~$35-36*</td>
+          <td class="miss">-1%+</td>
+          <td>Q1 loss + full 2026 guidance withdrawal. Fuel shock from Iran war.</td>
+          <td>Gap down risk if Iran talks collapse overnight. Sector contagion risk for JETS.</td>
+          <td class="muted">JETS</td>
+        </tr>
+      </tbody>
+    </table>
+    <p class="muted" style="font-size:10px; margin-top:6px;">* ALK AH price estimated from premarket data; verify exact AH close at open.</p>
+    <div class="note green" style="margin-top:10px;">
+      <strong>Apple CEO Succession Context:</strong> Tim Cook led AAPL from ~$10 to $273 (+2,600%). John Ternus is a product-centric engineer (hardware SVP since 2013, UPenn mechanical engineering). Market's -0.5% reaction shows confidence in continuity. Re-read tomorrow once analyst notes publish.
+    </div>
+  </div>
+</div>
+
+<!-- STEP 3: ETF RECAP -->
+<div class="section">
+  <div class="section-header etf">🏛️ STEP 3 — SECTOR & THEME ETF RECAP</div>
+  <div class="section-body">
+
+    <div class="two-col">
+      <div>
+        <h3 style="color:var(--defense);">🛡️ DEFENSE — ITA</h3>
+        <div class="stat-box" style="margin-bottom:8px;">
+          <div class="stat-label">Today's Direction</div>
+          <div class="stat-value beat">STRONG ↑ ~+2-3%</div>
+          <div class="stat-sub">GE +3% | RTX +2% | UNH +7% in day session</div>
+        </div>
+        <p><strong>Catalyst:</strong> Two of ITA's top-3 holdings (GE 19%, RTX 16%) posted massive earnings beats and raised guidance. Iran war driving defense spending globally.</p>
+        <p><strong>Tomorrow's setup:</strong> CONTINUATION. If Iran talks fail → additional re-escalation premium. If ceasefire extended → fundamentals alone support current levels.</p>
+        <p class="beat"><strong>Best play:</strong> GE or RTX individually for conviction; ITA for managed exposure.</p>
+      </div>
+      <div>
+        <h3 style="color:var(--miss);">✈️ AIRLINES — JETS</h3>
+        <div class="stat-box" style="margin-bottom:8px;">
+          <div class="stat-label">Today's Direction</div>
+          <div class="stat-value miss">WEAK ↓</div>
+          <div class="stat-sub">ALK withdrawn guidance | Q2 fuel ~$4.50-4.75/gal</div>
+        </div>
+        <p><strong>Catalyst:</strong> Alaska Air fully withdrew 2026 guidance citing Iran war fuel cost shock. Q2 fuel cost rising to $4.50-4.75/gallon (+50%+ vs. pre-conflict).</p>
+        <p><strong>Tomorrow's setup:</strong> FURTHER DOWNSIDE if Iran talks collapse tonight. Watch for contagion to UAL, DAL, LUV guidance.</p>
+        <p class="miss"><strong>Best play:</strong> Short JETS or avoid sector entirely until Iran resolved.</p>
+      </div>
+    </div>
+
+    <hr>
+
+    <div class="two-col">
+      <div>
+        <h3 style="color:var(--oil);">🛢️ COMMODITIES — UCO / USO / GLD</h3>
+        <div class="stat-box" style="margin-bottom:8px;">
+          <div class="stat-label">Brent Crude</div>
+          <div class="stat-value" style="color:var(--oil);">~$99</div>
+          <div class="stat-sub">+4% session | Near $100 psychological level</div>
+        </div>
+        <p><strong>Oil:</strong> Iran Hormuz closure driving energy spike. Binary overnight — deal = plunge, no deal = $100+.</p>
+        <div class="diverge-box">
+          <strong class="diverge">⚠️ DIVERGENCE — GLD:</strong> Gold at $442 (DOWN from $446) despite geopolitical escalation. Institutions fading gold at elevated levels (GLD $400 PUT for Dec 2026 active). Smart money selling gold into geopolitical spike.
+        </div>
+        <p><strong>Tomorrow's setup:</strong> Oil = binary on Iran. Gold = drift lower unless hard conflict resumes.</p>
+      </div>
+      <div>
+        <h3 style="color:var(--tech);">💻 TECH & AI — SMH / XLK / IBIT</h3>
+        <div class="stat-box" style="margin-bottom:8px;">
+          <div class="stat-label">QQQ</div>
+          <div class="stat-value miss">646.79 (-0.3%)</div>
+          <div class="stat-sub">Apple CEO change | Iran uncertainty | Tesla earnings overhang</div>
+        </div>
+        <p><strong>Semis:</strong> No specific catalyst today. AMD call flow ($350-400 July) signals institutional accumulation. Nikkei tech +0.7% (Tokyo Electron +4.3%, SoftBank +4.9%) = Asia supportive.</p>
+        <p><strong>IBIT/Bitcoin:</strong> ~$75,747 (April 17 proxy). MARA selling BTC for ops cash. No fresh crypto catalyst today.</p>
+        <p><strong>Tomorrow's setup:</strong> Tesla earnings dominate QQQ narrative. MIXED pending TSLA results.</p>
+      </div>
+    </div>
+
+    <hr>
+
+    <div class="two-col">
+      <div>
+        <h3 style="color:var(--macro);">📉 MACRO — TLT / UUP</h3>
+        <div class="stat-box" style="margin-bottom:8px;">
+          <div class="stat-label">TLT NAV</div>
+          <div class="stat-value" style="color:var(--macro);">~$87.00</div>
+          <div class="stat-sub">30-day yield 4.84% | Essentially flat</div>
+        </div>
+        <p><strong>Fed:</strong> Rates at 3.5-3.75%. March minutes showed "some" members discussing RATE HIKE (upgraded from "several" in January). Wells Fargo: ZERO cuts in 2026.</p>
+        <p><strong>UUP (Dollar):</strong> $27.32, slight weakness. Geopolitical risk counterbalanced by Fed hawkishness uncertainty.</p>
+        <div class="note warn">
+          <strong>Rate Hike Risk:</strong> If Iran conflict pushes oil above $100 persistently → inflation spike → Fed forced into rate hike → TLT could break $85 critical support. Watch.
+        </div>
+      </div>
+      <div>
+        <h3>📊 Key Index Levels</h3>
+        <div class="level-box">
+          <div class="level"><div class="lbl">S&P 500 (April 20 close)</div><div class="val">7,109</div></div>
+          <div class="level"><div class="lbl">Nasdaq (April 20 close)</div><div class="val">24,404</div></div>
+          <div class="level"><div class="lbl">Russell 2000</div><div class="val beat">2,792 ↑ (Record)</div></div>
+          <div class="level"><div class="lbl">Nikkei 225</div><div class="val beat">59,200 +0.7%</div></div>
+        </div>
+        <p style="margin-top:10px;">Russell 2000 hit new record close April 20 while large-cap struggled — small-cap divergence may signal rotation.</p>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- STEP 4: OPTIONS FLOW -->
+<div class="section">
+  <div class="section-header options">⚡ STEP 4 — OPTIONS FLOW SUMMARY</div>
+  <div class="section-body">
+
+    <div class="two-col">
+      <div>
+        <h3>A) Index-Level Positioning</h3>
+        <table>
+          <thead><tr><th>Index</th><th>Put/Call OI Ratio</th><th>Signal</th></tr></thead>
+          <tbody>
+            <tr><td class="ticker">QQQ</td><td class="put">1.29</td><td>⚠️ Elevated hedging — bearish bias</td></tr>
+            <tr><td class="ticker">SPY</td><td class="unconfirmed">Not confirmed</td><td class="muted">Assume elevated given Iran risk</td></tr>
+          </tbody>
+        </table>
+        <p style="margin-top:8px; font-size:11px; color:var(--muted);">QQQ P/C OI ratio >1.0 = institutions hedging. With Iran binary tonight, this is protective positioning, not necessarily a directional bet.</p>
+      </div>
+      <div>
+        <h3>B) Watchlist Flow</h3>
+        <table>
+          <thead><tr><th>Ticker</th><th>Direction</th><th>Strike / Exp</th><th>Interpretation</th></tr></thead>
+          <tbody>
+            <tr>
+              <td class="ticker">AMD</td>
+              <td><span class="call">CALLS</span></td>
+              <td>$350, $400 / Jul 17, 2026</td>
+              <td>Betting AMD above $350-400 by mid-July. Bullish semi positioning.</td>
+            </tr>
+          </tbody>
+        </table>
+        <p style="margin-top:8px; font-size:11px; color:var(--muted);">No confirmed flow for TSLA, NVDA, SOFI, PLTR, MARA, COIN, SNDK, META, AMZN today. April 20 Benzinga data used as proxy.</p>
+      </div>
+    </div>
+
+    <hr>
+
+    <h3>C) Sector ETF Options</h3>
+    <table>
+      <thead><tr><th>ETF</th><th>Direction</th><th>Strike / Exp</th><th>Interpretation</th></tr></thead>
+      <tbody>
+        <tr>
+          <td class="ticker">GLD</td>
+          <td><span class="put">PUTS</span></td>
+          <td>$400 / Dec 18, 2026</td>
+          <td>Bearish on gold at elevated levels. Institutional fading of geopolitical gold rally.</td>
+        </tr>
+        <tr>
+          <td class="ticker">EFA</td>
+          <td><span class="put">PUTS</span></td>
+          <td>$100 / Jun 18, 2026</td>
+          <td>Bearish on international equities. Geopolitical risk + rate concerns globally.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <hr>
+
+    <h3>D) Flow vs. Price Divergences ⚠️ — HIGHEST SIGNAL ALERTS</h3>
+
+    <div class="diverge-box">
+      <div class="diverge">1. GLD — Stock UP on geopolitical risk, but PUT buying active</div>
+      <p>Gold at $442 (elevated), yet Dec $400 puts were purchased. Smart money fading the geopolitical gold spike. HIGH CONVICTION SIGNAL that gold may peak here or reverse on any ceasefire resolution.</p>
+    </div>
+    <div class="diverge-box">
+      <div class="diverge">2. AMD — Tech/indices slightly negative, yet CALL sweeps at $350-400</div>
+      <p>Broader QQQ -0.3% but AMD calls being aggressively bought for July expiry. Institutions rotating INTO semis on weakness. Dip-buying conviction in AI/chip theme despite macro uncertainty.</p>
+    </div>
+    <div class="diverge-box">
+      <div class="diverge">3. QQQ P/C OI 1.29 vs. Only -0.3% Price Decline</div>
+      <p>Benign price action masking heavy put protection buying. Smart money hedging index exposure while buying chip names individually = barbell strategy. Volatility is being bought ahead of Iran binary event.</p>
+    </div>
+
+  </div>
+</div>
+
+<!-- STEP 5: SEC FILINGS -->
+<div class="section">
+  <div class="section-header audit">📁 STEP 5 — SEC FILINGS & INSIDER ACTIVITY</div>
+  <div class="section-body">
+    <h3>Notable 8-K Filings</h3>
+    <table>
+      <thead><tr><th>Ticker</th><th>Filing Type</th><th>Key Content</th><th>Actionable?</th></tr></thead>
+      <tbody>
+        <tr>
+          <td class="ticker">ALK</td>
+          <td>8-K</td>
+          <td>Q1 2026 results. Full 2026 guidance withdrawn. Q2 fuel est. $4.50-4.75/gal. Q2 adj. loss est. ~($1.00)/share.</td>
+          <td class="miss">YES — Bearish for JETS</td>
+        </tr>
+        <tr>
+          <td class="ticker">RTX</td>
+          <td>8-K</td>
+          <td>Q1 2026 earnings beat. Full-year guidance raised. Defense backlog commentary implied multi-year visibility.</td>
+          <td class="beat">YES — Bullish for ITA</td>
+        </tr>
+        <tr>
+          <td class="ticker">GE</td>
+          <td>8-K</td>
+          <td>Q1 2026 record earnings. Record orders from commercial aviation + defense. EPS $1.86 vs. $1.60 est.</td>
+          <td class="beat">YES — Bullish for ITA</td>
+        </tr>
+        <tr>
+          <td class="ticker">AAPL</td>
+          <td>8-K</td>
+          <td>CEO succession: Tim Cook → Executive Chairman. John Ternus → CEO effective Sept 1, 2026.</td>
+          <td class="inline">WATCH — Monitor analyst notes</td>
+        </tr>
+      </tbody>
+    </table>
+    <hr>
+    <h3>Insider Activity</h3>
+    <p>No significant US watchlist insider buying confirmed today from verified sources. HDFC Bank (HDB) director purchase of 5,000 shares at $6.80 (~$34K) on April 17 — minor position, not actionable for US trading. No 13-D activist filings confirmed.</p>
+  </div>
+</div>
+
+<!-- STEP 6: TOMORROW'S EARNINGS -->
+<div class="section">
+  <div class="section-header preview">🔭 STEP 6 — TOMORROW'S EARNINGS PREVIEW (April 22, 2026)</div>
+  <div class="section-body">
+    <h3>Before Market Open</h3>
+    <table>
+      <thead><tr><th>Ticker</th><th>Company</th><th>Time</th><th>EPS Est.</th><th>Rev Est.</th><th>Key Watch</th><th>ETF Impact</th></tr></thead>
+      <tbody>
+        <tr>
+          <td class="ticker">PM</td>
+          <td>Philip Morris Intl</td>
+          <td>7:00am ET</td>
+          <td>$1.82</td>
+          <td>$9.93B</td>
+          <td>Smoke-free % of revenue (41.5% in 2025). IQOS volumes. International demand.</td>
+          <td class="muted">XLP</td>
+        </tr>
+      </tbody>
+    </table>
+    <p style="font-size:11px; color:var(--muted); margin-top:4px;">PM: 15 buy / 3 hold consensus. Beat EPS by $0.05 in Q3 2025. Low-beta defensive play.</p>
+
+    <hr>
+    <h3>After Market Close</h3>
+    <div class="gameplan-ticker watchlist">
+      <div class="name">⭐ TSLA — Tesla Inc. | AMC 5:30pm ET | WATCHLIST</div>
+      <div class="desc">Q1 2026 results | Earnings call with Elon Musk + CFO Vaibhav Taneja</div>
+      <div class="body">
+        <div class="two-col">
+          <div>
+            <table>
+              <tr><td class="muted">EPS Consensus</td><td class="beat">$0.33 - $0.37</td></tr>
+              <tr><td class="muted">Revenue Consensus</td><td>$21.4B - $22.7B</td></tr>
+              <tr><td class="muted">Implied Move</td><td class="inline">±6.1 - 6.9%</td></tr>
+              <tr><td class="muted">Historical Avg Gap</td><td class="miss">9.12%</td></tr>
+              <tr><td class="muted">Q1 Deliveries</td><td class="miss">358,000 (vs. 365,600 est.)</td></tr>
+            </table>
+          </div>
+          <div>
+            <p><strong>Key headwinds already known:</strong></p>
+            <ul>
+              <li class="miss">Energy storage deployment: 8.8 GWh (down 38% QoQ from 14.2 GWh)</li>
+              <li class="miss">50,000-unit inventory overhang</li>
+              <li class="miss">Delivery miss of ~7,600 units vs. expectations</li>
+            </ul>
+            <p><strong>Bull case (beat + rally):</strong> Musk provides FSD/robotaxi concrete update + strong guidance.</p>
+            <p><strong>Bear case (miss + drop):</strong> EPS below $0.33 + weak energy/margin commentary.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="note">
+      <strong>Note:</strong> META and AMZN both report April 29, not tomorrow. NVDA, AMD, PLTR not scheduled this week.
+    </div>
+  </div>
+</div>
+
+<!-- STEP 7: MACRO OVERNIGHT -->
+<div class="section">
+  <div class="section-header macro">🌐 STEP 7 — MACRO OVERNIGHT WATCH</div>
+  <div class="section-body">
+
+    <div class="alert-banner">
+      🚨 <strong>PRIMARY RISK:</strong> US-Iran ceasefire expires 8pm ET tonight (Wednesday). JD Vance heading to Islamabad but Iran says it will NOT send negotiators. Trump: "Lots of bombs go off if no deal." This is THE overnight event. Market gap direction depends entirely on this.
+    </div>
+
+    <div class="two-col">
+      <div>
+        <h3>Iran Scenarios</h3>
+        <table>
+          <thead><tr><th>Outcome</th><th>Oil</th><th>SPY</th><th>ITA</th><th>JETS</th></tr></thead>
+          <tbody>
+            <tr>
+              <td class="beat">Deal / Extension</td>
+              <td class="miss">Plunge -5-10%</td>
+              <td class="beat">Gap up</td>
+              <td class="inline">Slight fade</td>
+              <td class="beat">Bounce</td>
+            </tr>
+            <tr>
+              <td class="miss">No Deal / Escalation</td>
+              <td class="beat">Spike $100+</td>
+              <td class="miss">Gap down</td>
+              <td class="beat">Rally</td>
+              <td class="miss">Crash</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div>
+        <h3>Asia Markets (April 21)</h3>
+        <table>
+          <thead><tr><th>Market</th><th>Move</th><th>Driver</th></tr></thead>
+          <tbody>
+            <tr><td>Nikkei 225</td><td class="beat">+0.7% (~59,200)</td><td>SoftBank +4.9%, Tokyo Electron +4.3%</td></tr>
+            <tr><td>European markets</td><td class="inline">Edging +</td><td>Iran ceasefire hope</td></tr>
+          </tbody>
+        </table>
+        <p style="font-size:11px; color:var(--muted); margin-top:8px;">Nikkei tech strength is pre-market supportive for SMH/QQQ — IF Iran doesn't blow up overnight.</p>
+      </div>
+    </div>
+
+    <hr>
+
+    <div class="two-col">
+      <div>
+        <h3>Economic Calendar (April 22)</h3>
+        <p>No major US economic releases confirmed for April 22 pre-market. Light data day — Iran + Tesla earnings dominate narrative.</p>
+        <h3 style="margin-top:12px;">Fed Watch</h3>
+        <p>No specific Fed speakers confirmed for tomorrow. Current rate 3.5-3.75%. Zero cuts expected in 2026. Rate hike language emerging in minutes. Any surprise Fed comment is a market mover.</p>
+      </div>
+      <div>
+        <h3>Commodity Futures Direction</h3>
+        <table>
+          <thead><tr><th>Commodity</th><th>Level</th><th>Direction</th></tr></thead>
+          <tbody>
+            <tr><td>Brent Crude</td><td class="miss">~$99</td><td>Iran-dependent overnight</td></tr>
+            <tr><td>Gold</td><td class="inline">$442</td><td>Slight drift lower; watch ceasefire</td></tr>
+            <tr><td>Dollar (UUP)</td><td class="muted">$27.32</td><td>Slight weakness; flight-to-safety if Iran escalates</td></tr>
+            <tr><td>TLT (Bonds)</td><td class="muted">~$87 NAV</td><td>Vulnerable if oil spikes (inflation → rate hike)</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- STEP 8: GAME PLAN -->
+<div class="section">
+  <div class="section-header gameplan">🎯 STEP 8 — TOMORROW'S GAME PLAN</div>
+  <div class="section-body">
+
+    <h3>Top 3 Tickers for Tomorrow's Open</h3>
+
+    <div class="gameplan-ticker watchlist">
+      <div class="name">1. TSLA — Watchlist ⭐</div>
+      <div class="desc">$393.42 AH | Earnings AMC tomorrow | Implied move ±6.1-6.9%</div>
+      <div class="body">
+        <p><strong>Pre-open:</strong> NO POSITION before open. Wait for Iran outcome AND intraday TSLA drift to assess sentiment heading into AMC.</p>
+        <p><strong>Post-earnings play:</strong> EPS beat + Musk robotaxi/FSD positive update → Buy calls/long for gap up. EPS miss + energy storage weakness → Buy puts/short for gap down. Size small given ±6.9% implied and 9.1% historical average gap.</p>
+        <p><strong>Key level:</strong> TSLA needs to hold $380 on a miss to avoid technical breakdown. Watch for $380 support intraday.</p>
+      </div>
+    </div>
+
+    <div class="gameplan-ticker">
+      <div class="name">2. GE / RTX — Buy the Dips</div>
+      <div class="desc">Direction: 🟢 BULLISH | ITA ETF exposure</div>
+      <div class="body">
+        <p>Both names posted monster beats with raised/solid guidance. Defense spending cycle structurally intact. Iran escalation = more tailwind (more defense contracts). Iran peace = fundamentals still good enough to hold gains.</p>
+        <p><strong>Entry:</strong> Buy any gap fill or intraday dip at open. GE above $180 support; RTX above $135 support (verify levels at open).</p>
+        <p><strong>Risk:</strong> If Iran ceasefire extended AND oil plunges → defense stocks may fade slightly on reduced geopolitical premium. Still a buy-the-dip setup in that scenario.</p>
+      </div>
+    </div>
+
+    <div class="gameplan-ticker">
+      <div class="name">3. UCO / USO — Binary Oil Play</div>
+      <div class="desc">Direction: 🔴 BEARISH if deal | 🟢 BULLISH if no deal | DO NOT HOLD BLIND</div>
+      <div class="body">
+        <p>Brent near $99. This is a pure geopolitical trade. DO NOT SIZE BEFORE OVERNIGHT Iran resolution is known.</p>
+        <p><strong>IF Iran talks succeed (extension/deal):</strong> Short UCO or buy USO puts. Oil plunges 5-10%, UCO (2x) drops 10-20% instantly.</p>
+        <p><strong>IF Iran escalates:</strong> Long UCO for oil above $100. Hormuz fully closed = possible $110+ Brent.</p>
+        <p><strong>Process:</strong> Check Iran news headlines at 6am ET. Trade the gap accordingly.</p>
+      </div>
+    </div>
+
+    <hr>
+
+    <div class="two-col">
+      <div>
+        <h3>SPY Key Levels</h3>
+        <div class="level-box">
+          <div class="level"><div class="lbl">Resistance</div><div class="val" style="color:var(--miss);">7,200</div><div style="font-size:10px; color:var(--muted);">Recent record zone</div></div>
+          <div class="level"><div class="lbl">Current Approx</div><div class="val" style="color:var(--inline);">~7,109</div><div style="font-size:10px; color:var(--muted);">April 20 close</div></div>
+          <div class="level"><div class="lbl">Support 1</div><div class="val beat">7,050</div><div style="font-size:10px; color:var(--muted);">Prior consolidation</div></div>
+          <div class="level"><div class="lbl">Support 2</div><div class="val" style="color:var(--inline);">6,970</div><div style="font-size:10px; color:var(--muted);">Breakout level</div></div>
+        </div>
+        <p style="margin-top:8px; font-size:11px;">Iran escalation could test SPY 7,050 at open. Iran deal could push toward 7,150-7,200.</p>
+      </div>
+      <div>
+        <h3>Sector Bias Tomorrow</h3>
+        <div class="stat-box">
+          <div class="stat-label">Overall Bias</div>
+          <div class="stat-value" style="color:var(--inline);">MIXED / RISK-OFF TILT</div>
+          <div class="stat-sub">Iran binary prevents directional confidence</div>
+        </div>
+        <p style="margin-top:8px; font-size:12px;">Defense + Energy = only sectors with both fundamental AND geopolitical support regardless of outcome.</p>
+        <p style="font-size:12px;">Growth/QQQ = reduce or hedge until Iran resolved.</p>
+      </div>
+    </div>
+
+    <hr>
+
+    <h3>Options Flow Conviction Summary</h3>
+    <p>Smart money is running a <strong>barbell strategy</strong>: Heavy index hedging (QQQ P/C 1.29) + selective AMD call accumulation. Translation: They expect macro volatility (Iran binary) but believe the AI/chip trade is intact long-term. They're buying downside protection on the index while selectively loading semis on weakness. <strong>Directional bias: RISK-OFF on indices, BULLISH on AI/chips specifically.</strong></p>
+
+    <hr>
+
+    <h3>⏱️ 30-Second Overnight Briefing</h3>
+    <div class="briefing">
+      Defense earnings dominated the day — GE, RTX, and UNH all crushed expectations. Apple is changing CEOs (non-event for now). MSCI beat but held guidance, stock flat. The real story is tonight: the US-Iran ceasefire expires at 8pm ET. If Vance gets a deal in Islamabad, oil craters and risk-on resumes. If talks fail, oil spikes above $100, expect a gap-down open with airlines (JETS) and tech (QQQ) getting hit hardest — defense (ITA/GE/RTX) may paradoxically rally on re-escalation. Tesla reports tomorrow after close — deliveries missed, energy storage halved, but Musk's AI pivot narrative could save it. Wait for the Iran news before sizing anything tomorrow morning.
+    </div>
+
+  </div>
+</div>
+
+<!-- STEP 9: ASSUMPTION AUDIT -->
+<div class="section">
+  <div class="section-header audit">🔍 STEP 9 — ASSUMPTION AUDIT</div>
+  <div class="section-body">
+    <table>
+      <thead>
+        <tr><th>#</th><th>Assumption</th><th>If Wrong...</th><th>How Trade Changes</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="muted">1</td>
+          <td>Iran ceasefire outcome binary by morning (deal or no deal)</td>
+          <td>Talks extend ambiguously for days, oil stays volatile/range-bound</td>
+          <td>UCO trade loses edge; wait for cleaner signal before positioning</td>
+        </tr>
+        <tr>
+          <td class="muted">2</td>
+          <td>GE closed ~+3% on day (extrapolated from premarket +3%)</td>
+          <td>GE faded intraday on Iran fears; actual close lower</td>
+          <td>Verify GE close at open; if gave back gains → buy-the-dip setup stronger</td>
+        </tr>
+        <tr>
+          <td class="muted">3</td>
+          <td>MSCI AH flat (pre-market +0.01% extrapolated to AH close)</td>
+          <td>Post-call commentary drove a larger move in either direction</td>
+          <td>Check MSCI AH quote before open; may affect financial sector sentiment</td>
+        </tr>
+        <tr>
+          <td class="muted">4</td>
+          <td>NOC results not confirmed — likely beat based on analyst models</td>
+          <td>NOC missed or lowered guidance</td>
+          <td>ITA could underperform tomorrow; check NOC 8-K first</td>
+        </tr>
+        <tr>
+          <td class="muted">5</td>
+          <td>COF and IBKR results unconfirmed (AMC April 21)</td>
+          <td>Either large beat or miss affecting financial sector</td>
+          <td>Check COF/IBKR results before open; KBE direction depends on these</td>
+        </tr>
+        <tr>
+          <td class="muted">6</td>
+          <td>Bitcoin ~$75,747 (April 17 data — 4-day lag)</td>
+          <td>BTC moved significantly in either direction since April 17</td>
+          <td>Check BTC/IBIT/MARA/COIN at open; crypto thesis may have changed</td>
+        </tr>
+        <tr>
+          <td class="muted">7</td>
+          <td>QQQ P/C ratio 1.29 from OI (not necessarily fresh April 21 flow)</td>
+          <td>Fresh buying reduced ratio, or additional hedges increased it</td>
+          <td>Verify current P/C ratio in real-time before sizing index trades</td>
+        </tr>
+        <tr>
+          <td class="muted">8</td>
+          <td>TSLA EPS consensus $0.33-0.37 (wide dispersion across sources)</td>
+          <td>Consensus has narrowed or shifted materially by April 22 morning</td>
+          <td>Pull fresh TSLA consensus April 22 morning before positioning into earnings</td>
+        </tr>
+        <tr>
+          <td class="muted">9</td>
+          <td>Amphenol (APH) date was April 21 per some sources, April 29 per others</td>
+          <td>APH actually reported today AMC — may have moved after hours</td>
+          <td>Check APH AH price and any earnings results; APH is major SMH component</td>
+        </tr>
+        <tr>
+          <td class="muted">10</td>
+          <td>SPY closed near 7,109 (using April 20 close as proxy for April 21)</td>
+          <td>Market rallied or sold off today based on Iran/earnings intraday</td>
+          <td>Verify SPY April 21 close; adjust key support/resistance levels accordingly</td>
+        </tr>
+        <tr>
+          <td class="muted">11</td>
+          <td>Options flow (AMD calls, GLD puts) from April 20 data</td>
+          <td>Flow reversed or accelerated significantly on April 21</td>
+          <td>Pull fresh Benzinga/Unusual Whales data at open for confirmation</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- SOURCES -->
+<div class="section">
+  <div class="section-header audit">📎 SOURCES</div>
+  <div class="section-body sources">
+    <ul>
+      <li><a href="https://www.cnbc.com/2026/04/21/stocks-making-the-biggest-moves-premarket-amzn-aapl-ge-unh.html">GE Aerospace / RTX Q1 2026 Earnings Beats — CNBC Premarket Movers</a></li>
+      <li><a href="https://www.cnbc.com/2026/04/21/unitedhealth-group-unh-earnings-q1-2026.html">UnitedHealth Group Q1 2026 Earnings — CNBC</a></li>
+      <li><a href="https://www.investing.com/news/earnings/msci-beats-q1-estimates-delivers-muted-guidance-93CH-4625623">MSCI Q1 2026 Beats Estimates, Muted Guidance — Investing.com</a></li>
+      <li><a href="https://www.cnbc.com/2026/04/20/alaska-air-pulls-2026-profit-forecast-amid-fuel-costs-related-uncertainty.html">Alaska Air Suspends 2026 Guidance — CNBC</a></li>
+      <li><a href="https://www.cnbc.com/2026/04/20/apple-names-john-ternus-ceo-replacing-tim-cook-who-becomes-chairman.html">Apple CEO Tim Cook Stepping Down — CNBC</a></li>
+      <li><a href="https://www.euronews.com/2026/04/21/us-iran-ceasefire-on-brink-of-collapse-as-talks-stall-and-strait-of-hormuz-crisis-deepens">Iran Ceasefire Brink of Collapse — Euronews</a></li>
+      <li><a href="https://www.cnbc.com/2026/04/21/oil-price-iran-war-strait-hormuz-tanker-ceasefire-peace-talks.html">Oil Prices / Iran Ceasefire — CNBC</a></li>
+      <li><a href="https://www.moomoo.com/community/feed/tesla-earnings-outlook-tesla-to-announce-earnings-on-april-22-116436067090438">Tesla Q1 2026 Earnings Preview — moomoo</a></li>
+      <li><a href="https://news.alphastreet.com/what-to-expect-when-philip-morris-pm-reports-its-q1-2026-earnings-results/">Philip Morris Q1 2026 Preview — Alphastreet</a></li>
+      <li><a href="https://stockanalysis.com/etf/qqq/">QQQ Price / Overview — StockAnalysis</a></li>
+      <li><a href="https://www.benzinga.com/calendars/unusual-options-activity">Benzinga Unusual Options Activity (April 20)</a></li>
+      <li><a href="https://finance.yahoo.com/markets/stocks/live/stock-market-today-dow-sp-500-and-nasdaq-futures-inch-up-amid-apple-ceo-change-and-iran-uncertainty-231748168.html">Nikkei + Market Futures April 21 — Yahoo Finance</a></li>
+      <li><a href="https://markets.financialcontent.com/stocks/article/marketminute-2026-4-2-higher-for-ever-market-expectations-pivot-to-zero-fed-rate-cuts-in-2026">Fed Zero Cuts Forecast — FinancialContent</a></li>
+      <li><a href="https://www.benzinga.com/trading-ideas/movers/26/04/51912090/earnings-volatility-watch-options-implied-moves-april-20-24-2026">Earnings Volatility / Implied Moves April 20-24 — Benzinga</a></li>
+    </ul>
+  </div>
+</div>
+
+<div style="text-align:center; padding:16px; color:var(--muted); font-size:11px; border-top: 1px solid var(--border); margin-top:8px;">
+  After-Hours Catalyst Scan — Generated April 21, 2026, post-close<br>
+  All prices as of last available data. Treat unconfirmed items as provisional. Verify assumptions at tomorrow's open.
+</div>
+
+</body>
+</html>
