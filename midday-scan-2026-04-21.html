@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Midday Catalyst Scan — April 21, 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0e17;
+    --bg2: #0f1520;
+    --bg3: #161d2e;
+    --border: #1e2d45;
+    --text: #e2e8f0;
+    --muted: #8899b4;
+    --urgent: #ff4757;
+    --urgent-bg: rgba(255,71,87,0.12);
+    --watch: #ffa502;
+    --watch-bg: rgba(255,165,2,0.12);
+    --confirm: #2ed573;
+    --confirm-bg: rgba(46,213,115,0.12);
+    --noise: #636e80;
+    --noise-bg: rgba(99,110,128,0.12);
+    --accent: #3d7fff;
+    --accent2: #00d2d3;
+    --bull: #2ed573;
+    --bear: #ff4757;
+    --neutral: #ffa502;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'JetBrains Mono', 'Courier New', monospace;
+    font-size: 13px;
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  .header {
+    background: linear-gradient(135deg, #0a0e17 0%, #0f1a2e 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 24px 32px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    backdrop-filter: blur(10px);
+  }
+
+  .header-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .header h1 {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text);
+    letter-spacing: -0.5px;
+  }
+
+  .header h1 span { color: var(--accent); }
+
+  .market-bar {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid var(--border);
+  }
+
+  .market-stat {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+  }
+
+  .market-stat .label { color: var(--muted); }
+  .market-stat .val { color: var(--text); font-weight: 600; }
+  .market-stat .neg { color: var(--bear); }
+  .market-stat .pos { color: var(--bull); }
+
+  .container { max-width: 1200px; margin: 0 auto; padding: 28px 32px; }
+
+  .section {
+    margin-bottom: 36px;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  .section-header {
+    padding: 14px 20px;
+    background: var(--bg3);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .section-header h2 {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--accent2);
+  }
+
+  .section-body { padding: 20px; }
+
+  /* Priority badges */
+  .badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+  }
+  .badge-urgent { background: var(--urgent-bg); color: var(--urgent); border: 1px solid rgba(255,71,87,0.3); }
+  .badge-watch { background: var(--watch-bg); color: var(--watch); border: 1px solid rgba(255,165,2,0.3); }
+  .badge-confirm { background: var(--confirm-bg); color: var(--confirm); border: 1px solid rgba(46,213,115,0.3); }
+  .badge-noise { background: var(--noise-bg); color: var(--noise); border: 1px solid rgba(99,110,128,0.3); }
+
+  .bull { color: var(--bull); font-weight: 600; }
+  .bear { color: var(--bear); font-weight: 600; }
+  .neutral-col { color: var(--neutral); font-weight: 600; }
+
+  /* Tables */
+  table { width: 100%; border-collapse: collapse; }
+  th {
+    text-align: left;
+    padding: 8px 12px;
+    font-size: 10px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--muted);
+    border-bottom: 1px solid var(--border);
+    background: var(--bg3);
+  }
+  td {
+    padding: 10px 12px;
+    border-bottom: 1px solid rgba(30,45,69,0.5);
+    vertical-align: top;
+  }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: rgba(61,127,255,0.04); }
+
+  .ticker { color: var(--accent2); font-weight: 700; font-size: 13px; }
+
+  /* Alert cards */
+  .alert-card {
+    border-radius: 6px;
+    padding: 16px 18px;
+    margin-bottom: 12px;
+    border-left: 3px solid;
+  }
+  .alert-card:last-child { margin-bottom: 0; }
+  .alert-card.urgent { background: var(--urgent-bg); border-color: var(--urgent); }
+  .alert-card.watch { background: var(--watch-bg); border-color: var(--watch); }
+  .alert-card.confirm { background: var(--confirm-bg); border-color: var(--confirm); }
+  .alert-card.noise { background: var(--noise-bg); border-color: var(--noise); }
+
+  .alert-card .alert-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 6px;
+  }
+
+  .alert-card .alert-ticker {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text);
+  }
+
+  .alert-card .alert-desc {
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.7;
+  }
+
+  .alert-card .alert-action {
+    margin-top: 8px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    padding: 4px 10px;
+    border-radius: 4px;
+    display: inline-block;
+  }
+  .urgent .alert-action { background: rgba(255,71,87,0.2); color: var(--urgent); }
+  .watch .alert-action { background: rgba(255,165,2,0.2); color: var(--watch); }
+  .confirm .alert-action { background: rgba(46,213,115,0.2); color: var(--confirm); }
+
+  /* Risk event */
+  .risk-event {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .risk-event:last-child { border-bottom: none; }
+  .risk-time { color: var(--accent); min-width: 140px; font-weight: 600; font-size: 12px; }
+  .risk-label { font-weight: 600; color: var(--text); margin-bottom: 3px; }
+  .risk-detail { color: var(--muted); font-size: 12px; }
+
+  /* Summary grid */
+  .summary-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 12px;
+  }
+
+  /* Footer */
+  .footer {
+    text-align: center;
+    padding: 24px;
+    color: var(--muted);
+    font-size: 11px;
+    border-top: 1px solid var(--border);
+    margin-top: 40px;
+  }
+  .footer a { color: var(--accent); text-decoration: none; }
+  .footer a:hover { text-decoration: underline; }
+
+  .divider { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
+
+  .meta-row {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-top: 8px;
+    font-size: 11px;
+    color: var(--muted);
+  }
+  .meta-row span { color: var(--text); }
+
+  .sector-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 8px;
+    margin-top: 4px;
+  }
+
+  .sector-card {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 10px 12px;
+  }
+  .sector-card .s-ticker { font-weight: 700; color: var(--accent2); font-size: 13px; }
+  .sector-card .s-name { color: var(--muted); font-size: 10px; margin-bottom: 4px; }
+  .sector-card .s-move { font-size: 14px; font-weight: 700; }
+
+  .options-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 12px;
+  }
+
+  .opt-card {
+    background: var(--bg3);
+    border: 1px solid rgba(255,71,87,0.25);
+    border-radius: 6px;
+    padding: 14px 16px;
+  }
+  .opt-card .opt-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  .opt-card .opt-ticker { font-size: 16px; font-weight: 700; color: var(--bear); }
+  .opt-card .opt-type { font-size: 11px; font-weight: 700; letter-spacing: 1px; }
+  .opt-card .opt-detail { font-size: 11px; color: var(--muted); line-height: 1.8; }
+  .opt-card .opt-premium { font-size: 14px; font-weight: 700; color: var(--bear); margin-top: 8px; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-top">
+    <h1>🕐 MIDDAY CATALYST <span>CHECK</span></h1>
+    <div style="font-size:12px; color:var(--muted);">April 21, 2026 &nbsp;|&nbsp; Auto-generated midday scan</div>
+  </div>
+  <div class="market-bar">
+    <div class="market-stat">
+      <span class="label">QQQ</span>
+      <span class="val neg">$646.79 (-0.32%)</span>
+    </div>
+    <div class="market-stat">
+      <span class="label">VIX</span>
+      <span class="val">~17.5</span>
+    </div>
+    <div class="market-stat">
+      <span class="label">WTI Oil</span>
+      <span class="val pos">$89.61 (+6.8%)</span>
+    </div>
+    <div class="market-stat">
+      <span class="label">Brent</span>
+      <span class="val pos">$95.48 (+5.6%)</span>
+    </div>
+    <div class="market-stat">
+      <span class="label">BTC</span>
+      <span class="val">$76,163</span>
+    </div>
+    <div class="market-stat">
+      <span class="label">10-YR</span>
+      <span class="val">4.24%</span>
+    </div>
+    <div class="market-stat">
+      <span class="label">GLD</span>
+      <span class="val neg">~$434 (off highs)</span>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- STEP 1: WATCHLIST -->
+  <div class="section">
+    <div class="section-header">
+      <h2>📋 Step 1 — Watchlist Alert Check</h2>
+    </div>
+    <div class="section-body" style="padding:0;">
+      <table>
+        <thead>
+          <tr>
+            <th>Ticker</th>
+            <th>Headline</th>
+            <th>Impact</th>
+            <th>Actionable</th>
+            <th>Summary</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="ticker">TSLA</span></td>
+            <td>Tesla Q1 2026 earnings preview: "the growth story is dead" — Electrek, Apr 21</td>
+            <td><span class="bear">BEARISH</span></td>
+            <td><span class="badge badge-watch">WATCH</span></td>
+            <td style="color:var(--muted); font-size:12px;">Reports <strong style="color:var(--watch)">TOMORROW AMC</strong>. Missed deliveries by 7,600 units; 50K inventory overhang; energy storage -38% QoQ. EPS est $0.33–$0.37. Historically -7.66% avg earnings surprise.</td>
+          </tr>
+          <tr>
+            <td><span class="ticker">NVDA</span></td>
+            <td>Upgraded to Buy by SA analyst; AI trade momentum returning; BlackBerry edge AI partnership</td>
+            <td><span class="bull">BULLISH</span></td>
+            <td><span class="badge badge-watch">WATCH</span></td>
+            <td style="color:var(--muted); font-size:12px;">Pre-market +0.34% at $202.74. Price target $275. Thesis intact.</td>
+          </tr>
+          <tr>
+            <td><span class="ticker">AMD</span></td>
+            <td>AMD downgraded to Hold — "multiples show little room for disappointment" — Seeking Alpha, Apr 21</td>
+            <td><span class="bear">BEARISH</span></td>
+            <td><span class="badge badge-urgent">YES — ACT</span></td>
+            <td style="color:var(--muted); font-size:12px;">Fresh downgrade <strong style="color:var(--urgent)">today</strong>. Post-rally multiples stretched. Exit or trim longs now.</td>
+          </tr>
+          <tr>
+            <td><span class="ticker">PLTR</span></td>
+            <td>PLTR climbs to ~$146 on FAA AI contract + Iran war defense contracts tailwind — Apr 20</td>
+            <td><span class="bull">BULLISH</span></td>
+            <td><span class="badge badge-watch">WATCH</span></td>
+            <td style="color:var(--muted); font-size:12px;">FAA $32B modernization race, DHS $1B deal, France contract. Recovering from $128 April low. Defense AI = Iran war tailwind.</td>
+          </tr>
+          <tr>
+            <td><span class="ticker">MARA</span></td>
+            <td>MARA ~$11; AI/data center pivot; Bitcoin miner transformation narrative</td>
+            <td><span class="neutral-col">NEUTRAL</span></td>
+            <td><span class="badge badge-watch">WATCH</span></td>
+            <td style="color:var(--muted); font-size:12px;">BTC at $76,163 with $1.4B crypto fund inflows this week. Ceasefire expiry = risk-off event for BTC. Watch $75K support.</td>
+          </tr>
+          <tr>
+            <td><span class="ticker">AMZN</span></td>
+            <td>Institutional bearish PUT SWEEP — $180 strike, Jan 2027 — Benzinga, Apr 21</td>
+            <td><span class="bear">BEARISH</span></td>
+            <td><span class="badge badge-urgent">YES — ACT</span></td>
+            <td style="color:var(--muted); font-size:12px;">Sweep = aggressive/urgent. 34 contracts, $32.6K premium. Institutional money betting AMZN lower by Jan 2027. Reduce longs.</td>
+          </tr>
+        </tbody>
+      </table>
+      <div style="padding:12px 20px; font-size:11px; color:var(--muted); border-top:1px solid var(--border);">
+        ⚪ <strong>No verified catalyst today:</strong> SOFI, SNDK, META, COIN, SPY, QQQ — skipped per rules.
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 2: SECTOR/THEME -->
+  <div class="section">
+    <div class="section-header">
+      <h2>🗂 Step 2 — Sector & Theme ETF Midday Check</h2>
+    </div>
+    <div class="section-body">
+
+      <div style="margin-bottom:20px;">
+        <div style="font-size:11px; letter-spacing:1px; text-transform:uppercase; color:var(--muted); margin-bottom:10px;">Commodities — ⚠️ NOTABLE MOVE</div>
+        <div class="alert-card urgent" style="margin-bottom:12px;">
+          <div class="alert-header">
+            <span class="alert-ticker">OIL (UCO / USO / XLE)</span>
+            <span class="badge badge-urgent">🔴 URGENT</span>
+          </div>
+          <div class="alert-desc">
+            WTI +6.8% ($89.61) | Brent +5.6% ($95.48) intraday<br>
+            <strong style="color:var(--text);">Catalyst:</strong> US-Iran ceasefire EXPIRES TODAY. Iran fired shots in Strait of Hormuz over weekend. Trump confirmed ceasefire violation. Strait effectively closed since early March — 20%+ of world oil supply.<br>
+            <strong style="color:var(--urgent);">Anomaly:</strong> XLE only +0.09% while oil rips +6%. Either catch-up trade incoming OR market expects ceasefire extension. Watch XLE on close.
+          </div>
+        </div>
+        <div style="font-size:12px; color:var(--muted);">
+          <strong style="color:var(--text);">GLD:</strong> Intraday range $433.76–$445.93 — risk-off demand but giving back gains. Mixed. &nbsp;|&nbsp;
+          <strong style="color:var(--text);">SLV:</strong> ~$74.97–$75.16, modest safe-haven bid.
+        </div>
+      </div>
+
+      <hr class="divider">
+
+      <div style="margin-bottom:20px;">
+        <div style="font-size:11px; letter-spacing:1px; text-transform:uppercase; color:var(--muted); margin-bottom:10px;">Tech & AI</div>
+        <div style="font-size:12px; color:var(--muted); line-height:1.9;">
+          <strong style="color:var(--text);">SMH:</strong> -0.04% — Flat, slight drag vs XLK +0.14%. Minor divergence (semis underperforming tech).<br>
+          <strong style="color:var(--text);">XLK:</strong> +0.14% — Holding despite geopolitical risk-off.<br>
+          <strong style="color:var(--text);">IBIT/BTC:</strong> Bitcoin $76,163. IBIT saw $284M single-day inflow last Friday. $1.4B crypto fund inflows this week. BTC needs to hold $75K through Wednesday (ceasefire key risk). Source: CoinDesk.
+        </div>
+      </div>
+
+      <hr class="divider">
+
+      <div>
+        <div style="font-size:11px; letter-spacing:1px; text-transform:uppercase; color:var(--muted); margin-bottom:10px;">Sector Rotation</div>
+        <div class="sector-grid">
+          <div class="sector-card">
+            <div class="s-name">Financial</div>
+            <div class="s-ticker">XLF</div>
+            <div class="s-move bull">+0.38%</div>
+            <div style="font-size:10px; color:var(--muted); margin-top:4px;">Leading today — risk-on in financials</div>
+          </div>
+          <div class="sector-card">
+            <div class="s-name">Technology</div>
+            <div class="s-ticker">XLK</div>
+            <div class="s-move bull">+0.14%</div>
+            <div style="font-size:10px; color:var(--muted); margin-top:4px;">Mild outperform despite geo risk</div>
+          </div>
+          <div class="sector-card">
+            <div class="s-name">Energy</div>
+            <div class="s-ticker">XLE</div>
+            <div class="s-move neutral-col">+0.09%</div>
+            <div style="font-size:10px; color:var(--urgent); margin-top:4px;">⚠️ LAGGING oil surge — watch for catch-up</div>
+          </div>
+          <div class="sector-card">
+            <div class="s-name">Healthcare</div>
+            <div class="s-ticker">XLV</div>
+            <div class="s-move bear">-0.64%</div>
+            <div style="font-size:10px; color:var(--muted); margin-top:4px;">Lagging — not classic defensive rotation</div>
+          </div>
+          <div class="sector-card">
+            <div class="s-name">Semiconductors</div>
+            <div class="s-ticker">SMH</div>
+            <div class="s-move bear">-0.04%</div>
+            <div style="font-size:10px; color:var(--muted); margin-top:4px;">Flat; slight drag on XLK</div>
+          </div>
+        </div>
+        <div style="margin-top:12px; font-size:12px; color:var(--muted); padding:10px 14px; background:var(--bg3); border-radius:6px; border:1px solid var(--border);">
+          <strong style="color:var(--text);">Rotation read:</strong> XLF leading suggests some risk-on tone in financials despite geopolitical overhang. XLV underperforming = not a classic defensive rotation. XLE vs. Oil divergence is the key anomaly today.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 3: BREAKING CATALYSTS -->
+  <div class="section">
+    <div class="section-header">
+      <h2>⚡ Step 3 — Breaking Catalysts</h2>
+    </div>
+    <div class="section-body">
+
+      <div class="alert-card urgent">
+        <div class="alert-header">
+          <span class="alert-ticker">🔴 US-IRAN CEASEFIRE EXPIRES TODAY</span>
+        </div>
+        <div class="alert-desc">
+          Two-week ceasefire between US and Iran expires April 21 (TODAY). Iran fired shots in Strait of Hormuz over the weekend — Trump declared ceasefire violation. Strait effectively closed since early March. Equities fell ~0.4% at open; oil ripped 5–7%. Diplomatic signals are mixed — "peace talks" uncertain.
+        </div>
+        <div class="meta-row">
+          <span>Source:</span>
+          <a href="https://www.cnbc.com/amp/2026/04/21/oil-price-iran-war-strait-hormuz-tanker-ceasefire-peace-talks.html" style="color:var(--accent); text-decoration:none;">CNBC</a>
+          &nbsp;|&nbsp;
+          <a href="https://www.nbcnews.com/business/markets/oil-prices-jump-renewed-tensions-strait-hormuz-rcna340901" style="color:var(--accent); text-decoration:none;">NBC News</a>
+        </div>
+      </div>
+
+      <div class="alert-card confirm" style="margin-top:12px;">
+        <div class="alert-header">
+          <span class="alert-ticker">🟢 US MARCH RETAIL SALES — BEAT</span>
+        </div>
+        <div class="alert-desc">
+          +1.7% MoM vs +1.4% expected (Beat). Retail trade sales up 4.2% YoY. Consumer spending resilient despite geopolitical headwinds. Positive for XLY, XLF. Data released today (rescheduled from Apr 16).
+        </div>
+        <div class="meta-row">
+          <span>Source:</span>
+          <a href="https://investinglive.com/news/us-march-retail-sales-17-vs-14-expected-20260421/" style="color:var(--accent); text-decoration:none;">InvestingLive</a>
+        </div>
+      </div>
+
+      <div class="alert-card watch" style="margin-top:12px;">
+        <div class="alert-header">
+          <span class="alert-ticker">🟡 FED CHAIR NOMINEE WARSH — SENATE HEARING</span>
+        </div>
+        <div class="alert-desc">
+          Kevin Warsh confirmation hearing before Senate Banking Committee this week. Fed rate pause probability: 99% (CME FedWatch). Odds of at least one 2026 cut: ~40% (down from 50% Friday). 10-yr Treasury: 4.24%, climbing on new geo tensions. Watch for any hawkish language = yield spike = equity pressure.
+        </div>
+      </div>
+
+      <div class="alert-card watch" style="margin-top:12px;">
+        <div class="alert-header">
+          <span class="alert-ticker">🟡 EARNINGS SEASON — TSLA REPORTS TOMORROW</span>
+        </div>
+        <div class="alert-desc">
+          20% of S&P 500 companies reporting this week. Tesla (TSLA) reports April 22 AMC — highest market impact event this week. IBM also reporting. S&P 500 forward P/E ~21 = high bar for upside surprises.
+        </div>
+        <div class="meta-row">
+          <span>Source:</span>
+          <a href="https://electrek.co/2026/04/21/tesla-tsla-q1-2026-earnings-preview-wall-street-expects-growth/" style="color:var(--accent); text-decoration:none;">Electrek — TSLA Q1 2026 Preview</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- STEP 4: OPTIONS FLOW -->
+  <div class="section">
+    <div class="section-header">
+      <h2>🐋 Step 4 — Options Flow Alerts</h2>
+    </div>
+    <div class="section-body">
+
+      <div style="font-size:12px; font-weight:600; color:var(--bear); margin-bottom:12px; letter-spacing:0.5px;">
+        ⚠️ CONSUMER DISCRETIONARY — ALL THREE WHALE ALERTS ARE BEARISH TODAY
+      </div>
+
+      <div class="options-row">
+        <div class="opt-card">
+          <div class="opt-header">
+            <span class="opt-ticker">AMZN</span>
+            <span class="opt-type bear">🔴 PUT SWEEP</span>
+          </div>
+          <div class="opt-detail">
+            Strike: <strong style="color:var(--text);">$180.00</strong><br>
+            Expiry: Jan 15, 2027 (270 days)<br>
+            Contracts: 34 &nbsp;|&nbsp; Type: <strong style="color:var(--urgent)">SWEEP</strong><br>
+            Sentiment: BEARISH
+          </div>
+          <div class="opt-premium">$32.6K premium</div>
+          <div style="font-size:10px; color:var(--muted); margin-top:6px;">Source: Benzinga Whale Alerts, Apr 21</div>
+        </div>
+        <div class="opt-card">
+          <div class="opt-header">
+            <span class="opt-ticker">SBUX</span>
+            <span class="opt-type bear">🔴 PUT</span>
+          </div>
+          <div class="opt-detail">
+            Strike: <strong style="color:var(--text);">$95.00</strong><br>
+            Expiry: Jan 15, 2027 (270 days)<br>
+            Contracts: 60 &nbsp;|&nbsp; Type: Trade<br>
+            Sentiment: BEARISH
+          </div>
+          <div class="opt-premium">$79.8K premium</div>
+          <div style="font-size:10px; color:var(--muted); margin-top:6px;">Source: Benzinga Whale Alerts, Apr 21</div>
+        </div>
+        <div class="opt-card">
+          <div class="opt-header">
+            <span class="opt-ticker">MCD</span>
+            <span class="opt-type bear">🔴 PUT</span>
+          </div>
+          <div class="opt-detail">
+            Strike: <strong style="color:var(--text);">$280.00</strong><br>
+            Expiry: May 15, 2026 (25 days)<br>
+            Contracts: 25 &nbsp;|&nbsp; Type: Trade<br>
+            Sentiment: BEARISH
+          </div>
+          <div class="opt-premium">$26.0K premium</div>
+          <div style="font-size:10px; color:var(--muted); margin-top:6px;">Source: Benzinga Whale Alerts, Apr 21</div>
+        </div>
+      </div>
+
+      <div style="margin-top:16px; padding:12px 16px; background:var(--bg3); border:1px solid var(--border); border-radius:6px; font-size:12px; color:var(--muted);">
+        <strong style="color:var(--text);">Reading:</strong> Three consumer discretionary names hit simultaneously with bearish put positioning. AMZN via SWEEP = aggressive/urgent. Jan 2027 expiry on AMZN and SBUX = medium-term bearish thesis, not just hedging. This is directional institutional positioning — not noise.
+      </div>
+
+      <hr class="divider">
+
+      <div style="font-size:12px; color:var(--muted); line-height:1.9;">
+        <strong style="color:var(--text);">VIX:</strong> Closed 17.48 on Apr 20 (down from 31.05 peak on March 27 at Iran war peak). Relatively calm BUT ceasefire expiry today could spike it.<br>
+        <strong style="color:var(--text);">TSLA Options:</strong> Elevated IV ahead of earnings tomorrow — avoid naked positions; use defined-risk structures only.<br>
+        <strong style="color:var(--text);">SPY/QQQ flow:</strong> No large institutional block confirmed today via public sources. Real-time data requires Barchart/UnusualWhales direct access.
+      </div>
+
+    </div>
+  </div>
+
+  <!-- STEP 5: POSITION CHECK -->
+  <div class="section">
+    <div class="section-header">
+      <h2>🎯 Step 5 — Position Check Signals</h2>
+    </div>
+    <div class="section-body">
+
+      <div class="alert-card urgent">
+        <div class="alert-header">
+          <span class="alert-ticker">AMD</span>
+          <span class="badge badge-urgent">🔴 URGENT</span>
+        </div>
+        <div class="alert-desc">Fresh downgrade to Hold TODAY (within last 9 hours). "Little room for disappointment." Multiples stretched post-rally. No near-term earnings catalyst. Risk/reward unfavorable.</div>
+        <div class="alert-action">→ REDUCE / EXIT LONGS</div>
+      </div>
+
+      <div class="alert-card urgent" style="margin-top:10px;">
+        <div class="alert-header">
+          <span class="alert-ticker">AMZN</span>
+          <span class="badge badge-urgent">🔴 URGENT</span>
+        </div>
+        <div class="alert-desc">Bearish institutional PUT SWEEP today ($180 Jan 2027, $32.6K, SWEEP). Smart money building medium-term bearish position. Iran-driven consumer sentiment risk compounds the thesis.</div>
+        <div class="alert-action">→ REDUCE LONGS</div>
+      </div>
+
+      <div class="alert-card urgent" style="margin-top:10px;">
+        <div class="alert-header">
+          <span class="alert-ticker">XLE / UCO — Oil Divergence</span>
+          <span class="badge badge-urgent">🔴 WATCH NOW</span>
+        </div>
+        <div class="alert-desc">Oil +6% intraday but XLE only +0.09%. Either catch-up trade developing OR ceasefire extension being priced in. Watch XLE close relative to open for confirmation of breakout vs. fade.</div>
+        <div class="alert-action">→ WATCH FOR CLOSE ABOVE OPEN — then decide</div>
+      </div>
+
+      <div class="alert-card watch" style="margin-top:10px;">
+        <div class="alert-header">
+          <span class="alert-ticker">TSLA</span>
+          <span class="badge badge-watch">🟡 WATCH</span>
+        </div>
+        <div class="alert-desc">Earnings TOMORROW AMC. Bearish setup: missed deliveries, 50K inventory overhang, energy storage collapsed, average -7.66% historical earnings surprise. High IV = options expensive. If long: consider protective puts or trim to reduce overnight gap risk.</div>
+        <div class="alert-action">→ TRIM / HEDGE — DO NOT ADD BEFORE EARNINGS</div>
+      </div>
+
+      <div class="alert-card watch" style="margin-top:10px;">
+        <div class="alert-header">
+          <span class="alert-ticker">PLTR</span>
+          <span class="badge badge-watch">🟡 WATCH</span>
+        </div>
+        <div class="alert-desc">Defense AI tailwind from Iran war contracts, FAA AI, DHS deal. Stock recovering $128→$146. Thesis intact but don't chase the gap — wait for a pullback entry.</div>
+        <div class="alert-action">→ HOLD EXISTING / WAIT FOR PULLBACK TO ADD</div>
+      </div>
+
+      <div class="alert-card watch" style="margin-top:10px;">
+        <div class="alert-header">
+          <span class="alert-ticker">MARA / COIN / IBIT</span>
+          <span class="badge badge-watch">🟡 WATCH</span>
+        </div>
+        <div class="alert-desc">BTC at $76,163 with $1.4B weekly crypto fund inflows, IBIT +$284M on Friday. BUT ceasefire expiry is a risk-off event that could pressure BTC toward $75K support. Hold if accumulating; reduce if trading the bounce.</div>
+        <div class="alert-action">→ HOLD / REDUCE ON RISK-OFF SPIKE</div>
+      </div>
+
+      <div class="alert-card confirm" style="margin-top:10px;">
+        <div class="alert-header">
+          <span class="alert-ticker">NVDA</span>
+          <span class="badge badge-confirm">🟢 CONFIRM</span>
+        </div>
+        <div class="alert-desc">Recent Buy upgrade, pre-market positive, AI partnership news intact. No reason to exit. AI momentum thesis holding.</div>
+        <div class="alert-action">→ HOLD — THESIS INTACT</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- RISK EVENTS -->
+  <div class="section">
+    <div class="section-header">
+      <h2>⏰ Risk Events — Next 2 Hours</h2>
+    </div>
+    <div class="section-body">
+      <div class="risk-event">
+        <div class="risk-time bear">NOW — Ongoing</div>
+        <div>
+          <div class="risk-label">🔴 US-Iran Ceasefire Expires TODAY</div>
+          <div class="risk-detail">Any escalation = oil spike, equity selloff, VIX spike. Mixed signals from Iran on peace talks. Highest priority risk event of the session.</div>
+        </div>
+      </div>
+      <div class="risk-event">
+        <div class="risk-time neutral-col">~2:00 PM ET</div>
+        <div>
+          <div class="risk-label">🟡 Kevin Warsh Senate Hearing Updates</div>
+          <div class="risk-detail">Fed chair nominee testimony ongoing this week. Hawkish tone = yield spike = tech/growth pressure. Rate pause 99% priced in but any surprise language moves markets.</div>
+        </div>
+      </div>
+      <div class="risk-event">
+        <div class="risk-time bear">Tomorrow After Close</div>
+        <div>
+          <div class="risk-label">🔴 TSLA Q1 2026 Earnings</div>
+          <div class="risk-detail">Highest-impact earnings event this week. Do not hold unhedged longs into tomorrow's close. Consider overnight gap risk management today.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SUMMARY -->
+  <div class="section">
+    <div class="section-header">
+      <h2>📊 Priority Summary</h2>
+    </div>
+    <div class="section-body">
+      <table>
+        <thead>
+          <tr>
+            <th>Priority</th>
+            <th>Ticker / Theme</th>
+            <th>Signal</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="badge badge-urgent">🔴 URGENT</span></td>
+            <td><span class="ticker">AMD</span></td>
+            <td style="color:var(--muted); font-size:12px;">Fresh downgrade today — stretched multiples</td>
+            <td style="color:var(--urgent); font-weight:600; font-size:12px;">REDUCE / EXIT LONGS</td>
+          </tr>
+          <tr>
+            <td><span class="badge badge-urgent">🔴 URGENT</span></td>
+            <td><span class="ticker">AMZN</span></td>
+            <td style="color:var(--muted); font-size:12px;">Bearish institutional PUT SWEEP today</td>
+            <td style="color:var(--urgent); font-weight:600; font-size:12px;">REDUCE LONGS</td>
+          </tr>
+          <tr>
+            <td><span class="badge badge-urgent">🔴 URGENT</span></td>
+            <td><span class="ticker">Iran / XLE / UCO</span></td>
+            <td style="color:var(--muted); font-size:12px;">Ceasefire expires today, oil +6% — XLE lagging</td>
+            <td style="color:var(--urgent); font-weight:600; font-size:12px;">WATCH XLE catch-up or fade</td>
+          </tr>
+          <tr>
+            <td><span class="badge badge-watch">🟡 WATCH</span></td>
+            <td><span class="ticker">TSLA</span></td>
+            <td style="color:var(--muted); font-size:12px;">Earnings tomorrow AMC — high uncertainty</td>
+            <td style="color:var(--watch); font-weight:600; font-size:12px;">TRIM / HEDGE overnight</td>
+          </tr>
+          <tr>
+            <td><span class="badge badge-watch">🟡 WATCH</span></td>
+            <td><span class="ticker">PLTR</span></td>
+            <td style="color:var(--muted); font-size:12px;">Defense AI tailwind, recovering to $146</td>
+            <td style="color:var(--watch); font-weight:600; font-size:12px;">HOLD / WAIT FOR PULLBACK</td>
+          </tr>
+          <tr>
+            <td><span class="badge badge-watch">🟡 WATCH</span></td>
+            <td><span class="ticker">MARA / COIN</span></td>
+            <td style="color:var(--muted); font-size:12px;">Crypto inflows positive, BTC $76K — ceasefire risk</td>
+            <td style="color:var(--watch); font-weight:600; font-size:12px;">HOLD, reduce on risk-off spike</td>
+          </tr>
+          <tr>
+            <td><span class="badge badge-confirm">🟢 CONFIRM</span></td>
+            <td><span class="ticker">NVDA</span></td>
+            <td style="color:var(--muted); font-size:12px;">AI momentum intact, recent upgrade</td>
+            <td style="color:var(--confirm); font-weight:600; font-size:12px;">HOLD — thesis intact</td>
+          </tr>
+          <tr>
+            <td><span class="badge badge-noise">⚪ NOISE</span></td>
+            <td><span class="ticker">META / SOFI / SNDK</span></td>
+            <td style="color:var(--muted); font-size:12px;">No verified catalyst today</td>
+            <td style="color:var(--noise); font-weight:600; font-size:12px;">NO ACTION</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="footer">
+    <div style="margin-bottom:8px; font-weight:700; color:var(--text);">Sources</div>
+    <a href="https://electrek.co/2026/04/21/tesla-tsla-q1-2026-earnings-preview-wall-street-expects-growth/">Electrek — TSLA Q1 Preview</a> &nbsp;|&nbsp;
+    <a href="https://www.cnbc.com/amp/2026/04/21/oil-price-iran-war-strait-hormuz-tanker-ceasefire-peace-talks.html">CNBC — Oil/Iran</a> &nbsp;|&nbsp;
+    <a href="https://www.benzinga.com/insights/options/26/04/51921686/3-consumer-discretionary-stocks-with-whale-alerts-in-todays-session">Benzinga — Whale Alerts</a> &nbsp;|&nbsp;
+    <a href="https://investinglive.com/news/us-march-retail-sales-17-vs-14-expected-20260421/">InvestingLive — Retail Sales</a> &nbsp;|&nbsp;
+    <a href="https://www.foreignpolicyjournal.com/2026/04/20/palantir-pltr-stock-price-climbs-back-toward-146-as-faa-work-and-iran-war-contracts-reinforce-government-moat/">FPJ — PLTR</a> &nbsp;|&nbsp;
+    <a href="https://seekingalpha.com/article/4892146-amd-dont-chase-now-even-if-you-missed-the-ride-downgrade">Seeking Alpha — AMD Downgrade</a> &nbsp;|&nbsp;
+    <a href="https://www.coindesk.com/daybook-us/2026/04/21/bitcoin-trades-above-a-make-or-break-level-ahead-of-warsh-hearing">CoinDesk — BTC</a>
+    <div style="margin-top:12px; color:var(--noise);">Auto-generated by Claude | April 21, 2026 | For informational purposes only — not financial advice</div>
+  </div>
+
+</div>
+</body>
+</html>
