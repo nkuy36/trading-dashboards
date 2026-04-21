@@ -1,0 +1,1159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Daily Theme Scanner — 2026-04-21</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0e17;
+    --bg2: #0f1421;
+    --bg3: #151c2e;
+    --border: #1e2d4a;
+    --text: #e2e8f0;
+    --text-dim: #8899aa;
+    --text-muted: #4a5a6e;
+    --high: #10b981;
+    --medium: #f59e0b;
+    --low: #ef4444;
+    --accent: #3b82f6;
+    --accent2: #8b5cf6;
+    --ticker: #60a5fa;
+    --red: #ef4444;
+    --yellow: #fbbf24;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    line-height: 1.7;
+    padding: 0;
+    min-height: 100vh;
+  }
+
+  .top-bar {
+    background: var(--bg3);
+    border-bottom: 1px solid var(--border);
+    padding: 12px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .top-bar-left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .logo {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    color: var(--accent);
+    text-transform: uppercase;
+  }
+
+  .date-badge {
+    font-size: 10px;
+    color: var(--text-dim);
+    background: var(--bg);
+    border: 1px solid var(--border);
+    padding: 3px 10px;
+    border-radius: 3px;
+    letter-spacing: 0.08em;
+  }
+
+  .status-badge {
+    font-size: 10px;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 3px;
+    letter-spacing: 0.08em;
+    background: rgba(16, 185, 129, 0.12);
+    color: var(--high);
+    border: 1px solid rgba(16, 185, 129, 0.3);
+  }
+
+  .container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 40px 32px 80px;
+  }
+
+  .report-header {
+    margin-bottom: 48px;
+    padding-bottom: 32px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .report-title {
+    font-size: 26px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    color: var(--text);
+    margin-bottom: 8px;
+  }
+
+  .report-title span {
+    color: var(--accent);
+  }
+
+  .report-meta {
+    display: flex;
+    gap: 24px;
+    margin-top: 12px;
+    flex-wrap: wrap;
+  }
+
+  .report-meta-item {
+    font-size: 11px;
+    color: var(--text-dim);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .report-meta-item::before {
+    content: '▸';
+    color: var(--accent);
+    font-size: 9px;
+  }
+
+  .section {
+    margin-bottom: 56px;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 28px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .section-number {
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--accent);
+    letter-spacing: 0.15em;
+    background: rgba(59, 130, 246, 0.1);
+    border: 1px solid rgba(59, 130, 246, 0.2);
+    padding: 3px 8px;
+    border-radius: 2px;
+  }
+
+  .section-title {
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--text);
+  }
+
+  .card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 24px 28px;
+    margin-bottom: 20px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 3px;
+    height: 100%;
+  }
+
+  .card.conviction-HIGH::before { background: var(--high); }
+  .card.conviction-MEDIUM::before { background: var(--medium); }
+  .card.conviction-LOW::before { background: var(--low); }
+  .card.signal-STRONG::before { background: var(--high); }
+  .card.signal-MODERATE::before { background: var(--medium); }
+  .card.signal-WEAK::before { background: var(--low); }
+  .card.catalyst::before { background: var(--accent2); }
+
+  .card-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 16px;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+
+  .card-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text);
+    letter-spacing: 0.02em;
+  }
+
+  .badges {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  .badge {
+    font-size: 10px;
+    font-weight: 700;
+    padding: 3px 9px;
+    border-radius: 3px;
+    letter-spacing: 0.1em;
+    white-space: nowrap;
+  }
+
+  .badge-HIGH {
+    background: rgba(16, 185, 129, 0.12);
+    color: var(--high);
+    border: 1px solid rgba(16, 185, 129, 0.3);
+  }
+
+  .badge-MEDIUM {
+    background: rgba(245, 158, 11, 0.12);
+    color: var(--medium);
+    border: 1px solid rgba(245, 158, 11, 0.3);
+  }
+
+  .badge-LOW {
+    background: rgba(239, 68, 68, 0.12);
+    color: var(--low);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+  }
+
+  .badge-STRONG { background: rgba(16, 185, 129, 0.12); color: var(--high); border: 1px solid rgba(16, 185, 129, 0.3); }
+  .badge-MODERATE { background: rgba(245, 158, 11, 0.12); color: var(--medium); border: 1px solid rgba(245, 158, 11, 0.3); }
+  .badge-WEAK { background: rgba(239, 68, 68, 0.12); color: var(--low); border: 1px solid rgba(239, 68, 68, 0.3); }
+
+  .badge-stage {
+    background: rgba(139, 92, 246, 0.1);
+    color: #a78bfa;
+    border: 1px solid rgba(139, 92, 246, 0.2);
+  }
+
+  .badge-type {
+    background: rgba(59, 130, 246, 0.1);
+    color: #93c5fd;
+    border: 1px solid rgba(59, 130, 246, 0.2);
+  }
+
+  .badge-date {
+    background: rgba(239, 68, 68, 0.1);
+    color: #fca5a5;
+    border: 1px solid rgba(239, 68, 68, 0.25);
+  }
+
+  .meta-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 12px;
+    margin: 16px 0;
+  }
+
+  .meta-item {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 10px 14px;
+  }
+
+  .meta-label {
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 6px;
+  }
+
+  .meta-value {
+    font-size: 12px;
+    color: var(--text);
+    line-height: 1.5;
+  }
+
+  .ticker-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .ticker {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--ticker);
+    background: rgba(96, 165, 250, 0.08);
+    border: 1px solid rgba(96, 165, 250, 0.2);
+    padding: 2px 8px;
+    border-radius: 3px;
+    letter-spacing: 0.05em;
+  }
+
+  .ticker.loser {
+    color: #f87171;
+    background: rgba(248, 113, 113, 0.08);
+    border-color: rgba(248, 113, 113, 0.2);
+  }
+
+  .summary {
+    font-size: 12.5px;
+    color: var(--text-dim);
+    line-height: 1.8;
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+  }
+
+  .summary strong {
+    color: var(--text);
+  }
+
+  .evidence-list {
+    list-style: none;
+    padding: 0;
+  }
+
+  .evidence-list li {
+    font-size: 12px;
+    color: var(--text-dim);
+    padding: 6px 0;
+    padding-left: 16px;
+    position: relative;
+    border-bottom: 1px solid rgba(30, 45, 74, 0.5);
+    line-height: 1.6;
+  }
+
+  .evidence-list li:last-child { border-bottom: none; }
+
+  .evidence-list li::before {
+    content: '→';
+    position: absolute;
+    left: 0;
+    color: var(--accent);
+    font-size: 11px;
+  }
+
+  .evidence-list li a {
+    color: var(--accent);
+    text-decoration: none;
+    font-size: 10px;
+    margin-left: 6px;
+    opacity: 0.8;
+  }
+
+  .evidence-list li a:hover { opacity: 1; text-decoration: underline; }
+
+  .trade-idea {
+    background: rgba(16, 185, 129, 0.05);
+    border: 1px solid rgba(16, 185, 129, 0.15);
+    border-radius: 4px;
+    padding: 10px 14px;
+    margin-top: 12px;
+    font-size: 12px;
+    color: var(--high);
+  }
+
+  .trade-idea::before {
+    content: '💡 TRADE IDEA: ';
+    font-weight: 700;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+  }
+
+  .action-section {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 28px;
+  }
+
+  .action-title {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text);
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .action-subsection {
+    margin-bottom: 24px;
+  }
+
+  .action-subtitle {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 12px;
+  }
+
+  .top-tickers-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+
+  .top-ticker-card {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    padding: 14px;
+    text-align: center;
+  }
+
+  .top-ticker-card .ticker-sym {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--ticker);
+    display: block;
+    margin-bottom: 4px;
+  }
+
+  .top-ticker-card .ticker-reason {
+    font-size: 10px;
+    color: var(--text-dim);
+    line-height: 1.5;
+  }
+
+  .action-list {
+    list-style: none;
+    padding: 0;
+  }
+
+  .action-list li {
+    font-size: 12px;
+    color: var(--text-dim);
+    padding: 8px 0;
+    padding-left: 20px;
+    position: relative;
+    border-bottom: 1px solid rgba(30, 45, 74, 0.4);
+    line-height: 1.6;
+  }
+
+  .action-list li:last-child { border-bottom: none; }
+
+  .action-list li::before {
+    content: '▸';
+    position: absolute;
+    left: 0;
+    color: var(--high);
+    font-size: 12px;
+  }
+
+  .action-list li strong {
+    color: var(--text);
+  }
+
+  .calendar-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 8px;
+  }
+
+  .calendar-table th {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    text-align: left;
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg3);
+  }
+
+  .calendar-table td {
+    padding: 9px 12px;
+    font-size: 12px;
+    color: var(--text-dim);
+    border-bottom: 1px solid rgba(30, 45, 74, 0.4);
+    vertical-align: middle;
+  }
+
+  .calendar-table tr:last-child td { border-bottom: none; }
+
+  .calendar-table td.highlight {
+    color: var(--red);
+    font-weight: 700;
+  }
+
+  .calendar-table td .event-name {
+    color: var(--text);
+  }
+
+  .alert-banner {
+    background: rgba(239, 68, 68, 0.06);
+    border: 1px solid rgba(239, 68, 68, 0.2);
+    border-radius: 5px;
+    padding: 14px 20px;
+    margin-bottom: 32px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 12px;
+    color: #fca5a5;
+  }
+
+  .alert-icon { font-size: 16px; }
+
+  .footer {
+    margin-top: 60px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+    font-size: 10px;
+    color: var(--text-muted);
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  @media (max-width: 768px) {
+    .container { padding: 20px 16px 60px; }
+    .top-bar { padding: 10px 16px; }
+    .meta-grid { grid-template-columns: 1fr; }
+    .top-tickers-row { grid-template-columns: 1fr; }
+    .report-title { font-size: 20px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <div class="top-bar-left">
+    <div class="logo">📊 Daily Theme Scanner</div>
+    <div class="date-badge">2026-04-21 | PRE-MARKET</div>
+  </div>
+  <div class="status-badge">LIVE SCAN COMPLETE</div>
+</div>
+
+<div class="container">
+
+  <!-- HEADER -->
+  <div class="report-header">
+    <div class="report-title">Daily Theme Scanner — <span>April 21, 2026</span></div>
+    <div style="font-size:12px;color:var(--text-dim);margin-top:6px;">Hedge Fund Thematic Research · Pre-Market Intelligence</div>
+    <div class="report-meta">
+      <div class="report-meta-item">5 Emerging Narratives</div>
+      <div class="report-meta-item">5 Earnings Signals</div>
+      <div class="report-meta-item">5 Upcoming Catalysts</div>
+      <div class="report-meta-item">S&amp;P 500 Q1 Beat Rate: 88%</div>
+      <div class="report-meta-item">Brent Crude: ~$130/bbl</div>
+    </div>
+  </div>
+
+  <!-- ALERT -->
+  <div class="alert-banner">
+    <div class="alert-icon">🔴</div>
+    <div><strong>HIGH PRIORITY:</strong> US-Iran ceasefire expires <strong>April 22</strong>. Iran has NOT confirmed delegation to peace talks. Ceasefire collapse = oil spike to $150-200/bbl. This is the #1 market risk in the next 24 hours.</div>
+  </div>
+
+  <!-- SECTION 1: NARRATIVES -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-number">01</div>
+      <div class="section-title">Emerging Narratives</div>
+    </div>
+
+    <!-- Narrative 1 -->
+    <div class="card conviction-HIGH">
+      <div class="card-header">
+        <div class="card-title">1. Iran Ceasefire Cliff &amp; Oil Regime Shift</div>
+        <div class="badges">
+          <span class="badge badge-HIGH">HIGH CONVICTION</span>
+          <span class="badge badge-stage">DEVELOPING</span>
+          <span class="badge badge-date">⚠ EXPIRES APR 22</span>
+        </div>
+      </div>
+
+      <div class="meta-grid">
+        <div class="meta-item">
+          <div class="meta-label">Primary Beneficiaries</div>
+          <div class="meta-value">
+            <div class="ticker-list">
+              <span class="ticker">XOM</span><span class="ticker">CVX</span><span class="ticker">COP</span><span class="ticker">OXY</span><span class="ticker">HAL</span><span class="ticker">SLB</span><span class="ticker">LMT</span><span class="ticker">RTX</span>
+            </div>
+          </div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Losers / Disrupted</div>
+          <div class="meta-value">
+            <div class="ticker-list">
+              <span class="ticker loser">DAL</span><span class="ticker loser">UAL</span><span class="ticker loser">AAL</span><span class="ticker loser">PG</span><span class="ticker loser">LYB</span><span class="ticker loser">DOW</span>
+            </div>
+          </div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Timeline</div>
+          <div class="meta-value">Immediate — Q1/Q2 guidance revisions underway</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Oil Level</div>
+          <div class="meta-value" style="color:var(--low);font-weight:700;">Brent ~$130/bbl (+$60 vs pre-conflict)</div>
+        </div>
+      </div>
+
+      <div class="meta-label" style="margin-bottom:8px;margin-top:16px;">Evidence</div>
+      <ul class="evidence-list">
+        <li>US-Iran ceasefire (est. April 8) expires April 22. Iran state media IRNA explicitly stated Tehran will NOT send delegation to Pakistan talks. <a href="https://www.cnbc.com/2026/04/21/oil-price-iran-war-strait-hormuz-tanker-ceasefire-peace-talks.html">[CNBC]</a></li>
+        <li>IEA April 2026 Report: Strait of Hormuz closure = "largest supply disruption in the history of the global oil market" — ~13 mb/d disrupted; global supply at 97 mb/d. <a href="https://www.iea.org/reports/oil-market-report-april-2026">[IEA]</a></li>
+        <li>US Navy seized Iranian-flagged cargo ship in Gulf of Oman days before ceasefire deadline, inflaming rhetoric and spiking oil. <a href="https://www.washingtonpost.com/world/2026/04/19/trump-iran-war-hormuz-strait-negotiations/">[Washington Post]</a></li>
+      </ul>
+
+      <div class="summary">
+        The ceasefire expires in &lt;24 hours. Futures are +0.5% — the market is pricing ~65%+ probability of extension. That appears optimistic. A collapse would be a violent shock: airlines (fuel cost), petrochemicals (feedstock), and consumer staples (freight/input costs) would reprice violently lower. A genuine peace resolution would compress oil $30-40/bbl and be a significant equity tailwind. The asymmetry here is extreme. The consensus appears to be positioned for a middle outcome that may not materialize.
+      </div>
+    </div>
+
+    <!-- Narrative 2 -->
+    <div class="card conviction-HIGH">
+      <div class="card-header">
+        <div class="card-title">2. AI Infrastructure Capex Supercycle — Beneficiary Divergence</div>
+        <div class="badges">
+          <span class="badge badge-HIGH">HIGH CONVICTION</span>
+          <span class="badge badge-stage">MATURING</span>
+        </div>
+      </div>
+      <div class="meta-grid">
+        <div class="meta-item">
+          <div class="meta-label">Primary Beneficiaries</div>
+          <div class="meta-value"><div class="ticker-list"><span class="ticker">NVDA</span><span class="ticker">AMD</span><span class="ticker">SMCI</span><span class="ticker">ANET</span><span class="ticker">VRT</span><span class="ticker">AVGO</span></div></div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Secondary Beneficiaries</div>
+          <div class="meta-value"><div class="ticker-list"><span class="ticker">VST</span><span class="ticker">CEG</span><span class="ticker">NUE</span><span class="ticker">EQIX</span><span class="ticker">DLR</span></div></div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">2026 Hyperscaler Capex</div>
+          <div class="meta-value" style="color:var(--high);font-weight:700;">$650–700B combined (↑36% YoY)</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Timeline</div>
+          <div class="meta-value">Q1–Q2 2026 earnings (printing now)</div>
+        </div>
+      </div>
+      <ul class="evidence-list">
+        <li>Combined hyperscaler capex (AMZN, MSFT, GOOGL, META) on pace for $650-700B in 2026 — 36% increase over 2025, with ~75% ($450B) directly tied to AI infrastructure. <a href="https://futurumgroup.com/insights/ai-capex-2026-the-690b-infrastructure-sprint/">[Futurum]</a></li>
+        <li>Azure grew 39% YoY (down from 40%) with guidance calling for further deceleration. Stock sold off post-earnings. <a href="https://www.cnbc.com/2026/02/06/google-microsoft-meta-amazon-ai-cash.html">[CNBC]</a></li>
+        <li>Alphabet guided $175-185B in FY2026 capex (nearly 2x 2025). Google Cloud consensus &gt;50% YoY growth. Google Cloud Next runs April 22–24. <a href="https://meyka.com/blog/googl-alphabet-inc-earnings-preview-april-22-2026-2104/">[Meyka]</a></li>
+      </ul>
+      <div class="summary">
+        The divergence story is less priced-in than the headline capex numbers. Azure deceleration vs. Google Cloud acceleration is setting up an intra-cloud rotation. NVDA is the clean picks-and-shovels play: regardless of which hyperscaler wins, they all need GPUs. Watch GOOGL's Cloud growth rate tonight — if it prints &gt;55%, it directly pressures MSFT's AI cloud narrative.
+      </div>
+    </div>
+
+    <!-- Narrative 3 -->
+    <div class="card conviction-HIGH">
+      <div class="card-header">
+        <div class="card-title">3. Managed Care Structural Rebound</div>
+        <div class="badges">
+          <span class="badge badge-HIGH">HIGH CONVICTION</span>
+          <span class="badge badge-stage">DEVELOPING</span>
+        </div>
+      </div>
+      <div class="meta-grid">
+        <div class="meta-item">
+          <div class="meta-label">Primary Beneficiaries</div>
+          <div class="meta-value"><div class="ticker-list"><span class="ticker">UNH</span><span class="ticker">HUM</span><span class="ticker">CVS</span><span class="ticker">ELV</span><span class="ticker">CNC</span></div></div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">UNH Q1 MBR</div>
+          <div class="meta-value" style="color:var(--high);font-weight:700;">83.9% actual vs 85.5% expected ✓</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">UNH Q1 EPS</div>
+          <div class="meta-value" style="color:var(--high);">$7.23 actual vs $6.57 expected (+10%)</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">MA Rate Hike 2027</div>
+          <div class="meta-value" style="color:var(--high);">+2.48% (vs 0.09% proposed)</div>
+        </div>
+      </div>
+      <ul class="evidence-list">
+        <li>UNH Q1: EPS $7.23 vs $6.57 est; Revenue $111.72B vs $109.57B est. MBR 83.9% vs 85.5% expected. Guidance raised to &gt;$18.25/share. <a href="https://www.unitedhealthgroup.com/newsroom/2026/2026-04-21-uhg-reports-first-quarter-2026-results.html">[UNH IR]</a></li>
+        <li>Trump admin finalized Medicare Advantage 2027 rate hike at 2.48% — far above 0.09% proposed. HUM +13%, CVS +7%, UNH +8% post-announcement. <a href="https://www.cnbc.com/2026/04/06/trump-medicare-advantage.html">[CNBC]</a></li>
+        <li>Sector had been decimated in 2025 by elevated utilization; UNH Q1 confirms normalization thesis is materializing faster than consensus expected. <a href="https://www.statnews.com/2026/04/06/medicare-advantage-rates-2027-unitedhealth-humana-cvs-health-stocks-climb/">[Stat News]</a></li>
+      </ul>
+      <div class="summary">
+        Three catalysts have now stacked in managed care's favor: a dramatic MA rate revision, UNH Q1 confirming medical cost normalization, and the Trump administration's policy tilt toward private insurers. HUM has the most earnings recovery leverage and has not fully recovered to 2024 levels. ELV has not yet reported — its numbers will either confirm or challenge the thesis. Key risk: if utilization normalization proves temporary.
+      </div>
+    </div>
+
+    <!-- Narrative 4 -->
+    <div class="card conviction-MEDIUM">
+      <div class="card-header">
+        <div class="card-title">4. Fed Chair Transition — Stagflation Trap</div>
+        <div class="badges">
+          <span class="badge badge-MEDIUM">MEDIUM CONVICTION</span>
+          <span class="badge badge-stage">DEVELOPING</span>
+        </div>
+      </div>
+      <div class="meta-grid">
+        <div class="meta-item">
+          <div class="meta-label">Stagflation Hedges</div>
+          <div class="meta-value"><div class="ticker-list"><span class="ticker">GLD</span><span class="ticker">SLV</span><span class="ticker">TIP</span><span class="ticker">JPM</span><span class="ticker">BAC</span></div></div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Losers</div>
+          <div class="meta-value"><div class="ticker-list"><span class="ticker loser">TLT</span><span class="ticker loser">VNQ</span><span class="ticker loser">ARKK</span></div></div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Fed Chair Transition</div>
+          <div class="meta-value">May 2026 — Warsh (nominee)</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Rate Cut Consensus</div>
+          <div class="meta-value" style="color:var(--medium);">1-2 cuts H2 2026 (now in doubt)</div>
+        </div>
+      </div>
+      <ul class="evidence-list">
+        <li>Warsh is reportedly the Fed Chair nominee; the transition is "messier than expected" given Iran-driven inflation re-acceleration. <a href="https://www.axios.com/2026/04/15/fed-powell-warsh-interest-rates">[Axios]</a></li>
+        <li>Powell's term expires May 2026; consensus previously priced 1-2 H2 cuts — now uncertain with oil &gt;$95 (Brent $130). <a href="https://fortune.com/2026/02/11/powell-parting-fed-gift-rate-cuts-unemployment-reports/">[Fortune]</a></li>
+        <li>Q2 payrolls expected to average just 50,000/month (vs ~150,000 in Q4 2025) — labor weakness while inflation rises = stagflation. <a href="https://www.jpmorgan.com/insights/global-research/economy/economic-trends">[J.P. Morgan]</a></li>
+      </ul>
+      <div class="summary">
+        Warsh arriving at the exact moment when oil-driven inflation is re-accelerating creates a policy trap. The political dimension (Trump demanding cuts, Warsh historically hawkish) could produce a public standoff that historically creates bond/dollar volatility. Long gold, short TLT is the cleanest hedge. The 10-year yield does not currently compensate for this risk.
+      </div>
+    </div>
+
+    <!-- Narrative 5 -->
+    <div class="card conviction-MEDIUM">
+      <div class="card-header">
+        <div class="card-title">5. Tariff Pass-Through — Consumer Margin Squeeze</div>
+        <div class="badges">
+          <span class="badge badge-MEDIUM">MEDIUM CONVICTION</span>
+          <span class="badge badge-stage">MATURING</span>
+          <span class="badge badge-date">July 24 Cliff</span>
+        </div>
+      </div>
+      <div class="meta-grid">
+        <div class="meta-item">
+          <div class="meta-label">Domestic Beneficiaries</div>
+          <div class="meta-value"><div class="ticker-list"><span class="ticker">X</span><span class="ticker">NUE</span><span class="ticker">COST</span><span class="ticker">WMT</span></div></div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Exposed / Losers</div>
+          <div class="meta-value"><div class="ticker-list"><span class="ticker loser">AAPL</span><span class="ticker loser">NKE</span><span class="ticker loser">LULU</span><span class="ticker loser">PG</span><span class="ticker loser">MCD</span></div></div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Current Tariff Level</div>
+          <div class="meta-value">10% global baseline (until July 24)</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Consumer Tariff Share</div>
+          <div class="meta-value" style="color:var(--low);">~55% of total tariff costs</div>
+        </div>
+      </div>
+      <ul class="evidence-list">
+        <li>P&G raised prices on 25% of products; tariffs = $1B annual impact and 5-point EPS headwind for FY2026. <a href="https://finance.yahoo.com/news/commentary-trumps-trade-war-is-hurting-most-sectors-of-the-economy-191706763.html">[Yahoo Finance]</a></li>
+        <li>Global 10% baseline tariff locked in for 150 days; expires July 24, 2026 with threats to raise to 15%. <a href="https://taxfoundation.org/research/all/federal/trump-tariffs-trade-war/">[Tax Foundation]</a></li>
+        <li>IMF April 2026 GFSR flags tariff-driven inflation compounding the Hormuz oil shock, raising stagflation probability. <a href="https://www.imf.org/en/publications/gfsr/issues/2026/04/14/global-financial-stability-report-april-2026">[IMF]</a></li>
+      </ul>
+      <div class="summary">
+        Tariff pass-through is now confirmed in earnings. July 24 is the next escalation cliff — companies with &gt;80% China manufacturing (AAPL) face a potential margin disaster if rates go to 15%. Watch Q1 earnings calls for any company pre-announcing price increases or supply chain shifts; it's the best leading indicator of who's most exposed.
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 2: EARNINGS SIGNALS -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-number">02</div>
+      <div class="section-title">Earnings Signals</div>
+    </div>
+
+    <!-- Signal 1 -->
+    <div class="card signal-STRONG">
+      <div class="card-header">
+        <div class="card-title">Signal 1: Managed Care Utilization Normalization</div>
+        <div class="badges">
+          <span class="badge badge-STRONG">STRONG</span>
+          <span class="badge badge-type">Guidance Change + Recurring Theme</span>
+        </div>
+      </div>
+      <div class="meta-grid">
+        <div class="meta-item">
+          <div class="meta-label">Companies</div>
+          <div class="meta-value"><div class="ticker-list"><span class="ticker">UNH</span><span class="ticker">HUM</span><span class="ticker">CVS</span><span class="ticker">ELV</span></div></div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Implication</div>
+          <div class="meta-value">Sector re-rating justified; utilization spike is over</div>
+        </div>
+      </div>
+      <div class="trade-idea">Long HUM (most beaten-down, most recovery leverage), Long ELV ahead of earnings for confirmation read-through.</div>
+      <div class="summary">UNH's MBR of 83.9% vs 85.5% consensus is a significant positive surprise that confirms the medical cost normalization thesis. Guidance raised to &gt;$18.25/share demonstrates management conviction. Read-through for HUM is highly constructive — it had even more MA utilization exposure and hasn't yet recovered to pre-2025 levels.</div>
+    </div>
+
+    <!-- Signal 2 -->
+    <div class="card signal-MODERATE">
+      <div class="card-header">
+        <div class="card-title">Signal 2: Azure Deceleration vs. Google Cloud Acceleration</div>
+        <div class="badges">
+          <span class="badge badge-MODERATE">MODERATE</span>
+          <span class="badge badge-type">Language Shift + Price Anomaly</span>
+        </div>
+      </div>
+      <div class="meta-grid">
+        <div class="meta-item">
+          <div class="meta-label">Companies</div>
+          <div class="meta-value"><div class="ticker-list"><span class="ticker">MSFT</span><span class="ticker">GOOGL</span><span class="ticker">AMZN</span></div></div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Azure Growth</div>
+          <div class="meta-value" style="color:var(--medium);">39% (↓ from 40%, guiding lower)</div>
+        </div>
+      </div>
+      <div class="trade-idea">Pair trade: Long GOOGL into earnings on Cloud acceleration thesis; hedge with MSFT (put spread) on Azure deceleration signal.</div>
+      <div class="summary">Azure decelerating from 40% to 39% with further guidance cuts is subtle but important. Tables may be turning in the cloud AI race — Alphabet's Cloud was growing slower than Azure just 12 months ago. Google Cloud Next runs April 22–24; product announcements could pre-move GOOGL before the earnings print.</div>
+    </div>
+
+    <!-- Signal 3 -->
+    <div class="card signal-MODERATE">
+      <div class="card-header">
+        <div class="card-title">Signal 3: S&amp;P 500 Beat Rate Historically Elevated</div>
+        <div class="badges">
+          <span class="badge badge-MODERATE">MODERATE</span>
+          <span class="badge badge-type">Recurring Theme</span>
+        </div>
+      </div>
+      <div class="meta-grid">
+        <div class="meta-item">
+          <div class="meta-label">Beat Rate (EPS)</div>
+          <div class="meta-value" style="color:var(--high);font-weight:700;">88% (vs 78% 5yr avg)</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Earnings Surprise Magnitude</div>
+          <div class="meta-value" style="color:var(--high);">+10.8% (vs 7.3% 5yr avg)</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Blended EPS Growth Q1</div>
+          <div class="meta-value">+13.2% YoY (6th consecutive double-digit)</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Financials Beat Rate</div>
+          <div class="meta-value" style="color:var(--high);">20/21 companies (95%)</div>
+        </div>
+      </div>
+      <div class="trade-idea">Fade Q2 guide-down companies aggressively — the market will punish Q2 misses with outsized moves given elevated Q1 expectations.</div>
+      <div class="summary">Q1 2026 is one of the strongest earnings seasons on record. The risk is that this sets an unrealistic bar for Q2, which faces fresh headwinds from oil-driven inflation, tariff escalation, and payroll softening. Any company guiding Q2 below Q1 run-rate will face disproportionate selling pressure.</div>
+    </div>
+
+    <!-- Signal 4 -->
+    <div class="card signal-MODERATE">
+      <div class="card-header">
+        <div class="card-title">Signal 4: Tesla Delivery Miss Pre-Announces Ugly Q1</div>
+        <div class="badges">
+          <span class="badge badge-MODERATE">MODERATE</span>
+          <span class="badge badge-type">Pre-Announcement / Guidance</span>
+          <span class="badge badge-date">Reports Apr 22</span>
+        </div>
+      </div>
+      <div class="meta-grid">
+        <div class="meta-item">
+          <div class="meta-label">Companies</div>
+          <div class="meta-value"><div class="ticker-list"><span class="ticker">TSLA</span><span class="ticker loser">RIVN</span><span class="ticker loser">NIO</span></div></div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Q1 Deliveries</div>
+          <div class="meta-value" style="color:var(--medium);">358,023 (vs 365K consensus)</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Energy Storage</div>
+          <div class="meta-value" style="color:var(--low);">8.8 GWh (↓38% QoQ — halved)</div>
+        </div>
+      </div>
+      <div class="trade-idea">Short TSLA post-earnings if FSD subscriber growth or Robotaxi data disappoints. Long on any Robotaxi operational upside surprise.</div>
+      <div class="summary">Deliveries missed and energy storage nearly halved — the automotive bull case is thin. The entire thesis rests on Robotaxi/AI, which management must now substantiate with real operational data. If Robotaxi disclosure is vague, the April 22 call is likely a sell-the-news event.</div>
+    </div>
+
+    <!-- Signal 5 -->
+    <div class="card signal-STRONG">
+      <div class="card-header">
+        <div class="card-title">Signal 5: Energy Sector Re-Rating as Structural Beneficiary</div>
+        <div class="badges">
+          <span class="badge badge-STRONG">STRONG</span>
+          <span class="badge badge-type">Sector Read-Through</span>
+        </div>
+      </div>
+      <div class="meta-grid">
+        <div class="meta-item">
+          <div class="meta-label">Primary</div>
+          <div class="meta-value"><div class="ticker-list"><span class="ticker">XOM</span><span class="ticker">CVX</span><span class="ticker">COP</span><span class="ticker">OXY</span></div></div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Oil Services</div>
+          <div class="meta-value"><div class="ticker-list"><span class="ticker">HAL</span><span class="ticker">SLB</span><span class="ticker">BKR</span></div></div>
+        </div>
+      </div>
+      <div class="trade-idea">Overweight integrated majors (XOM, CVX) for cash flow generation at $100+ oil. Add oil services (HAL, SLB) if ceasefire fails — they benefit from emergency drilling expansion outside the Middle East.</div>
+      <div class="summary">At $130/bbl Brent, energy companies are in extraordinary cash generation mode. XOM and CVX trade at undemanding FCF multiples at these prices. The longer the Hormuz disruption continues, the more capital flows to US shale, Canada oil sands, and deepwater. The structural case for energy overweight is strong even on a 6-month view.</div>
+    </div>
+  </div>
+
+  <!-- SECTION 3: CATALYST MAP -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-number">03</div>
+      <div class="section-title">Upcoming Catalysts</div>
+    </div>
+
+    <!-- Catalyst 1 -->
+    <div class="card catalyst">
+      <div class="card-header">
+        <div class="card-title">Catalyst 1: US-Iran Ceasefire Expiry</div>
+        <div class="badges">
+          <span class="badge badge-date">🔴 APR 22 — TOMORROW</span>
+          <span class="badge badge-LOW">CONSENSUS COMPLACENT</span>
+        </div>
+      </div>
+      <div class="meta-grid">
+        <div class="meta-item">
+          <div class="meta-label">Consensus View</div>
+          <div class="meta-value">Muddle-through extension; partial Hormuz reopening</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Surprise Scenario</div>
+          <div class="meta-value" style="color:var(--low);">Talks collapse; oil spikes $150–200/bbl</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Long Exposure</div>
+          <div class="meta-value"><div class="ticker-list"><span class="ticker">XOM</span><span class="ticker">CVX</span><span class="ticker">COP</span><span class="ticker">LMT</span><span class="ticker">RTX</span></div></div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Short Exposure</div>
+          <div class="meta-value"><div class="ticker-list"><span class="ticker loser">DAL</span><span class="ticker loser">UAL</span><span class="ticker loser">AAL</span><span class="ticker loser">PG</span></div></div>
+        </div>
+      </div>
+      <div class="summary">This is the single highest-stakes near-term catalyst. Futures (+0.5%) imply ~65%+ probability of resolution — but Iranian state media explicitly denied sending a delegation. The US seizing an Iranian vessel days before the deadline further inflamed tensions. A ceasefire collapse would produce a violent risk-off flush: airlines, petrochemicals, and global growth expectations would reprice simultaneously.</div>
+    </div>
+
+    <!-- Catalyst 2 -->
+    <div class="card catalyst">
+      <div class="card-header">
+        <div class="card-title">Catalyst 2: Alphabet &amp; Tesla Q1 2026 Earnings</div>
+        <div class="badges">
+          <span class="badge badge-date">APR 22 — AFTER CLOSE</span>
+        </div>
+      </div>
+      <div class="meta-grid">
+        <div class="meta-item">
+          <div class="meta-label">GOOGL Consensus</div>
+          <div class="meta-value">EPS $2.68 / Rev $106.88B / Cloud &gt;50% growth</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">TSLA Consensus</div>
+          <div class="meta-value">EPS $0.37 / Rev $22.71B (bar is LOW)</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">GOOGL Risk</div>
+          <div class="meta-value" style="color:var(--low);">RSI 93.75 — extreme overbought; sell-the-news risk</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Exposed Tickers</div>
+          <div class="meta-value"><div class="ticker-list"><span class="ticker">GOOGL</span><span class="ticker">TSLA</span><span class="ticker">MSFT</span><span class="ticker">NVDA</span></div></div>
+        </div>
+      </div>
+      <div class="summary">April 22 is loaded. GOOGL's Cloud growth rate is THE AI narrative battleground — &gt;55% print would confirm Microsoft share loss and catalyze sector rotation. The extreme RSI of 93.75 is a technical warning; the market may have front-run the beat. TSLA: low expectations but the entire bull case hinges on Robotaxi disclosure tonight.</div>
+    </div>
+
+    <!-- Catalyst 3 -->
+    <div class="card catalyst">
+      <div class="card-header">
+        <div class="card-title">Catalyst 3: Fed Chair Warsh Confirmation</div>
+        <div class="badges">
+          <span class="badge badge-date">MAY 2026</span>
+        </div>
+      </div>
+      <div class="meta-grid">
+        <div class="meta-item">
+          <div class="meta-label">Consensus</div>
+          <div class="meta-value">Orderly transition; rates held; 1-2 cuts H2 2026</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Surprise Scenario</div>
+          <div class="meta-value" style="color:var(--low);">Warsh hawkish signal; Trump vs. Fed showdown; dollar crisis</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Hedges</div>
+          <div class="meta-value"><div class="ticker-list"><span class="ticker">GLD</span><span class="ticker">TIP</span><span class="ticker loser">TLT</span><span class="ticker loser">VNQ</span></div></div>
+        </div>
+      </div>
+      <div class="summary">Warsh is historically hawkish and arrives when oil-driven inflation is re-accelerating. Trump is publicly demanding cuts. This collision could produce a credibility crisis for the Fed — historically one of the most violent sources of bond and FX volatility. Long gold, short TLT is the cleanest structural position ahead of this transition.</div>
+    </div>
+
+    <!-- Catalyst 4 -->
+    <div class="card catalyst">
+      <div class="card-header">
+        <div class="card-title">Catalyst 4: July 24 Tariff Escalation Deadline</div>
+        <div class="badges">
+          <span class="badge badge-date">JULY 24, 2026</span>
+        </div>
+      </div>
+      <div class="meta-grid">
+        <div class="meta-item">
+          <div class="meta-label">Consensus</div>
+          <div class="meta-value">Extension of 10% baseline; negotiations continue</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Surprise</div>
+          <div class="meta-value" style="color:var(--low);">Raised to 15%; consumer sector guidance slashed in Q2</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Most Exposed</div>
+          <div class="meta-value"><div class="ticker-list"><span class="ticker loser">AAPL</span><span class="ticker loser">NKE</span><span class="ticker loser">LULU</span><span class="ticker loser">MCD</span></div></div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Domestic Winners</div>
+          <div class="meta-value"><div class="ticker-list"><span class="ticker">X</span><span class="ticker">NUE</span><span class="ticker">COST</span></div></div>
+        </div>
+      </div>
+      <div class="summary">Markets appear complacent — consumer sector multiples don't reflect the July 24 risk. AAPL has &gt;80% China manufacturing; a 15% tariff would be a severe margin shock. Watch Q1 calls for companies pre-announcing price increases — that's the clearest forward signal of who's most worried.</div>
+    </div>
+
+    <!-- Catalyst 5 -->
+    <div class="card catalyst">
+      <div class="card-header">
+        <div class="card-title">Catalyst 5: Q2 GDP / CPI Data Releases</div>
+        <div class="badges">
+          <span class="badge badge-date">LATE APR – MAY 2026</span>
+        </div>
+      </div>
+      <div class="meta-grid">
+        <div class="meta-item">
+          <div class="meta-label">Consensus CPI</div>
+          <div class="meta-value">~3.5%; soft landing intact</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Surprise Scenario</div>
+          <div class="meta-value" style="color:var(--low);">CPI re-accelerates to 4%+; payrolls go negative; stagflation confirmed</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Stagflation Hedges</div>
+          <div class="meta-value"><div class="ticker-list"><span class="ticker">GLD</span><span class="ticker">TIP</span><span class="ticker">XOM</span><span class="ticker loser">ARKK</span></div></div>
+        </div>
+      </div>
+      <div class="summary">Energy's contribution to CPI lags by 6-8 weeks. With Brent at $130/bbl since early March, April and May CPI prints will begin reflecting full impact. Combined with weakening payrolls (50K/month expected), this is a textbook stagflation setup that the consensus soft-landing narrative has not priced in.</div>
+    </div>
+  </div>
+
+  <!-- SECTION 4: ACTION ITEMS -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-number">04</div>
+      <div class="section-title">Action Items</div>
+    </div>
+
+    <div class="action-section">
+      <div class="action-title">Today's Priorities</div>
+
+      <div class="action-subsection">
+        <div class="action-subtitle">Top 3 Tickers to Research Today</div>
+        <div class="top-tickers-row">
+          <div class="top-ticker-card">
+            <span class="ticker-sym">GOOGL</span>
+            <div class="ticker-reason">Earnings tonight + Cloud Next event. AI narrative battleground. RSI 93.75 — size carefully.</div>
+          </div>
+          <div class="top-ticker-card">
+            <span class="ticker-sym">HUM</span>
+            <div class="ticker-reason">Most earnings recovery leverage in managed care. UNH beat confirms the thesis. Next to report.</div>
+          </div>
+          <div class="top-ticker-card">
+            <span class="ticker-sym">XOM/CVX</span>
+            <div class="ticker-reason">Ceasefire binary event tomorrow. Asymmetric upside at $130/bbl. Clean FCF generators.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="action-subsection">
+        <div class="action-subtitle">Position Adjustments</div>
+        <ul class="action-list">
+          <li><strong>INCREASE energy overweight</strong> (XOM, CVX, COP, HAL, SLB) — Oil structure is fundamentally bullish regardless of ceasefire outcome. Add oil services as higher-beta play if ceasefire fails.</li>
+          <li><strong>ADD managed care</strong> (HUM, ELV) — UNH Q1 confirmation is a conviction add. Wait for ELV for second data point confirmation.</li>
+          <li><strong>REDUCE long-duration growth</strong> — Azure decel + TSLA fundamentals + extreme RSI readings across tech suggest near-term vulnerability. Trim speculative positions ahead of tonight's prints.</li>
+          <li><strong>INITIATE gold position</strong> (GLD) — Fed transition + stagflation risk + dollar uncertainty = classic gold setup. Structurally underowned by consensus.</li>
+          <li><strong>HOLD consumer staples</strong> — Tariff pass-through confirmed but partially priced. Wait for July 24 escalation clarity before getting aggressive short.</li>
+        </ul>
+      </div>
+
+      <div class="action-subsection">
+        <div class="action-subtitle">Key Dates This Week</div>
+        <table class="calendar-table">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Event</th>
+              <th>Priority</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="highlight">APR 22</td>
+              <td class="event-name">🔴 US-Iran Ceasefire Expiry</td>
+              <td><span class="badge badge-LOW" style="font-size:9px;">HIGHEST</span></td>
+            </tr>
+            <tr>
+              <td>APR 22</td>
+              <td class="event-name">GOOGL + TSLA Q1 2026 Earnings (after close)</td>
+              <td><span class="badge badge-HIGH" style="font-size:9px;">HIGH</span></td>
+            </tr>
+            <tr>
+              <td>APR 22–24</td>
+              <td class="event-name">Google Cloud Next Product Event</td>
+              <td><span class="badge badge-MEDIUM" style="font-size:9px;">HIGH</span></td>
+            </tr>
+            <tr>
+              <td>APR 22+</td>
+              <td class="event-name">ELV (Elevance) Q1 Earnings — Managed care read-through</td>
+              <td><span class="badge badge-MEDIUM" style="font-size:9px;">MEDIUM</span></td>
+            </tr>
+            <tr>
+              <td>APR 29</td>
+              <td class="event-name">AMZN Q1 2026 Earnings — AWS / ad revenue</td>
+              <td><span class="badge badge-MEDIUM" style="font-size:9px;">MEDIUM</span></td>
+            </tr>
+            <tr>
+              <td>MAY 2026</td>
+              <td class="event-name">Fed Chair Transition / Warsh Confirmation</td>
+              <td><span class="badge badge-MEDIUM" style="font-size:9px;">STRUCTURAL</span></td>
+            </tr>
+            <tr>
+              <td>JUL 24</td>
+              <td class="event-name">Tariff Baseline Expiry / Escalation Decision</td>
+              <td><span class="badge badge-MEDIUM" style="font-size:9px;">WATCH</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <div>Daily Theme Scanner · Generated 2026-04-21 · Pre-Market</div>
+    <div>Sources: CNBC, IEA, Bloomberg, UNH IR, FactSet, Yahoo Finance, Tax Foundation, IMF, Stat News, Kpler, Washington Post, Axios, Futurum Group</div>
+  </div>
+
+</div>
+</body>
+</html>
