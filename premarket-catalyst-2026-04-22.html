@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pre-Market Catalyst Scan — April 22, 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0e17;
+    --bg2: #0f1522;
+    --bg3: #141c2e;
+    --border: #1e2d45;
+    --text: #e2e8f0;
+    --muted: #8ca0bc;
+    --green: #22c55e;
+    --green-bg: rgba(34,197,94,0.10);
+    --red: #ef4444;
+    --red-bg: rgba(239,68,68,0.10);
+    --amber: #f59e0b;
+    --amber-bg: rgba(245,158,11,0.10);
+    --blue: #3b82f6;
+    --blue-bg: rgba(59,130,246,0.10);
+    --accent: #6366f1;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    line-height: 1.6;
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  /* Header */
+  .header {
+    border-bottom: 2px solid var(--accent);
+    padding-bottom: 16px;
+    margin-bottom: 24px;
+  }
+  .header h1 {
+    font-size: 22px;
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: -0.5px;
+  }
+  .header .subtitle {
+    color: var(--muted);
+    font-size: 11px;
+    margin-top: 4px;
+  }
+  .badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+  .bull { background: var(--green-bg); color: var(--green); border: 1px solid rgba(34,197,94,0.3); }
+  .bear { background: var(--red-bg); color: var(--red); border: 1px solid rgba(239,68,68,0.3); }
+  .neut { background: var(--amber-bg); color: var(--amber); border: 1px solid rgba(245,158,11,0.3); }
+  .watch { background: var(--blue-bg); color: var(--blue); border: 1px solid rgba(59,130,246,0.3); }
+  .urgent { background: rgba(239,68,68,0.2); color: var(--red); border: 1px solid rgba(239,68,68,0.5); animation: pulse 2s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.7} }
+
+  /* Sections */
+  .section {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    margin-bottom: 20px;
+    overflow: hidden;
+  }
+  .section-header {
+    background: var(--bg3);
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .section-header h2 {
+    font-size: 13px;
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: 0.3px;
+  }
+  .section-num {
+    background: var(--accent);
+    color: #fff;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+  .section-body { padding: 16px; }
+
+  /* Tables */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+  }
+  th {
+    color: var(--muted);
+    font-weight: 600;
+    text-align: left;
+    padding: 6px 10px;
+    border-bottom: 1px solid var(--border);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  td {
+    padding: 8px 10px;
+    border-bottom: 1px solid rgba(30,45,69,0.5);
+    vertical-align: top;
+  }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: rgba(255,255,255,0.02); }
+  .ticker-cell {
+    font-weight: 700;
+    color: #fff;
+    font-size: 13px;
+  }
+
+  /* Cards */
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 12px;
+  }
+  .card {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 14px;
+  }
+  .card-title {
+    font-size: 11px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 6px;
+  }
+  .card h3 { font-size: 14px; color: #fff; font-weight: 700; margin-bottom: 6px; }
+  .card p { color: var(--text); font-size: 12px; line-height: 1.5; }
+
+  /* Trade ideas */
+  .trade-item {
+    border-left: 3px solid;
+    padding: 10px 14px;
+    margin-bottom: 10px;
+    background: rgba(255,255,255,0.02);
+    border-radius: 0 6px 6px 0;
+  }
+  .trade-bull { border-color: var(--green); }
+  .trade-bear { border-color: var(--red); }
+  .trade-watch { border-color: var(--amber); }
+  .trade-item h4 { color: #fff; font-size: 13px; font-weight: 700; margin-bottom: 4px; }
+  .trade-item p { color: var(--muted); font-size: 12px; }
+
+  /* Morning briefing */
+  .briefing {
+    background: linear-gradient(135deg, rgba(99,102,241,0.12), rgba(59,130,246,0.08));
+    border: 1px solid rgba(99,102,241,0.3);
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+  }
+  .briefing h2 {
+    color: var(--accent);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 10px;
+  }
+  .briefing p {
+    color: var(--text);
+    font-size: 13px;
+    line-height: 1.8;
+  }
+
+  /* Event timeline */
+  .event-item {
+    display: flex;
+    gap: 12px;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border);
+    align-items: flex-start;
+  }
+  .event-item:last-child { border-bottom: none; }
+  .event-time {
+    color: var(--accent);
+    font-weight: 700;
+    font-size: 12px;
+    min-width: 90px;
+    flex-shrink: 0;
+  }
+  .event-desc { color: var(--text); font-size: 12px; }
+  .event-impact { font-size: 10px; color: var(--muted); }
+
+  /* Avoid list */
+  .avoid-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 12px;
+    background: rgba(239,68,68,0.07);
+    border: 1px solid rgba(239,68,68,0.2);
+    border-radius: 6px;
+    margin-bottom: 8px;
+  }
+  .avoid-item span { font-weight: 700; color: var(--red); }
+  .avoid-item p { color: var(--muted); font-size: 12px; }
+
+  /* Footer */
+  .footer {
+    color: var(--muted);
+    font-size: 10px;
+    text-align: center;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+  }
+  .footer a { color: var(--accent); text-decoration: none; }
+
+  /* Stat chips */
+  .stat-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+  .stat-chip {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 4px 10px;
+    font-size: 11px;
+    color: var(--text);
+  }
+  .stat-chip strong { color: var(--green); }
+  .stat-chip.bear-stat strong { color: var(--red); }
+
+  /* No catalyst */
+  .no-catalyst {
+    color: var(--muted);
+    font-style: italic;
+    font-size: 12px;
+    padding: 6px 0;
+  }
+
+  /* Source links */
+  .sources {
+    margin-top: 10px;
+    font-size: 10px;
+    color: var(--muted);
+  }
+  .sources a { color: #6b7db3; text-decoration: none; }
+  .sources a:hover { color: var(--accent); }
+
+  /* Horizontal rule */
+  hr { border: none; border-top: 1px solid var(--border); margin: 12px 0; }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <h1>☀️ PRE-MARKET CATALYST SCAN</h1>
+  <div class="subtitle">Wednesday, April 22, 2026 &nbsp;|&nbsp; Auto-generated at pre-market open &nbsp;|&nbsp; Sources: Benzinga, Yahoo Finance, CNBC, StockTitan, Barchart</div>
+</div>
+
+<!-- MORNING BRIEFING -->
+<div class="briefing">
+  <h2>📋 30-Second Morning Briefing</h2>
+  <p>Wednesday's pre-market is dominated by two forces: a <strong style="color:#22c55e">historic semiconductor rally</strong> (SMH +22% MTD, SOXX +28% MTD — all-time monthly records for both ETFs) fueled by the Strait of Hormuz ceasefire and surging AI chip demand, and <strong style="color:#22c55e">crude oil gapping up +6.31%</strong> to $87.80 on supply dynamics. Boeing reports Q1 BMO with a call at 10:30 AM EDT — expect ITA volatility. The mega event is <strong style="color:#f59e0b">TSLA reporting Q1 earnings AMC tonight</strong> (5:30 PM EDT); the stock has already absorbed a delivery miss, and options price a ~5.5% swing on robotaxi guidance and margins. SNDK remains a momentum freight train after joining the Nasdaq-100 and getting a Wells Fargo PT raise to $975. JETS is a short candidate given the oil spike. If you're not already positioned in semis or energy — today's edge is the Boeing open and setting up for TSLA's binary event tonight. <strong style="color:#ef4444">Do NOT force trades where the catalyst isn't clean.</strong></p>
+</div>
+
+<!-- STEP 1: WATCHLIST -->
+<div class="section">
+  <div class="section-header">
+    <div class="section-num">1</div>
+    <h2>WATCHLIST OVERNIGHT CATALYSTS</h2>
+  </div>
+  <div class="section-body">
+    <table>
+      <thead>
+        <tr>
+          <th>Ticker</th>
+          <th>Headline</th>
+          <th>Time</th>
+          <th>Pre-Mkt</th>
+          <th>Impact</th>
+          <th>Actionable</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="ticker-cell">TSLA</td>
+          <td>Q1 earnings AMC tonight (5:30 PM EDT). Deliveries 358K (missed 365K est). Options pricing ~5.5% swing. Robotaxi update is the binary catalyst.</td>
+          <td style="color:var(--muted)">Tonight AMC</td>
+          <td><span class="badge neut">PENDING</span></td>
+          <td><span class="badge neut">NEUTRAL</span></td>
+          <td><span class="badge watch">WATCH</span></td>
+        </tr>
+        <tr>
+          <td class="ticker-cell">NVDA</td>
+          <td>Mizuho reiterates Outperform. Chip sector in historic April rally. SMH +22% MTD. No specific overnight catalyst — riding sector momentum.</td>
+          <td style="color:var(--muted)">Ongoing</td>
+          <td><span class="badge bull">+SECTOR</span></td>
+          <td><span class="badge bull">BULLISH</span></td>
+          <td><span class="badge watch">WATCH</span></td>
+        </tr>
+        <tr>
+          <td class="ticker-cell">SNDK</td>
+          <td>Wells Fargo raised PT $675→$975 (Apr 20). Joined Nasdaq-100 April 20. Up +287% YTD. Earnings April 30. AI/NAND demand thesis intact.</td>
+          <td style="color:var(--muted)">Apr 20</td>
+          <td><span class="badge bull">MOMENTUM</span></td>
+          <td><span class="badge bull">BULLISH</span></td>
+          <td><span class="badge bull">YES</span></td>
+        </tr>
+        <tr>
+          <td class="ticker-cell">META</td>
+          <td>Raised 2026 capex guidance to $115–135B (~73% increase over 2025's $72.22B). Signals accelerated AI infrastructure spend.</td>
+          <td style="color:var(--muted)">Recent</td>
+          <td><span class="badge bull">+AI INFRA</span></td>
+          <td><span class="badge bull">BULLISH</span></td>
+          <td><span class="badge watch">WATCH</span></td>
+        </tr>
+        <tr>
+          <td class="ticker-cell">PLTR</td>
+          <td>Eyes major FAA deal for air traffic control modernization (Apr 17). Down 30% from highs; rebounding. AI contract momentum ongoing.</td>
+          <td style="color:var(--muted)">Apr 17</td>
+          <td><span class="badge bull">RECOVERY</span></td>
+          <td><span class="badge bull">BULLISH</span></td>
+          <td><span class="badge watch">WATCH</span></td>
+        </tr>
+        <tr>
+          <td class="ticker-cell">MARA</td>
+          <td>Sold 15,133 BTC (~$1.1B) to reduce debt and pivot to AI infrastructure. Signals miner diversification trend.</td>
+          <td style="color:var(--muted)">Recent</td>
+          <td><span class="badge bear">BTC SELL</span></td>
+          <td><span class="badge bear">MIXED</span></td>
+          <td><span class="badge watch">WATCH</span></td>
+        </tr>
+        <tr>
+          <td class="ticker-cell">AMD</td>
+          <td>No verified overnight catalyst. Helios full-rack AI solution H2 2026. Riding chip sector tailwind.</td>
+          <td style="color:var(--muted)">—</td>
+          <td><span class="badge neut">SECTOR</span></td>
+          <td><span class="badge bull">BULLISH</span></td>
+          <td><span class="badge watch">WATCH</span></td>
+        </tr>
+        <tr>
+          <td class="ticker-cell">AMZN</td>
+          <td>Wells Fargo maintained OW, marginally raised PT $304→$305 (Apr 2). No breaking overnight catalyst.</td>
+          <td style="color:var(--muted)">Apr 2</td>
+          <td><span class="badge neut">FLAT</span></td>
+          <td><span class="badge neut">NEUTRAL</span></td>
+          <td><span class="badge neut">NO</span></td>
+        </tr>
+        <tr>
+          <td class="ticker-cell">COIN</td>
+          <td class="no-catalyst">No verified overnight catalyst found.</td>
+          <td>—</td>
+          <td>—</td>
+          <td><span class="badge neut">NEUTRAL</span></td>
+          <td><span class="badge neut">NO</span></td>
+        </tr>
+        <tr>
+          <td class="ticker-cell">SOFI</td>
+          <td class="no-catalyst">No verified overnight catalyst found.</td>
+          <td>—</td>
+          <td>—</td>
+          <td><span class="badge neut">NEUTRAL</span></td>
+          <td><span class="badge neut">NO</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- STEP 2: SECTOR ETFs -->
+<div class="section">
+  <div class="section-header">
+    <div class="section-num">2</div>
+    <h2>SECTOR & THEME ETF OVERNIGHT SCAN</h2>
+  </div>
+  <div class="section-body">
+    <div class="card-grid">
+      <!-- Semis -->
+      <div class="card" style="border-color:rgba(34,197,94,0.3)">
+        <div class="card-title">🔥 TECH & AI</div>
+        <h3>SMH / SOXX / XLK / FNGU <span class="badge bull" style="margin-left:6px">BULLISH</span></h3>
+        <div class="stat-row">
+          <div class="stat-chip"><strong>SMH +21.91%</strong> MTD (best month since Nov 2003)</div>
+          <div class="stat-chip"><strong>SOXX +28.77%</strong> MTD (all-time monthly record)</div>
+          <div class="stat-chip"><strong>$5.45B</strong> combined April inflows — single-month record</div>
+        </div>
+        <p>Catalyst: U.S.-Iran ceasefire reopened Strait of Hormuz. TSMC + ASML confirmed robust AI chip demand in earnings. AI datacenter buildout accelerating (META capex +73%).</p>
+        <div class="sources">Watch at open: NVDA, AMD, SNDK, ALAB &nbsp;|&nbsp; <a href="https://www.benzinga.com/markets/tech/26/04/51957077/soxx-smh-record-inflows-april-2026" target="_blank">Benzinga →</a></div>
+      </div>
+      <!-- Commodities -->
+      <div class="card" style="border-color:rgba(245,158,11,0.3)">
+        <div class="card-title">🛢️ COMMODITIES</div>
+        <h3>UCO / USO / GLD / SLV <span class="badge neut" style="margin-left:6px">MIXED</span></h3>
+        <div class="stat-row">
+          <div class="stat-chip"><strong>Crude Oil +6.31%</strong> pre-mkt → ~$87.80</div>
+          <div class="stat-chip bear-stat"><strong>Gold futures $4,808</strong> (-21% from Jan $5,594 peak)</div>
+          <div class="stat-chip"><strong>GLD +1.69%</strong> pre-mkt at $436.96</div>
+        </div>
+        <p>Oil surging on likely geopolitical/supply dynamics — bullish UCO, USO, XLE. Gold pulling back from January peak but bouncing pre-market. Silver tracking gold.</p>
+        <div class="sources">Watch: UCO (long), USO (long), GLD (rebound watch) &nbsp;|&nbsp; <a href="https://www.barchart.com/futures/quotes/GCJ26" target="_blank">Barchart Gold →</a></div>
+      </div>
+      <!-- Defense -->
+      <div class="card" style="border-color:rgba(59,130,246,0.3)">
+        <div class="card-title">✈️ DEFENSE & AIRLINES</div>
+        <h3>ITA / JETS / KBE <span class="badge neut" style="margin-left:6px">MIXED</span></h3>
+        <p><strong style="color:#fff">ITA — WATCH:</strong> Boeing reports Q1 BMO (call 10:30 AM EDT). Consensus: EPS loss -$0.54, revenue $21.88B. Options pricing ~5% swing.<br><br>
+        <strong style="color:#ef4444">JETS — BEARISH:</strong> Crude oil +6.31% is directly negative for airline jet fuel costs. Gap-down risk for airlines at open.<br><br>
+        No verified cybersecurity incidents for CIBR overnight.</p>
+      </div>
+      <!-- Crypto -->
+      <div class="card" style="border-color:rgba(245,158,11,0.3)">
+        <div class="card-title">₿ CRYPTO</div>
+        <h3>IBIT / MARA / COIN <span class="badge neut" style="margin-left:6px">MIXED</span></h3>
+        <div class="stat-row">
+          <div class="stat-chip"><strong>BTC ~$67K</strong> range</div>
+        </div>
+        <p>MARA sold 15,133 BTC for ~$1.1B to de-risk and pivot to AI — near-term bearish for miners. IBIT tracking BTC price with no major overnight catalyst. COIN: no verified catalyst found.</p>
+      </div>
+      <!-- Macro -->
+      <div class="card" style="border-color:rgba(100,116,139,0.3)">
+        <div class="card-title">🌍 MACRO</div>
+        <h3>UUP / TLT</h3>
+        <p class="no-catalyst">No verified overnight catalyst found for USD or Treasuries. MBA Mortgage Rate data at 7:00 AM EDT is the only scheduled U.S. macro release today.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- STEP 3: EARNINGS -->
+<div class="section">
+  <div class="section-header">
+    <div class="section-num">3</div>
+    <h2>OVERNIGHT / TODAY EARNINGS RESULTS</h2>
+  </div>
+  <div class="section-body">
+    <table>
+      <thead>
+        <tr>
+          <th>Ticker</th>
+          <th>Company</th>
+          <th>Timing</th>
+          <th>Key Stats</th>
+          <th>Sector Read-Through</th>
+          <th>Watchlist?</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="ticker-cell" style="color:var(--amber)">TSLA ⚠️</td>
+          <td>Tesla</td>
+          <td><span class="badge urgent">AMC TONIGHT 5:30PM</span></td>
+          <td>Est. EPS $0.30 / Rev $22.17B<br>Delivery miss: 358K vs 365K est<br>Options: ~5.5% swing</td>
+          <td>TSLA beat = risk-on for EV/AI names; miss/weak robotaxi = broad tech pressure</td>
+          <td><strong style="color:var(--amber)">✅ WATCHLIST</strong></td>
+        </tr>
+        <tr>
+          <td class="ticker-cell">BA</td>
+          <td>Boeing</td>
+          <td><span class="badge neut">BMO — CALL 10:30AM EDT</span></td>
+          <td>Est. EPS loss -$0.54<br>Est. Revenue $21.88B (+12% YoY)<br>Options: ~5% swing</td>
+          <td>Beat = bullish ITA, defense chain. Miss = confirms production ramp concerns. Oil surge also impacts BA supply cost indirectly.</td>
+          <td>ITA tracker</td>
+        </tr>
+        <tr>
+          <td class="ticker-cell">OZK</td>
+          <td>Bank OZK</td>
+          <td><span class="badge bull">REPORTED — BMO</span></td>
+          <td>Net income $159.3M<br>Diluted EPS $1.44<br>Call: 7:30 AM CT</td>
+          <td>Regional bank health signal. KBE watch. Small positive read-through for community banks.</td>
+          <td>—</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="sources" style="margin-top:8px">
+      Sources: <a href="https://www.stocktitan.net/news/BA/boeing-to-release-first-quarter-results-on-april-y1szks100glk.html" target="_blank">StockTitan – Boeing</a> &nbsp;|&nbsp;
+      <a href="https://www.stocktitan.net/news/OZK/bank-ozk-announces-first-quarter-2026-vb8ztao6l8do.html" target="_blank">StockTitan – Bank OZK</a>
+    </div>
+  </div>
+</div>
+
+<!-- STEP 4: OPTIONS FLOW -->
+<div class="section">
+  <div class="section-header">
+    <div class="section-num">4</div>
+    <h2>PRE-MARKET OPTIONS FLOW</h2>
+  </div>
+  <div class="section-body">
+    <p style="color:var(--muted); font-size:12px; font-style:italic;">No verified pre-market options sweep data from @unusual_whales, @FlowAlgo, or Benzinga could be sourced for April 22, 2026 pre-market. Real-time subscription access is required for live flow data.</p>
+    <hr>
+    <p style="font-size:12px; color:var(--text);">📌 <strong>Manual check recommended:</strong> Visit <a href="https://unusualwhales.com/live-options-flow" target="_blank" style="color:var(--accent)">unusualwhales.com</a>, <a href="https://www.barchart.com/options/unusual-activity" target="_blank" style="color:var(--accent)">Barchart unusual options</a>, and <a href="https://www.benzinga.com/calendars/unusual-options-activity" target="_blank" style="color:var(--accent)">Benzinga Options Activity</a> before the open. Focus on SPY, QQQ, SMH, XLE, TSLA for today's key setups.</p>
+  </div>
+</div>
+
+<!-- STEP 5: ANALYST ACTIONS -->
+<div class="section">
+  <div class="section-header">
+    <div class="section-num">5</div>
+    <h2>ANALYST ACTIONS (April 21–22, 2026)</h2>
+  </div>
+  <div class="section-body">
+    <table>
+      <thead>
+        <tr>
+          <th>Ticker</th>
+          <th>Firm</th>
+          <th>Action</th>
+          <th>New PT</th>
+          <th>Signal</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="ticker-cell">CRWD</td>
+          <td>KeyBanc (Eric Heath)</td>
+          <td>⬆️ Sector Weight → Overweight</td>
+          <td style="color:var(--green)">$525</td>
+          <td><span class="badge bull">BULLISH</span></td>
+        </tr>
+        <tr>
+          <td class="ticker-cell">ARWR</td>
+          <td>Morgan Stanley (Michael Ulz)</td>
+          <td>⬆️ Equal-Weight → Overweight</td>
+          <td style="color:var(--green)">$100 (from $78)</td>
+          <td><span class="badge bull">BULLISH</span></td>
+        </tr>
+        <tr>
+          <td class="ticker-cell">TMUS</td>
+          <td>Freedom Broker</td>
+          <td>⬆️ Hold → Buy</td>
+          <td style="color:var(--green)">$270</td>
+          <td><span class="badge bull">BULLISH</span></td>
+        </tr>
+        <tr>
+          <td class="ticker-cell">SNDK</td>
+          <td>Wells Fargo</td>
+          <td>PT Raised (+44%)</td>
+          <td style="color:var(--green)">$975 (from $675)</td>
+          <td><span class="badge bull">BULLISH</span></td>
+        </tr>
+        <tr>
+          <td class="ticker-cell">TSLA</td>
+          <td>Jefferies</td>
+          <td>Reiterates Hold, PT raised</td>
+          <td style="color:var(--amber)">$350 (from $300)</td>
+          <td><span class="badge neut">NEUTRAL</span></td>
+        </tr>
+        <tr>
+          <td class="ticker-cell">NVDA</td>
+          <td>Mizuho</td>
+          <td>Reiterates Outperform</td>
+          <td style="color:var(--green)">—</td>
+          <td><span class="badge bull">BULLISH</span></td>
+        </tr>
+        <tr>
+          <td class="ticker-cell">METC</td>
+          <td>Goldman Sachs</td>
+          <td>⬆️ Sell → Neutral</td>
+          <td style="color:var(--amber)">$15 (from $14)</td>
+          <td><span class="badge neut">NEUTRAL</span></td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="sources" style="margin-top:8px">
+      Sources: <a href="https://www.cnbc.com/2026/04/20/monday-stocks-from-analyst-calls-include-nvidia-apple-tesla-okta.html" target="_blank">CNBC Monday Analyst Calls</a> &nbsp;|&nbsp;
+      <a href="https://www.benzinga.com/analyst-stock-ratings/upgrades/26/04/51936858/this-crowdstrike-analyst-turns-bullish-here-are-top-3-upgrades-for-tuesday" target="_blank">Benzinga Upgrades</a>
+    </div>
+  </div>
+</div>
+
+<!-- STEP 6: SCHEDULED EVENTS -->
+<div class="section">
+  <div class="section-header">
+    <div class="section-num">6</div>
+    <h2>TODAY'S SCHEDULED EVENTS — April 22, 2026</h2>
+  </div>
+  <div class="section-body">
+    <div class="event-item">
+      <div class="event-time">6:00 AM UTC</div>
+      <div>
+        <div class="event-desc">🇬🇧 UK CPI, PPI Input/Output data</div>
+        <div class="event-impact">Medium — GBP/macro sentiment</div>
+      </div>
+    </div>
+    <div class="event-item">
+      <div class="event-time">7:00 AM EDT</div>
+      <div>
+        <div class="event-desc">MBA 30-Year Mortgage Rate & Mortgage Market Index</div>
+        <div class="event-impact">Low–Medium — housing sector</div>
+      </div>
+    </div>
+    <div class="event-item">
+      <div class="event-time">BMO — Open</div>
+      <div>
+        <div class="event-desc" style="color:var(--blue)">✈️ Boeing (BA) Q1 2026 earnings release</div>
+        <div class="event-impact">HIGH — ITA, aerospace/defense</div>
+      </div>
+    </div>
+    <div class="event-item">
+      <div class="event-time">10:30 AM EDT</div>
+      <div>
+        <div class="event-desc" style="color:var(--blue)">✈️ Boeing Q1 2026 earnings call (Kelly Ortberg + Jay Malave)</div>
+        <div class="event-impact">HIGH — production ramp commentary, 737 MAX update</div>
+      </div>
+    </div>
+    <div class="event-item" style="background:rgba(245,158,11,0.05)">
+      <div class="event-time" style="color:var(--amber)">5:30 PM EDT</div>
+      <div>
+        <div class="event-desc" style="color:var(--amber); font-weight:700">⚡ TSLA Q1 2026 Earnings Call — THE BINARY EVENT</div>
+        <div class="event-impact" style="color:var(--amber)">EXTREME — entire market in focus. Robotaxi update is the key watch.</div>
+      </div>
+    </div>
+    <hr>
+    <p style="font-size:11px; color:var(--muted);">Note: No FOMC meeting or confirmed Fed speaker appearances for April 22. 81 total economic events on calendar; most are non-U.S. macro releases.</p>
+  </div>
+</div>
+
+<!-- STEP 7: TRADE IDEAS -->
+<div class="section">
+  <div class="section-header">
+    <div class="section-num">7</div>
+    <h2>MORNING TRADE IDEAS</h2>
+  </div>
+  <div class="section-body">
+
+    <p style="font-size:11px; color:var(--muted); margin-bottom:14px; text-transform:uppercase; letter-spacing:0.5px;">🟢 Top 3 Catalyst-Driven Tickers at Open</p>
+
+    <div class="trade-item trade-bull">
+      <h4>🟢 #1 — SMH / SOXX (Chip ETFs)</h4>
+      <p>The historic April chip rally continues on record inflows and Hormuz ceasefire tailwind. SMH +22% MTD, SOXX +28% MTD. Buy any morning dip. Entry: early pullback to VWAP or prior close. Watch for gap exhaustion near all-time highs. Theme winner for 2026.</p>
+    </div>
+
+    <div class="trade-item trade-bull">
+      <h4>🟢 #2 — UCO / USO / XLE (Crude Oil)</h4>
+      <p>Crude oil gapping +6.31% to ~$87.80 pre-market. This is a clean gap-and-go catalyst in energy ETFs. Entry: first 5-min candle confirmation above gap level. Risk: profit-taking if no confirmed supply disruption story emerges to sustain the move.</p>
+    </div>
+
+    <div class="trade-item trade-bull">
+      <h4>🟢 #3 — SNDK (SanDisk)</h4>
+      <p>Just joined Nasdaq-100 (Apr 20). Wells Fargo raised PT to $975 from $675. Up +287% YTD. AI/NAND demand story intact. Earnings April 30 act as near-term catalyst. Entry: momentum continuation at open. Stop: below prior day's low.</p>
+    </div>
+
+    <hr>
+
+    <p style="font-size:11px; color:var(--muted); margin-bottom:10px; margin-top:14px; text-transform:uppercase; letter-spacing:0.5px;">🎯 Top Theme Today</p>
+    <div class="trade-item" style="border-color:var(--accent)">
+      <h4 style="color:var(--accent)">Semiconductors / AI Chips (SMH, SOXX, NVDA, SNDK)</h4>
+      <p>Historic monthly inflows record set. AI infrastructure build accelerating (META capex +73%). Hormuz ceasefire reestablished supply chains. This is the year's dominant theme — don't fight it.</p>
+    </div>
+
+    <hr>
+
+    <p style="font-size:11px; color:var(--muted); margin-bottom:10px; margin-top:14px; text-transform:uppercase; letter-spacing:0.5px;">🔴 Watchlist Names to AVOID Today</p>
+    <div class="avoid-item">
+      <span>TSLA</span>
+      <p>Do NOT take directional position ahead of AMC earnings. Delivery miss is known but robotaxi update is the wild card. Binary risk — sit out pre-earnings if you want safety.</p>
+    </div>
+    <div class="avoid-item">
+      <span>JETS</span>
+      <p>Oil surging +6% is structurally bearish for airline fuel costs. Gap-down risk at open.</p>
+    </div>
+    <div class="avoid-item">
+      <span>MARA</span>
+      <p>BTC sell / AI pivot is mixed signal. Unclear direction until market digests the news.</p>
+    </div>
+
+    <hr>
+
+    <p style="font-size:11px; color:var(--muted); margin-bottom:10px; margin-top:14px; text-transform:uppercase; letter-spacing:0.5px;">⚠️ Key Risk Events & Timing</p>
+    <div style="font-size:12px; color:var(--text)">
+      <div style="padding:6px 0; border-bottom:1px solid var(--border)"><strong style="color:var(--blue)">10:30 AM EDT</strong> — Boeing earnings call. BA disappointment could pressure ITA and defense chain.</div>
+      <div style="padding:6px 0; border-bottom:1px solid var(--border)"><strong style="color:var(--amber)">5:30 PM EDT</strong> — TSLA earnings call. Most important market event of the day. Options pricing 5.5% swing.</div>
+      <div style="padding:6px 0"><strong style="color:var(--red)">Crude Oil</strong> — Monitor for reversal if no confirmed supply disruption story emerges to support the +6% gap-up.</div>
+    </div>
+
+  </div>
+</div>
+
+<!-- FOOTER -->
+<div class="footer">
+  <p>Pre-Market Catalyst Scan — April 22, 2026 &nbsp;|&nbsp; Auto-generated via scheduled task &nbsp;|&nbsp; For informational purposes only. Not financial advice.</p>
+  <p style="margin-top:6px">Sources:
+    <a href="https://www.benzinga.com/markets/tech/26/04/51957077/soxx-smh-record-inflows-april-2026" target="_blank">Benzinga</a> &nbsp;|&nbsp;
+    <a href="https://www.stocktitan.net/news/BA/boeing-to-release-first-quarter-results-on-april-y1szks100glk.html" target="_blank">StockTitan</a> &nbsp;|&nbsp;
+    <a href="https://www.barchart.com/story/news/1251220/sandisk-corporation-to-join-the-nasdaq-100-index-beginning-april-20-2026" target="_blank">Barchart</a> &nbsp;|&nbsp;
+    <a href="https://www.cnbc.com/2026/04/16/taiwan-semi-tsm-asml-stock-earnings-ai-chips.html" target="_blank">CNBC</a>
+  </p>
+</div>
+
+</body>
+</html>
