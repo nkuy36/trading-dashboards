@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Midday Catalyst Scan — April 23, 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0e17;
+    --bg2: #0f1420;
+    --bg3: #141926;
+    --border: #1e2a3a;
+    --text: #e2e8f0;
+    --text-muted: #718096;
+    --text-dim: #4a5568;
+    --red: #fc4646;
+    --red-bg: rgba(252, 70, 70, 0.08);
+    --yellow: #f5a623;
+    --yellow-bg: rgba(245, 166, 35, 0.08);
+    --green: #36d68e;
+    --green-bg: rgba(54, 214, 142, 0.08);
+    --gray: #718096;
+    --gray-bg: rgba(113, 128, 150, 0.08);
+    --blue: #63b3ed;
+    --accent: #4299e1;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'JetBrains Mono', 'Fira Code', 'Courier New', monospace;
+    font-size: 13px;
+    line-height: 1.6;
+    padding: 24px;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  /* Header */
+  .header {
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 18px;
+    margin-bottom: 24px;
+  }
+  .header h1 {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text);
+    letter-spacing: 0.5px;
+  }
+  .header .subtitle {
+    color: var(--text-muted);
+    font-size: 11px;
+    margin-top: 4px;
+  }
+  .header .meta {
+    display: flex;
+    gap: 20px;
+    margin-top: 10px;
+    flex-wrap: wrap;
+  }
+  .header .meta span {
+    font-size: 11px;
+    color: var(--text-dim);
+    background: var(--bg3);
+    padding: 3px 8px;
+    border-radius: 4px;
+    border: 1px solid var(--border);
+  }
+
+  /* Section */
+  .section {
+    margin-bottom: 32px;
+  }
+  .section-title {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--accent);
+    border-left: 3px solid var(--accent);
+    padding-left: 10px;
+    margin-bottom: 14px;
+  }
+
+  /* Priority labels */
+  .label {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+  }
+  .label.urgent { background: var(--red-bg); color: var(--red); border: 1px solid rgba(252,70,70,0.3); }
+  .label.watch   { background: var(--yellow-bg); color: var(--yellow); border: 1px solid rgba(245,166,35,0.3); }
+  .label.confirm { background: var(--green-bg); color: var(--green); border: 1px solid rgba(54,214,142,0.3); }
+  .label.noise   { background: var(--gray-bg); color: var(--gray); border: 1px solid rgba(113,128,150,0.2); }
+
+  /* Alert cards */
+  .alert-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px 16px;
+    margin-bottom: 10px;
+    position: relative;
+  }
+  .alert-card.urgent { border-left: 3px solid var(--red); }
+  .alert-card.watch  { border-left: 3px solid var(--yellow); }
+  .alert-card.confirm{ border-left: 3px solid var(--green); }
+  .alert-card.noise  { border-left: 3px solid var(--gray); }
+
+  .alert-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+    flex-wrap: wrap;
+  }
+  .ticker {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--blue);
+    letter-spacing: 1px;
+  }
+  .impact {
+    font-size: 11px;
+    padding: 1px 7px;
+    border-radius: 3px;
+    font-weight: 600;
+  }
+  .impact.bullish { background: rgba(54,214,142,0.15); color: var(--green); }
+  .impact.bearish { background: rgba(252,70,70,0.15); color: var(--red); }
+  .impact.neutral { background: rgba(113,128,150,0.15); color: var(--gray); }
+  .impact.mixed   { background: rgba(245,166,35,0.15); color: var(--yellow); }
+
+  .alert-headline {
+    color: var(--text);
+    font-weight: 500;
+    margin-bottom: 6px;
+    font-size: 12.5px;
+  }
+  .alert-summary {
+    color: var(--text-muted);
+    font-size: 11.5px;
+    line-height: 1.5;
+  }
+  .alert-meta {
+    display: flex;
+    gap: 12px;
+    margin-top: 8px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .alert-meta a {
+    color: var(--accent);
+    text-decoration: none;
+    font-size: 11px;
+  }
+  .alert-meta a:hover { text-decoration: underline; }
+  .alert-time { color: var(--text-dim); font-size: 11px; }
+
+  /* Tables */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 14px;
+    font-size: 12px;
+  }
+  th {
+    background: var(--bg3);
+    color: var(--text-muted);
+    text-transform: uppercase;
+    font-size: 10px;
+    letter-spacing: 1.5px;
+    padding: 8px 12px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+  }
+  td {
+    padding: 8px 12px;
+    border-bottom: 1px solid rgba(30,42,58,0.5);
+    vertical-align: top;
+  }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: rgba(255,255,255,0.02); }
+
+  /* Risk event table */
+  .risk-row td:first-child { color: var(--yellow); font-weight: 600; }
+  .high-risk { color: var(--red) !important; }
+  .med-risk { color: var(--yellow) !important; }
+
+  /* Summary grid */
+  .summary-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 10px;
+  }
+  .summary-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 12px 14px;
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+  }
+  .summary-card .sticker {
+    font-size: 18px;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .summary-card .sticker-ticker {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--blue);
+    letter-spacing: 1px;
+  }
+  .summary-card .sticker-action {
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-top: 2px;
+  }
+
+  /* Options flow */
+  .flow-bullish td:nth-child(2) { color: var(--green); font-weight: 700; }
+  .flow-bearish td:nth-child(2) { color: var(--red); font-weight: 700; }
+
+  /* Divider */
+  hr { border: none; border-top: 1px solid var(--border); margin: 24px 0; }
+
+  /* Note box */
+  .note-box {
+    background: rgba(66,153,225,0.06);
+    border: 1px solid rgba(66,153,225,0.25);
+    border-radius: 6px;
+    padding: 10px 14px;
+    color: var(--text-muted);
+    font-size: 11.5px;
+    margin-bottom: 14px;
+  }
+
+  .divergence-box {
+    background: rgba(245,166,35,0.07);
+    border: 1px solid rgba(245,166,35,0.3);
+    border-radius: 6px;
+    padding: 10px 14px;
+    color: var(--yellow);
+    font-size: 12px;
+    margin: 12px 0;
+  }
+
+  /* Footer */
+  .footer {
+    margin-top: 32px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+    color: var(--text-dim);
+    font-size: 11px;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  /* Skip label */
+  .skip-label { color: var(--text-dim); font-style: italic; font-size: 11px; }
+
+  a { color: var(--accent); }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <h1>🕐 MIDDAY CATALYST CHECK — April 23, 2026</h1>
+  <div class="subtitle">Automated midday scan for active day/swing traders</div>
+  <div class="meta">
+    <span>🕐 Midday Run</span>
+    <span>📅 2026-04-23</span>
+    <span>📊 SPY/QQQ Risk-ON</span>
+    <span>⚠️ FOMC Apr 28-29</span>
+    <span>📈 QQQ +1.48%</span>
+  </div>
+</div>
+
+<!-- STEP 1: WATCHLIST -->
+<div class="section">
+  <div class="section-title">Step 1 — Watchlist Alert Check</div>
+
+  <!-- PLTR -->
+  <div class="alert-card urgent">
+    <div class="alert-header">
+      <span class="ticker">PLTR</span>
+      <span class="label urgent">🔴 URGENT</span>
+      <span class="impact bearish">BEARISH</span>
+      <span class="impact" style="background:rgba(252,70,70,0.15);color:var(--red);">ACT NOW</span>
+    </div>
+    <div class="alert-headline">PLTR down 4.57% intraday — $300M USDA deal fails to hold; sell-the-news in full force</div>
+    <div class="alert-summary">Yesterday's USDA contract pop (+4.3% to $157.16) fully reversed today. Broad rotation away from high-P/E AI software. Valuation concern + insider selling + "monetization fracture" narrative replacing AI euphoria. Stock is down 9.1% YTD and 26.4% off 52-week high.</div>
+    <div class="alert-meta">
+      <span class="alert-time">📅 Apr 23, 2026 — Intraday</span>
+      <a href="https://www.tradingkey.com/news/market-movers/261816403-market-movers-pltr-20260423" target="_blank">TradingKey</a>
+      <a href="https://www.fool.com/investing/2026/04/22/palantir-just-landed-its-next-300-million-deal/" target="_blank">Motley Fool</a>
+    </div>
+  </div>
+
+  <!-- TSLA -->
+  <div class="alert-card watch">
+    <div class="alert-header">
+      <span class="ticker">TSLA</span>
+      <span class="label watch">🟡 WATCH</span>
+      <span class="impact mixed">MIXED</span>
+      <span class="impact" style="background:rgba(245,166,35,0.15);color:var(--yellow);">MONITOR</span>
+    </div>
+    <div class="alert-headline">Q1 2026 earnings beat; CapEx raised $5B to $25B+; $2B AI acquisition buried in 10-Q not disclosed on earnings call</div>
+    <div class="alert-summary">EPS $0.41 (non-GAAP) beat, revenue $22.38B beat. BUT: delivery miss (358K vs ~366K est.), 50K+ unit inventory build, capex blowout, and acquisition disclosed nowhere on the call. AH pop of ~4% reversed. Transparency concerns. Dan Ives reframes as AI co, not auto. Watch: AI5 tape-out Apr 15, Terafab Intel partnership ongoing.</div>
+    <div class="alert-meta">
+      <span class="alert-time">📅 Apr 22 AH / Apr 23 premarket</span>
+      <a href="https://electrek.co/2026/04/23/tesla-tsla-quietly-discloses-2-billion-ai-hardware-acquisition-10q/" target="_blank">Electrek (acquisition)</a>
+      <a href="https://www.cnbc.com/2026/04/22/tesla-tsla-q1-2026-earnings-report.html" target="_blank">CNBC (earnings)</a>
+    </div>
+  </div>
+
+  <!-- SOFI -->
+  <div class="alert-card watch">
+    <div class="alert-header">
+      <span class="ticker">SOFI</span>
+      <span class="label watch">🟡 WATCH</span>
+      <span class="impact bullish">BULLISH</span>
+      <span class="impact" style="background:rgba(245,166,35,0.15);color:var(--yellow);">MONITOR</span>
+    </div>
+    <div class="alert-headline">First nationally chartered US bank to support XRP — added for 13.7M customers alongside BTC, ETH, SOL</div>
+    <div class="alert-summary">Real fintech expansion catalyst. Important caveat: no external wallet withdrawals (same as SOL launch Nov 2025 → withdrawals enabled Feb 2026). Pattern suggests XRP withdrawals coming in ~3 months. Stock ~$18-19. Catalyst is real but partially diluted by custody restriction.</div>
+    <div class="alert-meta">
+      <span class="alert-time">📅 Apr 21-22, 2026</span>
+      <a href="https://247wallst.com/investing/2026/04/22/xrp-news-sofi-just-added-xrp-for-13-7-million-customers-but-users-say-theres-a-catch/" target="_blank">24/7 Wall St.</a>
+      <a href="https://finance.yahoo.com/markets/stocks/articles/sofi-expands-heloc-xrp-offerings-010949146.html" target="_blank">Yahoo Finance</a>
+    </div>
+  </div>
+
+  <!-- MARA -->
+  <div class="alert-card watch">
+    <div class="alert-header">
+      <span class="ticker">MARA</span>
+      <span class="label watch">🟡 WATCH</span>
+      <span class="impact bearish">BEARISH</span>
+      <span class="impact" style="background:rgba(245,166,35,0.15);color:var(--yellow);">MONITOR</span>
+    </div>
+    <div class="alert-headline">MARA down ~3.44% today; Bitcoin subdued at $78,194; pivot to AI infra creates uncertainty</div>
+    <div class="alert-summary">BTC at $78,194 (Apr 22 data); MARA selling BTC holdings to reduce debt and pivot toward AI infrastructure. Mixed analyst views. MARA is 2nd-largest corporate BTC holder with 38,689 BTC. No specific catalyst — follow Bitcoin direction.</div>
+    <div class="alert-meta">
+      <span class="alert-time">📅 Apr 23, 2026</span>
+      <a href="https://stockanalysis.com/stocks/mara/" target="_blank">StockAnalysis</a>
+    </div>
+  </div>
+
+  <!-- SNDK -->
+  <div class="alert-card confirm">
+    <div class="alert-header">
+      <span class="ticker">SNDK</span>
+      <span class="label confirm">🟢 CONFIRM</span>
+      <span class="impact bullish">BULLISH</span>
+    </div>
+    <div class="alert-headline">Bernstein PT $1,250 (↑from prior); Wells Fargo PT $975; added to Nasdaq-100 Apr 10; NAND upcycle underestimated</div>
+    <div class="alert-summary">SanDisk up 287% YTD. Q2 FY2026 enterprise revenue +64%, gross margin 51.1%, FY2026 revenue est. +117.5% to $16B. ATH at $965 (Apr 14). Currently ~$920. Extended but thesis is intact — NAND demand from AI/data centers. Any pullback = buy opportunity on confirmed fundamentals.</div>
+    <div class="alert-meta">
+      <span class="alert-time">📅 Apr 2026 (ongoing)</span>
+      <a href="https://seekingalpha.com/article/4891384-sandisk-a-high-growth-buy-with-a-sell-the-news-warning-for-april" target="_blank">Seeking Alpha</a>
+    </div>
+  </div>
+
+  <!-- AMZN -->
+  <div class="alert-card watch">
+    <div class="alert-header">
+      <span class="ticker">AMZN</span>
+      <span class="label watch">🟡 WATCH</span>
+      <span class="impact bullish">BULLISH</span>
+      <span class="impact" style="background:rgba(245,166,35,0.15);color:var(--yellow);">EARNINGS APR 29</span>
+    </div>
+    <div class="alert-headline">Double upgrade from BofA (PT $298) and KeyBanc (PT $325); Q1 earnings due April 29 AH</div>
+    <div class="alert-summary">Q4 2025: AWS +24% YoY, advertising +22% YoY. Q1 2026 guidance: $173.5–$178.5B revenue, $16.5–$21.5B op income. Pre-earnings upgrade momentum is a strong signal. Risk: FOMC same week (Apr 29) could suppress moves.</div>
+    <div class="alert-meta">
+      <span class="alert-time">📅 Apr 20, 2026 (upgrades)</span>
+      <a href="https://247wallst.com/investing/2026/04/20/amazon-gets-a-double-upgrade-from-bofa-and-keybanc-ahead-of-earnings-is-325-the-new-floor/" target="_blank">24/7 Wall St.</a>
+      <a href="https://www.aboutamazon.com/news/company-news/amazon-earnings-q1-2026-report" target="_blank">Amazon IR</a>
+    </div>
+  </div>
+
+  <!-- NVDA -->
+  <div class="alert-card confirm">
+    <div class="alert-header">
+      <span class="ticker">NVDA</span>
+      <span class="label confirm">🟢 CONFIRM</span>
+      <span class="impact bullish">BULLISH</span>
+    </div>
+    <div class="alert-headline">No new catalyst today — stock up ~1.31% riding QQQ/SMH strength</div>
+    <div class="alert-summary">Semiconductor ETF (SMH) trading $467–$483. Semi options flow (LRCX, AVGO calls) confirms sector bull momentum. No specific NVDA news today — holding with broad market. Thesis intact.</div>
+    <div class="alert-meta">
+      <span class="alert-time">📅 Apr 23, 2026</span>
+    </div>
+  </div>
+
+  <div class="note-box">⚪ No verified catalyst found today for: <strong>AMD, COIN, META</strong> — skipped per protocol (prefer missing a real catalyst over acting on a false one).</div>
+</div>
+
+<hr>
+
+<!-- STEP 2: SECTORS -->
+<div class="section">
+  <div class="section-title">Step 2 — Sector &amp; Theme ETF Midday Check</div>
+
+  <div class="divergence-box">⚠️ KEY DIVERGENCE: High-P/E AI software (PLTR <span style="color:var(--red)">-4.57%</span>) is diverging from QQQ (<span style="color:var(--green)">+1.48%</span>) — rotation within tech from "AI euphoria" plays to large-cap profitable tech (NVDA, MSFT, AMZN).</div>
+
+  <table>
+    <thead>
+      <tr><th>ETF / Theme</th><th>Signal</th><th>Data</th><th>Notes</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>GLD</strong> (Gold)</td>
+        <td><span class="label watch">🟡 WATCH</span></td>
+        <td>~$4,736/oz<br>-0.02% today</td>
+        <td>Up 9% YTD / 41.5% YoY. Slight intraday pullback on ceasefire relief — NOT a reversal. Geopolitical bid intact. Hormuz blockage, inflation (CPI 3.3%) sustaining demand.</td>
+      </tr>
+      <tr>
+        <td><strong>SLV</strong> (Silver)</td>
+        <td><span class="label noise">⚪ NOISE</span></td>
+        <td>Falling intraday</td>
+        <td>Silver pulling back alongside gold on geopolitical relief. MCX crash ₹8,500 — broad metals digest. No trade setup.</td>
+      </tr>
+      <tr>
+        <td><strong>UCO/USO</strong> (Oil)</td>
+        <td><span class="label noise">⚪ NOISE</span></td>
+        <td>XLE: $55.76<br>-0.34%</td>
+        <td>Energy lagging as ceasefire talks reduce risk premium. Hormuz still blocked = floor in place. Not breaking out or down.</td>
+      </tr>
+      <tr>
+        <td><strong>SMH</strong> (Semis)</td>
+        <td><span class="label confirm">🟢 CONFIRM</span></td>
+        <td>$467–$483 range</td>
+        <td>Semi options flow (LRCX, AVGO calls) bullish. SMH tracking QQQ. No divergence from broader tech. Momentum intact.</td>
+      </tr>
+      <tr>
+        <td><strong>IBIT</strong> (Bitcoin ETF)</td>
+        <td><span class="label watch">🟡 WATCH</span></td>
+        <td>$44.14<br>BTC ~$78,194</td>
+        <td>BlackRock IBIT inflows $256M. Bitcoin consolidating, not breaking out. Geopolitical peace talks slightly risk-on but BTC not leading. MARA/COIN subdued.</td>
+      </tr>
+      <tr>
+        <td><strong>QQQ / XLK</strong> (Tech)</td>
+        <td><span class="label confirm">🟢 CONFIRM</span></td>
+        <td>QQQ +1.48%<br>XLK ~$155</td>
+        <td>Tech leading today on ceasefire + jobless claims beat. Risk-ON confirmed. No defensive rotation signal.</td>
+      </tr>
+      <tr>
+        <td><strong>XLE</strong> (Energy)</td>
+        <td><span class="label noise">⚪ NOISE</span></td>
+        <td>$55.76 (-0.34%)</td>
+        <td>Energy lagging today — ceasefire reduces geopolitical risk premium. Sector rotation out of energy.</td>
+      </tr>
+      <tr>
+        <td><strong>XLU/XLP</strong> (Defensives)</td>
+        <td><span class="label noise">⚪ NOISE</span></td>
+        <td>—</td>
+        <td>Defensives NOT leading = risk-on confirmed. No hedging behavior from retail or institutions today.</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<hr>
+
+<!-- STEP 3: BREAKING CATALYSTS -->
+<div class="section">
+  <div class="section-title">Step 3 — Breaking Catalysts (Last 4 Hours)</div>
+
+  <table>
+    <thead>
+      <tr><th>#</th><th>Catalyst</th><th>Market Impact</th><th>Source</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>1</td>
+        <td><strong>US-Iran peace talks</strong> — Trump: deal possible "maybe over the weekend"</td>
+        <td><span class="impact bullish">BULLISH Equities</span> <span class="impact bearish">BEARISH Oil/Gold</span></td>
+        <td><a href="https://www.tipranks.com/news/stock-market-today-spy-qqq-extend-gains-as-trump-teases-new-u-s-iran-talks-israel-and-lebanon-agree-to-a-ceasefire" target="_blank">TipRanks</a></td>
+      </tr>
+      <tr>
+        <td>2</td>
+        <td><strong>Israel-Lebanon 10-day ceasefire</strong> — Trump inviting leaders to Washington</td>
+        <td><span class="impact bullish">BULLISH Risk Assets</span></td>
+        <td><a href="https://www.tipranks.com/news/stock-market-today-spy-qqq-extend-gains-as-trump-teases-new-u-s-iran-talks-israel-and-lebanon-agree-to-a-ceasefire" target="_blank">TipRanks</a></td>
+      </tr>
+      <tr>
+        <td>3</td>
+        <td><strong>Jobless Claims 207K</strong> (est. 213K) — labor market beat</td>
+        <td><span class="impact bullish">BULLISH Macro</span></td>
+        <td>CNBC / BLS</td>
+      </tr>
+      <tr>
+        <td>4</td>
+        <td><strong>TSLA $2B AI acquisition in 10-Q</strong> — not disclosed on earnings call (trust concern)</td>
+        <td><span class="impact mixed">MIXED</span></td>
+        <td><a href="https://electrek.co/2026/04/23/tesla-tsla-quietly-discloses-2-billion-ai-hardware-acquisition-10q/" target="_blank">Electrek</a></td>
+      </tr>
+      <tr>
+        <td>5</td>
+        <td><strong>AMZN double upgrade</strong> — BofA PT $298, KeyBanc PT $325 pre-earnings</td>
+        <td><span class="impact bullish">BULLISH AMZN</span></td>
+        <td><a href="https://247wallst.com/investing/2026/04/20/amazon-gets-a-double-upgrade-from-bofa-and-keybanc-ahead-of-earnings-is-325-the-new-floor/" target="_blank">24/7 Wall St.</a></td>
+      </tr>
+      <tr>
+        <td>6</td>
+        <td><strong>CPI 3.3% YoY</strong> (Mar 2026) — inflation above Fed 2% target, sticky</td>
+        <td><span class="impact bearish">BEARISH Rates</span></td>
+        <td>BLS</td>
+      </tr>
+      <tr style="background:rgba(252,70,70,0.04);">
+        <td>7</td>
+        <td>⚠️ <strong>FOMC April 28-29</strong> — hold expected; hawkish hold wording = risk to equities</td>
+        <td><span class="impact bearish">RISK EVENT</span></td>
+        <td><a href="https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm" target="_blank">Fed.gov</a></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<hr>
+
+<!-- STEP 4: OPTIONS FLOW -->
+<div class="section">
+  <div class="section-title">Step 4 — Options Flow Alerts</div>
+
+  <div class="note-box">⚠️ Real-time flow from premium platforms (FlowAlgo, Cheddar) not publicly accessible. Data below sourced from Benzinga's public unusual options activity page.</div>
+
+  <table>
+    <thead>
+      <tr><th>Ticker</th><th>Direction</th><th>Type</th><th>Strike / Expiry</th><th>Size</th><th>Sentiment</th></tr>
+    </thead>
+    <tbody>
+      <tr class="flow-bullish">
+        <td><strong>LRCX</strong></td>
+        <td>🟢 CALLS</td>
+        <td>SWEEP</td>
+        <td>$320 / May 1, 2026</td>
+        <td>655 contracts</td>
+        <td>Bullish semi bet — short-dated aggressive</td>
+      </tr>
+      <tr class="flow-bullish">
+        <td><strong>AAPL</strong></td>
+        <td>🟢 CALLS</td>
+        <td>SWEEP</td>
+        <td>$275 / Today</td>
+        <td>1,816 contracts</td>
+        <td>Aggressive same-day bull — intraday play</td>
+      </tr>
+      <tr class="flow-bullish">
+        <td><strong>AVGO</strong></td>
+        <td>🟢 CALLS</td>
+        <td>BLOCK</td>
+        <td>$440 / May 15, 2026</td>
+        <td>$64.9K premium</td>
+        <td>Institutional semi/AI accumulation</td>
+      </tr>
+      <tr class="flow-bearish">
+        <td><strong>MRVL</strong></td>
+        <td>🔴 PUTS</td>
+        <td>SWEEP</td>
+        <td>$170 / Jun 18, 2026</td>
+        <td>105 contracts</td>
+        <td>Bearish hedge on semi — lone bearish outlier</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <table>
+    <thead>
+      <tr><th>Indicator</th><th>Reading</th><th>Signal</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>SPY/QQQ Put/Call Ratio</td>
+        <td>Low (inferred from market action)</td>
+        <td><span class="impact bullish">BULLISH / Complacent</span></td>
+      </tr>
+      <tr>
+        <td>VIX Call Buying</td>
+        <td>No large VIX call buying detected</td>
+        <td><span class="impact bullish">Risk-ON — not hedging</span></td>
+      </tr>
+      <tr>
+        <td>Overall Flow Bias</td>
+        <td>3 bullish vs. 1 bearish (semi space)</td>
+        <td><span class="impact bullish">BULLISH — confirms tech rally</span></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="note-box">📌 Key signal: Semi sweep flow (LRCX, AAPL, AVGO calls) <strong>confirms</strong> bullish tech momentum. MRVL put is a lone hedge — not a broad reversal signal. Market is complacent (low VIX/put buying), consistent with risk-on geopolitical catalyst.</div>
+</div>
+
+<hr>
+
+<!-- STEP 5: POSITION CHECK -->
+<div class="section">
+  <div class="section-title">Step 5 — Position Check Signals</div>
+
+  <table>
+    <thead>
+      <tr><th>Action</th><th>Ticker / Theme</th><th>Reasoning</th></tr>
+    </thead>
+    <tbody>
+      <tr style="background:var(--red-bg)">
+        <td><span class="label urgent">🔴 EXIT / REDUCE</span></td>
+        <td><strong>PLTR</strong></td>
+        <td>Sell-the-news fully engaged (-4.57%). Exit or reduce on any bounce. Valuation repricing ongoing; sector rotating away from high-P/E AI software.</td>
+      </tr>
+      <tr style="background:rgba(252,70,70,0.04)">
+        <td><span class="label urgent">🔴 REDUCE LEVERAGE</span></td>
+        <td><strong>All Longs</strong></td>
+        <td>FOMC Apr 28-29 is a binary event. Hawkish hold language could reverse today's gains. Reduce leverage before weekend/Monday open.</td>
+      </tr>
+      <tr style="background:rgba(245,166,35,0.04)">
+        <td><span class="label watch">🟡 MONITOR</span></td>
+        <td><strong>TSLA</strong></td>
+        <td>AH pop reversed. Transparency/capex concerns. Wait for clear direction before re-entry or exit. No new position.</td>
+      </tr>
+      <tr style="background:rgba(245,166,35,0.04)">
+        <td><span class="label watch">🟡 MONITOR</span></td>
+        <td><strong>MARA</strong></td>
+        <td>Bitcoin subdued. No add signal. Follow BTC direction — break above $80K needed for bull case.</td>
+      </tr>
+      <tr style="background:var(--green-bg)">
+        <td><span class="label confirm">🟢 ADD / HOLD</span></td>
+        <td><strong>SNDK</strong></td>
+        <td>Thesis confirmed by Nasdaq-100 inclusion + analyst PTs ($975–$1,250). Any pullback from ATH ($965) is buyable on strong fundamentals.</td>
+      </tr>
+      <tr style="background:var(--green-bg)">
+        <td><span class="label confirm">🟢 HOLD</span></td>
+        <td><strong>SMH / NVDA</strong></td>
+        <td>Semi options flow bullish (LRCX, AVGO calls). QQQ risk-on. Hold and add on dips.</td>
+      </tr>
+      <tr style="background:var(--green-bg)">
+        <td><span class="label confirm">🟢 HOLD</span></td>
+        <td><strong>GLD</strong></td>
+        <td>Intraday dip only (-0.02%). Structural geopolitical bid intact. CPI 3.3% sustains inflation premium. No exit signal.</td>
+      </tr>
+      <tr style="background:rgba(66,153,225,0.06)">
+        <td><span class="label watch" style="background:rgba(99,179,237,0.1);color:var(--blue);border-color:rgba(99,179,237,0.3);">🆕 NEW SETUP</span></td>
+        <td><strong>AMZN</strong></td>
+        <td>Double upgrade + strong AWS/ads fundamentals + earnings Apr 29 = pre-earnings momentum play. Risk: FOMC same day.</td>
+      </tr>
+      <tr style="background:rgba(66,153,225,0.06)">
+        <td><span class="label watch" style="background:rgba(99,179,237,0.1);color:var(--blue);border-color:rgba(99,179,237,0.3);">🆕 NEW SETUP</span></td>
+        <td><strong>AAPL / AVGO</strong></td>
+        <td>Unusual sweeps (AAPL same-day 1,816 calls; AVGO institutional block May 15) = smart money confirming tech bull. Consider following institutional positioning.</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<hr>
+
+<!-- RISK EVENTS -->
+<div class="section">
+  <div class="section-title">⚠️ Risk Events — Next 72 Hours</div>
+
+  <table>
+    <thead>
+      <tr><th>Date / Time</th><th>Event</th><th>Risk Level</th></tr>
+    </thead>
+    <tbody class="risk-row">
+      <tr>
+        <td>Apr 28 (All day)</td>
+        <td>FOMC Meeting begins — markets in wait-and-see mode</td>
+        <td><span class="label watch">🟡 MEDIUM</span></td>
+      </tr>
+      <tr>
+        <td>Apr 29 — 2:00 PM ET</td>
+        <td><strong>FOMC Rate Decision + Statement</strong> — hold expected; hawkish language = risk-off</td>
+        <td><span class="label urgent">🔴 HIGH</span></td>
+      </tr>
+      <tr>
+        <td>Apr 29 — 2:30 PM ET</td>
+        <td>Powell Press Conference — tone on inflation path is key</td>
+        <td><span class="label urgent">🔴 HIGH</span></td>
+      </tr>
+      <tr>
+        <td>Apr 29 — AH</td>
+        <td><strong>META Q1 2026 Earnings</strong> — analyst exp. strong ad revenue</td>
+        <td><span class="label urgent">🔴 HIGH</span></td>
+      </tr>
+      <tr>
+        <td>Apr 29 — AH</td>
+        <td><strong>AMZN Q1 2026 Earnings</strong> — AWS +24% YoY trend; $173.5–$178.5B guidance</td>
+        <td><span class="label urgent">🔴 HIGH</span></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<hr>
+
+<!-- FINAL SUMMARY -->
+<div class="section">
+  <div class="section-title">Step 6 — Priority Summary</div>
+  <div class="summary-grid">
+    <div class="alert-card urgent" style="margin-bottom:0">
+      <div class="sticker-ticker">🔴 PLTR — EXIT</div>
+      <div class="sticker-action" style="margin-top:4px;color:var(--text-muted)">-4.57% today. Sell-the-news. No support at current levels.</div>
+    </div>
+    <div class="alert-card urgent" style="margin-bottom:0">
+      <div class="sticker-ticker">🔴 FOMC Apr 28-29 — REDUCE LEVERAGE</div>
+      <div class="sticker-action" style="margin-top:4px;color:var(--text-muted)">Binary event. Hawkish hold risk real with CPI at 3.3%.</div>
+    </div>
+    <div class="alert-card watch" style="margin-bottom:0">
+      <div class="sticker-ticker">🟡 TSLA — MONITOR</div>
+      <div class="sticker-action" style="margin-top:4px;color:var(--text-muted)">Conflicted. AH pop reversed. Capex + trust issues vs AI narrative.</div>
+    </div>
+    <div class="alert-card watch" style="margin-bottom:0">
+      <div class="sticker-ticker">🟡 AMZN — WATCH (pre-earnings)</div>
+      <div class="sticker-action" style="margin-top:4px;color:var(--text-muted)">Double upgrade. Earnings Apr 29. Pre-event momentum play.</div>
+    </div>
+    <div class="alert-card watch" style="margin-bottom:0">
+      <div class="sticker-ticker">🟡 SOFI — HOLD</div>
+      <div class="sticker-action" style="margin-top:4px;color:var(--text-muted)">XRP catalyst real but custody limitation caps immediate upside.</div>
+    </div>
+    <div class="alert-card watch" style="margin-bottom:0">
+      <div class="sticker-ticker">🟡 MARA — MONITOR</div>
+      <div class="sticker-action" style="margin-top:4px;color:var(--text-muted)">Follow BTC. No catalyst to add. BTC needs $80K+ break.</div>
+    </div>
+    <div class="alert-card confirm" style="margin-bottom:0">
+      <div class="sticker-ticker">🟢 SNDK — CONFIRM</div>
+      <div class="sticker-action" style="margin-top:4px;color:var(--text-muted)">Analyst upgrades + Nasdaq-100. Buy dips. Thesis intact.</div>
+    </div>
+    <div class="alert-card confirm" style="margin-bottom:0">
+      <div class="sticker-ticker">🟢 SMH / NVDA — CONFIRM</div>
+      <div class="sticker-action" style="margin-top:4px;color:var(--text-muted)">Semi options flow bullish. QQQ +1.48%. Hold and add dips.</div>
+    </div>
+    <div class="alert-card confirm" style="margin-bottom:0">
+      <div class="sticker-ticker">🟢 GLD — CONFIRM</div>
+      <div class="sticker-action" style="margin-top:4px;color:var(--text-muted)">Intraday dip only. Geopolitical + inflation bid intact. Hold.</div>
+    </div>
+    <div class="alert-card noise" style="margin-bottom:0">
+      <div class="sticker-ticker">⚪ AMD / COIN / META — NOISE</div>
+      <div class="sticker-action" style="margin-top:4px;color:var(--text-muted)">No verified catalyst today. Skip.</div>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<div class="footer">
+  <span>📊 Midday Catalyst Scan — April 23, 2026</span>
+  <span>Sources: Benzinga · Yahoo Finance · CNBC · Electrek · TipRanks · TradingKey · Motley Fool · 24/7 Wall St.</span>
+  <span>⚠️ For informational purposes only. Not financial advice.</span>
+</div>
+
+</body>
+</html>
