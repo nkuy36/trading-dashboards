@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SIBT Dashboard — 2026-04-23</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#0a0e17;--card:#111827;--border:#1e293b;--text:#e2e8f0;--dim:#64748b;--green:#10b981;--red:#ef4444;--amber:#f59e0b;--blue:#3b82f6;--purple:#a855f7}
+body{font-family:'JetBrains Mono',monospace;background:var(--bg);color:var(--text);min-height:100vh;font-size:13px;line-height:1.5}
+.ticker-bar{background:#060910;border-bottom:1px solid var(--border);padding:8px 0;overflow:hidden;white-space:nowrap;position:sticky;top:0;z-index:100}
+.ticker-inner{display:inline-block;animation:ticker 60s linear infinite}
+@keyframes ticker{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+.ticker-item{display:inline-block;margin:0 24px;font-size:12px}
+.ticker-item .sym{color:var(--blue);font-weight:600}
+.ticker-item .price{color:var(--text)}
+.ticker-item .chg{font-weight:500}
+.up{color:var(--green)}.down{color:var(--red)}.flat{color:var(--dim)}
+.container{max-width:1400px;margin:0 auto;padding:16px 20px}
+.header{text-align:center;padding:20px 0 10px;border-bottom:1px solid var(--border);margin-bottom:20px}
+.header h1{font-size:22px;font-weight:700;letter-spacing:2px;color:var(--text)}
+.header .date{color:var(--dim);font-size:12px;margin-top:4px}
+.mode-toggle{display:flex;justify-content:center;gap:8px;margin:16px 0}
+.mode-btn{padding:10px 28px;border:1px solid var(--border);background:transparent;color:var(--dim);font-family:inherit;font-size:13px;cursor:pointer;transition:all .2s;font-weight:500}
+.mode-btn.active{background:var(--blue);color:#fff;border-color:var(--blue)}
+.mode-btn:hover{border-color:var(--blue)}
+.mode-panel{display:none}.mode-panel.active{display:block}
+.hero{text-align:center;padding:28px 20px;margin:16px 0;border-radius:8px;border:2px solid}
+.hero.yes{background:rgba(16,185,129,0.08);border-color:var(--green)}
+.hero.caution{background:rgba(245,158,11,0.08);border-color:var(--amber)}
+.hero.no{background:rgba(239,68,68,0.08);border-color:var(--red)}
+.hero-label{font-size:11px;color:var(--dim);letter-spacing:3px;text-transform:uppercase;margin-bottom:6px}
+.hero-decision{font-size:36px;font-weight:700;letter-spacing:4px}
+.hero.yes .hero-decision{color:var(--green)}.hero.caution .hero-decision{color:var(--amber)}.hero.no .hero-decision{color:var(--red)}
+.hero-sub{font-size:13px;color:var(--dim);margin-top:6px}
+.gauge{width:200px;height:12px;background:#1e293b;border-radius:6px;margin:12px auto 0;overflow:hidden;position:relative}
+.gauge-fill{height:100%;border-radius:6px;transition:width .5s}
+.grid{display:grid;gap:14px;margin:16px 0}
+.grid-2{grid-template-columns:1fr 1fr}
+.grid-3{grid-template-columns:1fr 1fr 1fr}
+.grid-4{grid-template-columns:1fr 1fr 1fr 1fr}
+.card{background:var(--card);border:1px solid var(--border);border-radius:6px;padding:14px 16px}
+.card-title{font-size:11px;color:var(--dim);letter-spacing:2px;text-transform:uppercase;margin-bottom:10px;border-bottom:1px solid var(--border);padding-bottom:6px}
+.metric{display:flex;justify-content:space-between;align-items:center;padding:4px 0;font-size:12px}
+.metric .label{color:var(--dim)}.metric .value{font-weight:600}
+.badge{display:inline-block;padding:2px 8px;border-radius:3px;font-size:11px;font-weight:600}
+.badge-green{background:rgba(16,185,129,0.15);color:var(--green)}
+.badge-red{background:rgba(239,68,68,0.15);color:var(--red)}
+.badge-amber{background:rgba(245,158,11,0.15);color:var(--amber)}
+.badge-blue{background:rgba(59,130,246,0.15);color:var(--blue)}
+.heatmap{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:8px}
+.heat-cell{padding:8px 6px;border-radius:4px;text-align:center;font-size:11px}
+.heat-cell .sym{font-weight:600;display:block}.heat-cell .pct{font-size:10px;margin-top:2px}
+table{width:100%;border-collapse:collapse;font-size:12px;margin-top:6px}
+th{text-align:left;color:var(--dim);font-size:10px;letter-spacing:1px;text-transform:uppercase;padding:6px 8px;border-bottom:1px solid var(--border);font-weight:500}
+td{padding:6px 8px;border-bottom:1px solid rgba(30,41,59,0.5)}
+tr:hover td{background:rgba(59,130,246,0.04)}
+tr.highlight td{background:rgba(245,158,11,0.06);border-left:2px solid var(--amber)}
+.analysis{background:var(--card);border:1px solid var(--border);border-radius:6px;padding:18px 20px;margin:16px 0;line-height:1.7;font-size:12px;color:var(--dim)}
+.analysis strong{color:var(--text)}
+.analysis .verdict{font-size:14px;font-weight:700;margin-bottom:8px}
+.standout{background:var(--card);border:1px solid var(--amber);border-radius:6px;padding:16px 18px;margin:16px 0}
+.standout h3{color:var(--amber);font-size:13px;margin-bottom:10px;letter-spacing:1px}
+.standout .setup{margin-bottom:12px;padding-bottom:12px;border-bottom:1px solid var(--border)}
+.standout .setup:last-child{margin-bottom:0;padding-bottom:0;border-bottom:none}
+.standout .setup-title{font-weight:700;color:var(--text);font-size:13px}
+.standout .setup-detail{color:var(--dim);font-size:12px;margin-top:4px}
+.footer{text-align:center;padding:20px 0;color:var(--dim);font-size:10px;border-top:1px solid var(--border);margin-top:24px}
+.ep-section-title{font-size:13px;font-weight:700;color:var(--text);margin:14px 0 6px;padding:6px 10px;border-left:3px solid}
+.ep-section-title.gainers{border-color:var(--green);color:var(--green)}
+.ep-section-title.losers{border-color:var(--red);color:var(--red)}
+@media(max-width:900px){.grid-2,.grid-3,.grid-4{grid-template-columns:1fr}.heatmap{grid-template-columns:repeat(3,1fr)}}
+</style>
+</head>
+<body>
+
+<!-- TICKER BAR -->
+<div class="ticker-bar">
+<div class="ticker-inner" id="tickerInner"></div>
+</div>
+
+<div class="container">
+
+<div class="header">
+<h1>SHOULD I BE TRADING?</h1>
+<div class="date">2026-04-23 | Generated <span id="genTime"></span> | Data snapshot — no live refresh</div>
+</div>
+
+<!-- MODE TOGGLE -->
+<div class="mode-toggle">
+<button class="mode-btn active" onclick="switchMode('swing')">SWING TRADING</button>
+<button class="mode-btn" onclick="switchMode('day')">DAY TRADING</button>
+</div>
+
+<!-- ============ SWING TRADING MODE ============ -->
+<div class="mode-panel active" id="swingPanel">
+
+<div class="hero caution">
+<div class="hero-label">Swing Trading Mode</div>
+<div class="hero-decision">CAUTION</div>
+<div class="hero-sub">Composite Score: 75.10/100 — Macro environment favorable but headwinds present</div>
+<div class="gauge"><div class="gauge-fill" style="width:75.1%;background:var(--amber)"></div></div>
+</div>
+
+<div class="grid grid-4">
+
+<div class="card">
+<div class="card-title">Volatility (VIX)</div>
+<div class="metric"><span class="label">VIX Value</span><span class="value">19.20 <span class="up">(+0.20)</span></span></div>
+<div class="metric"><span class="label">Zone</span><span class="value"><span class="badge badge-green">COMPLACENT</span></span></div>
+<div class="metric"><span class="label">vs SMA10</span><span class="value"><span class="badge badge-amber">ABOVE</span></span></div>
+<div class="metric"><span class="label">Hedge Signal</span><span class="value" style="font-size:11px">NO ACTION</span></div>
+</div>
+
+<div class="card">
+<div class="card-title">Index Trend</div>
+<div class="metric"><span class="label">SPY Trend</span><span class="value"><span class="badge badge-green">UPTREND</span></span></div>
+<div class="metric"><span class="label">Chop Index</span><span class="value"><span class="badge badge-green">SUPER TREND</span></span></div>
+<div class="metric"><span class="label">Chop Value</span><span class="value">20.10</span></div>
+<div class="metric"><span class="label">HTF Weekly</span><span class="value"><span class="badge badge-green">BULLISH</span></span></div>
+</div>
+
+<div class="card">
+<div class="card-title">Sector Breadth</div>
+<div class="metric"><span class="label">Score</span><span class="value up">71.10 (+2.10)</span></div>
+<div class="metric"><span class="label">Phases</span><span class="value" style="font-size:11px">Rp:12 Tu:8 Tp:5 Cr:2</span></div>
+<div class="metric"><span class="label">Thrust</span><span class="value"><span class="badge badge-amber">NO (6 ago)</span></span></div>
+<div class="metric"><span class="label">Liquidity</span><span class="value"><span class="badge badge-amber">TIGHT</span></span></div>
+</div>
+
+<div class="card">
+<div class="card-title">Factor Regime</div>
+<div class="metric"><span class="label">Risk State</span><span class="value"><span class="badge badge-green">RISK ON</span></span></div>
+<div class="metric"><span class="label">Leading</span><span class="value"><span class="badge badge-green">GOLDILOCKS</span></span></div>
+<div class="metric"><span class="label">Regime %</span><span class="value" style="font-size:11px">G:31 R:35 I:15 D:19</span></div>
+</div>
+
+</div>
+
+<div class="grid grid-3">
+
+<div class="card">
+<div class="card-title">Implied Correlation</div>
+<div class="metric"><span class="label">Avg</span><span class="value">1.20 <span class="up">(+0.20)</span></span></div>
+<div class="metric"><span class="label">First Green</span><span class="value">12 ago</span></div>
+</div>
+
+<div class="card">
+<div class="card-title">MMFI</div>
+<div class="metric"><span class="label">Value</span><span class="value up">65.10 (+1.10)</span></div>
+<div class="metric"><span class="label">Zone</span><span class="value"><span class="badge badge-green">HEALTHY</span></span></div>
+<div class="metric"><span class="label">Trend</span><span class="value"><span class="badge badge-green">RISING (&gt;MAs)</span></span></div>
+</div>
+
+<div class="card">
+<div class="card-title">Action Zone</div>
+<div class="metric"><span class="label">Size</span><span class="value"><span class="badge badge-green">FULL SIZE</span></span></div>
+<div class="metric"><span class="label">Strategy</span><span class="value"><span class="badge badge-blue">B/O WORK</span></span></div>
+</div>
+
+</div>
+
+<!-- SECTOR HEATMAP -->
+<div class="card">
+<div class="card-title">Sector Heatmap — Daily % Change</div>
+<div class="heatmap" id="sectorHeatmap"></div>
+</div>
+
+<!-- SWING ANALYSIS -->
+<div class="analysis">
+<div class="verdict" style="color:var(--amber)">SWING VERDICT: CAUTION — TRADEABLE BUT STAY DISCIPLINED</div>
+<strong>The macro environment is broadly supportive but not firing on all cylinders.</strong> The composite score of 75.10 sits solidly in the CAUTION band — not strong enough for aggressive new positions, not weak enough to step aside. The index trend is healthy (UPTREND + SUPER TREND + BULLISH HTF weekly), breadth is HEALTHY at 71.10 with 12 sectors in recovery phase, and risk is ON in a GOLDILOCKS regime. These are green lights.<br><br>
+<strong>The headwinds:</strong> VIX at 19.20 is COMPLACENT but sitting ABOVE its SMA10 — this deteriorating volatility trend is a yellow flag. Liquidity is TIGHT, which limits upside fuel. The Reflation regime leads at 35% — not pure Goldilocks dominance. Breadth thrust is absent (last 6 bars ago). Implied correlation is low at 1.20, which is good for stock-picking but means the market lacks conviction on direction.<br><br>
+<strong>Bottom line:</strong> Breakout setups are viable (Action Zone says FULL SIZE + B/O WORK), but take partial profits quickly and keep stops tight. The MMFI rising at 65.10 supports continuation, but the VIX deterioration and tight liquidity mean any reversal could be sharp. <strong>If you have existing winners, this is a hold-and-trail environment, not a press-harder environment.</strong>
+</div>
+
+</div><!-- end swing panel -->
+
+<!-- ============ DAY TRADING MODE ============ -->
+<div class="mode-panel" id="dayPanel">
+
+<div class="hero yes">
+<div class="hero-label">Day Trading Mode</div>
+<div class="hero-decision">YES</div>
+<div class="hero-sub">VIX 19.20 in sweet spot (15-25) | Active retail names | Clear market direction</div>
+</div>
+
+<!-- RETAIL WATCHLIST -->
+<div class="card">
+<div class="card-title">Retail Watchlist</div>
+<table>
+<thead><tr><th>Ticker</th><th>Price</th><th>Change %</th><th>Open</th><th>High</th><th>Low</th><th>Prev Close</th><th>Volume</th></tr></thead>
+<tbody id="retailTable"></tbody>
+</table>
+</div>
+
+<!-- EP WATCHLIST -->
+<div class="card" style="margin-top:14px">
+<div class="card-title">EP Watchlist — Pre-Market Movers (Price &gt; $1.00)</div>
+
+<div class="ep-section-title gainers">TOP GAINERS</div>
+<table>
+<thead><tr><th>#</th><th>Ticker</th><th>EP</th><th>Gap %</th><th>Price</th><th>PM Vol</th><th>Catalyst</th><th>Date</th><th>Bias</th></tr></thead>
+<tbody id="epGainersTable"></tbody>
+</table>
+
+<div class="ep-section-title losers" style="margin-top:16px">TOP LOSERS</div>
+<table>
+<thead><tr><th>#</th><th>Ticker</th><th>EP</th><th>Gap %</th><th>Price</th><th>PM Vol</th><th>Catalyst</th><th>Date</th><th>Bias</th></tr></thead>
+<tbody id="epLosersTable"></tbody>
+</table>
+</div>
+
+<!-- STANDOUT SETUPS -->
+<div class="standout">
+<h3>STANDOUT SETUPS</h3>
+
+<div class="setup">
+<div class="setup-title">1. QS (QuantumScape) — LONG | EP 85 | +30.63%</div>
+<div class="setup-detail">
+Earnings-driven gap with massive volume (6.4M PM). QuantumScape reiterated 2026 EBITDA guidance, and the market is rewarding visibility. 30%+ gap on a $9.55 stock with >6M PM volume is the profile of a multi-day runner. <strong>Watch for a first pullback entry above VWAP.</strong> Risk: guidance was a reiteration, not a raise — momentum could fade if no follow-through by 10:30 AM.
+</div>
+</div>
+
+<div class="setup">
+<div class="setup-title">2. SMCI (Super Micro) — SHORT | EP 77 | -10.45%</div>
+<div class="setup-detail">
+Reported $1.4B Oracle contract loss — a material fundamental blow. 5.6M shares in PM volume confirms institutional selling. SMCI has been a controversy magnet (accounting issues, auditor changes), and this contract loss adds another layer. <strong>Short on any bounce into VWAP rejection below $27.</strong> Risk: SMCI is heavily shorted already; watch for a squeeze if broader tech rallies hard.
+</div>
+</div>
+
+<div class="setup">
+<div class="setup-title">3. NOK (Nokia) — LONG | EP 75 | +9.84%</div>
+<div class="setup-detail">
+Nokia targets 12-14% Network Infrastructure growth for 2026. Almost 12M shares in PM — massive institutional interest for a $10 stock. The gap isn't extreme (9.84%), which means less overextension risk. <strong>Entry on a hold above $10.50 with volume confirmation.</strong> This has multi-day potential as analysts will likely revise estimates.
+</div>
+</div>
+
+</div>
+
+<!-- DAY TRADE ANALYSIS -->
+<div class="analysis">
+<div class="verdict" style="color:var(--green)">DAY TRADE VERDICT: ACTIVE TAPE — MULTIPLE EP SETUPS AVAILABLE</div>
+<strong>The EP tape is healthy today.</strong> Three setups score above 70, with QS leading at EP 85 on a clean earnings catalyst with heavy volume. The short side has SMCI as a gift — a fundamental contract loss with 5.6M shares of PM volume is the kind of setup that trends all day.<br><br>
+<strong>Retail watchlist is active:</strong> SNDK +8.37%, AMD +6.67%, MARA +5.43%, COIN +5.25%, PLTR +4.56% — the speculative/tech names are moving with conviction. This confirms risk appetite is present and day trade setups should follow through.<br><br>
+<strong>VIX at 19.20 is squarely in the sweet spot</strong> — enough volatility for intraday range but not chaotic. SPY +1.01% and QQQ +1.67% show clear upward bias, which means long-biased EP setups have tailwind.<br><br>
+<strong>Caution flags:</strong> AGPU at -21.71% looks tempting as a short but it's a pullback from yesterday's 166% contract rally — chop city. ASGN at -33.77% has low PM volume (114K) — likely to be illiquid and spread-heavy. <strong>Stick with QS, SMCI, and NOK as your A-tier setups.</strong>
+</div>
+
+</div><!-- end day panel -->
+
+<div class="footer">
+SIBT Dashboard v2.0 | Data as of 2026-04-23 | No auto-refresh — one-time snapshot<br>
+Generated by Claude Code | Not financial advice
+</div>
+
+</div><!-- container -->
+
+<script>
+// Ticker data
+const tickerData = [
+{sym:'SPY',price:711.21,chg:1.01},{sym:'QQQ',price:655.11,chg:1.67},{sym:'UUP',price:27.48,chg:0.04},
+{sym:'TSLA',price:387.51,chg:0.28},{sym:'NVDA',price:202.50,chg:1.31},{sym:'AMD',price:303.46,chg:6.67},
+{sym:'PLTR',price:152.62,chg:4.56},{sym:'META',price:674.72,chg:0.88},{sym:'AMZN',price:255.36,chg:2.18},
+{sym:'SOFI',price:19.06,chg:1.22},{sym:'MARA',price:11.84,chg:5.43},{sym:'COIN',price:206.24,chg:5.25},
+{sym:'SNDK',price:979.07,chg:8.37},{sym:'XLK',price:158.09,chg:2.20},{sym:'XLE',price:56.54,chg:1.20},
+{sym:'XLF',price:52.21,chg:-0.17},{sym:'XLV',price:146.38,chg:0.32},{sym:'XLI',price:171.04,chg:-0.23}
+];
+
+// Build ticker
+const tickerInner = document.getElementById('tickerInner');
+let tickerHTML = '';
+for(let r=0;r<2;r++){
+  tickerData.forEach(t=>{
+    const cls = t.chg>0?'up':t.chg<0?'down':'flat';
+    const sign = t.chg>0?'+':'';
+    tickerHTML += `<span class="ticker-item"><span class="sym">${t.sym}</span> <span class="price">${t.price.toFixed(2)}</span> <span class="chg ${cls}">${sign}${t.chg.toFixed(2)}%</span></span>`;
+  });
+}
+tickerInner.innerHTML = tickerHTML;
+
+// Retail watchlist
+const retail = [
+{t:'SNDK',p:979.07,c:8.37,o:922.01,h:981.06,l:895.74,pc:903.49,v:15497424},
+{t:'AMD',p:303.46,c:6.67,o:291.22,h:304.25,l:286.14,pc:284.49,v:49054237},
+{t:'MARA',p:11.84,c:5.43,o:11.83,h:12.19,l:11.68,pc:11.23,v:53005399},
+{t:'COIN',p:206.24,c:5.25,o:204.18,h:211.97,l:202.34,pc:195.95,v:12096785},
+{t:'PLTR',p:152.62,c:4.56,o:148.36,h:152.68,l:147.41,pc:145.97,v:43701459},
+{t:'AMZN',p:255.36,c:2.18,o:252.44,h:255.94,l:250.33,pc:249.91,v:36065067},
+{t:'NVDA',p:202.50,c:1.31,o:200.99,h:202.50,l:199.00,pc:199.88,v:107501042},
+{t:'SOFI',p:19.06,c:1.22,o:19.29,h:19.45,l:18.91,pc:18.83,v:45964778},
+{t:'META',p:674.72,c:0.88,o:674.36,h:678.38,l:669.75,pc:668.84,v:9215603},
+{t:'TSLA',p:387.51,c:0.28,o:387.57,h:393.01,l:385.30,pc:386.42,v:62362785}
+];
+const rtb = document.getElementById('retailTable');
+retail.forEach(r=>{
+  const cls = r.c>0?'up':'down';
+  rtb.innerHTML += `<tr><td style="font-weight:600">${r.t}</td><td>$${r.p.toFixed(2)}</td><td class="${cls}">${r.c>0?'+':''}${r.c.toFixed(2)}%</td><td>$${r.o.toFixed(2)}</td><td>$${r.h.toFixed(2)}</td><td>$${r.l.toFixed(2)}</td><td>$${r.pc.toFixed(2)}</td><td>${(r.v/1e6).toFixed(1)}M</td></tr>`;
+});
+
+// EP Gainers (price > $1, sorted by EP score)
+const epGainers = [
+{t:'QS',ep:85,gap:30.63,price:9.55,vol:6384015,cat:'Reiterates 2026 EBITDA guidance',dt:'4/22 11:41 PM',bias:'LONG'},
+{t:'AUUD',ep:75,gap:78.55,price:6.91,vol:29145340,cat:'Patent backs AI data centers',dt:'4/23 10:00 AM',bias:'LONG'},
+{t:'MBLY',ep:75,gap:14.74,price:9.06,vol:2291138,cat:'Q1 beats, boosts outlook',dt:'4/23 7:29 AM',bias:'LONG'},
+{t:'NOK',ep:75,gap:9.84,price:10.83,vol:11993902,cat:'Targets 12-14% infra growth',dt:'4/23 8:23 AM',bias:'LONG'},
+{t:'TRT',ep:75,gap:30.27,price:10.76,vol:2833199,cat:'Q3 revenue report',dt:'4/23 11:34 AM',bias:'LONG'},
+{t:'AKAN',ep:70,gap:37.12,price:14.00,vol:14842006,cat:'Momentum / data-driven',dt:'4/22 7:17 PM',bias:'LONG'},
+{t:'YCBD',ep:65,gap:21.53,price:1.13,vol:16802582,cat:'No catalyst identified',dt:'N/A',bias:'LONG'},
+{t:'HELE',ep:55,gap:19.83,price:23.69,vol:31719,cat:'EPS beats by $0.13, rev beats',dt:'4/23 7:31 AM',bias:'LONG'},
+{t:'URI',ep:55,gap:15.85,price:930.00,vol:12445,cat:'Q1 beat + higher outlook',dt:'4/22 4:38 PM',bias:'LONG'},
+{t:'TXN',ep:55,gap:10.09,price:260.15,vol:299097,cat:'Q1 results beat estimates',dt:'4/22 4:46 PM',bias:'LONG'},
+{t:'WST',ep:55,gap:13.15,price:310.50,vol:23589,cat:'Packaging drives Q1 beat',dt:'4/23 8:17 AM',bias:'LONG'},
+{t:'TZOO',ep:55,gap:17.49,price:8.80,vol:463801,cat:'Record membership renewals Q1',dt:'4/23 10:39 AM',bias:'LONG'},
+{t:'ASTI',ep:55,gap:12.90,price:5.61,vol:275587,cat:'Earnings report',dt:'4/23 1:25 AM',bias:'LONG'},
+{t:'MNTS',ep:45,gap:12.25,price:6.23,vol:239478,cat:'Citadel 10% stake filing',dt:'4/22 9:10 PM',bias:'LONG'},
+{t:'LFVN',ep:30,gap:9.79,price:5.38,vol:300599,cat:'Investor call May 6',dt:'4/23 8:15 AM',bias:'LONG'},
+{t:'VLN',ep:30,gap:8.70,price:1.75,vol:161948,cat:'SVP exercises options',dt:'4/23 12:38 PM',bias:'LONG'},
+{t:'IVF',ep:30,gap:7.56,price:2.42,vol:21408,cat:'Q3 EPS misses',dt:'4/23 11:47 AM',bias:'LONG'},
+{t:'FEBO',ep:30,gap:8.93,price:1.22,vol:15684,cat:'General movement',dt:'4/23 12:09 PM',bias:'LONG'},
+{t:'VTIX',ep:30,gap:7.03,price:5.63,vol:1393,cat:'General movement',dt:'4/22 7:17 PM',bias:'LONG'}
+];
+
+const epLosers = [
+{t:'SMCI',ep:77,gap:-10.45,price:26.13,vol:5640072,cat:'$1.4B Oracle contract loss',dt:'4/23 11:37 AM',bias:'SHORT'},
+{t:'NOW',ep:75,gap:-12.90,price:89.77,vol:2700853,cat:'Post-earnings selloff',dt:'4/23 8:07 AM',bias:'SHORT'},
+{t:'ALT',ep:60,gap:-13.83,price:2.99,vol:1252082,cat:'$225M public offering',dt:'4/23 12:02 AM',bias:'SHORT'},
+{t:'ASGN',ep:55,gap:-33.77,price:26.77,vol:113992,cat:'BMO cuts rating, weak results',dt:'4/23 11:41 AM',bias:'SHORT'},
+{t:'MEDP',ep:55,gap:-17.20,price:420.98,vol:5468,cat:'Falls despite Q1 beats',dt:'4/22 5:41 PM',bias:'SHORT'},
+{t:'LPL',ep:55,gap:-14.15,price:4.61,vol:44598,cat:'Q1 rev falls, OLED share 60%',dt:'4/23 12:15 PM',bias:'SHORT'},
+{t:'KREF',ep:55,gap:-16.63,price:5.59,vol:9196,cat:'EPS misses by $0.24',dt:'4/22 4:21 PM',bias:'SHORT'},
+{t:'AGPU',ep:50,gap:-21.71,price:6.85,vol:829252,cat:'Pullback from 166% rally',dt:'4/22 8:24 AM',bias:'SHORT'},
+{t:'HCAI',ep:40,gap:-15.81,price:8.20,vol:35609,cat:'General selling',dt:'4/20 8:15 PM',bias:'SHORT'},
+{t:'QVCGP',ep:40,gap:-16.60,price:2.21,vol:10441,cat:'Consolidation signals',dt:'4/22 3:34 PM',bias:'SHORT'},
+{t:'GNLN',ep:40,gap:-10.85,price:4.93,vol:118663,cat:'Investor converts shares',dt:'4/22 4:36 PM',bias:'SHORT'},
+{t:'SPRC',ep:40,gap:-11.50,price:5.42,vol:15342,cat:'Volatile run fading',dt:'4/21 1:18 PM',bias:'SHORT'},
+{t:'TEAM',ep:33,gap:-8.12,price:68.00,vol:194299,cat:'Analyst caution',dt:'4/23 8:26 AM',bias:'SHORT'},
+{t:'LXEH',ep:30,gap:-9.03,price:1.41,vol:1009,cat:'General movement',dt:'4/23 12:09 PM',bias:'SHORT'},
+{t:'CAR',ep:30,gap:-8.77,price:405.01,vol:175072,cat:'Meme party runs out of gas',dt:'4/23 6:11 AM',bias:'SHORT'},
+{t:'ELPW',ep:30,gap:-8.49,price:2.37,vol:368178,cat:'Post-surge filing selloff',dt:'4/22 5:36 PM',bias:'SHORT'}
+];
+
+function fmtVol(v){return v>=1e6?(v/1e6).toFixed(1)+'M':v>=1e3?(v/1e3).toFixed(0)+'K':v}
+
+function renderEP(data, tableId, top3){
+  const tb = document.getElementById(tableId);
+  data.forEach((r,i)=>{
+    const cls = r.gap>0?'up':'down';
+    const hl = i<top3?'highlight':'';
+    const epCls = r.ep>=75?'badge-green':r.ep>=50?'badge-amber':'badge-red';
+    tb.innerHTML += `<tr class="${hl}"><td>${i+1}</td><td style="font-weight:700">${r.t}</td><td><span class="badge ${epCls}">${r.ep}</span></td><td class="${cls}">${r.gap>0?'+':''}${r.gap.toFixed(2)}%</td><td>$${r.price.toFixed(2)}</td><td>${fmtVol(r.vol)}</td><td style="font-size:11px;max-width:200px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis" title="${r.cat}">${r.cat}</td><td style="font-size:10px;color:var(--dim)">${r.dt}</td><td><span class="badge ${r.bias==='LONG'?'badge-green':'badge-red'}">${r.bias}</span></td></tr>`;
+  });
+}
+renderEP(epGainers,'epGainersTable',3);
+renderEP(epLosers,'epLosersTable',3);
+
+// Sector heatmap
+const sectors = [
+{sym:'XLK',name:'Tech',chg:2.20},{sym:'XLE',name:'Energy',chg:1.20},{sym:'XLC',name:'Comms',chg:0.61},
+{sym:'XLP',name:'Staples',chg:0.33},{sym:'XLV',name:'Health',chg:0.32},{sym:'XLB',name:'Materials',chg:0.12},
+{sym:'XLY',name:'Disc',chg:-0.03},{sym:'XLF',name:'Financials',chg:-0.17},{sym:'XLU',name:'Utilities',chg:-0.18},
+{sym:'XLI',name:'Industrials',chg:-0.23},{sym:'XLRE',name:'Real Est',chg:-0.73}
+];
+const hm = document.getElementById('sectorHeatmap');
+sectors.forEach(s=>{
+  const intensity = Math.min(Math.abs(s.chg)*40,100);
+  const bg = s.chg>=0?`rgba(16,185,129,${intensity/100*0.3+0.05})`:`rgba(239,68,68,${intensity/100*0.3+0.05})`;
+  const tc = s.chg>=0?'var(--green)':'var(--red)';
+  hm.innerHTML += `<div class="heat-cell" style="background:${bg}"><span class="sym">${s.sym}</span><span class="pct" style="color:${tc}">${s.chg>0?'+':''}${s.chg.toFixed(2)}%</span><span style="display:block;font-size:9px;color:var(--dim)">${s.name}</span></div>`;
+});
+
+// Mode toggle
+function switchMode(mode){
+  document.querySelectorAll('.mode-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.mode-panel').forEach(p=>p.classList.remove('active'));
+  if(mode==='swing'){
+    document.querySelectorAll('.mode-btn')[0].classList.add('active');
+    document.getElementById('swingPanel').classList.add('active');
+  } else {
+    document.querySelectorAll('.mode-btn')[1].classList.add('active');
+    document.getElementById('dayPanel').classList.add('active');
+  }
+}
+
+// Timestamp
+document.getElementById('genTime').textContent = new Date().toLocaleString();
+</script>
+</body>
+</html>
