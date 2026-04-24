@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Midday Catalyst Scan — 2026-04-24</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0e17;
+    --bg2: #0f1520;
+    --bg3: #141c2e;
+    --border: #1e2d45;
+    --text: #e2e8f0;
+    --text-dim: #94a3b8;
+    --text-faint: #475569;
+    --red: #f87171;
+    --red-bg: rgba(248,113,113,0.1);
+    --yellow: #fbbf24;
+    --yellow-bg: rgba(251,191,36,0.1);
+    --green: #34d399;
+    --green-bg: rgba(52,211,153,0.1);
+    --gray: #94a3b8;
+    --gray-bg: rgba(148,163,184,0.08);
+    --accent: #60a5fa;
+    --accent2: #818cf8;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'JetBrains Mono', 'Courier New', monospace;
+    font-size: 13px;
+    line-height: 1.6;
+    padding: 24px;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+  .header {
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 16px;
+    margin-bottom: 24px;
+  }
+  .header h1 {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--accent);
+    letter-spacing: 0.05em;
+    margin-bottom: 4px;
+  }
+  .header .meta {
+    color: var(--text-faint);
+    font-size: 11px;
+  }
+  .posture-bar {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 24px;
+    padding: 12px 16px;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+  }
+  .posture-item {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .posture-label { font-size: 10px; color: var(--text-faint); text-transform: uppercase; letter-spacing: 0.1em; }
+  .posture-value { font-size: 13px; font-weight: 600; }
+  .posture-sep { width: 1px; background: var(--border); align-self: stretch; margin: 0 4px; }
+  h2 {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--text-faint);
+    margin: 28px 0 12px 0;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 6px;
+  }
+  .card {
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    margin-bottom: 10px;
+    overflow: hidden;
+  }
+  .card-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    background: var(--bg2);
+    border-bottom: 1px solid var(--border);
+    flex-wrap: wrap;
+  }
+  .ticker {
+    font-weight: 700;
+    font-size: 15px;
+    color: var(--accent);
+    min-width: 60px;
+  }
+  .badge {
+    padding: 2px 8px;
+    border-radius: 3px;
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+  .urgent { background: var(--red-bg); color: var(--red); border: 1px solid rgba(248,113,113,0.3); }
+  .watch { background: var(--yellow-bg); color: var(--yellow); border: 1px solid rgba(251,191,36,0.3); }
+  .confirm { background: var(--green-bg); color: var(--green); border: 1px solid rgba(52,211,153,0.3); }
+  .noise { background: var(--gray-bg); color: var(--gray); border: 1px solid rgba(148,163,184,0.2); }
+  .impact-bull { color: var(--green); font-size: 11px; }
+  .impact-bear { color: var(--red); font-size: 11px; }
+  .impact-neutral { color: var(--gray); font-size: 11px; }
+  .card-body {
+    padding: 10px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+  .headline { font-weight: 500; color: var(--text); font-size: 12px; }
+  .detail { color: var(--text-dim); font-size: 11px; }
+  .action-line { font-size: 11px; }
+  .action-yes { color: var(--yellow); font-weight: 600; }
+  .action-watch { color: var(--accent2); font-weight: 600; }
+  .action-no { color: var(--text-faint); }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  .summary-table { width: 100%; border-collapse: collapse; margin-top: 8px; }
+  .summary-table th {
+    text-align: left;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-faint);
+    padding: 6px 10px;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+  }
+  .summary-table td {
+    padding: 7px 10px;
+    border: 1px solid var(--border);
+    font-size: 12px;
+    vertical-align: top;
+  }
+  .summary-table tr:hover td { background: var(--bg3); }
+  .row-urgent td { border-left: 3px solid var(--red); }
+  .row-watch td { border-left: 3px solid var(--yellow); }
+  .row-confirm td { border-left: 3px solid var(--green); }
+  .row-noise td { border-left: 3px solid var(--text-faint); }
+  .options-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 10px;
+    margin-top: 8px;
+  }
+  .options-card {
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 12px 14px;
+    background: var(--bg2);
+  }
+  .options-card .oc-title { font-weight: 600; font-size: 12px; color: var(--accent); margin-bottom: 6px; }
+  .options-card .oc-detail { font-size: 11px; color: var(--text-dim); margin-bottom: 3px; }
+  .options-card .oc-signal { font-size: 11px; color: var(--yellow); margin-top: 6px; font-weight: 500; }
+  .risk-box {
+    background: var(--red-bg);
+    border: 1px solid rgba(248,113,113,0.3);
+    border-radius: 6px;
+    padding: 12px 14px;
+    margin: 8px 0;
+  }
+  .risk-box .rb-title { color: var(--red); font-weight: 700; font-size: 12px; margin-bottom: 6px; }
+  .risk-box .rb-item { font-size: 11px; color: var(--text-dim); margin-bottom: 3px; }
+  .source-line { font-size: 10px; color: var(--text-faint); margin-top: 4px; }
+  .section-note { font-size: 11px; color: var(--text-faint); font-style: italic; margin: 6px 0; }
+  .commodity-alert {
+    border: 1px solid rgba(248,113,113,0.4);
+    background: var(--red-bg);
+    border-radius: 6px;
+    padding: 12px 14px;
+    margin-bottom: 10px;
+  }
+  .commodity-alert .ca-title { color: var(--red); font-weight: 700; font-size: 13px; margin-bottom: 6px; }
+  .footer {
+    margin-top: 32px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+    font-size: 10px;
+    color: var(--text-faint);
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>🕐 MIDDAY CATALYST CHECK — 2026-04-24</h1>
+  <div class="meta">Generated: ~Midday EST &nbsp;|&nbsp; Model: Claude Sonnet &nbsp;|&nbsp; Automated Scheduled Scan</div>
+</div>
+
+<!-- POSTURE BAR -->
+<div class="posture-bar">
+  <div class="posture-item">
+    <span class="posture-label">Market Posture</span>
+    <span class="posture-value" style="color:var(--green)">RISK-ON 🟢</span>
+  </div>
+  <div class="posture-sep"></div>
+  <div class="posture-item">
+    <span class="posture-label">Sector Leader</span>
+    <span class="posture-value" style="color:var(--accent)">Semis (SMH)</span>
+  </div>
+  <div class="posture-sep"></div>
+  <div class="posture-item">
+    <span class="posture-label">Sector Laggard</span>
+    <span class="posture-value" style="color:var(--red)">Precious Metals</span>
+  </div>
+  <div class="posture-sep"></div>
+  <div class="posture-item">
+    <span class="posture-label">QQQ P/C Ratio</span>
+    <span class="posture-value" style="color:var(--yellow)">1.29 (Elevated)</span>
+  </div>
+  <div class="posture-sep"></div>
+  <div class="posture-item">
+    <span class="posture-label">Key Risk Event</span>
+    <span class="posture-value" style="color:var(--red)">Apr 29 — META/AMZN/SOFI</span>
+  </div>
+</div>
+
+<!-- STEP 1 -->
+<h2>Step 1 — Watchlist Alert Check</h2>
+
+<!-- AMD -->
+<div class="card">
+  <div class="card-header">
+    <span class="ticker">AMD</span>
+    <span class="badge confirm">🟢 CONFIRM</span>
+    <span class="impact-bull">▲ BULLISH</span>
+    <span class="badge" style="background:rgba(251,191,36,0.15);color:var(--yellow);border:1px solid rgba(251,191,36,0.3)">ACT: YES</span>
+  </div>
+  <div class="card-body">
+    <div class="headline">AMD surges ~13% as Intel's blowout Q1 2026 earnings lift entire semiconductor sector</div>
+    <div class="detail">Intel reported EPS $0.29 vs $0.01 est (+1350% surprise); Revenue $13.6B vs $12.4B est — carried AMD, NVDA, and all semi names higher</div>
+    <div class="action-line"><span class="action-yes">ACTION:</span> <span class="detail">Momentum trade active; TSMC 41% Q1 growth (April 16) adds fundamental backdrop. Wait for VWAP pullback before adding — don't chase gap open.</span></div>
+    <div class="source-line">Sources: <a href="https://www.benzinga.com/analyst-stock-ratings/reiteration/26/04/51882233/amd-meta-openai-fuel-massive-2026-chip-surge" target="_blank">Benzinga</a> | <a href="https://www.investing.com/news/company-news/why-is-amd-stock-rallying-today-93CH-4629889" target="_blank">Investing.com</a></div>
+  </div>
+</div>
+
+<!-- NVDA -->
+<div class="card">
+  <div class="card-header">
+    <span class="ticker">NVDA</span>
+    <span class="badge confirm">🟢 CONFIRM</span>
+    <span class="impact-bull">▲ BULLISH</span>
+    <span class="badge" style="background:rgba(129,140,248,0.1);color:var(--accent2);border:1px solid rgba(129,140,248,0.3)">ACT: WATCH</span>
+  </div>
+  <div class="card-body">
+    <div class="headline">NVIDIA up ~5% on semiconductor sector sympathy rally; Intel beat validates data center chip demand</div>
+    <div class="detail">IV: 36.84% | IV Rank: 45.41 (moderate) | Implied move 4/24: ±$2.62 (1.31%) — options calm despite move</div>
+    <div class="action-line"><span class="action-watch">WATCH:</span> <span class="detail">Riding INTC coattails; own earnings in late May. Thesis intact — hold and manage stops.</span></div>
+    <div class="source-line">Sources: <a href="https://finance.yahoo.com/quote/NVDA/news/" target="_blank">Yahoo Finance NVDA</a> | <a href="https://unusualwhales.com/stock/NVDA/volatility" target="_blank">Unusual Whales NVDA</a></div>
+  </div>
+</div>
+
+<!-- PLTR -->
+<div class="card">
+  <div class="card-header">
+    <span class="ticker">PLTR</span>
+    <span class="badge urgent">🔴 URGENT</span>
+    <span class="impact-bear">▼ BEARISH</span>
+    <span class="badge" style="background:rgba(248,113,113,0.15);color:var(--red);border:1px solid rgba(248,113,113,0.3)">ACT: YES</span>
+  </div>
+  <div class="card-body">
+    <div class="headline">Palantir down ~6% on valuation rotation — market not rewarding positive catalysts (USDA $300M contract, FAA $32.5B finalist)</div>
+    <div class="detail">Intraday range: $140.69–$143.79 | Stock off 30% from all-time highs | No company-specific negative news</div>
+    <div class="action-line"><span style="color:var(--red);font-weight:600;">ACTION:</span> <span class="detail">If long, define your stop now. High-multiple AI names rotating to semi hardware plays today. Positive catalysts exist but market is indifferent — patience or reduce.</span></div>
+    <div class="source-line">Sources: <a href="https://finance.yahoo.com/markets/stocks/articles/why-palantir-stock-falling-today-183004134.html" target="_blank">Yahoo Finance PLTR</a> | <a href="https://www.fool.com/investing/2026/04/24/palantir-stock-good-news-president-trump-governmen/" target="_blank">Motley Fool</a></div>
+  </div>
+</div>
+
+<!-- META -->
+<div class="card">
+  <div class="card-header">
+    <span class="ticker">META</span>
+    <span class="badge watch">🟡 WATCH</span>
+    <span class="impact-bull">▲ BULLISH</span>
+    <span class="badge" style="background:rgba(129,140,248,0.1);color:var(--accent2);border:1px solid rgba(129,140,248,0.3)">ACT: WATCH</span>
+  </div>
+  <div class="card-body">
+    <div class="headline">Meta Platforms up ~2.5% ahead of April 29 earnings; est $6.65 EPS on $55B revenue (+32% YoY)</div>
+    <div class="detail">Pre-earnings drift constructive. Do NOT chase into event — consider defined-risk options strategy (straddle or call spread).</div>
+    <div class="action-line"><span class="action-watch">WATCH:</span> <span class="detail">Any weakness into April 29 open = add opportunity. Earnings April 29 after close.</span></div>
+    <div class="source-line">Sources: <a href="https://finance.yahoo.com/quote/META/" target="_blank">Yahoo Finance META</a></div>
+  </div>
+</div>
+
+<!-- SOFI -->
+<div class="card">
+  <div class="card-header">
+    <span class="ticker">SOFI</span>
+    <span class="badge noise">⚪ NOISE</span>
+    <span class="impact-bear">▼ BEARISH (minor)</span>
+    <span class="badge" style="background:var(--gray-bg);color:var(--gray);border:1px solid rgba(148,163,184,0.2)">ACT: NO</span>
+  </div>
+  <div class="card-body">
+    <div class="headline">SoFi down 2.71% to $18.32 — pre-earnings drift; launched Big Business Banking and FedNow in April 2026</div>
+    <div class="detail">Down 40% YTD from highs. Earnings April 29 is the binary event. No fresh catalyst today.</div>
+    <div class="source-line">Sources: <a href="https://finance.yahoo.com/quote/SOFI/news/" target="_blank">Yahoo Finance SOFI</a> | <a href="https://www.mexc.com/news/1046673" target="_blank">MEXC News</a></div>
+  </div>
+</div>
+
+<!-- MARA -->
+<div class="card">
+  <div class="card-header">
+    <span class="ticker">MARA</span>
+    <span class="badge watch">🟡 WATCH</span>
+    <span class="impact-bull">▲ BULLISH</span>
+    <span class="badge" style="background:rgba(129,140,248,0.1);color:var(--accent2);border:1px solid rgba(129,140,248,0.3)">ACT: WATCH</span>
+  </div>
+  <div class="card-body">
+    <div class="headline">Bitcoin above $79,000 (April 22 breakout); MARA Holdings strategic pivot to AI infrastructure adds optionality</div>
+    <div class="detail">MARA holds 38,689 BTC valued ~$2.88B. BTC recovering from $68K lows in early April. IBIT leading crypto ETF inflows with $871M weekly.</div>
+    <div class="action-line"><span class="action-watch">WATCH:</span> <span class="detail">BTC $80K breakout = next confirmation signal for MARA/COIN/IBIT.</span></div>
+    <div class="source-line">Sources: <a href="https://www.coindesk.com/markets/2026/04/22/bitcoin-tops-usd79-000-as-crypto-rally-gathers-steam-circle-coinbase-strategy-lead" target="_blank">CoinDesk</a> | <a href="https://247wallst.com/investing/2026/04/16/mara-rises-6-bitcoin-miner-turned-ai-infrastructure-play-has-the-market-divided-and-buzzing/" target="_blank">24/7 Wall St.</a></div>
+  </div>
+</div>
+
+<!-- SPY/QQQ -->
+<div class="card">
+  <div class="card-header">
+    <span class="ticker">SPY/QQQ</span>
+    <span class="badge confirm">🟢 CONFIRM</span>
+    <span class="impact-bull">▲ BULLISH</span>
+    <span class="badge" style="background:rgba(129,140,248,0.1);color:var(--accent2);border:1px solid rgba(129,140,248,0.3)">ACT: WATCH</span>
+  </div>
+  <div class="card-body">
+    <div class="headline">SPY and QQQ extend gains; QQQ up ~1.5% on Israel-Lebanon ceasefire extension + Trump-Iran talks signal</div>
+    <div class="detail">QQQ range: $645.53–$656.92 | Vol: 40.1M vs 41.7M avg | SPY +3.56% past 5 days. Risk-on day confirmed.</div>
+    <div class="source-line">Sources: <a href="https://www.tipranks.com/news/stock-market-today-spy-qqq-extend-gains-as-trump-teases-new-u-s-iran-talks-israel-and-lebanon-agree-to-a-ceasefire" target="_blank">TipRanks Market Today</a> | <a href="https://www.tipranks.com/news/why-is-the-invesco-qqq-trust-etf-qqq-rising-today-4-24-2026" target="_blank">TipRanks QQQ</a></div>
+  </div>
+</div>
+
+<!-- STEP 2 -->
+<h2>Step 2 — Sector &amp; Theme ETF Midday Check</h2>
+
+<!-- GLD/SLV ALERT -->
+<div class="commodity-alert">
+  <div class="ca-title">🔴 GLD/SLV — SHARP REVERSAL IN PROGRESS</div>
+  <div class="detail">GLD: <strong style="color:var(--red)">-2.95%</strong> | Vol: 15.5M (elevated) &nbsp;|&nbsp; SLV: <strong style="color:var(--red)">-9.43%</strong> | Vol: 89.9M (extremely elevated)</div>
+  <div class="detail" style="margin-top:6px;">Spot gold ~$4,700/oz &nbsp;|&nbsp; Spot silver ~$76/oz</div>
+  <div class="detail" style="margin-top:6px; color:var(--yellow);">▶ Risk-on geopolitical relief (Iran talks + ceasefire) reducing safe-haven demand. SLV -9.43% on massive volume = institutional selling. If long GLD/SLV — reassess immediately.</div>
+  <div class="source-line">Sources: <a href="https://www.cnbc.com/quotes/gld,slv" target="_blank">CNBC GLD/SLV</a> | <a href="https://www.goodreturns.in/news/gold-rates-silver-rates-today-24-04-2026-live-updates-mcx-gold-silver-price-24k-22k-18k-gold-prices-1504241.html" target="_blank">Goodreturns</a></div>
+</div>
+
+<!-- SMH / AI -->
+<div class="card">
+  <div class="card-header">
+    <span class="ticker">SMH / AI</span>
+    <span class="badge confirm">🟢 CONFIRM</span>
+    <span class="impact-bull">▲ HISTORIC MOMENTUM</span>
+  </div>
+  <div class="card-body">
+    <div class="headline">SMH: 16 consecutive up sessions (longest streak since 2014) — $3.4B in April inflows (all-time fund record)</div>
+    <div class="detail">SMH range: $475.19–$491.09 | Current: ~$490.70 | IBIT: $871M weekly inflows; crypto ETF YTD flows turned positive at $2.3B</div>
+    <div class="detail" style="color:var(--green);margin-top:4px;">▶ INSTITUTIONAL CONVICTION in semis confirmed. Not retail meme rally — sustained fund inflows from large players.</div>
+    <div class="source-line">Sources: <a href="https://www.benzinga.com/markets/tech/26/04/52024434/ai-boom-fuels-historic-semiconductor-rally-soxx-smh-etfs-lead-with-billions-in-record-april-inflows" target="_blank">Benzinga SMH flows</a> | <a href="https://stocktwits.com/news-articles/markets/cryptocurrency/crypto-etf-inflows-hit-4-month-high-ibit-leads-bitcoin-funds-turn-positive/cZJFCBSRIu9" target="_blank">StockTwits IBIT</a></div>
+  </div>
+</div>
+
+<!-- SECTOR ROTATION -->
+<div class="card">
+  <div class="card-header">
+    <span class="ticker">ROTATION</span>
+    <span class="badge confirm">🟢 RISK-ON</span>
+  </div>
+  <div class="card-body">
+    <div class="headline">LEADING: XLK / SMH (semis) &nbsp;|&nbsp; LAGGING: Precious metals, safe-haven sectors</div>
+    <div class="detail">Defensive signal: NONE visible — XLU/XLP not leading. Risk appetite elevated across the board.</div>
+    <div class="detail" style="color:var(--yellow); margin-top:4px;">▶ DIVERGENCE: PLTR underperforming within tech — valuation rotation from high-multiple AI SaaS → semi hardware (AMD, NVDA, INTC)</div>
+  </div>
+</div>
+
+<!-- STEP 3 -->
+<h2>Step 3 — Breaking Catalysts</h2>
+
+<!-- INTC -->
+<div class="card">
+  <div class="card-header">
+    <span class="ticker">INTC</span>
+    <span class="badge confirm">🟢 PRIMARY DRIVER</span>
+    <span class="impact-bull">▲ BULLISH — Session Catalyst</span>
+  </div>
+  <div class="card-body">
+    <div class="headline">Intel Q1 2026: EPS $0.29 vs $0.01 est (+1350% surprise) | Rev $13.6B vs $12.4B est | Q2 Guide $13.8–14.8B (street: $13.07B)</div>
+    <div class="detail">INTC stock +25% pre-market. Data center revenue +22% YoY to $5.1B. 6th consecutive quarter beating guidance. Stock hitting all-time highs.</div>
+    <div class="detail" style="color:var(--green);margin-top:4px;">▶ Validates AI chip infrastructure demand across entire sector. This is the primary catalyst driving AMD, NVDA, SMH today.</div>
+    <div class="source-line">Sources: <a href="https://www.cnbc.com/2026/04/23/intel-intc-q1-2026-earnings-report.html" target="_blank">CNBC Intel Q1</a> | <a href="https://seekingalpha.com/news/4578798-intel-surges-as-q1-results-guidance-blow-past-wall-streets-forecast" target="_blank">Seeking Alpha</a> | <a href="https://finance.yahoo.com/sectors/technology/article/intel-to-report-first-quarter-earnings-as-cpus-become-key-to-ai-growth-191552358.html" target="_blank">Yahoo Finance</a></div>
+  </div>
+</div>
+
+<!-- GEOPOLITICS -->
+<div class="card">
+  <div class="card-header">
+    <span class="ticker">MACRO</span>
+    <span class="badge watch">🟡 WATCH</span>
+    <span class="impact-bull">▲ BULLISH (partial)</span>
+  </div>
+  <div class="card-body">
+    <div class="headline">Trump teases US-Iran diplomatic talks; Israel-Lebanon ceasefire extended 3 weeks — risk premium unwinding</div>
+    <div class="detail">Markets pricing out geopolitical risk. MSCI World erasing post-conflict slump. Oil/energy under some pressure from perceived Strait of Hormuz relief.</div>
+    <div class="detail" style="color:var(--yellow);margin-top:4px;">⚠ CAUTION: Strait of Hormuz remains contested (Iranian ship seizures ongoing). Do not over-extend on resolution thesis — situation fragile.</div>
+    <div class="source-line">Sources: <a href="https://www.tipranks.com/news/stock-market-today-spy-qqq-extend-gains-as-trump-teases-new-u-s-iran-talks-israel-and-lebanon-agree-to-a-ceasefire" target="_blank">TipRanks</a> | <a href="https://www.cnbc.com/2026/04/22/markets-shrug-at-trumps-iran-ceasefire-extension.html" target="_blank">CNBC Iran</a></div>
+  </div>
+</div>
+
+<!-- FED -->
+<div class="card">
+  <div class="card-header">
+    <span class="ticker">FED</span>
+    <span class="badge noise">⚪ NOISE</span>
+    <span class="impact-neutral">— NEUTRAL</span>
+  </div>
+  <div class="card-body">
+    <div class="headline">FOMC holding at 3.5–3.75%; Kevin Warsh confirmation hearing completed April 21 — no surprises; data-dependent stance confirmed</div>
+    <div class="detail">No Fed speakers scheduled today. Next FOMC meeting is the key rate catalyst. Warsh hearing non-market-moving.</div>
+    <div class="source-line">Sources: <a href="https://www.cnbc.com/2026/04/21/kevin-warsh-fed-confirmation-hearing-trump-live-updates.html" target="_blank">CNBC Warsh Hearing</a> | <a href="https://www.federalreserve.gov/newsevents/pressreleases/monetary20260318a.htm" target="_blank">Fed FOMC Statement</a></div>
+  </div>
+</div>
+
+<!-- EARNINGS RISK -->
+<div class="risk-box">
+  <div class="rb-title">🔴 EARNINGS RISK EVENT — APRIL 29 (5 days out)</div>
+  <div class="rb-item">📌 <strong>META:</strong> Q1 2026 — Est. EPS $6.65 | Revenue ~$55B (+32% YoY) | After close</div>
+  <div class="rb-item">📌 <strong>AMZN:</strong> Q1 2026 — Rev guide $173.5B–$178.5B | AWS grew 24% in Q4 2025 | After close</div>
+  <div class="rb-item">📌 <strong>SOFI:</strong> Q1 2026 — reporting same day</div>
+  <div class="rb-item" style="margin-top:8px; color:var(--yellow);">⚠ Be cautious holding leveraged longs into Wednesday close. Three major earnings on same day = binary event cluster.</div>
+  <div class="source-line" style="margin-top:6px;">Sources: <a href="https://www.aboutamazon.com/news/company-news/amazon-earnings-q1-2026-report" target="_blank">About Amazon</a> | <a href="https://www.zacks.com/stock/research/META/earnings-calendar" target="_blank">Zacks META Calendar</a></div>
+</div>
+
+<!-- STEP 4 -->
+<h2>Step 4 — Options Flow Alerts</h2>
+
+<div class="options-grid">
+  <div class="options-card">
+    <div class="oc-title">QQQ — Put/Call Ratio</div>
+    <div class="oc-detail">OI P/C Ratio: <strong style="color:var(--yellow)">1.29</strong></div>
+    <div class="oc-detail">Interpretation: Slightly elevated — more puts than calls in open interest</div>
+    <div class="oc-detail">Typical neutral range: 0.70–1.00</div>
+    <div class="oc-signal">⚠ Institutions maintaining downside hedges despite today's rally. Could accelerate if hedges unwind into EOD.</div>
+    <div class="source-line"><a href="https://fintel.io/sopt/us/qqq" target="_blank">Fintel QQQ Options</a></div>
+  </div>
+  <div class="options-card">
+    <div class="oc-title">NVDA — IV Monitor</div>
+    <div class="oc-detail">IV: 36.84% | IV Rank: <strong style="color:var(--green)">45.41</strong> (moderate)</div>
+    <div class="oc-detail">Implied move 4/24: ±$2.62 (1.31%)</div>
+    <div class="oc-detail">Options calm despite +5% stock move today</div>
+    <div class="oc-signal">✓ No unusual hedging or upside chase in NVDA options. Institutional positioning stable.</div>
+    <div class="source-line"><a href="https://unusualwhales.com/stock/NVDA/volatility" target="_blank">Unusual Whales NVDA</a></div>
+  </div>
+  <div class="options-card">
+    <div class="oc-title">SMH — Institutional Flow</div>
+    <div class="oc-detail">April inflows: <strong style="color:var(--green)">$3.4B</strong> (all-time record)</div>
+    <div class="oc-detail">16-session win streak (record since 2014)</div>
+    <div class="oc-detail">Not retail-driven — sustained institutional buying</div>
+    <div class="oc-signal">✓ BULLISH institutional conviction in semiconductor sector confirmed by sustained inflows.</div>
+    <div class="source-line"><a href="https://www.benzinga.com/markets/tech/26/04/52024434/ai-boom-fuels-historic-semiconductor-rally-soxx-smh-etfs-lead-with-billions-in-record-april-inflows" target="_blank">Benzinga SMH</a></div>
+  </div>
+  <div class="options-card">
+    <div class="oc-title">IBIT — Crypto Flow</div>
+    <div class="oc-detail">Weekly inflows: <strong style="color:var(--green)">$871M</strong> (4-month high)</div>
+    <div class="oc-detail">Crypto ETF YTD flows turned positive: $2.3B</div>
+    <div class="oc-detail">BTC: $79K+ (recovering from April lows ~$68K)</div>
+    <div class="oc-signal">▶ Watch for BTC $80K breakout — that's the next level to extend MARA/COIN/IBIT.</div>
+    <div class="source-line"><a href="https://stocktwits.com/news-articles/markets/cryptocurrency/crypto-etf-inflows-hit-4-month-high-ibit-leads-bitcoin-funds-turn-positive/cZJFCBSRIu9" target="_blank">StockTwits IBIT</a></div>
+  </div>
+</div>
+
+<div class="section-note" style="margin-top:10px;">⚠ Note: Real-time sweep/block data from Unusual Whales, FlowAlgo not available via web search — check <a href="https://unusualwhales.com" target="_blank">unusualwhales.com</a> directly for live intraday sweeps on TSLA, NVDA, AMD.</div>
+
+<!-- STEP 5 -->
+<h2>Step 5 — Position Check Signals</h2>
+
+<div class="risk-box" style="margin-bottom:10px;">
+  <div class="rb-title">🔴 EXIT / REASSESS</div>
+  <div class="rb-item">▶ <strong>PLTR longs:</strong> -6% intraday with no negative company news. Valuation rotation in progress. Define stop NOW or reduce size. Don't hold through pre-earnings uncertainty if no defined risk.</div>
+  <div class="rb-item">▶ <strong>GLD/SLV longs:</strong> SLV -9.43% on extreme volume = violent reversal. Risk-on geopolitical relief hit PMs hard. Reassess or exit immediately.</div>
+</div>
+
+<div class="card" style="border-color:rgba(251,191,36,0.3);">
+  <div class="card-header" style="background:var(--yellow-bg);">
+    <span style="color:var(--yellow);font-weight:700;">🟡 MONITOR CLOSELY</span>
+  </div>
+  <div class="card-body">
+    <div class="detail">▶ <strong style="color:var(--text)">AMD:</strong> Already +13% — wait for intraday VWAP pullback before adding. ORB breakout valid if holding above AM high.</div>
+    <div class="detail">▶ <strong style="color:var(--text)">SMH:</strong> 16-session win streak — watch for exhaustion candle or reversal signal into EOD. Stretched but institutional backing real.</div>
+    <div class="detail">▶ <strong style="color:var(--text)">MARA/COIN/IBIT:</strong> BTC $79K+ is the thesis. Watch for $80K breakout — next extension level.</div>
+    <div class="detail">▶ <strong style="color:var(--text)">META:</strong> Pre-earnings drift constructive. April 29 options strategy (straddle/call spread) preferred over naked stock.</div>
+  </div>
+</div>
+
+<div class="card" style="border-color:rgba(52,211,153,0.3);margin-top:10px;">
+  <div class="card-header" style="background:var(--green-bg);">
+    <span style="color:var(--green);font-weight:700;">🟢 THESIS INTACT — NO ACTION</span>
+  </div>
+  <div class="card-body">
+    <div class="detail">▶ <strong style="color:var(--text)">NVDA / AMD / SMH longs:</strong> Intel beat validates AI chip supercycle. No reason to exit — manage trailing stops.</div>
+    <div class="detail">▶ <strong style="color:var(--text)">QQQ/SPY:</strong> Geopolitical relief + INTC catalyst = risk-on day. Trend intact. No new setups needed unless pullback opportunity forms.</div>
+  </div>
+</div>
+
+<!-- STEP 6 -->
+<h2>Step 6 — Summary Dashboard</h2>
+
+<table class="summary-table">
+  <thead>
+    <tr>
+      <th>Priority</th>
+      <th>Ticker/Theme</th>
+      <th>Signal</th>
+      <th>Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr class="row-urgent">
+      <td><span style="color:var(--red)">🔴 URGENT</span></td>
+      <td style="color:var(--accent)">PLTR</td>
+      <td>-6%, valuation rotation selling</td>
+      <td style="color:var(--red)">Define stop or reduce position</td>
+    </tr>
+    <tr class="row-urgent">
+      <td><span style="color:var(--red)">🔴 URGENT</span></td>
+      <td style="color:var(--accent)">SLV / GLD</td>
+      <td>SLV -9.43% on extreme vol, risk-on reversal</td>
+      <td style="color:var(--red)">Exit or reassess longs immediately</td>
+    </tr>
+    <tr class="row-watch">
+      <td><span style="color:var(--yellow)">🟡 WATCH</span></td>
+      <td style="color:var(--accent)">AMD</td>
+      <td>+13% gap on INTC catalyst</td>
+      <td style="color:var(--yellow)">Wait for VWAP pullback before entry</td>
+    </tr>
+    <tr class="row-watch">
+      <td><span style="color:var(--yellow)">🟡 WATCH</span></td>
+      <td style="color:var(--accent)">META</td>
+      <td>Pre-earnings drift +2.5%</td>
+      <td style="color:var(--yellow)">Options strategy for Apr 29 earnings</td>
+    </tr>
+    <tr class="row-watch">
+      <td><span style="color:var(--yellow)">🟡 WATCH</span></td>
+      <td style="color:var(--accent)">MARA / COIN / IBIT</td>
+      <td>BTC $79K+, recovering</td>
+      <td style="color:var(--yellow)">Watch for $80K BTC breakout</td>
+    </tr>
+    <tr class="row-watch">
+      <td><span style="color:var(--yellow)">🟡 WATCH</span></td>
+      <td style="color:var(--accent)">SMH</td>
+      <td>16-session streak, $3.4B inflows</td>
+      <td style="color:var(--yellow)">Watch for exhaustion / reversal candle</td>
+    </tr>
+    <tr class="row-confirm">
+      <td><span style="color:var(--green)">🟢 CONFIRM</span></td>
+      <td style="color:var(--accent)">NVDA</td>
+      <td>+5%, AI thesis intact</td>
+      <td style="color:var(--green)">Hold, manage trailing stop</td>
+    </tr>
+    <tr class="row-confirm">
+      <td><span style="color:var(--green)">🟢 CONFIRM</span></td>
+      <td style="color:var(--accent)">QQQ / SPY</td>
+      <td>Risk-on, +1.5% intraday</td>
+      <td style="color:var(--green)">Trend intact, no action</td>
+    </tr>
+    <tr class="row-confirm">
+      <td><span style="color:var(--green)">🟢 CONFIRM</span></td>
+      <td style="color:var(--accent)">SMH / AI Sector</td>
+      <td>Record inflows, Intel beat validates thesis</td>
+      <td style="color:var(--green)">Semis leading — hold longs</td>
+    </tr>
+    <tr class="row-noise">
+      <td><span style="color:var(--gray)">⚪ NOISE</span></td>
+      <td style="color:var(--text-dim)">TSLA</td>
+      <td>Flat +0.14%, no catalyst</td>
+      <td style="color:var(--text-faint)">No action</td>
+    </tr>
+    <tr class="row-noise">
+      <td><span style="color:var(--gray)">⚪ NOISE</span></td>
+      <td style="color:var(--text-dim)">SOFI</td>
+      <td>Pre-earnings drift, -2.71%</td>
+      <td style="color:var(--text-faint)">Wait for April 29 earnings</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="footer">
+  <div>Sources: Yahoo Finance · CNBC · Benzinga · TipRanks · Seeking Alpha · Unusual Whales · Investing.com · MarketBeat · CoinDesk · 24/7 Wall St.</div>
+  <div style="margin-top:4px;">Generated by automated midday scanner | Claude Sonnet | 2026-04-24</div>
+  <div style="margin-top:4px; color:#334155;">⚠ This report is for informational purposes only and does not constitute financial advice. All data sourced from publicly available web searches and may not reflect real-time prices.</div>
+</div>
+
+</body>
+</html>
