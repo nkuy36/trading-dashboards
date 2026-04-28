@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SIBT Dashboard — 2026-04-28</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#0a0e17;color:#e2e8f0;font-family:'JetBrains Mono',monospace;font-size:13px;line-height:1.5;overflow-x:hidden}
+:root{--green:#10b981;--red:#ef4444;--amber:#f59e0b;--blue:#3b82f6;--purple:#a855f7;--bg:#0a0e17;--card:#111827;--border:#1f2937;--muted:#6b7280}
+.ticker-bar{position:fixed;top:0;left:0;right:0;height:32px;background:#111827;border-bottom:1px solid var(--border);overflow:hidden;z-index:100;display:flex;align-items:center}
+.ticker-scroll{display:flex;gap:24px;animation:scroll 60s linear infinite;white-space:nowrap;padding-left:100%}
+@keyframes scroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+.ticker-item{display:flex;gap:8px;align-items:center}
+.ticker-item .symbol{color:var(--blue);font-weight:600}
+.ticker-item .price{color:#e2e8f0}
+.ticker-item .change.up{color:var(--green)}
+.ticker-item .change.down{color:var(--red)}
+.container{max-width:1600px;margin:0 auto;padding:48px 24px 24px}
+.header{text-align:center;margin-bottom:32px}
+.header h1{font-size:28px;font-weight:700;letter-spacing:2px;color:#fff}
+.header .date{color:var(--muted);font-size:14px;margin-top:4px}
+.header .timestamp{color:var(--muted);font-size:11px;margin-top:2px}
+.mode-toggle{display:flex;justify-content:center;gap:0;margin-bottom:32px}
+.mode-btn{padding:12px 32px;background:var(--card);border:1px solid var(--border);color:var(--muted);cursor:pointer;font-family:inherit;font-size:14px;font-weight:600;transition:all .2s}
+.mode-btn:first-child{border-radius:6px 0 0 6px}
+.mode-btn:last-child{border-radius:0 6px 6px 0}
+.mode-btn.active{background:var(--blue);color:#fff;border-color:var(--blue)}
+.mode-content{display:none}
+.mode-content.active{display:block}
+.hero{text-align:center;padding:40px;border-radius:12px;margin-bottom:32px}
+.hero.yes{background:linear-gradient(135deg,rgba(16,185,129,.15),rgba(16,185,129,.05));border:2px solid var(--green)}
+.hero.caution{background:linear-gradient(135deg,rgba(245,158,11,.15),rgba(245,158,11,.05));border:2px solid var(--amber)}
+.hero.no{background:linear-gradient(135deg,rgba(239,68,68,.15),rgba(239,68,68,.05));border:2px solid var(--red)}
+.hero-decision{font-size:48px;font-weight:700;letter-spacing:4px}
+.hero.yes .hero-decision{color:var(--green)}
+.hero.caution .hero-decision{color:var(--amber)}
+.hero.no .hero-decision{color:var(--red)}
+.hero-sub{font-size:16px;color:var(--muted);margin-top:8px}
+.score-gauge{margin:20px auto;width:200px;height:100px;position:relative}
+.score-gauge-bg{width:200px;height:100px;border-radius:100px 100px 0 0;background:#1f2937;overflow:hidden;position:relative}
+.score-gauge-fill{position:absolute;bottom:0;left:0;right:0;transition:height .5s}
+.score-gauge-value{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);font-size:32px;font-weight:700;color:#fff}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:16px;margin-bottom:32px}
+.card{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:20px}
+.card-title{font-size:11px;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);margin-bottom:12px;font-weight:600}
+.metric{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid rgba(255,255,255,.03)}
+.metric:last-child{border-bottom:none}
+.metric-label{color:#94a3b8;font-size:12px}
+.metric-value{font-weight:600;font-size:12px}
+.metric-value.green{color:var(--green)}
+.metric-value.red{color:var(--red)}
+.metric-value.amber{color:var(--amber)}
+.metric-value.blue{color:var(--blue)}
+.heatmap{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:8px;margin-bottom:32px}
+.heat-cell{padding:12px 8px;border-radius:6px;text-align:center;font-weight:600;font-size:12px}
+.heat-cell .symbol{display:block;font-size:11px;opacity:.7;margin-bottom:2px}
+.heat-cell .val{font-size:14px}
+table{width:100%;border-collapse:collapse;font-size:12px}
+th{text-align:left;padding:8px 10px;border-bottom:1px solid var(--border);color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:1px}
+td{padding:8px 10px;border-bottom:1px solid rgba(255,255,255,.03)}
+tr:hover{background:rgba(255,255,255,.02)}
+tr.highlight{background:rgba(59,130,246,.08)}
+.badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:600;text-transform:uppercase}
+.badge.long{background:rgba(16,185,129,.15);color:var(--green)}
+.badge.short{background:rgba(239,68,68,.15);color:var(--red)}
+.terminal{background:#0d1117;border:1px solid var(--border);border-radius:8px;padding:24px;margin-top:24px;font-size:13px;line-height:1.8}
+.terminal::before{content:"$ analysis";display:block;color:var(--green);margin-bottom:12px;font-weight:600}
+.terminal p{color:#94a3b8;margin-bottom:8px}
+.standout{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:20px;margin-top:24px}
+.standout h3{color:var(--amber);font-size:14px;margin-bottom:12px}
+.standout-item{padding:12px 0;border-bottom:1px solid rgba(255,255,255,.05)}
+.standout-item:last-child{border-bottom:none}
+.standout-item .ticker{color:var(--blue);font-weight:700;font-size:14px}
+.standout-item .reason{color:#94a3b8;margin-top:4px;font-size:12px}
+</style>
+</head>
+<body>
+<div class="ticker-bar">
+<div class="ticker-scroll" id="ticker">
+<span class="ticker-item"><span class="symbol">SPY</span><span class="price">715.17</span><span class="change up">+0.28%</span></span>
+<span class="ticker-item"><span class="symbol">QQQ</span><span class="price">664.23</span><span class="change up">+0.13%</span></span>
+<span class="ticker-item"><span class="symbol">NVDA</span><span class="price">216.61</span><span class="change up">+3.32%</span></span>
+<span class="ticker-item"><span class="symbol">TSLA</span><span class="price">378.67</span><span class="change up">+1.77%</span></span>
+<span class="ticker-item"><span class="symbol">SNDK</span><span class="price">1070.20</span><span class="change up">+4.96%</span></span>
+<span class="ticker-item"><span class="symbol">AMD</span><span class="price">334.63</span><span class="change down">-3.37%</span></span>
+<span class="ticker-item"><span class="symbol">META</span><span class="price">678.62</span><span class="change up">+1.14%</span></span>
+<span class="ticker-item"><span class="symbol">AMZN</span><span class="price">261.12</span><span class="change down">-0.89%</span></span>
+<span class="ticker-item"><span class="symbol">PLTR</span><span class="price">143.10</span><span class="change up">+1.31%</span></span>
+<span class="ticker-item"><span class="symbol">SOFI</span><span class="price">18.76</span><span class="change up">+1.52%</span></span>
+<span class="ticker-item"><span class="symbol">COIN</span><span class="price">196.68</span><span class="change down">-1.22%</span></span>
+<span class="ticker-item"><span class="symbol">MARA</span><span class="price">11.18</span><span class="change down">-3.19%</span></span>
+<span class="ticker-item"><span class="symbol">SPY</span><span class="price">715.17</span><span class="change up">+0.28%</span></span>
+<span class="ticker-item"><span class="symbol">QQQ</span><span class="price">664.23</span><span class="change up">+0.13%</span></span>
+<span class="ticker-item"><span class="symbol">NVDA</span><span class="price">216.61</span><span class="change up">+3.32%</span></span>
+<span class="ticker-item"><span class="symbol">TSLA</span><span class="price">378.67</span><span class="change up">+1.77%</span></span>
+<span class="ticker-item"><span class="symbol">SNDK</span><span class="price">1070.20</span><span class="change up">+4.96%</span></span>
+<span class="ticker-item"><span class="symbol">AMD</span><span class="price">334.63</span><span class="change down">-3.37%</span></span>
+<span class="ticker-item"><span class="symbol">META</span><span class="price">678.62</span><span class="change up">+1.14%</span></span>
+<span class="ticker-item"><span class="symbol">AMZN</span><span class="price">261.12</span><span class="change down">-0.89%</span></span>
+</div>
+</div>
+
+<div class="container">
+<div class="header">
+<h1>SHOULD I BE TRADING?</h1>
+<div class="date">2026-04-28 | Tuesday</div>
+<div class="timestamp">Generated: 2026-04-28 | Data snapshot — no auto-refresh</div>
+</div>
+
+<div class="mode-toggle">
+<button class="mode-btn active" onclick="switchMode('swing')">SWING TRADING</button>
+<button class="mode-btn" onclick="switchMode('day')">DAY TRADING</button>
+</div>
+
+<!-- SWING TRADING MODE -->
+<div class="mode-content active" id="swing-mode">
+<div class="hero caution">
+<div class="hero-decision">CAUTION</div>
+<div class="hero-sub">Composite Score: 72.10/100 | Action Zone: FULL SIZE / B/O WORK</div>
+<div class="score-gauge">
+<div class="score-gauge-bg">
+<div class="score-gauge-fill" style="height:72%;background:var(--amber)"></div>
+</div>
+<div class="score-gauge-value">72.10</div>
+</div>
+</div>
+
+<div class="grid">
+<div class="card">
+<div class="card-title">Volatility (VIX)</div>
+<div class="metric"><span class="metric-label">VIX Value</span><span class="metric-value green">19.20 (-1.20)</span></div>
+<div class="metric"><span class="metric-label">VIX Zone</span><span class="metric-value green">COMPLACENT</span></div>
+<div class="metric"><span class="metric-label">VIX vs SMA10</span><span class="metric-value amber">ABOVE (deteriorating)</span></div>
+<div class="metric"><span class="metric-label">Hedge Signal</span><span class="metric-value amber">NO ACTION / TAKE PROFITS</span></div>
+</div>
+
+<div class="card">
+<div class="card-title">Index Trend</div>
+<div class="metric"><span class="metric-label">SPY Trend</span><span class="metric-value green">UPTREND</span></div>
+<div class="metric"><span class="metric-label">Chop Index</span><span class="metric-value green">SUPER TREND (34.10)</span></div>
+<div class="metric"><span class="metric-label">HTF Weekly</span><span class="metric-value green">BULLISH</span></div>
+</div>
+
+<div class="card">
+<div class="card-title">Sector Breadth</div>
+<div class="metric"><span class="metric-label">Breadth Score</span><span class="metric-value green">67.10 (+0.10)</span></div>
+<div class="metric"><span class="metric-label">Phase Counts</span><span class="metric-value">Rp:12 | Tu:9 | Tp:6 | Cr:4</span></div>
+<div class="metric"><span class="metric-label">Breadth Thrust</span><span class="metric-value red">NO (9 bars ago)</span></div>
+<div class="metric"><span class="metric-label">Liquidity (TNX)</span><span class="metric-value red">TIGHT</span></div>
+</div>
+
+<div class="card">
+<div class="card-title">Factor Regime</div>
+<div class="metric"><span class="metric-label">Risk State</span><span class="metric-value green">RISK ON</span></div>
+<div class="metric"><span class="metric-label">Leading Regime</span><span class="metric-value green">GOLDILOCKS</span></div>
+<div class="metric"><span class="metric-label">Goldilocks %</span><span class="metric-value">31%</span></div>
+<div class="metric"><span class="metric-label">Reflation %</span><span class="metric-value">35%</span></div>
+<div class="metric"><span class="metric-label">Inflation %</span><span class="metric-value">15%</span></div>
+<div class="metric"><span class="metric-label">Deflation %</span><span class="metric-value">19%</span></div>
+</div>
+
+<div class="card">
+<div class="card-title">Implied Correlation</div>
+<div class="metric"><span class="metric-label">ImplCorr Avg</span><span class="metric-value amber">1.20 (-0.20)</span></div>
+<div class="metric"><span class="metric-label">First Green</span><span class="metric-value">15 bars ago</span></div>
+</div>
+
+<div class="card">
+<div class="card-title">MMFI (Market Maker Flow Index)</div>
+<div class="metric"><span class="metric-label">MMFI Value</span><span class="metric-value green">62.10 (-1.10)</span></div>
+<div class="metric"><span class="metric-label">MMFI Zone</span><span class="metric-value green">HEALTHY</span></div>
+<div class="metric"><span class="metric-label">MMFI Trend</span><span class="metric-value amber">FALLING</span></div>
+</div>
+</div>
+
+<div class="card-title" style="margin-bottom:12px">Sector Heatmap (Intraday % Change)</div>
+<div class="heatmap">
+<div class="heat-cell" style="background:rgba(16,185,129,.35)"><span class="symbol">XLF</span><span class="val" style="color:var(--green)">+0.97%</span></div>
+<div class="heat-cell" style="background:rgba(16,185,129,.2)"><span class="symbol">XLC</span><span class="val" style="color:var(--green)">+0.35%</span></div>
+<div class="heat-cell" style="background:rgba(16,185,129,.18)"><span class="symbol">XLK</span><span class="val" style="color:var(--green)">+0.34%</span></div>
+<div class="heat-cell" style="background:rgba(255,255,255,.05)"><span class="symbol">XLI</span><span class="val">0.00%</span></div>
+<div class="heat-cell" style="background:rgba(239,68,68,.08)"><span class="symbol">XLV</span><span class="val" style="color:var(--red)">-0.15%</span></div>
+<div class="heat-cell" style="background:rgba(239,68,68,.1)"><span class="symbol">XLY</span><span class="val" style="color:var(--red)">-0.21%</span></div>
+<div class="heat-cell" style="background:rgba(239,68,68,.15)"><span class="symbol">XLRE</span><span class="val" style="color:var(--red)">-0.39%</span></div>
+<div class="heat-cell" style="background:rgba(239,68,68,.15)"><span class="symbol">XLU</span><span class="val" style="color:var(--red)">-0.39%</span></div>
+<div class="heat-cell" style="background:rgba(239,68,68,.18)"><span class="symbol">XLB</span><span class="val" style="color:var(--red)">-0.41%</span></div>
+<div class="heat-cell" style="background:rgba(239,68,68,.22)"><span class="symbol">XLE</span><span class="val" style="color:var(--red)">-0.58%</span></div>
+<div class="heat-cell" style="background:rgba(239,68,68,.3)"><span class="symbol">XLP</span><span class="val" style="color:var(--red)">-0.91%</span></div>
+</div>
+
+<div class="terminal">
+<p><strong>SWING ENVIRONMENT: CAUTION — Improved but not yet full-send territory.</strong></p>
+<p>Composite jumped to 72.10, up from 64.10 yesterday. Meaningful improvement. Trend is clean: SPY UPTREND, Chop SUPER TREND at 34.10, HTF weekly BULLISH. The index structure is working.</p>
+<p>Breadth improved significantly to 67.10 with 12 sectors in Recovery phase (up from 9 yesterday) and Crash phases down to 4 (from 8). This is real rotation healing. Reflation leads at 35% with Goldilocks at 31% — a slight shift toward cyclical recovery. Risk state remains RISK ON.</p>
+<p>Caution flags: MMFI is FALLING at 62.10 (-1.10) — market makers are pulling back flow. VIX still above SMA10 (deteriorating). Liquidity remains TIGHT. ImplCorr at 1.20 is elevated — stocks are moving together, which limits individual alpha. No breadth thrust yet.</p>
+<p><strong>VERDICT: The environment is healing. Breakouts have a higher success rate today than yesterday with breadth supporting. The action zone confirms FULL SIZE / B/O WORK. Take high-conviction swing entries on stocks with strong relative strength and volume confirmation. But respect the MMFI rollover — if flow dries up, this rally stalls. Position size at 75% of max until composite clears 75+.</strong></p>
+</div>
+</div>
+
+<!-- DAY TRADING MODE -->
+<div class="mode-content" id="day-mode">
+<div class="hero caution">
+<div class="hero-decision">CAUTION</div>
+<div class="hero-sub">VIX 19.20 in sweet spot (15-25) | Retail tape active (NVDA +3.3%, SNDK +5%) | SPY +0.28%</div>
+</div>
+
+<div class="card" style="margin-bottom:24px">
+<div class="card-title">Retail Watchlist</div>
+<table>
+<thead><tr><th>Ticker</th><th>Price</th><th>Change %</th><th>Open</th><th>High</th><th>Low</th></tr></thead>
+<tbody>
+<tr><td style="color:var(--blue);font-weight:600">SNDK</td><td>$1,070.20</td><td style="color:var(--green)">+4.96%</td><td>1,019.65</td><td>1,070.66</td><td>1,008.88</td></tr>
+<tr><td style="color:var(--blue);font-weight:600">NVDA</td><td>$216.61</td><td style="color:var(--green)">+3.32%</td><td>209.65</td><td>216.83</td><td>207.38</td></tr>
+<tr><td style="color:var(--blue);font-weight:600">TSLA</td><td>$378.67</td><td style="color:var(--green)">+1.77%</td><td>372.09</td><td>380.78</td><td>364.02</td></tr>
+<tr><td style="color:var(--blue);font-weight:600">SOFI</td><td>$18.76</td><td style="color:var(--green)">+1.52%</td><td>18.48</td><td>19.17</td><td>18.39</td></tr>
+<tr><td style="color:var(--blue);font-weight:600">PLTR</td><td>$143.10</td><td style="color:var(--green)">+1.31%</td><td>141.25</td><td>145.07</td><td>141.01</td></tr>
+<tr><td style="color:var(--blue);font-weight:600">META</td><td>$678.62</td><td style="color:var(--green)">+1.14%</td><td>671.00</td><td>682.50</td><td>670.84</td></tr>
+<tr><td style="color:var(--blue);font-weight:600">AMZN</td><td>$261.12</td><td style="color:var(--red)">-0.89%</td><td>263.46</td><td>264.15</td><td>260.34</td></tr>
+<tr><td style="color:var(--blue);font-weight:600">COIN</td><td>$196.68</td><td style="color:var(--red)">-1.22%</td><td>199.10</td><td>204.49</td><td>195.25</td></tr>
+<tr><td style="color:var(--blue);font-weight:600">MARA</td><td>$11.18</td><td style="color:var(--red)">-3.19%</td><td>11.55</td><td>11.66</td><td>11.09</td></tr>
+<tr><td style="color:var(--blue);font-weight:600">AMD</td><td>$334.63</td><td style="color:var(--red)">-3.37%</td><td>346.32</td><td>349.21</td><td>328.81</td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="card" style="margin-bottom:24px">
+<div class="card-title">EP Watchlist — Top Gainers (Pre-Market Movers)</div>
+<table>
+<thead><tr><th>Rank</th><th>Ticker</th><th>EP Score</th><th>Gap %</th><th>Price</th><th>Volume</th><th>Catalyst</th><th>Bias</th></tr></thead>
+<tbody>
+<tr class="highlight"><td>1</td><td style="color:var(--green);font-weight:700">BBBY</td><td><strong>85</strong></td><td>+31.16%</td><td>$7.00</td><td>6.9M</td><td>Earnings beat, turnaround plan [4/28 7:40 AM]</td><td><span class="badge long">LONG</span></td></tr>
+<tr class="highlight"><td>2</td><td style="color:var(--green);font-weight:700">ATER</td><td><strong>83</strong></td><td>+69.03%</td><td>$1.11</td><td>32.0M</td><td>Sells 6 brands for $18M, new CEO [4/28 12:00 PM]</td><td><span class="badge long">LONG</span></td></tr>
+<tr class="highlight"><td>3</td><td style="color:var(--green);font-weight:700">SNBR</td><td><strong>77</strong></td><td>+26.92%</td><td>$2.81</td><td>5.9M</td><td>Financing deal with lenders [4/28 8:40 AM]</td><td><span class="badge long">LONG</span></td></tr>
+<tr><td>4</td><td style="color:var(--blue)">BIYA</td><td>75</td><td>+65.60%</td><td>$1.29</td><td>19.7M</td><td>BNB buyback plan vote [4/28 12:28 PM]</td><td><span class="badge long">LONG</span></td></tr>
+<tr><td>5</td><td style="color:var(--blue)">SEGG</td><td>75</td><td>+21.05%</td><td>$1.13</td><td>10.9M</td><td>Polymarket deal ahead of World Cup [4/28 12:05 PM]</td><td><span class="badge long">LONG</span></td></tr>
+<tr><td>6</td><td style="color:var(--blue)">DRCT</td><td>70</td><td>+21.22%</td><td>$2.97</td><td>6.0M</td><td>No catalyst (momentum) [—]</td><td><span class="badge long">LONG</span></td></tr>
+<tr><td>7</td><td style="color:var(--blue)">SKYQ</td><td>70</td><td>+15.60%</td><td>$6.30</td><td>8.8M</td><td>+400% April rally continuation [4/27 6:49 PM]</td><td><span class="badge long">LONG</span></td></tr>
+<tr><td>8</td><td style="color:var(--blue)">KIDZ</td><td>70</td><td>+15.49%</td><td>$1.12</td><td>27.8M</td><td>61% PM surge momentum [4/28 6:36 AM]</td><td><span class="badge long">LONG</span></td></tr>
+<tr><td>9</td><td>OMCL</td><td>55</td><td>+22.00%</td><td>$45.91</td><td>38K</td><td>Earnings beat + FY26 outlook [4/28 6:37 AM]</td><td><span class="badge long">LONG</span></td></tr>
+<tr><td>10</td><td>KFRC</td><td>55</td><td>+21.81%</td><td>$38.99</td><td>17K</td><td>Q1 beat, Q2 guidance above [4/28 5:36 AM]</td><td><span class="badge long">LONG</span></td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="card" style="margin-bottom:24px">
+<div class="card-title">EP Watchlist — Top Losers (Short Candidates)</div>
+<table>
+<thead><tr><th>Rank</th><th>Ticker</th><th>EP Score</th><th>Gap %</th><th>Price</th><th>Volume</th><th>Catalyst</th><th>Bias</th></tr></thead>
+<tbody>
+<tr class="highlight"><td>1</td><td style="color:var(--red);font-weight:700">ERAS</td><td><strong>83</strong></td><td>-44.28%</td><td>$10.67</td><td>4.3M</td><td>Early-stage trial data disappoints [4/28 7:27 AM]</td><td><span class="badge short">SHORT</span></td></tr>
+<tr class="highlight"><td>2</td><td style="color:var(--red);font-weight:700">GLW</td><td><strong>75</strong></td><td>-10.40%</td><td>$150.53</td><td>2.3M</td><td>Q2 sales outlook misses estimates [4/28 7:44 AM]</td><td><span class="badge short">SHORT</span></td></tr>
+<tr class="highlight"><td>3</td><td style="color:var(--red);font-weight:700">CRML</td><td><strong>73</strong></td><td>-10.11%</td><td>$12.99</td><td>2.2M</td><td>$835M European Lithium acquisition [4/27 9:44 AM]</td><td><span class="badge short">SHORT</span></td></tr>
+<tr><td>4</td><td style="color:var(--red)">GLND</td><td>70</td><td>-39.93%</td><td>$3.25</td><td>4.1M</td><td>$70M offering at $4/share [4/28 3:12 AM]</td><td><span class="badge short">SHORT</span></td></tr>
+<tr><td>5</td><td style="color:var(--red)">SPOT</td><td>65</td><td>-10.81%</td><td>$442.22</td><td>524K</td><td>Weak subscriber outlook [4/28 9:10 AM]</td><td><span class="badge short">SHORT</span></td></tr>
+<tr><td>6</td><td style="color:var(--red)">YAAS</td><td>60</td><td>-31.03%</td><td>$1.60</td><td>1.6M</td><td>Reversal from yesterday's pump [4/27 8:06 AM]</td><td><span class="badge short">SHORT</span></td></tr>
+<tr><td>7</td><td>CLS</td><td>55</td><td>-15.42%</td><td>$357.10</td><td>281K</td><td>Earnings disappoint [4/28 8:12 AM]</td><td><span class="badge short">SHORT</span></td></tr>
+<tr><td>8</td><td>AMKR</td><td>55</td><td>-11.64%</td><td>$66.82</td><td>392K</td><td>Arizona ramp-up margin decline [4/28 8:56 AM]</td><td><span class="badge short">SHORT</span></td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="standout">
+<h3>STANDOUT SETUPS</h3>
+<div class="standout-item">
+<div><span class="ticker">BBBY</span> — LONG | EP 85 | +31.16% | 6.9M vol</div>
+<div class="reason">Earnings beat with turnaround narrative. $7 price is liquid and tradeable. 6.9M pre-market volume shows real interest. Classic earnings-gap long: buy the first pullback to VWAP after the opening range sets, stop below the pre-market low. The turnaround story gives this legs beyond the initial gap.</div>
+</div>
+<div class="standout-item">
+<div><span class="ticker">ERAS</span> — SHORT | EP 83 | -44.28% | 4.3M vol</div>
+<div class="reason">Biotech crushed on trial data failure. When a clinical-stage biotech drops 44% on data, the first bounce is almost always a dead cat. Wait for the opening range to form, short the first lower high below VWAP. Stop above the opening range high. $10.67 price keeps it liquid enough to trade cleanly.</div>
+</div>
+<div class="standout-item">
+<div><span class="ticker">GLW</span> — SHORT | EP 75 | -10.40% | 2.3M vol</div>
+<div class="reason">Corning misses Q2 guidance — this is a large-cap ($150) with institutional flow, not a low-float gamble. Guidance misses in this market get punished. 2.3M pre-market volume confirms distribution. Short the breakdown below the opening range low with a tight stop. Clean, high-quality fade setup.</div>
+</div>
+</div>
+
+<div class="terminal">
+<p><strong>DAY TRADE ENVIRONMENT: CAUTION — Active tape with solid EP setups.</strong></p>
+<p>VIX at 19.20 is in the sweet spot. Retail tape is split: NVDA ripping +3.32%, SNDK +4.96%, TSLA +1.77% on the bull side; AMD dumping -3.37%, MARA -3.19%, COIN -1.22% on the bear side. This divergence creates two-sided opportunity if you're nimble.</p>
+<p>The EP tape is STRONG today. Multiple setups scoring above 70 on both long and short sides. BBBY at 85 and ERAS at 83 are the headliners. Earnings season is driving clean catalysts (BBBY, OMCL, KFRC, GLW, SPOT, CLS) which are the highest-quality EP plays. Avoid the sub-$2 lottery tickets (ATER, BIYA, SEGG) unless you specifically trade low-float garbage.</p>
+<p><strong>VERDICT: Good day to trade. The EP tape has real setups with clean catalysts and volume. Focus on BBBY long and ERAS short as primary plays, GLW short as the secondary. The retail tape supports NVDA continuation longs if it holds above 215. Don't overtrade — pick your 2-3 best setups and execute with discipline.</strong></p>
+</div>
+</div>
+</div>
+
+<script>
+function switchMode(mode){
+document.querySelectorAll('.mode-btn').forEach(b=>b.classList.remove('active'));
+document.querySelectorAll('.mode-content').forEach(c=>c.classList.remove('active'));
+if(mode==='swing'){
+document.querySelector('.mode-btn:first-child').classList.add('active');
+document.getElementById('swing-mode').classList.add('active');
+}else{
+document.querySelector('.mode-btn:last-child').classList.add('active');
+document.getElementById('day-mode').classList.add('active');
+}
+}
+</script>
+</body>
+</html>
