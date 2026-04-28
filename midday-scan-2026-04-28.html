@@ -1,0 +1,893 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Midday Catalyst Scan — April 28, 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0e17;
+    --bg2: #0f1520;
+    --bg3: #141c2d;
+    --border: #1e2d45;
+    --text: #e2e8f0;
+    --text-muted: #7a8fa6;
+    --text-dim: #4a5c70;
+    --red: #ff4d4d;
+    --red-bg: rgba(255,77,77,0.08);
+    --yellow: #f5c542;
+    --yellow-bg: rgba(245,197,66,0.08);
+    --green: #3ddc84;
+    --green-bg: rgba(61,220,132,0.08);
+    --grey: #7a8fa6;
+    --grey-bg: rgba(122,143,166,0.08);
+    --blue: #4da6ff;
+    --blue-bg: rgba(77,166,255,0.08);
+    --accent: #2563eb;
+    --ticker: #93c5fd;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'JetBrains Mono', 'Courier New', monospace;
+    font-size: 13px;
+    line-height: 1.65;
+    padding: 24px;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  /* HEADER */
+  .header {
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 18px;
+    margin-bottom: 28px;
+  }
+  .header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .scan-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text);
+    letter-spacing: 0.04em;
+  }
+  .scan-title span { color: var(--blue); }
+  .scan-meta {
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-top: 4px;
+  }
+  .market-pills {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 14px;
+  }
+  .pill {
+    padding: 4px 12px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    border: 1px solid;
+  }
+  .pill-red { background: var(--red-bg); border-color: rgba(255,77,77,0.3); color: var(--red); }
+  .pill-yellow { background: var(--yellow-bg); border-color: rgba(245,197,66,0.3); color: var(--yellow); }
+  .pill-green { background: var(--green-bg); border-color: rgba(61,220,132,0.3); color: var(--green); }
+  .pill-blue { background: var(--blue-bg); border-color: rgba(77,166,255,0.3); color: var(--blue); }
+  .pill-grey { background: var(--grey-bg); border-color: rgba(122,143,166,0.3); color: var(--grey); }
+
+  /* SECTIONS */
+  .section {
+    margin-bottom: 28px;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .section-header {
+    padding: 12px 18px;
+    background: var(--bg3);
+    border-bottom: 1px solid var(--border);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .section-body { padding: 0; }
+
+  /* ALERT ROWS */
+  .alert-row {
+    padding: 14px 18px;
+    border-bottom: 1px solid rgba(30,45,69,0.6);
+    display: grid;
+    grid-template-columns: 90px 1fr;
+    gap: 16px;
+    align-items: start;
+  }
+  .alert-row:last-child { border-bottom: none; }
+  .alert-row.urgent { border-left: 3px solid var(--red); background: rgba(255,77,77,0.03); }
+  .alert-row.watch { border-left: 3px solid var(--yellow); background: rgba(245,197,66,0.03); }
+  .alert-row.confirm { border-left: 3px solid var(--green); background: rgba(61,220,132,0.03); }
+  .alert-row.noise { border-left: 3px solid var(--grey); }
+
+  .ticker-col { display: flex; flex-direction: column; gap: 6px; padding-top: 2px; }
+  .ticker-badge {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--ticker);
+    letter-spacing: 0.08em;
+  }
+  .priority-badge {
+    display: inline-block;
+    padding: 2px 7px;
+    border-radius: 3px;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .p-urgent { background: var(--red-bg); color: var(--red); border: 1px solid rgba(255,77,77,0.25); }
+  .p-watch { background: var(--yellow-bg); color: var(--yellow); border: 1px solid rgba(245,197,66,0.25); }
+  .p-confirm { background: var(--green-bg); color: var(--green); border: 1px solid rgba(61,220,132,0.25); }
+  .p-noise { background: var(--grey-bg); color: var(--grey); border: 1px solid rgba(122,143,166,0.25); }
+
+  .alert-content {}
+  .alert-headline {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 5px;
+    line-height: 1.4;
+  }
+  .alert-detail {
+    font-size: 11.5px;
+    color: var(--text-muted);
+    line-height: 1.6;
+    margin-bottom: 6px;
+  }
+  .alert-tags {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-top: 6px;
+  }
+  .tag {
+    padding: 2px 8px;
+    border-radius: 3px;
+    font-size: 10px;
+    font-weight: 500;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    color: var(--text-muted);
+  }
+  .tag-bearish { background: var(--red-bg); border-color: rgba(255,77,77,0.2); color: var(--red); }
+  .tag-bullish { background: var(--green-bg); border-color: rgba(61,220,132,0.2); color: var(--green); }
+  .tag-neutral { background: var(--grey-bg); border-color: rgba(122,143,166,0.2); color: var(--grey); }
+  .source-link {
+    font-size: 10px;
+    color: var(--accent);
+    text-decoration: none;
+    opacity: 0.7;
+  }
+  .source-link:hover { opacity: 1; }
+
+  /* BREAKING NEWS BLOCK */
+  .breaking-item {
+    padding: 14px 18px;
+    border-bottom: 1px solid rgba(30,45,69,0.6);
+  }
+  .breaking-item:last-child { border-bottom: none; }
+  .breaking-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .breaking-headline {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 5px;
+  }
+  .breaking-detail { font-size: 11.5px; color: var(--text-muted); line-height: 1.6; }
+
+  /* OPTIONS FLOW */
+  .flow-item {
+    padding: 14px 18px;
+    border-bottom: 1px solid rgba(30,45,69,0.6);
+    display: grid;
+    grid-template-columns: 80px 1fr;
+    gap: 16px;
+    align-items: start;
+  }
+  .flow-item:last-child { border-bottom: none; }
+  .flow-ticker { font-size: 14px; font-weight: 700; color: var(--ticker); }
+  .flow-direction {
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 3px;
+    margin-top: 4px;
+    display: inline-block;
+  }
+  .flow-calls { background: var(--green-bg); color: var(--green); border: 1px solid rgba(61,220,132,0.25); }
+  .flow-puts { background: var(--red-bg); color: var(--red); border: 1px solid rgba(255,77,77,0.25); }
+  .flow-mixed { background: var(--yellow-bg); color: var(--yellow); border: 1px solid rgba(245,197,66,0.25); }
+  .flow-detail { font-size: 11.5px; color: var(--text-muted); line-height: 1.6; margin-top: 6px; }
+  .flow-signal {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--blue);
+    margin-top: 4px;
+    padding: 4px 8px;
+    background: var(--blue-bg);
+    border: 1px solid rgba(77,166,255,0.2);
+    border-radius: 3px;
+    display: inline-block;
+  }
+
+  /* SUMMARY TABLE */
+  .summary-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  .summary-table th {
+    padding: 10px 14px;
+    text-align: left;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    background: var(--bg3);
+    border-bottom: 1px solid var(--border);
+  }
+  .summary-table td {
+    padding: 10px 14px;
+    font-size: 12px;
+    border-bottom: 1px solid rgba(30,45,69,0.5);
+    vertical-align: top;
+  }
+  .summary-table tr:last-child td { border-bottom: none; }
+  .summary-table td:first-child { width: 100px; }
+  .summary-table td:nth-child(2) { width: 90px; font-weight: 700; color: var(--ticker); letter-spacing: 0.06em; }
+  .summary-table td:nth-child(3) { color: var(--text-muted); }
+
+  /* SECTOR ROTATION */
+  .rotation-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--border);
+  }
+  .rotation-cell {
+    padding: 12px 14px;
+    background: var(--bg2);
+  }
+  .rotation-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .rotation-leading { color: var(--green); }
+  .rotation-lagging { color: var(--red); }
+  .rotation-neutral { color: var(--yellow); }
+  .etf-list { display: flex; flex-wrap: wrap; gap: 4px; }
+  .etf-chip {
+    padding: 2px 7px;
+    border-radius: 3px;
+    font-size: 10px;
+    font-weight: 600;
+  }
+  .etf-chip-green { background: var(--green-bg); color: var(--green); border: 1px solid rgba(61,220,132,0.2); }
+  .etf-chip-red { background: var(--red-bg); color: var(--red); border: 1px solid rgba(255,77,77,0.2); }
+  .etf-chip-yellow { background: var(--yellow-bg); color: var(--yellow); border: 1px solid rgba(245,197,66,0.2); }
+
+  /* FOOTER */
+  .footer {
+    margin-top: 32px;
+    padding-top: 18px;
+    border-top: 1px solid var(--border);
+    font-size: 10px;
+    color: var(--text-dim);
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  /* HIGHLIGHT BOX */
+  .highlight-box {
+    margin: 14px 18px;
+    padding: 12px 16px;
+    background: rgba(245,197,66,0.05);
+    border: 1px solid rgba(245,197,66,0.2);
+    border-radius: 6px;
+    font-size: 12px;
+    color: var(--yellow);
+    line-height: 1.6;
+  }
+  .highlight-box.red {
+    background: rgba(255,77,77,0.05);
+    border-color: rgba(255,77,77,0.2);
+    color: var(--red);
+  }
+  .highlight-box.green {
+    background: rgba(61,220,132,0.05);
+    border-color: rgba(61,220,132,0.2);
+    color: var(--green);
+  }
+  .highlight-box.blue {
+    background: rgba(77,166,255,0.05);
+    border-color: rgba(77,166,255,0.2);
+    color: var(--blue);
+  }
+
+  @media (max-width: 700px) {
+    body { padding: 14px; }
+    .alert-row { grid-template-columns: 1fr; gap: 8px; }
+    .flow-item { grid-template-columns: 1fr; gap: 8px; }
+    .rotation-grid { grid-template-columns: 1fr; }
+    .header-top { flex-direction: column; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-top">
+    <div>
+      <div class="scan-title">🕐 MIDDAY CATALYST CHECK — <span>April 28, 2026</span></div>
+      <div class="scan-meta">Generated ~12:00 PM ET &nbsp;|&nbsp; ~4 hours since market open &nbsp;|&nbsp; Fed FOMC Day 1</div>
+    </div>
+  </div>
+  <div class="market-pills">
+    <div class="pill pill-red">S&P 500 −0.46%</div>
+    <div class="pill pill-red">NASDAQ −1.00%</div>
+    <div class="pill pill-green">DOW +0.24%</div>
+    <div class="pill pill-yellow">BTC $76,472 ↓</div>
+    <div class="pill pill-red">GOLD −2.1% → $4,570</div>
+    <div class="pill pill-red">OIL $96.56 ↑ Iran</div>
+    <div class="pill pill-grey">FED RATE: NO CHANGE (100%)</div>
+  </div>
+</div>
+
+<!-- STEP 1: WATCHLIST -->
+<div class="section">
+  <div class="section-header">📡 STEP 1 — WATCHLIST ALERT CHECK</div>
+  <div class="section-body">
+
+    <!-- NVDA -->
+    <div class="alert-row urgent">
+      <div class="ticker-col">
+        <div class="ticker-badge">NVDA</div>
+        <div class="priority-badge p-urgent">🔴 URGENT</div>
+      </div>
+      <div class="alert-content">
+        <div class="alert-headline">OpenAI Revenue Miss Triggers 3% Chip Selloff</div>
+        <div class="alert-detail">WSJ report: OpenAI missed 1B weekly active user goal + missed annual revenue target. CFO Sarah Friar at odds with Sam Altman over compute spending. NVDA down ~3%. Oracle down >4%. BUT: Institutional call buyers flooding in — $2.2M in ATM $210-strike May 15 calls; calls 2:1 over puts; 80% of options premium = calls.</div>
+        <div class="alert-tags">
+          <span class="tag tag-bearish">BEARISH INTRADAY</span>
+          <span class="tag tag-bullish">SMART MONEY DIP BUY</span>
+          <span class="tag">ACTIONABLE: YES</span>
+          <a class="source-link" href="https://www.cnbc.com/2026/04/28/openais-revenue-growth-estimates-fall-short-report.html" target="_blank">↗ CNBC</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- AMD -->
+    <div class="alert-row urgent">
+      <div class="ticker-col">
+        <div class="ticker-badge">AMD</div>
+        <div class="priority-badge p-urgent">🔴 URGENT</div>
+      </div>
+      <div class="alert-content">
+        <div class="alert-headline">Sympathy Decline on OpenAI Miss — Down 3–4%</div>
+        <div class="alert-detail">No AMD-specific catalyst. Pure sympathy to AI infrastructure demand fears. Oracle, SoftBank (-10% Tokyo) also declining. AMD remains HBM/NAND beneficiary long-term but short-term pressure real.</div>
+        <div class="alert-tags">
+          <span class="tag tag-bearish">BEARISH</span>
+          <span class="tag">ACTIONABLE: YES — assess stop levels</span>
+          <a class="source-link" href="https://finance.yahoo.com/markets/article/oracle-amd-and-coreweave-stocks-sink-after-report-says-openai-missed-sales-user-targets-130600628.html" target="_blank">↗ Yahoo Finance</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- TSLA -->
+    <div class="alert-row watch">
+      <div class="ticker-col">
+        <div class="ticker-badge">TSLA</div>
+        <div class="priority-badge p-watch">🟡 WATCH</div>
+      </div>
+      <div class="alert-content">
+        <div class="alert-headline">Q1 EPS Beat (+14%); Slight Revenue Miss; Tigress Buy Initiation</div>
+        <div class="alert-detail">Q1 EPS: $0.41 vs $0.36 est. Revenue $22.39B (slight miss). Trading $372–375. Over $25B capex planned for AI/Robotaxi/Optimus — cash flow concerns cited. Tigress Financial (minor firm) initiated Buy on April 27.</div>
+        <div class="alert-tags">
+          <span class="tag tag-neutral">NEUTRAL</span>
+          <span class="tag">ACTIONABLE: WATCH</span>
+          <a class="source-link" href="https://meyka.com/blog/tsla-upgraded-to-buy-by-tigress-financial-april-2026-2804/" target="_blank">↗ Meyka</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- PLTR -->
+    <div class="alert-row watch">
+      <div class="ticker-col">
+        <div class="ticker-badge">PLTR</div>
+        <div class="priority-badge p-watch">🟡 WATCH</div>
+      </div>
+      <div class="alert-content">
+        <div class="alert-headline">Citi Cuts PT to $210 from $260 — Buy Maintained; Earnings May 4</div>
+        <div class="alert-detail">Citi citing valuation compression in software sector. Wall Street consensus PT $194.63. Earnings May 4 — Polymarket 91% beat probability. Motley Fool published piece today predicting plunge post-earnings on May 5.</div>
+        <div class="alert-tags">
+          <span class="tag tag-bearish">NEAR-TERM BEARISH</span>
+          <span class="tag">EARNINGS RISK: May 4</span>
+          <a class="source-link" href="https://www.gurufocus.com/news/8822636/palantir-technologies-pltr-sees-upgraded-estimates-amid-price-target-reduction" target="_blank">↗ GuruFocus</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- MARA -->
+    <div class="alert-row urgent">
+      <div class="ticker-col">
+        <div class="ticker-badge">MARA</div>
+        <div class="priority-badge p-urgent">🔴 URGENT</div>
+      </div>
+      <div class="alert-content">
+        <div class="alert-headline">Bitcoin Falling Ahead of Fed — MARA Down ~4%</div>
+        <div class="alert-detail">BTC: $77,368 open → $76,472 by 7:10 AM ET, continuing lower. MARA at $11.18, -3.95%. Foundation launch failed to lift retail sentiment. Bitcoin miners reportedly selling BTC. Risk-off crypto environment into Fed decision tomorrow.</div>
+        <div class="alert-tags">
+          <span class="tag tag-bearish">BEARISH</span>
+          <span class="tag">ACTIONABLE: YES — reduce exposure</span>
+          <a class="source-link" href="https://finance.yahoo.com/personal-finance/investing/article/bitcoin-and-ethereum-prices-today-tuesday-april-28-2026-values-falling-ahead-of-fed-meeting-114535390.html" target="_blank">↗ Yahoo Finance</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- SOFI -->
+    <div class="alert-row watch">
+      <div class="ticker-col">
+        <div class="ticker-badge">SOFI</div>
+        <div class="priority-badge p-watch">🟡 WATCH</div>
+      </div>
+      <div class="alert-content">
+        <div class="alert-headline">Earnings TOMORROW (Apr 29) — High Binary Risk</div>
+        <div class="alert-detail">Q1 2026 earnings April 29. Consensus: $1.05B revenue (+36.1% YoY), $0.12 adj. EPS. Consensus rating: Hold, PT $23.93. Elevated IV. Do not size up ahead of binary event.</div>
+        <div class="alert-tags">
+          <span class="tag tag-neutral">NEUTRAL</span>
+          <span class="tag">EARNINGS: Apr 29</span>
+          <a class="source-link" href="https://www.fool.com/investing/2026/04/26/could-sofi-stock-be-setting-up-for-its-biggest-ear/" target="_blank">↗ Motley Fool</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- META -->
+    <div class="alert-row watch">
+      <div class="ticker-col">
+        <div class="ticker-badge">META</div>
+        <div class="priority-badge p-watch">🟡 WATCH</div>
+      </div>
+      <div class="alert-content">
+        <div class="alert-headline">Earnings TOMORROW (Apr 29) — Trading ~$674</div>
+        <div class="alert-detail">Reports April 29. $115–135B capex guidance for 2026 will be scrutinized in light of OpenAI miss. AI spending questioned across the board. Stock ~$674. High IV, binary event. Don't add today.</div>
+        <div class="alert-tags">
+          <span class="tag tag-neutral">NEUTRAL / WATCH</span>
+          <span class="tag">EARNINGS: Apr 29</span>
+          <a class="source-link" href="https://www.fool.com/investing/2026/04/26/meta-google-amazon-microsoft-and-sofi-all-report-o/" target="_blank">↗ Motley Fool</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- AMZN -->
+    <div class="alert-row watch">
+      <div class="ticker-col">
+        <div class="ticker-badge">AMZN</div>
+        <div class="priority-badge p-watch">🟡 WATCH</div>
+      </div>
+      <div class="alert-content">
+        <div class="alert-headline">Pre-Earnings Whale Activity — Mixed Options Signal</div>
+        <div class="alert-detail">Reports April 29. Options whales: Bearish call $300 strike Dec 18 (20 contracts) + Bullish put sweep $275 strike Jun 18 (17 contracts). Mixed pre-earnings positioning/hedging. Do not interpret as directional signal.</div>
+        <div class="alert-tags">
+          <span class="tag tag-neutral">MIXED OPTIONS</span>
+          <span class="tag">EARNINGS: Apr 29</span>
+          <a class="source-link" href="https://www.benzinga.com/insights/options/26/04/52073407/3-consumer-discretionary-stocks-with-whale-alerts-in-todays-session" target="_blank">↗ Benzinga</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- SNDK -->
+    <div class="alert-row confirm">
+      <div class="ticker-col">
+        <div class="ticker-badge">SNDK</div>
+        <div class="priority-badge p-confirm">🟢 CONFIRM</div>
+      </div>
+      <div class="alert-content">
+        <div class="alert-headline">AI NAND Supercycle Intact — Trading $1,069 — Earnings April 30</div>
+        <div class="alert-detail">Up 317% YTD, 2,439% past 12 months. Q3 FY26 earnings April 30. Gross margin guided 65–67% vs 26% prior year. NAND bit demand +20–22% vs supply +15–17%. HBF co-development with SK Hynix (8–16x HBM capacity). Thesis separate from AI software revenue demand.</div>
+        <div class="alert-tags">
+          <span class="tag tag-bullish">BULLISH</span>
+          <span class="tag">EARNINGS: Apr 30</span>
+          <a class="source-link" href="https://www.techi.com/sandisk-sndk-stock-supercycle/" target="_blank">↗ Techi.com</a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- STEP 2: SECTOR -->
+<div class="section">
+  <div class="section-header">📊 STEP 2 — SECTOR & THEME ETF MIDDAY CHECK</div>
+  <div class="section-body">
+
+    <div class="breaking-item">
+      <div class="breaking-label" style="color: var(--red);">🔴 TECH & AI — SMH</div>
+      <div class="breaking-headline">Semiconductor ETF Pulling Back on OpenAI Miss | RSI 80 (Overbought)</div>
+      <div class="breaking-detail">SMH had record April inflows of $3.4B (all-time monthly high). Now down 2–3% on OpenAI demand fears. Despite selloff, NVDA call buyers stepping in aggressively — potential buy-the-dip vs. overbought RSI (80). <strong style="color:var(--yellow)">Divergence to watch.</strong> IBIT/crypto declining in sympathy with Bitcoin ($76,472).</div>
+    </div>
+
+    <div class="breaking-item">
+      <div class="breaking-label" style="color: var(--red);">🔴 CRYPTO — IBIT / MARA / COIN</div>
+      <div class="breaking-headline">Bitcoin Risk-Off into Fed Meeting | $76,472 and Falling</div>
+      <div class="breaking-detail">Bitcoin opened at $77,368 and fell to $76,472 by early morning. Fed meeting starts today (decision Wednesday). Miners selling BTC. Risk-off environment for all crypto-correlated names.</div>
+    </div>
+
+    <div class="breaking-item">
+      <div class="breaking-label" style="color: var(--yellow);">🟡 COMMODITIES — UCO / USO / XLE</div>
+      <div class="breaking-headline">Oil at $96.56 — Iran Strait of Hormuz Threat Bullish for Energy</div>
+      <div class="breaking-detail">WTI crude at $96.56. Iran delivered fresh proposal via Pakistani mediators: reopen Strait of Hormuz if US lifts blockade. Governments worldwide shielding consumers from soaring energy costs. XLE and UCO longs have tailwind. BULLISH for energy exposure.</div>
+      <a class="source-link" href="https://tradingeconomics.com/commodity/gold" target="_blank">↗ Trading Economics (context)</a>
+    </div>
+
+    <div class="breaking-item">
+      <div class="breaking-label" style="color: var(--red);">🔴 GOLD & SILVER — GLD / SLV</div>
+      <div class="breaking-headline">Gold Plunges 2%+ to $4,570 Despite Iran Inflation Risk</div>
+      <div class="breaking-detail">Gold at $4,570/oz — lowest since late March. Silver below $74/oz. Paradox: Iran conflict IS inflationary, but pre-Fed rate fears are dominating. Rising rates = negative for non-yielding gold. Sharp intraday reversal signal. GLD long thesis under short-term pressure.</div>
+    </div>
+
+    <div style="padding: 14px 18px;">
+      <div style="font-size: 11px; font-weight: 700; letter-spacing: 0.08em; color: var(--text-muted); text-transform: uppercase; margin-bottom: 12px;">Sector Rotation Snapshot</div>
+      <div class="rotation-grid">
+        <div class="rotation-cell">
+          <div class="rotation-label rotation-leading">▲ LEADING (RISK-OFF)</div>
+          <div class="etf-list">
+            <span class="etf-chip etf-chip-green">XLV</span>
+            <span class="etf-chip etf-chip-green">XLU</span>
+            <span class="etf-chip etf-chip-green">XLP</span>
+            <span class="etf-chip etf-chip-green">XLE</span>
+          </div>
+          <div style="font-size: 10px; color: var(--text-muted); margin-top: 8px;">Defensives + Energy outperforming. Risk-off rotation confirmed.</div>
+        </div>
+        <div class="rotation-cell">
+          <div class="rotation-label rotation-lagging">▼ LAGGING</div>
+          <div class="etf-list">
+            <span class="etf-chip etf-chip-red">XLK</span>
+            <span class="etf-chip etf-chip-red">SMH</span>
+            <span class="etf-chip etf-chip-red">IBIT</span>
+            <span class="etf-chip etf-chip-red">GLD</span>
+          </div>
+          <div style="font-size: 10px; color: var(--text-muted); margin-top: 8px;">Tech, semis, crypto, and gold selling off.</div>
+        </div>
+        <div class="rotation-cell">
+          <div class="rotation-label rotation-neutral">⚠ DIVERGENCE ALERT</div>
+          <div style="font-size: 10px; color: var(--text-muted); margin-top: 4px;">XLE outperforming XLK (energy up, tech down) = <strong style="color:var(--yellow)">NOT a classic risk-on day</strong>. Defensives + energy = stagflation-trade positioning pre-Fed.</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- STEP 3: BREAKING -->
+<div class="section">
+  <div class="section-header">⚡ STEP 3 — BREAKING CATALYSTS (LAST 4 HOURS)</div>
+  <div class="section-body">
+
+    <div class="highlight-box red">
+      ⚠️ PRIMARY CATALYST TODAY: OpenAI missed its own internal targets for weekly active users (failed to hit 1B goal) and annual revenue. CFO/CEO reportedly at odds. AI infrastructure spend concerns ripping through NVDA/AMD/Oracle/SoftBank. This is the #1 driver of today's Nasdaq -1%.
+    </div>
+
+    <div class="breaking-item">
+      <div class="breaking-label" style="color: var(--red);">🔴 URGENT — AI INFRASTRUCTURE SHAKEOUT</div>
+      <div class="breaking-headline">OpenAI Misses Revenue & User Targets — AI Spend ROI Questioned</div>
+      <div class="breaking-detail">The Wall Street Journal reported OpenAI fell short of its 1B weekly active user goal and missed revenue targets. CFO Sarah Friar expressed concern the company may not be able to pay compute contracts if top-line doesn't expand. Impact: NVDA/AMD/ORCL down 3–4%, SoftBank −10% Tokyo, Nasdaq −1%, Nasdaq-100 −1.49%. OpenAI pushed back calling the report "ridiculous."</div>
+      <div style="margin-top: 6px;"><a class="source-link" href="https://www.cnbc.com/2026/04/28/openai-reportedly-missed-revenue-targets-shares-of-oracle-and-these-chip-stocks-are-falling.html" target="_blank">↗ CNBC</a> &nbsp; <a class="source-link" href="https://fortune.com/2026/04/28/openai-cfo-sam-altman-missed-revenue-target/" target="_blank">↗ Fortune</a></div>
+    </div>
+
+    <div class="breaking-item">
+      <div class="breaking-label" style="color: var(--yellow);">🟡 WATCH — FED FOMC MEETING BEGINS TODAY</div>
+      <div class="breaking-headline">April FOMC Kicks Off — Decision Wednesday April 29 | No Change Expected (100%)</div>
+      <div class="breaking-detail">Fed officials are in blackout period — no speakers today. Decision + Powell press conference tomorrow. Markets pricing 100% probability of NO rate change. But Fed language on inflation (Iran/oil) and jobs will be watched closely. BIG DAY tomorrow: Fed + META/AMZN/MSFT/GOOGL/SOFI all report.</div>
+      <div style="margin-top: 6px;"><a class="source-link" href="https://www.kiplinger.com/news/live/fed-meeting-updates-and-commentary-april-2026" target="_blank">↗ Kiplinger</a></div>
+    </div>
+
+    <div class="breaking-item">
+      <div class="breaking-label" style="color: var(--yellow);">🟡 WATCH — GEOPOLITICAL: US-IRAN / OIL SUPPLY SHOCK</div>
+      <div class="breaking-headline">Iran Proposal via Pakistan: Reopen Strait for US Sanctions Lift | Oil at $96.56</div>
+      <div class="breaking-detail">Tehran delivered fresh proposal to Washington via Pakistani mediators — reopen Strait of Hormuz if US lifts blockade, deferring nuclear talks. WTI at $96.56. Governments globally shielding consumers from soaring energy costs. Resolution = bearish for oil/energy. Escalation = bullish for UCO/XLE.</div>
+    </div>
+
+    <div class="breaking-item">
+      <div class="breaking-label" style="color: var(--yellow);">🟡 WATCH — EARNINGS TODAY</div>
+      <div class="breaking-headline">SPOT −11% | UPS −4.4% | KO +3% | Sell-the-News Environment</div>
+      <div class="breaking-detail">
+        <strong style="color:var(--red)">SPOT</strong>: Down 11% despite 2nd-highest gross margin ever, +54% FCF YoY, +10M new users. Pure sell-the-news reaction.<br>
+        <strong style="color:var(--red)">UPS</strong>: Beat earnings but maintained guidance — stock down 4.4%. Market wanted acceleration.<br>
+        <strong style="color:var(--green)">KO</strong>: Up ~3% on earnings beat + raised full-year outlook. Defensive safe haven working.<br>
+        <em>Pattern: Beat + hold guidance = sell. Miss = sell. Only clear beat + raise works today.</em>
+      </div>
+      <div style="margin-top: 6px;"><a class="source-link" href="https://www.fool.com/investing/2026/04/28/stock-market-today-live-coverage/" target="_blank">↗ Motley Fool Live</a></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- STEP 4: OPTIONS -->
+<div class="section">
+  <div class="section-header">🐋 STEP 4 — OPTIONS FLOW ALERTS</div>
+  <div class="section-body">
+
+    <div class="highlight-box blue">
+      ⚡ KEY DIVERGENCE SIGNAL: NVDA is down ~3% today, but institutional call buyers are flooding in aggressively. This CONTRADICTS the intraday selling and is the single most important smart-money signal to monitor.
+    </div>
+
+    <div class="flow-item">
+      <div>
+        <div class="flow-ticker">NVDA</div>
+        <div class="flow-direction flow-calls">CALLS ▲</div>
+      </div>
+      <div>
+        <div class="alert-headline">$2.2M ATM Call Buy — Institutional Dip Buying</div>
+        <div class="flow-detail">
+          Size: $2.2 million | Strike: $210 (ATM) | Exp: May 15, 2026 | Contracts: 2,168<br>
+          Type: INSTITUTIONAL / SWEEP<br>
+          Ratio: Calls outpacing puts 2:1 | Call premiums = 80%+ of total NVDA options value
+        </div>
+        <div class="flow-signal">⚡ SMART MONEY DIP BUY — contradicts price action</div>
+        <div style="margin-top: 6px;"><a class="source-link" href="https://www.cnbc.com/2026/04/27/nvidia-intel-call-buyers-defy-the-dip-in-chip-stocks.html" target="_blank">↗ CNBC</a></div>
+      </div>
+    </div>
+
+    <div class="flow-item">
+      <div>
+        <div class="flow-ticker">INTC</div>
+        <div class="flow-direction flow-calls">CALLS ▲</div>
+      </div>
+      <div>
+        <div class="alert-headline">Bullish Call Volume Despite Sector Weakness</div>
+        <div class="flow-detail">
+          Type: UNUSUAL VOLUME<br>
+          Intel up ~100% off recent lows. Call volumes and premiums outpace puts.
+        </div>
+        <div class="flow-signal">Bulls resilient — semi dip-buyers active in INTC too</div>
+        <div style="margin-top: 6px;"><a class="source-link" href="https://www.gurufocus.com/news/8821376/nvidia-nvda-and-intel-intc-show-bullish-options-activity-amid-semiconductor-selloff" target="_blank">↗ GuruFocus</a></div>
+      </div>
+    </div>
+
+    <div class="flow-item">
+      <div>
+        <div class="flow-ticker">AMZN</div>
+        <div class="flow-direction flow-mixed">MIXED ↕</div>
+      </div>
+      <div>
+        <div class="alert-headline">Pre-Earnings Whale Positioning — Both Sides</div>
+        <div class="flow-detail">
+          Bearish: Call, $300 strike, Dec 18, 2026 — 20 contracts<br>
+          Bullish: Put sweep, $275 strike, Jun 18, 2026 — 17 contracts<br>
+          Type: PRE-EARNINGS HEDGING
+        </div>
+        <div class="flow-signal">Mixed signals = pre-earnings IV play, not directional</div>
+        <div style="margin-top: 6px;"><a class="source-link" href="https://www.benzinga.com/insights/options/26/04/52073407/3-consumer-discretionary-stocks-with-whale-alerts-in-todays-session" target="_blank">↗ Benzinga</a></div>
+      </div>
+    </div>
+
+    <div style="padding: 14px 18px; border-top: 1px solid rgba(30,45,69,0.6);">
+      <div style="font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin-bottom: 8px;">VIX / Put-Call Context</div>
+      <div style="font-size: 11.5px; color: var(--text-muted);">Specific today's put-call ratio not publicly available via free sources. Context: SPY IV ~0.20 as of April 22 (IV rank ~30). With Nasdaq -1% today + Fed meeting + mega-cap earnings tomorrow, IV is almost certainly elevated intraday. Treat as a cautious/hedged environment. Large institutional NVDA call buying into the fear = watch for potential afternoon reversal.</div>
+    </div>
+
+  </div>
+</div>
+
+<!-- STEP 5: POSITION CHECK -->
+<div class="section">
+  <div class="section-header">🎯 STEP 5 — POSITION CHECK SIGNALS</div>
+  <div class="section-body">
+
+    <div class="alert-row urgent">
+      <div class="ticker-col">
+        <div class="priority-badge p-urgent">🔴 URGENT</div>
+      </div>
+      <div class="alert-content">
+        <div class="alert-headline">EXIT SIGNAL — AI/Chip Longs (NVDA, AMD, SMH)</div>
+        <div class="alert-detail">OpenAI miss is a real demand signal — not noise. If your thesis for NVDA/AMD is AI infrastructure spending, that thesis is being challenged today. SMH RSI was 80 before today's drop. HOWEVER: Institutional $2.2M call buy contradicts the selling — if holding, tight stops below today's low may be appropriate rather than full exit. Your call based on time horizon.</div>
+      </div>
+    </div>
+
+    <div class="alert-row urgent">
+      <div class="ticker-col">
+        <div class="priority-badge p-urgent">🔴 URGENT</div>
+      </div>
+      <div class="alert-content">
+        <div class="alert-headline">REDUCE — MARA / COIN (Crypto Exposure)</div>
+        <div class="alert-detail">Bitcoin declining, miners selling BTC, Foundation launch failed to move sentiment, Fed meeting tomorrow = risk-off catalyst remains. No positive near-term catalyst. Consider reducing crypto-correlated exposure until after Wednesday's Fed decision.</div>
+      </div>
+    </div>
+
+    <div class="alert-row urgent">
+      <div class="ticker-col">
+        <div class="priority-badge p-urgent">🔴 URGENT</div>
+      </div>
+      <div class="alert-content">
+        <div class="alert-headline">RE-EVALUATE — GLD / SLV Longs</div>
+        <div class="alert-detail">Gold down 2%+ is a sharp reversal. Rising rate fears pre-Fed dominating the inflation hedge narrative. Long-term gold bull case (Iran, fiscal deficit) is intact — but short-term technical damage is real. Consider whether to hold through the Fed or take partial profits/tighten stops.</div>
+      </div>
+    </div>
+
+    <div class="alert-row watch">
+      <div class="ticker-col">
+        <div class="priority-badge p-watch">🟡 WATCH</div>
+      </div>
+      <div class="alert-content">
+        <div class="alert-headline">DO NOT ADD — SOFI / META / AMZN / MSFT / GOOGL</div>
+        <div class="alert-detail">All reporting tomorrow. Massive binary event across multiple names. IV elevated. OpenAI miss adds headline risk to AI capex questions in each call. Manage existing stops, do NOT size up today.</div>
+      </div>
+    </div>
+
+    <div class="alert-row watch">
+      <div class="ticker-col">
+        <div class="priority-badge p-watch">🟡 WATCH</div>
+      </div>
+      <div class="alert-content">
+        <div class="alert-headline">NEW SETUP — XLE / UCO Energy Longs</div>
+        <div class="alert-detail">Iran Strait of Hormuz threat keeping oil at $96.56. Energy sector (XLE) likely outperforming today. If Iran negotiations fail or escalate → oil spikes further. Thesis: Long UCO/XLE as geopolitical hedge. Risk: Iran deal resolution = sharp oil drop.</div>
+      </div>
+    </div>
+
+    <div class="alert-row watch">
+      <div class="ticker-col">
+        <div class="priority-badge p-watch">🟡 WATCH</div>
+      </div>
+      <div class="alert-content">
+        <div class="alert-headline">NEW SETUP — NVDA Dip Buy (Aggressive / High Risk)</div>
+        <div class="alert-detail">Setup: OpenAI miss = known catalyst (priced in intraday). Institutional $2.2M call buy at ATM $210 strikes for May 15. If NVDA holds above today's intraday low and tomorrow's META/AMZN confirm AI capex spending → mean reversion trade. Risk: If big tech disappoints on AI spend tomorrow, NVDA legs lower. ONLY for traders with pre-defined stops.</div>
+      </div>
+    </div>
+
+    <div class="alert-row confirm">
+      <div class="ticker-col">
+        <div class="priority-badge p-confirm">🟢 CONFIRM</div>
+      </div>
+      <div class="alert-content">
+        <div class="alert-headline">HOLD — SNDK (Earnings April 30)</div>
+        <div class="alert-detail">NAND supercycle thesis is independent of AI software revenue (OpenAI miss doesn't affect NAND bit demand). Gross margin expansion 26% → 65–67% YoY. Bit demand growing faster than supply through 2028. Earnings April 30 — hold through unless market-wide risk-off gets worse.</div>
+      </div>
+    </div>
+
+    <div class="alert-row noise">
+      <div class="ticker-col">
+        <div class="priority-badge p-noise">⚪ NOISE</div>
+      </div>
+      <div class="alert-content">
+        <div class="alert-headline">IGNORE — TSLA Tigress Financial Buy Initiation</div>
+        <div class="alert-detail">Tigress Financial is not a major institution. Stock range-bound $372–375. No institutional follow-through expected. Ignore for trading purposes.</div>
+      </div>
+    </div>
+
+    <div style="padding: 14px 18px; background: rgba(255,77,77,0.04); border-top: 1px solid rgba(255,77,77,0.15);">
+      <div style="font-size: 11px; font-weight: 700; color: var(--red); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 8px;">⚠️ RISK EVENTS — NEXT 2 HOURS</div>
+      <div style="font-size: 12px; color: var(--text-muted); line-height: 1.8;">
+        • <strong style="color:var(--text)">Fed blackout</strong> — No Fed speakers. Next move: Powell Wednesday 2:30 PM ET<br>
+        • <strong style="color:var(--text)">Iran negotiations</strong> — Any escalation = oil spike; deal = oil drop (monitor news)<br>
+        • <strong style="color:var(--text)">Pre-earnings positioning</strong> — Expect increased volatility into the close as traders position for tomorrow's META/AMZN/MSFT/GOOGL/SOFI + Fed decision<br>
+        • <strong style="color:var(--text)">Bitcoin</strong> — If BTC breaks below $75K, MARA/COIN accelerate lower
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- SUMMARY TABLE -->
+<div class="section">
+  <div class="section-header">📋 SUMMARY DASHBOARD</div>
+  <div class="section-body">
+    <table class="summary-table">
+      <thead>
+        <tr>
+          <th>Priority</th>
+          <th>Ticker / Theme</th>
+          <th>Signal Summary</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr style="background: rgba(255,77,77,0.03);">
+          <td><span class="priority-badge p-urgent">🔴 URGENT</span></td>
+          <td>NVDA / AMD / SMH</td>
+          <td style="color:var(--text-muted);">OpenAI miss = AI demand fear. Down 3–4%. Smart money buying $210 NVDA calls aggressively (2:1 call/put). Assess stop levels.</td>
+        </tr>
+        <tr style="background: rgba(255,77,77,0.03);">
+          <td><span class="priority-badge p-urgent">🔴 URGENT</span></td>
+          <td>MARA / COIN</td>
+          <td style="color:var(--text-muted);">Bitcoin risk-off into Fed. MARA −4%. Miners selling. Reduce crypto exposure until after Wednesday's Fed decision.</td>
+        </tr>
+        <tr style="background: rgba(255,77,77,0.03);">
+          <td><span class="priority-badge p-urgent">🔴 URGENT</span></td>
+          <td>GLD / SLV</td>
+          <td style="color:var(--text-muted);">Gold −2%+ to $4,570. Sharp reversal despite Iran inflation risk. Pre-Fed rate fears dominating. Re-evaluate stop levels.</td>
+        </tr>
+        <tr style="background: rgba(245,197,66,0.03);">
+          <td><span class="priority-badge p-watch">🟡 WATCH</span></td>
+          <td>META / AMZN / SOFI</td>
+          <td style="color:var(--text-muted);">All report TOMORROW. Binary event. AI capex scrutiny from OpenAI miss. Do NOT add. Manage existing stops.</td>
+        </tr>
+        <tr style="background: rgba(245,197,66,0.03);">
+          <td><span class="priority-badge p-watch">🟡 WATCH</span></td>
+          <td>SNDK</td>
+          <td style="color:var(--text-muted);">Earnings April 30. NAND thesis intact. Up 2,439% TTM. Gross margin 65–67% guided. Not affected by OpenAI revenue miss.</td>
+        </tr>
+        <tr style="background: rgba(245,197,66,0.03);">
+          <td><span class="priority-badge p-watch">🟡 WATCH</span></td>
+          <td>XLE / UCO</td>
+          <td style="color:var(--text-muted);">Iran supply shock = oil at $96.56. Energy sector outperforming. Bullish thesis intact. Risk: Iran deal = sharp reversal.</td>
+        </tr>
+        <tr style="background: rgba(245,197,66,0.03);">
+          <td><span class="priority-badge p-watch">🟡 WATCH</span></td>
+          <td>PLTR</td>
+          <td style="color:var(--text-muted);">Citi PT cut $260→$210. Earnings May 4. Motley Fool predicting post-earnings plunge (May 5). Monitor AI sentiment heading into report.</td>
+        </tr>
+        <tr style="background: rgba(61,220,132,0.03);">
+          <td><span class="priority-badge p-confirm">🟢 CONFIRM</span></td>
+          <td>KO / Defensives</td>
+          <td style="color:var(--text-muted);">KO +3% on beat + raise. XLV/XLU/XLP leading. Risk-off rotation confirmed. Safe haven positioning working.</td>
+        </tr>
+        <tr>
+          <td><span class="priority-badge p-noise">⚪ NOISE</span></td>
+          <td>TSLA</td>
+          <td style="color:var(--text-muted);">Flat at $372–375. Minor analyst upgrade (Tigress Financial). No institutional significance. No edge today.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div style="padding: 14px 18px; border-top: 1px solid var(--border);">
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+        <div>
+          <div style="font-size: 10px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin-bottom: 6px;">OPTIONS FLOW VERDICT</div>
+          <div style="font-size: 12px; color: var(--blue);">MIXED-BULLISH ↗</div>
+          <div style="font-size: 11px; color: var(--text-muted); margin-top: 4px;">NVDA institutional call buying CONTRADICTS market selloff. Smart money positioning for bounce in chips POST-Fed. This is the key signal to watch.</div>
+        </div>
+        <div>
+          <div style="font-size: 10px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin-bottom: 6px;">SECTOR ROTATION SIGNAL</div>
+          <div style="font-size: 12px; color: var(--red);">RISK-OFF ↘</div>
+          <div style="font-size: 11px; color: var(--text-muted); margin-top: 4px;">Defensives (XLV, XLU, XLP) + Energy (XLE) leading. XLK/SMH lagging. Stagflation-trade positioning pre-Fed. Does NOT support adding to growth names today.</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- FOOTER -->
+<div class="footer">
+  <div>Sources: CNBC · Yahoo Finance · Benzinga · TheStreet · Motley Fool · GuruFocus · Fortune · NBC News · 24/7 Wall St. · Trading Economics</div>
+  <div>Midday Catalyst Scanner | April 28, 2026 | For informational purposes only. Not financial advice.</div>
+</div>
+
+</body>
+</html>
