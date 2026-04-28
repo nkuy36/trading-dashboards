@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Daily Theme Scanner — 2026-04-28</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0e17;
+    --bg-card: #0f1420;
+    --bg-card2: #141926;
+    --border: #1e2535;
+    --border-accent: #2a3350;
+    --text: #e2e8f0;
+    --text-muted: #8892a4;
+    --text-dim: #4a5568;
+    --high: #10b981;
+    --medium: #f59e0b;
+    --low: #ef4444;
+    --accent: #3b82f6;
+    --accent2: #818cf8;
+    --ticker: #38bdf8;
+    --section-border: #1e2d4a;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    line-height: 1.7;
+    min-height: 100vh;
+  }
+  .container { max-width: 1100px; margin: 0 auto; padding: 32px 24px; }
+  
+  /* Header */
+  .header {
+    border-bottom: 1px solid var(--border-accent);
+    padding-bottom: 20px;
+    margin-bottom: 36px;
+  }
+  .header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .header h1 {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text);
+    letter-spacing: -0.02em;
+  }
+  .header h1 span { color: var(--accent2); }
+  .header-meta {
+    font-size: 11px;
+    color: var(--text-muted);
+    text-align: right;
+  }
+  .header-meta .date { color: var(--medium); font-weight: 600; }
+  .header-subtitle {
+    margin-top: 8px;
+    font-size: 11px;
+    color: var(--text-muted);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  /* Section headers */
+  .section-title {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent2);
+    padding: 6px 12px;
+    background: rgba(99, 102, 241, 0.08);
+    border-left: 3px solid var(--accent2);
+    margin-bottom: 20px;
+    margin-top: 40px;
+  }
+
+  /* Cards */
+  .card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 20px;
+    margin-bottom: 16px;
+    transition: border-color 0.2s;
+  }
+  .card:hover { border-color: var(--border-accent); }
+  
+  .card-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+  .card-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text);
+  }
+  .card-number {
+    font-size: 11px;
+    color: var(--text-dim);
+    margin-right: 6px;
+  }
+  .badges { display: flex; gap: 6px; flex-wrap: wrap; }
+  .badge {
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 3px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+  .badge-HIGH { background: rgba(16,185,129,0.15); color: var(--high); border: 1px solid rgba(16,185,129,0.3); }
+  .badge-MEDIUM { background: rgba(245,158,11,0.15); color: var(--medium); border: 1px solid rgba(245,158,11,0.3); }
+  .badge-LOW { background: rgba(239,68,68,0.15); color: var(--low); border: 1px solid rgba(239,68,68,0.3); }
+  .badge-STRONG { background: rgba(16,185,129,0.15); color: var(--high); border: 1px solid rgba(16,185,129,0.3); }
+  .badge-MODERATE { background: rgba(245,158,11,0.15); color: var(--medium); border: 1px solid rgba(245,158,11,0.3); }
+  .badge-WEAK { background: rgba(239,68,68,0.15); color: var(--low); border: 1px solid rgba(239,68,68,0.3); }
+  .badge-stage {
+    background: rgba(59,130,246,0.1);
+    color: var(--accent);
+    border: 1px solid rgba(59,130,246,0.2);
+  }
+  .badge-type {
+    background: rgba(129,140,248,0.1);
+    color: var(--accent2);
+    border: 1px solid rgba(129,140,248,0.2);
+  }
+
+  /* Meta grid */
+  .meta-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 8px;
+    margin-bottom: 14px;
+  }
+  .meta-item {
+    background: var(--bg-card2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 8px 10px;
+  }
+  .meta-label {
+    font-size: 10px;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 4px;
+  }
+  .meta-value {
+    font-size: 12px;
+    color: var(--text);
+    font-weight: 500;
+  }
+  .meta-value .ticker {
+    color: var(--ticker);
+    font-weight: 600;
+  }
+  .meta-value .loser {
+    color: var(--low);
+    font-weight: 600;
+  }
+
+  /* Evidence list */
+  .evidence-list {
+    margin-bottom: 14px;
+    padding-left: 0;
+    list-style: none;
+  }
+  .evidence-list li {
+    padding: 6px 0 6px 16px;
+    border-left: 2px solid var(--section-border);
+    margin-bottom: 6px;
+    color: var(--text);
+    font-size: 12px;
+    position: relative;
+  }
+  .evidence-list li::before {
+    content: '›';
+    position: absolute;
+    left: 4px;
+    color: var(--accent);
+    font-weight: 700;
+  }
+  .evidence-list li a {
+    color: var(--accent);
+    text-decoration: none;
+    font-size: 11px;
+    opacity: 0.8;
+  }
+  .evidence-list li a:hover { opacity: 1; text-decoration: underline; }
+
+  /* Summary */
+  .summary-block {
+    background: rgba(30, 37, 53, 0.6);
+    border-left: 3px solid var(--border-accent);
+    padding: 10px 14px;
+    font-size: 12px;
+    color: #b0bac8;
+    line-height: 1.75;
+    border-radius: 0 4px 4px 0;
+    margin-top: 10px;
+  }
+
+  /* Trade idea */
+  .trade-block {
+    background: rgba(59,130,246,0.05);
+    border: 1px solid rgba(59,130,246,0.15);
+    border-radius: 4px;
+    padding: 8px 12px;
+    margin-top: 10px;
+    font-size: 12px;
+    color: #93c5fd;
+  }
+  .trade-block strong { color: var(--accent); }
+
+  /* Surprise block */
+  .surprise-block {
+    background: rgba(245,158,11,0.05);
+    border: 1px solid rgba(245,158,11,0.15);
+    border-radius: 4px;
+    padding: 8px 12px;
+    margin-top: 8px;
+    font-size: 12px;
+    color: #fcd34d;
+  }
+  .surprise-block strong { color: var(--medium); }
+
+  /* Action items */
+  .action-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-accent);
+    border-radius: 6px;
+    padding: 20px;
+    margin-bottom: 16px;
+  }
+  .action-card h3 {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--medium);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 12px;
+  }
+  .action-list {
+    list-style: none;
+    padding: 0;
+  }
+  .action-list li {
+    padding: 8px 0 8px 16px;
+    border-bottom: 1px solid var(--border);
+    font-size: 12px;
+    color: var(--text);
+    position: relative;
+  }
+  .action-list li:last-child { border-bottom: none; }
+  .action-list li::before {
+    content: '▶';
+    position: absolute;
+    left: 0;
+    color: var(--high);
+    font-size: 9px;
+    top: 11px;
+  }
+  .ticker-hl { color: var(--ticker); font-weight: 700; }
+  .key-date { color: var(--medium); font-weight: 600; }
+
+  /* Footer */
+  .footer {
+    margin-top: 48px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+    font-size: 10px;
+    color: var(--text-dim);
+    line-height: 1.8;
+  }
+  .footer a { color: var(--accent); text-decoration: none; opacity: 0.7; }
+  .footer a:hover { opacity: 1; }
+
+  /* Inline ticker references */
+  code {
+    background: rgba(56, 189, 248, 0.08);
+    color: var(--ticker);
+    padding: 1px 5px;
+    border-radius: 3px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 600;
+  }
+  
+  /* Date separator */
+  .date-chip {
+    display: inline-block;
+    background: rgba(245,158,11,0.1);
+    color: var(--medium);
+    border: 1px solid rgba(245,158,11,0.2);
+    border-radius: 3px;
+    padding: 2px 8px;
+    font-size: 11px;
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+
+  @media (max-width: 600px) {
+    .container { padding: 16px; }
+    .meta-grid { grid-template-columns: 1fr; }
+    .card-header { flex-direction: column; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <div class="header">
+    <div class="header-top">
+      <div>
+        <h1>📊 Daily Theme Scanner — <span>2026-04-28</span></h1>
+        <div class="header-subtitle">Pre-market · Thematic Research · Hedge Fund Analytical Framework</div>
+      </div>
+      <div class="header-meta">
+        <div class="date">Tuesday, April 28, 2026</div>
+        <div>Pre-market scan</div>
+        <div>Model: Claude Sonnet 4.6</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════ NARRATIVES ═══════════════════════════════ -->
+  <div class="section-title">01 · Emerging Narratives</div>
+
+  <!-- N1 -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title"><span class="card-number">N1</span> AI Capex ROI Inflection Point</div>
+      <div class="badges">
+        <span class="badge badge-HIGH">HIGH</span>
+        <span class="badge badge-stage">DEVELOPING</span>
+      </div>
+    </div>
+    <ul class="evidence-list">
+      <li>U.S. hyperscalers project combined <strong>$720B capex in 2026</strong> (+36% YoY), ~75% earmarked for AI infrastructure. <a href="https://intellectia.ai/news/etf/us-hyperscalers-project-720-billion-capex-in-2026-for-ai-infrastructure">[Intellectia]</a></li>
+      <li>MSFT Azure tracking ~38% YoY cloud growth in Q1 2026, but Microsoft has <strong>underperformed Mag7 YTD</strong> despite massive capex — market skepticism is real. <a href="https://finance.yahoo.com/markets/stocks/articles/amazon-alphabet-microsoft-meta-apple-123800407.html">[Yahoo Finance]</a></li>
+      <li>Oracle dropped >5% after reports OpenAI missed its own revenue targets, triggering broad AI monetization doubt across the supply chain. <a href="https://www.cnbc.com/2026/04/27/stock-market-today-live-updates.html">[CNBC]</a></li>
+    </ul>
+    <div class="meta-grid">
+      <div class="meta-item">
+        <div class="meta-label">Primary Beneficiaries</div>
+        <div class="meta-value"><span class="ticker">NVDA AMD SMCI VRT EQIX DELL</span></div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">Secondary Beneficiaries</div>
+        <div class="meta-value"><span class="ticker">ANET CDNS ORCL CRWD</span></div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">Losers / Disrupted</div>
+        <div class="meta-value"><span class="loser">MSFT GOOGL</span> (on miss); legacy enterprise software</div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">Earnings Impact Timeline</div>
+        <div class="meta-value">This week (April 29–30); Q2 2026 check</div>
+      </div>
+    </div>
+    <div class="summary-block">The central tension in markets right now is whether $720B in annual AI infrastructure spend is a growth flywheel or a capital trap. Five of the Magnificent Seven report this week, and the single most watched metric is the relationship between cloud revenue growth and capex intensity. Azure at 38% and AWS consensus at $36.8B (+25.6% YoY) are the goalposts. A beat-and-raise from both could re-rate the AI supply chain higher; an AWS miss below 20% growth would confirm the capital efficiency fears building since the Oracle/OpenAI incident.</div>
+  </div>
+
+  <!-- N2 -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title"><span class="card-number">N2</span> Domestic Reshoring / Small-Cap Rotation</div>
+      <div class="badges">
+        <span class="badge badge-HIGH">HIGH</span>
+        <span class="badge badge-stage">DEVELOPING</span>
+      </div>
+    </div>
+    <ul class="evidence-list">
+      <li>Russell 2000 outperforming Nasdaq-100 by <strong>8% YTD</strong> as of early April 2026; hit new closing record at 2,792.96. <a href="https://markets.financialcontent.com/stocks/article/marketminute-2026-4-7-small-cap-renaissance-russell-2000-hits-record-high-as-soft-landing-narrative-drives-8-outperformance-over-tech">[FinancialContent]</a></li>
+      <li>Nucor (NUE) Q1 EPS $3.23 vs. $2.79 estimate (+16% beat); steel shipments +14% YoY to a record 3.39M tons; raised FY2026 guidance to 8–9% EPS growth. <a href="https://www.prnewswire.com/news-releases/nucor-reports-results-for-the-first-quarter-of-2026-302754639.html">[PR Newswire]</a></li>
+      <li>"One Big Beautiful Bill Act" (effective Jan 1, 2026): 100% bonus depreciation + immediate R&D expensing — disproportionately benefits capital-intensive small-caps. <a href="https://markets.financialcontent.com/stocks/article/marketminute-2026-3-24-the-great-rotation-russell-2000-outshines-mega-caps-as-domestic-small-caps-take-the-reins-in-2026">[FinancialContent]</a></li>
+    </ul>
+    <div class="meta-grid">
+      <div class="meta-item">
+        <div class="meta-label">Primary Beneficiaries</div>
+        <div class="meta-value"><span class="ticker">NUE FLR AIT IWM SNA STLD WMS</span></div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">Secondary Beneficiaries</div>
+        <div class="meta-value"><span class="ticker">MLM VMC DY GNRC XLI XLB</span></div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">Losers / Disrupted</div>
+        <div class="meta-value"><span class="loser">AAPL NKE LULU</span> (high offshore manufacturing)</div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">Earnings Impact Timeline</div>
+        <div class="meta-value">Q2–Q3 2026; tax provisions show in Q2 filings</div>
+      </div>
+    </div>
+    <div class="summary-block">The structural rotation from mega-cap tech to domestic small-caps has real policy teeth: the tariff regime (17% average effective rate, up from 2.4%) plus the OBBBA's capex incentives has created a fundamentally different cost-of-capital environment. Nucor's record shipment quarter is not an anomaly — it's a read-through for the entire industrial complex. Consensus is still underweight domestic small-caps relative to mega-cap tech, meaning flows into IWM and XLI likely have further to run. Risk: a hard landing hits small-cap credit quality harder than large-cap balance sheets.</div>
+  </div>
+
+  <!-- N3 -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title"><span class="card-number">N3</span> Middle East War — Energy Shock Second-Order Effects</div>
+      <div class="badges">
+        <span class="badge badge-HIGH">HIGH</span>
+        <span class="badge badge-stage">MATURING</span>
+      </div>
+    </div>
+    <ul class="evidence-list">
+      <li>Iran war triggered the <strong>largest oil supply disruption in history</strong>: Brent surged from ~$72/bbl to peak ~$120; supply losses 360M+ barrels in March, 440M projected April. <a href="https://www.cnbc.com/2026/04/21/oil-price-iran-war-middle-east.html">[CNBC]</a></li>
+      <li>Goldman Sachs: combined tariff + energy effects could push U.S. inflation to <strong>3.1% by year-end 2026</strong>. Core PCE currently at 2.7%, above the Fed's 2% target. <a href="https://www.cnbc.com/2026/04/03/trump-tariffs-trade-war-impact.html">[CNBC]</a></li>
+      <li>IEA April 2026 report: global oil demand contraction of <strong>2.3 mb/d YoY in April</strong> — demand destruction is now real and accelerating. <a href="https://www.iea.org/reports/oil-market-report-april-2026">[IEA]</a></li>
+    </ul>
+    <div class="meta-grid">
+      <div class="meta-item">
+        <div class="meta-label">Primary Beneficiaries</div>
+        <div class="meta-value"><span class="ticker">XOM CVX OXY SLB HAL VLO MPC</span></div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">Secondary Beneficiaries</div>
+        <div class="meta-value"><span class="ticker">LNG RTX LMT GD MPLX ET</span></div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">Losers / Disrupted</div>
+        <div class="meta-value"><span class="loser">DAL UAL LUV ODFL JBHT LYB DOW</span></div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">Earnings Impact Timeline</div>
+        <div class="meta-value">Q1 showing; Q2 most acute (peak passthrough)</div>
+      </div>
+    </div>
+    <div class="summary-block">The primary oil price spike is approaching consensus pricing, but the second-order effects — stagflation pressure on the Fed, margin compression at energy-intensive manufacturers, and EM capital outflows triggered by energy-driven currency weakness — are not fully priced. The non-consensus bet: the Fed stays on hold longer than expected because it cannot cut into persistent 3%+ inflation even as growth slows. That stagflation scenario is the tail risk most portfolios are not positioned for. Watch Thursday's GDP + PCE double-header for the first hard evidence.</div>
+  </div>
+
+  <!-- N4 -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title"><span class="card-number">N4</span> Apple Leadership Transition Uncertainty</div>
+      <div class="badges">
+        <span class="badge badge-MEDIUM">MEDIUM</span>
+        <span class="badge badge-stage">EARLY</span>
+      </div>
+    </div>
+    <ul class="evidence-list">
+      <li>Apple announced April 20 that Tim Cook steps down as CEO Sept 1, 2026, with hardware chief John Ternus taking over. Market reaction: AAPL +1% on announcement day. <a href="https://www.apple.com/newsroom/2026/04/tim-cook-to-become-apple-executive-chairman-john-ternus-to-become-apple-ceo/">[Apple Newsroom]</a></li>
+      <li>Ternus's background is entirely hardware engineering. His AI software platform strategy is an <strong>unknown</strong> during the most critical AI strategy inflection in Apple's history. <a href="https://fortune.com/2026/04/20/apple-ceo-tim-cook-john-ternus-succession-ai-model-handoff/">[Fortune]</a></li>
+      <li>Apple reports April 30 — Cook's last earnings call before the September handoff. Any AI roadmap signal under Ternus will set the tone for the transition. <a href="https://wallstreethorizon.com/blog/Mag-7-Earnings-on-Deck-Q1-2026">[Wall Street Horizon]</a></li>
+    </ul>
+    <div class="meta-grid">
+      <div class="meta-item">
+        <div class="meta-label">Primary Beneficiaries</div>
+        <div class="meta-value"><span class="ticker">AAPL</span> (upside if aggressive AI pivot signaled)</div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">Secondary / Competitive</div>
+        <div class="meta-value"><span class="ticker">MSFT GOOGL QCOM</span></div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">Losers / Disrupted</div>
+        <div class="meta-value"><span class="loser">AAPL QRVO SWKS</span> (risk: no AI clarity)</div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">Earnings Impact Timeline</div>
+        <div class="meta-value">April 30 call is first signal; real impact 12–18 months</div>
+      </div>
+    </div>
+    <div class="summary-block">The market has priced the succession as neutral — a +1% reaction does not reflect the strategic uncertainty of entering the AI-native OS era under a CEO whose public profile is essentially zero. Ternus's hardware engineering background is a strength for Apple Silicon and next-gen devices, but it does not obviously translate to the software/AI platform strategy needed to compete with Microsoft Copilot and Google Gemini. The risk premium on AAPL should be higher than the muted reaction suggests. The April 30 earnings call is the first real test of whether Ternus has a defined AI strategy.</div>
+  </div>
+
+  <!-- N5 -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title"><span class="card-number">N5</span> EM Carry Trade Unwind Risk</div>
+      <div class="badges">
+        <span class="badge badge-MEDIUM">MEDIUM</span>
+        <span class="badge badge-stage">EARLY</span>
+      </div>
+    </div>
+    <ul class="evidence-list">
+      <li>80% of EM portfolio debt capital is now provided by nonbanks — twice the share from 20 years ago. Hedge fund EM ex-China allocation at <strong>record highs</strong> in 2025. <a href="https://www.imf.org/en/publications/gfsr/issues/2026/04/14/global-financial-stability-report-april-2026">[IMF GFSR Apr 2026]</a></li>
+      <li>Oil-driven inflation is pressuring EM currencies and central banks simultaneously, squeezing the carry trade return profile. <a href="https://www.imf.org/en/blogs/articles/2026/04/07/as-emerging-markets-attract-more-nonbank-capital-they-also-face-new-challenges">[IMF Blog]</a></li>
+      <li>IMF explicitly flagged carry trade unwinds as a systemic amplification risk in April 2026 GFSR — a rare public warning signal. <a href="https://www.imf.org/-/media/files/publications/gfsr/2026/april/english/ch1.pdf">[IMF GFSR Ch.1]</a></li>
+    </ul>
+    <div class="meta-grid">
+      <div class="meta-item">
+        <div class="meta-label">Safe Haven Beneficiaries</div>
+        <div class="meta-value"><span class="ticker">DXY TLT GLD UUP</span></div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">Secondary Beneficiaries</div>
+        <div class="meta-value"><span class="ticker">IWM</span> (capital repatriation to U.S. domestic)</div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">Losers / Disrupted</div>
+        <div class="meta-value"><span class="loser">EEM VWO CEW</span> (EM ETFs, currency)</div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">Earnings Impact Timeline</div>
+        <div class="meta-value">Tail risk event; triggered by shock, not gradual</div>
+      </div>
+    </div>
+    <div class="summary-block">This is a tail risk, not a base case — but the setup is unusually clean. Record hedge fund EM allocations plus record leverage plus oil-driven inflation pressuring EM central banks equals a coiled spring. The IMF explicitly flagged this as a systemic amplification risk in April 2026. A Fed hawkish surprise (possible given persistent inflation), or a second oil price spike, could trigger the unwind. The non-consensus trade: long USD and short EEM as a macro hedge against this scenario.</div>
+  </div>
+
+  <!-- ═══════════════════════════════ EARNINGS ═══════════════════════════════ -->
+  <div class="section-title">02 · Earnings Signals</div>
+
+  <!-- E1 -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title"><span class="card-number">E1</span> AI Monetization — The Week's Central Test</div>
+      <div class="badges">
+        <span class="badge badge-STRONG">STRONG</span>
+        <span class="badge badge-type">Recurring Theme</span>
+      </div>
+    </div>
+    <div class="meta-grid">
+      <div class="meta-item">
+        <div class="meta-label">Companies</div>
+        <div class="meta-value"><span class="ticker">MSFT GOOGL META AMZN AAPL</span></div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">Broader Implication</div>
+        <div class="meta-value">$645B capex vs. revenue generation — the definitive test</div>
+      </div>
+    </div>
+    <div class="trade-block"><strong>Trade Idea:</strong> Long <code>NVDA</code> as the infrastructure-agnostic pick-and-shovel play regardless of which hyperscaler wins. Hedge with short positions in any hyperscaler that misses Azure/AWS growth benchmarks.</div>
+    <div class="summary-block">The single most important earnings signal of Q1 2026 is concentrated into a 48-hour window. Azure at ~38% and AWS consensus at $36.8B (+25.6% YoY) are the watermarks. Microsoft's YTD underperformance already signals market skepticism. A clean beat-and-raise from both MSFT on Azure and AMZN on AWS would reset the AI capex debate firmly to bull-case. A miss — especially combined with cautious capex guidance — would validate the "capital trap" thesis and pressure the entire AI supply chain.</div>
+  </div>
+
+  <!-- E2 -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title"><span class="card-number">E2</span> Reshoring Industrial Beats — Nucor Read-Through</div>
+      <div class="badges">
+        <span class="badge badge-STRONG">STRONG</span>
+        <span class="badge badge-type">Sector Read-Through</span>
+      </div>
+    </div>
+    <div class="meta-grid">
+      <div class="meta-item">
+        <div class="meta-label">Companies</div>
+        <div class="meta-value"><span class="ticker">NUE</span> (reported); <span class="ticker">FLR AIT STLD</span> (read-through)</div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">Signal</div>
+        <div class="meta-value">NUE Q1 EPS $3.23 vs. $2.79 est (+16% beat); record 3.39M ton shipments</div>
+      </div>
+    </div>
+    <div class="trade-block"><strong>Trade Idea:</strong> Long <code>NUE</code>, <code>STLD</code>, <code>X</code> on continued reshoring demand. Long <code>FLR</code> and <code>AIT</code> for infrastructure execution plays. Tariff shield on steel imports is structural.</div>
+    <div class="summary-block">Nucor posted a 16% EPS beat and set a quarterly steel shipment record. CEO explicitly credited federal trade policy as a demand driver. This is not isolated — the same dynamic is playing out across domestic industrials where tariff protection has re-priced competitive dynamics in favor of U.S. producers. The key risk to duration: whether trade policy holds through the July 24 tariff baseline review.</div>
+  </div>
+
+  <!-- E3 -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title"><span class="card-number">E3</span> Consumer Staples Inflation Passthrough — KO Confirms</div>
+      <div class="badges">
+        <span class="badge badge-MODERATE">MODERATE</span>
+        <span class="badge badge-type">Language Shift</span>
+      </div>
+    </div>
+    <div class="meta-grid">
+      <div class="meta-item">
+        <div class="meta-label">Companies</div>
+        <div class="meta-value"><span class="ticker">KO</span> (beat); <span class="ticker">PG</span> (warned 5-pt EPS headwind)</div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">Signal</div>
+        <div class="meta-value">KO beat EPS $0.86 adj, revenue $12.47B; PG CFO: "5-point tariff headwind to core EPS"</div>
+      </div>
+    </div>
+    <div class="trade-block"><strong>Trade Idea:</strong> Long <code>KO</code>, <code>MO</code>, <code>PM</code> (strong pricing power). Short lower-brand-equity consumer staples with high import exposure. The bifurcation will widen in Q2.</div>
+    <div class="summary-block">The split in consumer staples between pricing-power haves and have-nots is sharpening. KO's beat demonstrates that premium brands can pass through tariff and energy cost inflation. P&G's explicit 5-point EPS headwind warning signals that goods-heavy staples with complex supply chains are being squeezed. This divergence will widen through Q2 as tariff passthrough fully materializes.</div>
+  </div>
+
+  <!-- E4 -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title"><span class="card-number">E4</span> Microsoft Azure — The Bellwether Concern</div>
+      <div class="badges">
+        <span class="badge badge-MODERATE">MODERATE</span>
+        <span class="badge badge-type">Price Action Anomaly</span>
+      </div>
+    </div>
+    <div class="meta-grid">
+      <div class="meta-item">
+        <div class="meta-label">Companies</div>
+        <div class="meta-value"><span class="ticker">MSFT</span> (reports April 29)</div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">Signal</div>
+        <div class="meta-value">MSFT weakest Mag7 performer YTD despite $120B+ AI capex</div>
+      </div>
+    </div>
+    <div class="trade-block"><strong>Trade Idea:</strong> Cautious on <code>MSFT</code> heading into print. Risk/reward asymmetric: large beat priced at premium multiple, miss could trigger 8–12% downside. Consider protective puts expiring this week.</div>
+    <div class="summary-block">Microsoft's underperformance YTD is a forward-looking signal that the market does not believe the Azure monetization story is intact. The company is spending more than any other hyperscaler as a percentage of its existing revenue base on AI infrastructure. If Azure growth comes in below 36%, or management expresses any caution about near-term AI product revenue, the reaction will be severe. This is the most binary trade setup into this earnings week.</div>
+  </div>
+
+  <!-- E5 -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title"><span class="card-number">E5</span> General Motors — Tariff Beat Playbook</div>
+      <div class="badges">
+        <span class="badge badge-MODERATE">MODERATE</span>
+        <span class="badge badge-type">Guidance Raise</span>
+      </div>
+    </div>
+    <div class="meta-grid">
+      <div class="meta-item">
+        <div class="meta-label">Companies</div>
+        <div class="meta-value"><span class="ticker">GM</span> (reported); <span class="ticker">F STLA</span> (read-through)</div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">Signal</div>
+        <div class="meta-value">GM Q1 EPS $3.70 vs. $2.62 estimate (+41% beat); raised 2026 guidance</div>
+      </div>
+    </div>
+    <div class="trade-block"><strong>Trade Idea:</strong> Long <code>GM</code> on continued tariff-protected domestic pricing power. Watch for similar beats from industrials with >60% domestic production footprint.</div>
+    <div class="summary-block">GM's 41% EPS beat against consensus is not noise — it is a structural shift in competitive positioning. The domestic production base means GM is a net beneficiary of the tariff regime: imported vehicles face the same 17% average effective tariff, effectively raising GM's pricing umbrella. Ford and Stellantis are read-throughs for whether this advantage is GM-specific or sector-wide.</div>
+  </div>
+
+  <!-- ═══════════════════════════════ CATALYSTS ═══════════════════════════════ -->
+  <div class="section-title">03 · Upcoming Catalysts</div>
+
+  <!-- C1 -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title"><span class="card-number">C1</span> Q1 2026 GDP + PCE Simultaneous Release</div>
+      <div class="badges">
+        <span class="date-chip">April 30 · 8:30 a.m. ET</span>
+      </div>
+    </div>
+    <div class="meta-grid">
+      <div class="meta-item">
+        <div class="meta-label">Consensus Expectation</div>
+        <div class="meta-value">GDP ~1.5–2% growth; Core PCE ~2.7–2.9%</div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">Exposed Tickers</div>
+        <div class="meta-value"><span class="ticker">TLT SPY GLD DXY XLF XLRE</span></div>
+      </div>
+    </div>
+    <div class="surprise-block"><strong>Surprise Scenario:</strong> GDP disappoints (sub-1% or negative) while PCE prints above 3.0% — a stagflation print that forces the Fed to choose between growth and inflation. This scenario is significantly underpriced in options markets.</div>
+    <div class="summary-block">This is the highest-stakes macro data release of the week — and it arrives simultaneously with Apple's earnings, making April 30 a potential extreme volatility day. The advance GDP print is the first official read on Q1 growth. Two factors make the PCE number particularly dangerous: oil prices near $100 passed through to consumer energy costs during the survey period, and tariff-related goods price increases are now reaching end consumers. A stagflation print would force a major repricing of the Fed's one cut-in-2026 path — potentially toward zero cuts — hitting growth stocks, EM assets, and long-duration bonds simultaneously.</div>
+  </div>
+
+  <!-- C2 -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title"><span class="card-number">C2</span> FOMC April Decision — Powell Press Conference</div>
+      <div class="badges">
+        <span class="date-chip">April 29 · 2:00 p.m. ET</span>
+      </div>
+    </div>
+    <div class="meta-grid">
+      <div class="meta-item">
+        <div class="meta-label">Consensus Expectation</div>
+        <div class="meta-value">Rates held at 3.50–3.75%; patient/data-dependent tone</div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">Exposed Tickers</div>
+        <div class="meta-value"><span class="ticker">TLT UUP QQQ XLF XLK XLRE</span></div>
+      </div>
+    </div>
+    <div class="surprise-block"><strong>Surprise Scenario:</strong> Powell signals explicitly that rate cuts are off the table for 2026 due to oil-driven inflation + tariff passthrough — a hawkish pivot that markets are not pricing. Currently priced: 1 cut by year-end. Hawkish surprise reprices to 0 cuts.</div>
+    <div class="summary-block">The FOMC meeting concludes today (April 29). The base case is a hold with patient language. The non-consensus risk: Powell uses the press conference to signal that the combined effect of oil-driven inflation (core PCE at 2.7% and rising) plus tariff passthrough has pushed the Fed's reaction function firmly to the hawkish side for 2026. The timing is brutal — this statement drops at 2:00 p.m. on the same day as Mag 7 earnings releases. A hawkish Powell combined with an MSFT Azure miss could trigger a broad risk-off move.</div>
+  </div>
+
+  <!-- C3 -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title"><span class="card-number">C3</span> Mag 7 Earnings Super-Event</div>
+      <div class="badges">
+        <span class="date-chip">April 29 (MSFT GOOGL META AMZN) · April 30 (AAPL)</span>
+      </div>
+    </div>
+    <div class="meta-grid">
+      <div class="meta-item">
+        <div class="meta-label">Consensus Expectation</div>
+        <div class="meta-value">Mag7 aggregate +20.3% earnings; strong AI commentary</div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">Exposed Tickers</div>
+        <div class="meta-value"><span class="ticker">MSFT GOOGL META AMZN AAPL NVDA AMD SMCI</span></div>
+      </div>
+    </div>
+    <div class="surprise-block"><strong>Surprise Scenario:</strong> Azure or AWS growth disappoints; Apple provides no AI roadmap under Ternus succession; one or more companies cuts capex guidance citing AI ROI uncertainty. ~25% of S&P 500 market cap at risk.</div>
+    <div class="summary-block">This is the busiest two-day earnings window in market history by market cap concentration. Five companies worth ~$16 trillion — a quarter of the S&P 500 — report in 48 hours. The key questions: Does Azure beat 38%? Does AWS guide above 25% for Q2? Does Meta confirm its AI advertising ROI flywheel? Does Apple provide AI strategy clarity for the Ternus era? A clean sweep beat-and-raise from all five would likely push QQQ to new highs; a mixed bag would signal the AI monetization story is more bifurcated than bulls believe.</div>
+  </div>
+
+  <!-- C4 -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title"><span class="card-number">C4</span> Apple CEO Transition — First Earnings Call Under Succession Shadow</div>
+      <div class="badges">
+        <span class="date-chip">April 30 · After Close</span>
+      </div>
+    </div>
+    <div class="meta-grid">
+      <div class="meta-item">
+        <div class="meta-label">Consensus Expectation</div>
+        <div class="meta-value">Status quo Cook commentary; iPhone cycle update; neutral tone</div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">Exposed Tickers</div>
+        <div class="meta-value"><span class="ticker">AAPL QCOM QRVO SWKS</span></div>
+      </div>
+    </div>
+    <div class="surprise-block"><strong>Surprise Scenario:</strong> No meaningful AI roadmap signal under Ternus triggers a larger-than-expected sell-off. The market's +1% muted reaction to the succession announcement may be complacency that gets corrected here.</div>
+    <div class="summary-block">April 30 is Tim Cook's last earnings call before handing over to John Ternus on September 1. Investors should listen carefully for any language around "Apple Intelligence" roadmap, AI model partnerships, or signal that Ternus has a defined strategy. The absence of such clarity would be the real negative catalyst. AAPL's +1% reaction to the announcement may prove to be complacency given how critical this period is for Apple's AI platform positioning.</div>
+  </div>
+
+  <!-- C5 -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title"><span class="card-number">C5</span> US Tariff Baseline Review — July 24 Deadline</div>
+      <div class="badges">
+        <span class="date-chip">July 24, 2026 · ~87 Days Out</span>
+      </div>
+    </div>
+    <div class="meta-grid">
+      <div class="meta-item">
+        <div class="meta-label">Consensus Expectation</div>
+        <div class="meta-value">10% global baseline extended; incremental sector adjustments</div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">Exposed Tickers</div>
+        <div class="meta-value"><span class="ticker">NUE STLD FLR IWM</span> (upside on escalation) / <span class="loser">AAPL NKE LULU</span> (downside)</div>
+      </div>
+    </div>
+    <div class="surprise-block"><strong>Surprise Scenario:</strong> Tariffs raised to 15%+ — accelerates reshoring rotation dramatically. OR: major trade deal announced that reduces exposure for specific sectors — rapidly reverses small-cap rotation.</div>
+    <div class="summary-block">The 10% global baseline tariff expires July 24, with threatened escalation to 15%+. Average effective rate already at 17% (up from 2.4%). Markets are pricing reshoring beneficiaries, but have not yet systematically priced the July 24 binary risk. The political incentive structure strongly favors maintaining or increasing tariffs, making the reshoring long the higher-probability trade into the deadline. But watch for trade negotiation headlines — any signal of a deal could trigger a rapid unwind of the entire small-cap rotation.</div>
+  </div>
+
+  <!-- ═══════════════════════════════ ACTION ITEMS ═══════════════════════════════ -->
+  <div class="section-title">04 · Action Items</div>
+
+  <div class="action-card">
+    <h3>Top 3 Tickers to Research Today</h3>
+    <ul class="action-list">
+      <li><span class="ticker-hl">NVDA</span> — Infrastructure-agnostic AI pick-and-shovel. Benefits regardless of which hyperscaler wins the monetization race. Mag 7 earnings provide the direct read on AI infrastructure demand trajectory. Watch for any hyperscaler capex guidance changes that could signal demand acceleration or deceleration.</li>
+      <li><span class="ticker-hl">NUE</span> — Best-in-class reshoring beneficiary with confirmed earnings beat, record volumes, and raised guidance. The tariff shield on steel imports is structural. The July 24 baseline review is the main risk; add on any weakness before that date.</li>
+      <li><span class="ticker-hl">XOM / CVX</span> — Middle East war energy shock is still underpriced in terms of second-order stagflation effects. Oil majors with strong domestic production are both inflation hedges and earnings beneficiaries. Core PCE Thursday is the catalyst to watch for further re-rating.</li>
+    </ul>
+  </div>
+
+  <div class="action-card">
+    <h3>Position Adjustments</h3>
+    <ul class="action-list">
+      <li>⚠️ <strong>Reduce / Hedge <span class="ticker-hl">MSFT</span></strong> ahead of the April 29 print — risk/reward is unfavorable given YTD underperformance and high Azure growth expectations. Protective puts expiring this week are rational given the binary nature of the Azure report.</li>
+      <li>📈 <strong>Add <span class="ticker-hl">IWM</span> / <span class="ticker-hl">XLI</span></strong> exposure — the reshoring rotation has structural policy support and further to run into Q2. NUE's confirmed beat validates the thesis with hard earnings evidence.</li>
+      <li>🛡️ <strong>Initiate tail-risk hedge via short <span class="ticker-hl">EEM</span></strong> — the IMF's explicit warning on EM nonbank leverage plus record hedge fund EM allocations creates a coiled spring. The cost of being early on this hedge is low relative to the potential unwind severity.</li>
+    </ul>
+  </div>
+
+  <div class="action-card">
+    <h3>Key Dates This Week</h3>
+    <ul class="action-list">
+      <li><span class="key-date">Today (April 28)</span> — FOMC meeting Day 1 (ongoing); position sizing before tomorrow's decision</li>
+      <li><span class="key-date">April 29 · 2:00 p.m. ET</span> — FOMC rate decision + Powell press conference at 2:30 p.m.</li>
+      <li><span class="key-date">April 29 · After Close</span> — <span class="ticker-hl">MSFT GOOGL META AMZN</span> earnings releases — most important 4-hour window of the year</li>
+      <li><span class="key-date">April 30 · 8:30 a.m. ET</span> — Q1 2026 GDP advance estimate + March PCE inflation (simultaneous release — potentially the most dangerous macro print of 2026)</li>
+      <li><span class="key-date">April 30 · After Close</span> — <span class="ticker-hl">AAPL</span> earnings + Cook's final earnings call before September CEO transition</li>
+    </ul>
+  </div>
+
+  <div class="footer">
+    <strong>Sources:</strong><br>
+    <a href="https://www.imf.org/en/publications/gfsr/issues/2026/04/14/global-financial-stability-report-april-2026">IMF Global Financial Stability Report, April 2026</a> ·
+    <a href="https://www.cnbc.com/2026/04/26/earnings-playbook-five-of-mag-7-set-to-report-in-busiest-week-of-season.html">CNBC — Mag7 Earnings Playbook</a> ·
+    <a href="https://wallstreethorizon.com/blog/Mag-7-Earnings-on-Deck-Q1-2026">Wall Street Horizon — Mag7 Deck</a> ·
+    <a href="https://www.prnewswire.com/news-releases/nucor-reports-results-for-the-first-quarter-of-2026-302754639.html">Nucor Q1 2026 PR Newswire</a> ·
+    <a href="https://www.apple.com/newsroom/2026/04/tim-cook-to-become-apple-executive-chairman-john-ternus-to-become-apple-ceo/">Apple Newsroom — CEO Succession</a> ·
+    <a href="https://www.cnbc.com/2026/04/21/oil-price-iran-war-middle-east.html">CNBC — Iran War Oil Timeline</a> ·
+    <a href="https://www.iea.org/reports/oil-market-report-april-2026">IEA Oil Market Report, April 2026</a> ·
+    <a href="https://intellectia.ai/news/etf/us-hyperscalers-project-720-billion-capex-in-2026-for-ai-infrastructure">Intellectia — Hyperscaler Capex 2026</a> ·
+    <a href="https://blog.kraken.com/economic-brief/april-22-2026">Kraken Blog — FOMC + GDP Preview</a> ·
+    <a href="https://markets.financialcontent.com/stocks/article/marketminute-2026-4-7-small-cap-renaissance-russell-2000-hits-record-high-as-soft-landing-narrative-drives-8-outperformance-over-tech">FinancialContent — Russell 2000</a> ·
+    <a href="https://www.imf.org/en/blogs/articles/2026/04/07/as-emerging-markets-attract-more-nonbank-capital-they-also-face-new-challenges">IMF Blog — EM Nonbank Capital</a> ·
+    <a href="https://www.cnbc.com/2026/04/03/trump-tariffs-trade-war-impact.html">CNBC — Tariff Impact 2026</a>
+    <br><br>
+    Generated: 2026-04-28 · Daily Theme Scanner · Automated pre-market run · For informational purposes only. Not financial advice.
+  </div>
+
+</div>
+</body>
+</html>
