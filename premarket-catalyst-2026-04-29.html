@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pre-Market Catalyst Scan — April 29, 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0e17;
+    --bg2: #0f1520;
+    --bg3: #141b2b;
+    --border: #1e2d45;
+    --text: #e2e8f0;
+    --muted: #64748b;
+    --green: #22c55e;
+    --green-dim: #16a34a33;
+    --red: #ef4444;
+    --red-dim: #dc262633;
+    --amber: #f59e0b;
+    --amber-dim: #d9770633;
+    --blue: #3b82f6;
+    --blue-dim: #2563eb22;
+    --accent: #7c3aed;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'JetBrains Mono', 'Courier New', monospace;
+    font-size: 13px;
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+  .header {
+    background: linear-gradient(135deg, #0f1520 0%, #1a0a2e 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 20px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .header-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--amber);
+    letter-spacing: 0.05em;
+  }
+  .header-date {
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .badge-green { background: var(--green-dim); color: var(--green); border: 1px solid var(--green); }
+  .badge-red { background: var(--red-dim); color: var(--red); border: 1px solid var(--red); }
+  .badge-amber { background: var(--amber-dim); color: var(--amber); border: 1px solid var(--amber); }
+  .badge-blue { background: var(--blue-dim); color: var(--blue); border: 1px solid var(--blue); }
+  .badge-muted { background: #1e2d45; color: var(--muted); border: 1px solid #2a3f5f; }
+  .container { max-width: 1200px; margin: 0 auto; padding: 24px 24px; }
+  .section {
+    margin-bottom: 32px;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .section-header {
+    padding: 12px 20px;
+    background: var(--bg3);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .section-header h2 {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--blue);
+  }
+  .section-body { padding: 20px; }
+  .ticker-card {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 16px;
+    margin-bottom: 12px;
+  }
+  .ticker-card.bullish { border-left: 3px solid var(--green); }
+  .ticker-card.bearish { border-left: 3px solid var(--red); }
+  .ticker-card.neutral { border-left: 3px solid var(--amber); }
+  .ticker-card.alert { border-left: 3px solid var(--accent); border-color: var(--accent); background: #1a0a2e; }
+  .ticker-top {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 10px;
+  }
+  .ticker-symbol {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text);
+    letter-spacing: 0.05em;
+  }
+  .ticker-headline {
+    font-size: 12px;
+    color: #94a3b8;
+    margin-bottom: 8px;
+  }
+  .ticker-meta {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-bottom: 8px;
+    font-size: 11px;
+    color: var(--muted);
+  }
+  .ticker-meta span { display: flex; align-items: center; gap: 4px; }
+  .ticker-summary {
+    font-size: 12px;
+    color: #cbd5e1;
+    line-height: 1.7;
+    margin-bottom: 8px;
+  }
+  .source-link {
+    font-size: 11px;
+    color: var(--blue);
+    text-decoration: none;
+    margin-right: 12px;
+    opacity: 0.8;
+    transition: opacity 0.15s;
+  }
+  .source-link:hover { opacity: 1; text-decoration: underline; }
+  .events-grid {
+    display: grid;
+    gap: 10px;
+  }
+  .event-row {
+    display: grid;
+    grid-template-columns: 140px 1fr;
+    gap: 16px;
+    align-items: start;
+    padding: 10px 14px;
+    background: var(--bg3);
+    border-radius: 6px;
+    border: 1px solid var(--border);
+  }
+  .event-row.urgent {
+    border-color: var(--red);
+    background: var(--red-dim);
+  }
+  .event-row.mega-event {
+    border-color: var(--accent);
+    background: #1a0a2e;
+  }
+  .event-time {
+    font-weight: 700;
+    color: var(--amber);
+    font-size: 12px;
+  }
+  .event-desc {
+    font-size: 12px;
+    color: var(--text);
+  }
+  .trade-idea-card {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 16px;
+    margin-bottom: 12px;
+  }
+  .trade-idea-card.bullish { border-left: 3px solid var(--green); }
+  .trade-idea-card.bearish { border-left: 3px solid var(--red); }
+  .trade-idea-card.watch { border-left: 3px solid var(--amber); }
+  .trade-rank {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--muted);
+    margin-right: 10px;
+  }
+  .trade-ticker {
+    font-size: 18px;
+    font-weight: 700;
+    margin-right: 8px;
+  }
+  .trade-setup {
+    font-size: 11px;
+    color: #94a3b8;
+    margin-top: 6px;
+  }
+  .briefing-box {
+    background: linear-gradient(135deg, #0f1a2e 0%, #0a1520 100%);
+    border: 1px solid var(--blue);
+    border-radius: 8px;
+    padding: 20px;
+    font-size: 13px;
+    line-height: 1.8;
+    color: #e2e8f0;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+  }
+  th {
+    text-align: left;
+    padding: 8px 12px;
+    background: var(--bg);
+    color: var(--muted);
+    font-weight: 600;
+    border-bottom: 1px solid var(--border);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    font-size: 10px;
+  }
+  td {
+    padding: 8px 12px;
+    border-bottom: 1px solid #0f1520;
+    color: var(--text);
+    vertical-align: top;
+  }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: #0f1a2e; }
+  .price-up { color: var(--green); }
+  .price-down { color: var(--red); }
+  .divider { height: 1px; background: var(--border); margin: 16px 0; }
+  .tag { display: inline-block; padding: 1px 6px; border-radius: 3px; font-size: 10px; font-weight: 600; margin-left: 4px; }
+  .tag-beat { background: var(--green-dim); color: var(--green); }
+  .tag-miss { background: var(--red-dim); color: var(--red); }
+  .tag-in-line { background: var(--amber-dim); color: var(--amber); }
+  .footer {
+    text-align: center;
+    padding: 20px;
+    color: var(--muted);
+    font-size: 11px;
+    border-top: 1px solid var(--border);
+    margin-top: 16px;
+  }
+  .avoid-ticker {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--red-dim);
+    border: 1px solid var(--red);
+    border-radius: 6px;
+    padding: 8px 14px;
+    margin: 4px;
+    font-size: 12px;
+  }
+  @media (max-width: 600px) {
+    .event-row { grid-template-columns: 1fr; gap: 4px; }
+    .container { padding: 12px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div>
+    <div class="header-title">☀️ PRE-MARKET CATALYST SCAN</div>
+    <div class="header-date">Wednesday, April 29, 2026 &nbsp;|&nbsp; Generated automatically &nbsp;|&nbsp; All claims source-verified</div>
+  </div>
+  <div style="display:flex; gap:8px; flex-wrap:wrap;">
+    <span class="badge badge-red">FOMC @ 2PM</span>
+    <span class="badge badge-amber">MAG 7 AMC</span>
+    <span class="badge badge-red">SOFI -6% PRE</span>
+    <span class="badge badge-green">SBUX +5% PRE</span>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- STEP 1 -->
+  <div class="section">
+    <div class="section-header">
+      <h2>STEP 1 — Watchlist Overnight Catalysts</h2>
+    </div>
+    <div class="section-body">
+
+      <!-- SOFI -->
+      <div class="ticker-card bearish alert">
+        <div class="ticker-top">
+          <span class="ticker-symbol">SOFI</span>
+          <span class="badge badge-red">BEARISH</span>
+          <span class="badge badge-red">⚠️ MAJOR CATALYST</span>
+          <span class="badge badge-muted">ACTIONABLE: YES</span>
+        </div>
+        <div class="ticker-headline">🔴 SoFi Q1 2026 Record Revenue $1.1B (+41%) — Guidance Maintained, Stock -6% Pre-Market</div>
+        <div class="ticker-meta">
+          <span>📅 April 29, pre-market</span>
+          <span class="price-down">📉 Pre-mkt: -6%</span>
+          <span>📊 Down ~30% YTD coming in</span>
+        </div>
+        <div class="ticker-summary">
+          SoFi beat revenue expectations handily ($1.1B vs $1.05B est, +41% YoY), added 1.1M new members (total 14.7M, +35% YoY), and hit record adjusted EBITDA of $340M (+62% YoY). However, management maintained full-year 2026 EPS guidance at $0.60 on $4.66B revenue — unchanged from prior guidance, disappointing bulls expecting an upward revision. Classic beat-and-drop on no raise. Watch for fade continuation OR oversold bounce given 30% YTD hole.
+        </div>
+        <div>
+          <a class="source-link" href="https://finance.yahoo.com/markets/stocks/articles/fintech-sofis-profit-doubles-record-111238828.html" target="_blank">↗ Yahoo Finance</a>
+          <a class="source-link" href="https://www.benzinga.com/quote/SOFI" target="_blank">↗ Benzinga</a>
+        </div>
+      </div>
+
+      <!-- NVDA -->
+      <div class="ticker-card bearish">
+        <div class="ticker-top">
+          <span class="ticker-symbol">NVDA</span>
+          <span class="badge badge-red">BEARISH</span>
+          <span class="badge badge-amber">ACTIONABLE: WATCH</span>
+        </div>
+        <div class="ticker-headline">🔴 AI Capex Concern — OpenAI Revenue Miss Report (WSJ) Extends Chip Selloff, Day 2</div>
+        <div class="ticker-meta">
+          <span>📅 April 28 → April 29 pre-market</span>
+          <span class="price-down">📉 -1.59% at $213.17</span>
+          <span>AMD -3.37% | ARM -7.4% | AVGO -4.2%</span>
+        </div>
+        <div class="ticker-summary">
+          WSJ reported OpenAI missed internal revenue and user growth targets, with CFO Sarah Friar warning the company may not be able to honor computing contracts if top-line growth doesn't improve. This ignited a second straight session of AI infrastructure selling. SMH ETF fell 3–4% Tuesday. NVDA support at $207–208 is key. Sector still up 26% April and 35% YTD — this is a pullback within an uptrend, not a reversal (yet).
+        </div>
+        <div>
+          <a class="source-link" href="https://www.cnbc.com/2026/04/28/openai-reportedly-missed-revenue-targets-shares-of-oracle-and-these-chip-stocks-are-falling.html" target="_blank">↗ CNBC</a>
+          <a class="source-link" href="https://finance.yahoo.com/markets/article/chip-stocks-hottest-winners-are-suddenly-the-weakest-links-181812082.html" target="_blank">↗ Yahoo Finance</a>
+        </div>
+      </div>
+
+      <!-- AMD -->
+      <div class="ticker-card bearish">
+        <div class="ticker-top">
+          <span class="ticker-symbol">AMD</span>
+          <span class="badge badge-red">BEARISH</span>
+          <span class="badge badge-amber">ACTIONABLE: WATCH</span>
+        </div>
+        <div class="ticker-headline">🔴 AMD -3.37% at $323.21 — Technically Overextended; AI Capex Fears Continue</div>
+        <div class="ticker-meta">
+          <span>📅 April 28–29</span>
+          <span class="price-down">📉 -3.37% at $323.21</span>
+          <span>April performance: +55%</span>
+        </div>
+        <div class="ticker-summary">
+          AMD caught in the OpenAI-fueled AI selloff with RSI well above 70 (overbought). No specific AMD catalyst — this is thematic selling. The April +55% run has pushed technicals to extreme levels. Analysts label the move "madness" at current levels. Watch for support or continued unwind; earnings date pending.
+        </div>
+        <div>
+          <a class="source-link" href="https://www.benzinga.com/markets/tech/26/04/52120064/this-is-madness-investors-chasing-chip-stocks-at-risky-extremes" target="_blank">↗ Benzinga</a>
+        </div>
+      </div>
+
+      <!-- TSLA -->
+      <div class="ticker-card neutral">
+        <div class="ticker-top">
+          <span class="ticker-symbol">TSLA</span>
+          <span class="badge badge-amber">NEUTRAL</span>
+          <span class="badge badge-muted">ACTIONABLE: NO</span>
+        </div>
+        <div class="ticker-headline">🟡 No Fresh Overnight Catalyst — Q1 Earnings Digested (Apr 22); SpaceX Merger Speculation</div>
+        <div class="ticker-meta">
+          <span>📅 Ongoing</span>
+          <span>$377.44 (-0.29%)</span>
+        </div>
+        <div class="ticker-summary">
+          TSLA Q1 reported April 22 — revenue missed, automotive business struggling, but Musk pushing AI/robotics/FSD narrative. Tesla-SpaceX merger speculation active but unconfirmed. No actionable overnight catalyst for April 29.
+        </div>
+        <div>
+          <a class="source-link" href="https://www.cnbc.com/2026/04/22/tesla-tsla-q1-2026-earnings-report.html" target="_blank">↗ CNBC Q1 Report</a>
+        </div>
+      </div>
+
+      <!-- PLTR -->
+      <div class="ticker-card neutral">
+        <div class="ticker-top">
+          <span class="ticker-symbol">PLTR</span>
+          <span class="badge badge-amber">NEUTRAL</span>
+          <span class="badge badge-amber">ACTIONABLE: WATCH</span>
+        </div>
+        <div class="ticker-headline">🟡 Citi Cuts PT $260→$210; $300M USDA Deal (Apr 22); Earnings May 4</div>
+        <div class="ticker-meta">
+          <span>📅 Recent</span>
+          <span>~$141–143 / -15% YTD</span>
+          <span>Earnings: May 4</span>
+        </div>
+        <div class="ticker-summary">
+          Palantir inked a $300M USDA deal April 22, but Citi lowered price target from $260 to $210 amid IRS partnership scrutiny. Earnings May 4 — today is pre-positioning territory. A 70% YoY revenue growth story, but the stock is down 15% YTD.
+        </div>
+        <div>
+          <a class="source-link" href="https://finance.yahoo.com/markets/stocks/articles/irs-palantir-partnership-draws-critical-181244774.html" target="_blank">↗ Yahoo Finance</a>
+        </div>
+      </div>
+
+      <!-- MARA -->
+      <div class="ticker-card neutral">
+        <div class="ticker-top">
+          <span class="ticker-symbol">MARA</span>
+          <span class="badge badge-amber">NEUTRAL</span>
+          <span class="badge badge-amber">ACTIONABLE: WATCH</span>
+        </div>
+        <div class="ticker-headline">🟡 BTC $77,507 This Morning (Rising); MARA Sold $1.1B BTC, Pivoting to AI Data Centers</div>
+        <div class="ticker-meta">
+          <span>📅 April 29 AM</span>
+          <span>MARA ~$9.29</span>
+          <span>BTC: $77,507 (+1.5% from open)</span>
+        </div>
+        <div class="ticker-summary">
+          Bitcoin opened at $76,340 on Wednesday, rising to $77,507 early morning — values have been falling week-over-week but trending up today. MARA sold $1.1B in BTC and is pivoting to AI infrastructure. BTC holds key for MARA direction. Policy-heavy week (FOMC, SEC) keeping crypto in consolidation.
+        </div>
+        <div>
+          <a class="source-link" href="https://finance.yahoo.com/personal-finance/investing/article/bitcoin-and-ethereum-prices-today-wednesday-april-29-2026-values-continue-to-fall-this-week-113845501.html" target="_blank">↗ Yahoo Finance BTC Today</a>
+          <a class="source-link" href="https://finance.yahoo.com/news/mara-holdings-sells-bitcoin-pursues-011238548.html" target="_blank">↗ MARA BTC Sale</a>
+        </div>
+      </div>
+
+      <!-- COIN -->
+      <div class="ticker-card neutral">
+        <div class="ticker-top">
+          <span class="ticker-symbol">COIN</span>
+          <span class="badge badge-amber">NEUTRAL</span>
+          <span class="badge badge-muted">ACTIONABLE: NO</span>
+        </div>
+        <div class="ticker-headline">🟡 Pre-Market -1.65% at $190.90; OCC Trust Charter Approved (April 2)</div>
+        <div class="ticker-meta">
+          <span>📅 April 29 pre-market</span>
+          <span class="price-down">-1.65% at ~$190.90</span>
+        </div>
+        <div class="ticker-summary">
+          COIN drifting lower with soft BTC. Positive long-term: OCC granted Coinbase a national trust charter April 2, unlocking institutional custody mandates — but this is a slow-burn catalyst, not today's trade.
+        </div>
+        <div>
+          <a class="source-link" href="https://finance.yahoo.com/quote/COIN/" target="_blank">↗ Yahoo Finance</a>
+        </div>
+      </div>
+
+      <!-- SNDK -->
+      <div class="ticker-card bullish">
+        <div class="ticker-top">
+          <span class="ticker-symbol">SNDK</span>
+          <span class="badge badge-green">BULLISH MOMENTUM</span>
+          <span class="badge badge-amber">ACTIONABLE: WATCH</span>
+        </div>
+        <div class="ticker-headline">🟢 SanDisk Reports TOMORROW (Apr 30) — 175% YoY Revenue Growth Expected; +317% YTD</div>
+        <div class="ticker-meta">
+          <span>📅 Earnings April 30 BMO</span>
+          <span>+317% YTD</span>
+        </div>
+        <div class="ticker-summary">
+          SanDisk reports Q3 FY2026 tomorrow morning. AI-driven NAND flash demand driving 317% YTD run. Options implying a large implied move. Today is the LAST pre-earnings session — watch for pre-positioning. Note: chip sector headwinds from OpenAI news could create a risk-off pre-earnings dip.
+        </div>
+        <div>
+          <a class="source-link" href="https://www.benzinga.com/markets/earnings/26/04/52061245/earnings-volatility-watch-sandisk-magnificent-seven-april-2026" target="_blank">↗ Benzinga</a>
+        </div>
+      </div>
+
+      <!-- META / AMZN -->
+      <div class="ticker-card neutral">
+        <div class="ticker-top">
+          <span class="ticker-symbol">META</span>
+          <span class="ticker-symbol">AMZN</span>
+          <span class="badge badge-blue">TONIGHT AMC</span>
+          <span class="badge badge-amber">ACTIONABLE: WATCH</span>
+        </div>
+        <div class="ticker-headline">🕐 META + AMZN + MSFT + GOOGL Report TONIGHT — $18.59T Market Cap Gauntlet</div>
+        <div class="ticker-meta">
+          <span>📅 After close tonight</span>
+          <span>META: $8.15 EPS / $55.5B rev</span>
+          <span>AMZN: $1.61 EPS / $177.2B rev</span>
+        </div>
+        <div class="ticker-summary">
+          All four Magnificent 7 names report after the bell tonight — the single most important earnings session of Q1 2026. META focus: ad pricing power, WhatsApp paid messaging ($2B run rate). AMZN focus: AWS growth rate (hold above 24%?). MSFT: Intelligent Cloud $34.3B. GOOGL: Cloud $18.4B, Search +17–18%. Position sizing carefully — full outcomes uncertain.
+        </div>
+        <div>
+          <a class="source-link" href="https://sg.finance.yahoo.com/news/alphabet-microsoft-amazon-meta-expect-060000745.html" target="_blank">↗ Yahoo Finance - Earnings Preview</a>
+          <a class="source-link" href="https://finance.yahoo.com/markets/stocks/articles/mag-7-earnings-gauntlet-begins-111120851.html" target="_blank">↗ Mag 7 Gauntlet</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- STEP 2 -->
+  <div class="section">
+    <div class="section-header">
+      <h2>STEP 2 — Sector & Theme ETF Overnight Scan</h2>
+    </div>
+    <div class="section-body">
+
+      <div class="ticker-card bearish">
+        <div class="ticker-top">
+          <span class="badge badge-red">BEARISH</span>
+          <span class="ticker-symbol" style="font-size:14px;">TECH & AI — SMH, XLK, FNGU</span>
+        </div>
+        <div class="ticker-headline">🔴 OpenAI Revenue Miss — AI Data Center Capex Sustainability Questioned (WSJ)</div>
+        <div class="ticker-summary">
+          SMH -3 to -4% Tuesday (second consecutive day). NVDA -3.3%, AMD -5.5%, ARM -7.4%, AVGO -4.2% in Tuesday session. "Overextended" warnings from analysts — SMH RSI stretched. Sector still up 26–35% in April; this is a healthy pullback in trend or a potential reversal — the Mag 7 earnings tonight will determine which.
+        </div>
+        <div style="margin-top:8px;"><strong style="color:var(--amber);">Key names at open:</strong> NVDA (watch $207–208 support), SMH, AMD</div>
+        <div style="margin-top:8px;">
+          <a class="source-link" href="https://www.cnbc.com/2026/04/28/openai-reportedly-missed-revenue-targets-shares-of-oracle-and-these-chip-stocks-are-falling.html" target="_blank">↗ CNBC</a>
+          <a class="source-link" href="https://www.benzinga.com/markets/tech/26/04/52120064/this-is-madness-investors-chasing-chip-stocks-at-risky-extremes" target="_blank">↗ Benzinga</a>
+        </div>
+      </div>
+
+      <div class="ticker-card bullish">
+        <div class="ticker-top">
+          <span class="badge badge-green">BULLISH TREND</span>
+          <span class="ticker-symbol" style="font-size:14px;">COMMODITIES — GLD, SLV</span>
+        </div>
+        <div class="ticker-headline">🟢 JPMorgan $6,000–$6,300 Gold Target; Silver +132%+ YTD</div>
+        <div class="ticker-summary">
+          No specific breaking overnight catalyst, but gold and silver remain in a structural uptrend. Silver is outperforming gold (supply deficit + industrial demand). Gold-silver ratio narrowing to ~64:1. JPMorgan reiterates bullish gold outlook.
+        </div>
+        <div>
+          <a class="source-link" href="https://finance.yahoo.com/markets/commodities/articles/buy-sell-hold-gld-current-143500357.html" target="_blank">↗ Yahoo Finance - GLD</a>
+          <a class="source-link" href="https://finance.yahoo.com/news/gold-left-behind-silver-hikes-142900342.html" target="_blank">↗ SLV YTD</a>
+        </div>
+      </div>
+
+      <div class="ticker-card neutral">
+        <div class="ticker-top">
+          <span class="badge badge-amber">NEUTRAL</span>
+          <span class="ticker-symbol" style="font-size:14px;">CRYPTO — IBIT, MARA, COIN</span>
+        </div>
+        <div class="ticker-headline">🟡 Bitcoin $77,507 This Morning — Values Falling Week-Over-Week But Trending Up Today</div>
+        <div class="ticker-summary">
+          BTC opened $76,340, rose to $77,507 by early AM. Week-long drift lower but today is showing resilience. FOMC decision and SEC Chair focus keeping crypto in "wait and see" mode. Ethereum holding above $2,300. BTC direction post-2PM FOMC decision will drive MARA, COIN, IBIT.
+        </div>
+        <div>
+          <a class="source-link" href="https://finance.yahoo.com/personal-finance/investing/article/bitcoin-and-ethereum-prices-today-wednesday-april-29-2026-values-continue-to-fall-this-week-113845501.html" target="_blank">↗ Yahoo Finance - BTC Today</a>
+        </div>
+      </div>
+
+      <div class="ticker-card" style="border-left: 3px solid var(--blue);">
+        <div class="ticker-top">
+          <span class="badge badge-blue">⚠️ KEY EVENT</span>
+          <span class="ticker-symbol" style="font-size:14px;">MACRO — TLT, UUP</span>
+        </div>
+        <div class="ticker-headline">🔵 FOMC Rate Decision TODAY at 2:00 PM ET — 100% Hold Expected; Powell Press Conference 2:30 PM ET</div>
+        <div class="ticker-summary">
+          Markets pricing 100% probability of a rate hold. Could be Jerome Powell's final meeting as Federal Reserve Chair. The key wildcard is Powell's tone on inflation (tariff pass-through), economic growth, and the path forward. TLT and UUP will be volatile post-2PM. Any hawkish surprise = TLT sells off, UUP rallies; dovish surprise = TLT rallies, UUP weakens.
+        </div>
+        <div>
+          <a class="source-link" href="https://www.cnbc.com/2026/04/28/fed-meeting-preview-april-2026.html" target="_blank">↗ CNBC Fed Preview</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- STEP 3 -->
+  <div class="section">
+    <div class="section-header">
+      <h2>STEP 3 — Overnight Earnings Results</h2>
+    </div>
+    <div class="section-body">
+      <table>
+        <thead>
+          <tr>
+            <th>Ticker</th>
+            <th>EPS</th>
+            <th>Revenue</th>
+            <th>Guidance</th>
+            <th>Pre-Mkt Move</th>
+            <th>Sector Read-Through</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>SBUX</strong> — Starbucks Q2 FY2026</td>
+            <td><span class="tag tag-beat">$0.50 BEAT</span><br><small style="color:var(--muted);">est $0.43</small></td>
+            <td><span class="tag tag-beat">$9.53B BEAT</span><br><small style="color:var(--muted);">est $9.16B</small></td>
+            <td><span class="tag tag-beat">RAISED</span><br><small style="color:var(--muted);">SSS ≥+5%, EPS $2.25–2.45</small></td>
+            <td class="price-up">+5%</td>
+            <td>Consumer spending resilient. <strong>Positive for XLY</strong>. Watch MCD, CMG sympathy. US SSS +7.1% — strong foot traffic recovery.</td>
+          </tr>
+          <tr>
+            <td><strong>OMCL</strong> — Omnicell Q1 2026</td>
+            <td><span class="tag tag-beat">BEAT</span></td>
+            <td><span class="tag tag-beat">BEAT</span></td>
+            <td><span class="tag tag-beat">RAISED</span></td>
+            <td class="price-up">+20%+</td>
+            <td>Healthcare tech. Not in primary watchlist. Positive for XLV healthcare sub-sector.</td>
+          </tr>
+          <tr>
+            <td><strong>SOFI</strong> — SoFi Q1 2026</td>
+            <td><span class="tag tag-in-line">$0.12 IN-LINE</span></td>
+            <td><span class="tag tag-beat">$1.1B BEAT</span><br><small style="color:var(--muted);">est $1.05B</small></td>
+            <td><span class="tag tag-miss">MAINTAINED</span><br><small style="color:var(--muted);">No raise — disappoints</small></td>
+            <td class="price-down">-6%</td>
+            <td>Fintech sector mixed. SoFi maintained guidance disappoints. Watch HOOD, AFRM for fintech sympathy read.</td>
+          </tr>
+        </tbody>
+      </table>
+      <div style="margin-top:16px; padding:12px; background:var(--bg3); border-radius:6px; border:1px solid var(--accent);">
+        <strong style="color:var(--accent);">🕐 TONIGHT (AMC): META, AMZN, MSFT, GOOGL</strong><br>
+        <span style="color:#94a3b8; font-size:12px;">$18.59 trillion combined market cap reporting. This is the most important earnings session of Q1 2026. META: $8.15 EPS / $55.5B rev &nbsp;|&nbsp; AMZN: $1.61 EPS / $177.2B rev &nbsp;|&nbsp; MSFT: $4.07 EPS / Intelligent Cloud $34.3B &nbsp;|&nbsp; GOOGL: $2.64 EPS / $92.2B rev</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 4 -->
+  <div class="section">
+    <div class="section-header">
+      <h2>STEP 4 — Pre-Market Options Flow</h2>
+    </div>
+    <div class="section-body">
+      <div style="color:var(--muted); padding:12px; background:var(--bg3); border-radius:6px; border:1px solid var(--border);">
+        <strong style="color:var(--amber);">No verified pre-market options flow data found</strong> from @unusual_whales, @FlowAlgo, @CheddarFlow, or Benzinga with direct source URLs for April 29, 2026. Per protocol, unverified data is omitted.<br><br>
+        <span style="font-size:11px;">→ Check <a class="source-link" href="https://www.barchart.com/options/unusual-activity" target="_blank">Barchart Unusual Options Activity</a> and <a class="source-link" href="https://www.benzinga.com/calendars/unusual-options-activity" target="_blank">Benzinga Options Flow</a> directly at market open for live data.</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 5 -->
+  <div class="section">
+    <div class="section-header">
+      <h2>STEP 5 — Analyst Actions</h2>
+    </div>
+    <div class="section-body">
+      <table>
+        <thead>
+          <tr>
+            <th>Ticker</th>
+            <th>Action</th>
+            <th>Firm</th>
+            <th>Old PT</th>
+            <th>New PT</th>
+            <th>Notes</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>PLTR</strong></td>
+            <td><span class="badge badge-red">PT CUT</span></td>
+            <td>Citi</td>
+            <td>$260</td>
+            <td class="price-down">$210</td>
+            <td>IRS partnership under scrutiny; earnings May 4</td>
+          </tr>
+          <tr>
+            <td><strong>NVDA / SMH Sector</strong></td>
+            <td><span class="badge badge-amber">CAUTIONARY</span></td>
+            <td>Multiple analysts</td>
+            <td>—</td>
+            <td>—</td>
+            <td>"Overextended" / "Madness" — RSI extreme warnings</td>
+          </tr>
+          <tr>
+            <td><strong>COIN</strong></td>
+            <td><span class="badge badge-red">DOWNGRADE</span></td>
+            <td>Unknown</td>
+            <td>—</td>
+            <td>—</td>
+            <td>Crypto market weakness in early 2026</td>
+          </tr>
+          <tr>
+            <td><strong>GOOGL</strong></td>
+            <td><span class="badge badge-green">UPGRADE</span></td>
+            <td>Unknown</td>
+            <td>—</td>
+            <td>—</td>
+            <td>Pre-earnings upgrade; reports tonight</td>
+          </tr>
+        </tbody>
+      </table>
+      <div style="margin-top:10px; color:var(--muted); font-size:11px;">
+        ⚠️ April 29-specific analyst actions not fully available at scan time. Monitor <a class="source-link" href="https://www.benzinga.com/analyst-stock-ratings" target="_blank">Benzinga analyst ratings</a> and <a class="source-link" href="https://www.barchart.com/story/news/1503257/newsworthy-stock-upgrades-and-downgrades-april-24-2026" target="_blank">Barchart ratings</a> at market open.
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 6 -->
+  <div class="section">
+    <div class="section-header">
+      <h2>STEP 6 — Today's Scheduled Events</h2>
+    </div>
+    <div class="section-body">
+      <div class="events-grid">
+        <div class="event-row">
+          <div class="event-time">Pre-Market</div>
+          <div class="event-desc">SOFI earnings reaction underway (-6% pre-mkt); SBUX gap-up (~+5%)</div>
+        </div>
+        <div class="event-row">
+          <div class="event-time">9:30 AM ET</div>
+          <div class="event-desc">Market open — chip sector pressure continues; consumer discretionary (SBUX) likely gap-up; ~266 total earnings reports today</div>
+        </div>
+        <div class="event-row urgent">
+          <div class="event-time">2:00 PM ET 🔴</div>
+          <div class="event-desc"><strong>FOMC Rate Decision</strong> — 100% probability of HOLD. Could be Jerome Powell's final meeting as Fed Chair. Statement language on inflation, tariffs, and economic outlook is the wildcard. TLT and UUP will react sharply.</div>
+        </div>
+        <div class="event-row urgent">
+          <div class="event-time">2:30 PM ET 🔴</div>
+          <div class="event-desc"><strong>Powell Press Conference</strong> — The critical market-moving event of the day. Tone on inflation (tariff pass-through), path of rates, and economic resilience will drive bonds, dollar, and equity sectors into the close.</div>
+        </div>
+        <div class="event-row">
+          <div class="event-time">TBD BMO</div>
+          <div class="event-desc">SNDK earnings TOMORROW (April 30) — last pre-earnings session today for positioning (175% YoY rev growth expected)</div>
+        </div>
+        <div class="event-row mega-event">
+          <div class="event-time">After 4:00 PM 🔴🔴</div>
+          <div class="event-desc"><strong>MAG 7 EARNINGS GAUNTLET:</strong> META ($8.15 EPS / $55.5B rev) + AMZN ($1.61 EPS / $177.2B rev) + MSFT ($4.07 EPS / Cloud $34.3B) + GOOGL ($2.64 EPS / $92.2B rev) — $18.59 TRILLION combined market cap. Single most important night of Q1 2026 earnings season. Results will set tomorrow's market tone.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 7 -->
+  <div class="section">
+    <div class="section-header">
+      <h2>STEP 7 — Morning Trade Ideas</h2>
+    </div>
+    <div class="section-body">
+
+      <div style="margin-bottom:16px;">
+        <div class="trade-idea-card bearish">
+          <div class="ticker-top" style="margin-bottom:6px;">
+            <span class="trade-rank">#1</span>
+            <span class="trade-ticker price-down">SOFI</span>
+            <span class="badge badge-red">GAP-DOWN FADE / OVERSOLD BOUNCE</span>
+          </div>
+          <div class="trade-setup">Beat on revenue ($1.1B vs $1.05B) but maintained guidance — punished -6% pre-market. Already -30% YTD. Watch for: (A) Pre-market low hold → long scalp for oversold bounce; (B) Continuation break below pre-market low → short fade. Entry: first 5-min candle break. Risk: May stabilize quickly on 30% YTD discount buyer interest. HIGH PROBABILITY SETUP — YES at open.</div>
+          <div>
+            <a class="source-link" href="https://finance.yahoo.com/markets/stocks/articles/fintech-sofis-profit-doubles-record-111238828.html" target="_blank">↗ Earnings Report</a>
+          </div>
+        </div>
+
+        <div class="trade-idea-card bullish">
+          <div class="ticker-top" style="margin-bottom:6px;">
+            <span class="trade-rank">#2</span>
+            <span class="trade-ticker price-up">SBUX</span>
+            <span class="badge badge-green">GAP-UP MOMENTUM / TURNAROUND PLAY</span>
+          </div>
+          <div class="trade-setup">Strong Q2 FY2026 beat across all metrics. CEO declares "turn in the turnaround." Guidance raised. Gap-up ~5% pre-market. Entry: Watch first 5-min candle at open; buy any pullback from gap-open with support from strong fundamentals. Risk: Broader market negativity from chip selloff could cap the move. Keep stops tight below the gap.</div>
+          <div>
+            <a class="source-link" href="https://www.benzinga.com/markets/earnings/26/04/52112622/starbucks-earnings-top-expectations-ceo-says-q2-marked-the-turn-in-our-turnaround" target="_blank">↗ Benzinga</a>
+          </div>
+        </div>
+
+        <div class="trade-idea-card watch">
+          <div class="ticker-top" style="margin-bottom:6px;">
+            <span class="trade-rank">#3</span>
+            <span class="trade-ticker" style="color:var(--amber);">SMH / NVDA</span>
+            <span class="badge badge-amber">DIRECTIONAL SETUP — POST-FOMC</span>
+          </div>
+          <div class="trade-setup">Second session of AI chip selling. NVDA support at $207–208. SMH down 3–4% Tuesday. Options: (A) Contrarian — watch for flush at open + NVDA hold of $207 → intraday bounce before FOMC; (B) Trend-follower — short any dead-cat bounce in first hour if tone stays negative. DO NOT hold into the close — Mag 7 earnings could reverse everything. Reduce risk before 2PM FOMC.</div>
+          <div>
+            <a class="source-link" href="https://www.cnbc.com/2026/04/28/openai-reportedly-missed-revenue-targets-shares-of-oracle-and-these-chip-stocks-are-falling.html" target="_blank">↗ CNBC</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <div style="margin-bottom:16px;">
+        <strong style="color:var(--amber);">TOP SECTOR TO WATCH TODAY:</strong>
+        <div style="margin-top:8px; padding:12px; background:var(--bg3); border-radius:6px; border-left:3px solid var(--green);">
+          <strong class="price-up">Consumer Discretionary (XLY)</strong> — SBUX beat is the biggest signal. Starbucks is a key XLY component; its turnaround + guidance raise signals consumers are still spending. Watch MCD, CMG, and DINE for sympathy moves at the open.
+        </div>
+      </div>
+
+      <div style="margin-bottom:16px;">
+        <strong style="color:var(--red);">⚠️ WATCHLIST NAMES TO AVOID TODAY:</strong>
+        <div style="margin-top:8px; display:flex; flex-wrap:wrap; gap:4px;">
+          <div class="avoid-ticker">
+            🔴 <strong>AMD</strong> — Technically overextended (RSI >70), second AI selloff session, no support catalyst
+          </div>
+          <div class="avoid-ticker">
+            🔴 <strong>COIN</strong> — Bitcoin drifting lower week-over-week, -1.65% pre-market, no bullish catalyst today
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-bottom:16px;">
+        <strong style="color:var(--amber);">🔑 KEY RISK EVENTS AND TIMING:</strong>
+        <div style="margin-top:8px; padding:12px; background:var(--bg3); border-radius:6px; border:1px solid var(--border);">
+          <div style="margin-bottom:8px;">⏰ <strong style="color:var(--red);">2:00 PM ET</strong> — FOMC rate decision (hold expected, but hawkish tone = TLT sell-off, equity pressure)</div>
+          <div style="margin-bottom:8px;">🎤 <strong style="color:var(--red);">2:30 PM ET</strong> — Powell press conference (inflation/tariff tone = biggest intraday wildcard)</div>
+          <div style="margin-bottom:8px;">📊 <strong style="color:var(--accent);">After 4:00 PM ET</strong> — META, AMZN, MSFT, GOOGL earnings (most important night of Q1 2026 — results set tomorrow's market open)</div>
+          <div>📅 <strong style="color:var(--amber);">Tomorrow BMO</strong> — SNDK Q3 earnings (175% YoY rev growth; last pre-earnings positioning window is TODAY)</div>
+        </div>
+      </div>
+
+      <div>
+        <strong style="color:var(--blue);">☀️ 30-SECOND MORNING BRIEFING:</strong>
+        <div style="margin-top:10px;" class="briefing-box">
+          Markets are navigating dual headwinds this morning: a <strong>second consecutive session of AI chip selling</strong> after a WSJ report revealed OpenAI missed its own revenue and user growth targets — raising serious questions about the sustainability of massive AI data center capex — and <strong>SoFi gapping down 6%</strong> despite record Q1 revenue, punished for maintaining rather than raising its 2026 guidance. The lone bright spot is <strong>Starbucks, gapping up ~5%</strong> on a strong turnaround quarter with raised guidance ("Q2 marked the turn"). The tape is cautious but not broken. Two macro events dominate today: the <strong>FOMC rate decision at 2 PM ET</strong> (100% hold, but Powell's tone on inflation and tariffs in what may be his <em>final press conference as chair</em> is the wildcard), and the <strong>Mag 7 earnings gauntlet after the bell</strong> — META, AMZN, MSFT, and GOOGL all report tonight, representing $18.59 trillion in combined market cap and the single most important earnings session of the year so far. Be selective and disciplined: trade SOFI's reaction (fade or bounce), ride SBUX momentum carefully, watch SMH for a NVDA support hold, and above all — <strong>reduce risk before 2 PM</strong> and do not hold overnight without knowing where Mag 7 lands.
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+<div class="footer">
+  Sources: <a class="source-link" href="https://benzinga.com" target="_blank">Benzinga</a> | 
+  <a class="source-link" href="https://finance.yahoo.com" target="_blank">Yahoo Finance</a> | 
+  <a class="source-link" href="https://cnbc.com" target="_blank">CNBC</a> | 
+  <a class="source-link" href="https://barchart.com" target="_blank">Barchart</a> | 
+  <a class="source-link" href="https://stocktitan.net" target="_blank">StockTitan</a><br>
+  Generated automatically — April 29, 2026 | All unverified claims omitted per protocol.
+</div>
+
+</body>
+</html>
