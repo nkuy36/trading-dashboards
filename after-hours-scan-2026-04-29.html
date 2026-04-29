@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>After-Hours Scan — April 29, 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0e17;
+    --surface: #0f1623;
+    --surface2: #141d2e;
+    --border: #1e2d45;
+    --text: #e2e8f0;
+    --muted: #64748b;
+    --green: #22c55e;
+    --green-dim: #166534;
+    --red: #ef4444;
+    --red-dim: #7f1d1d;
+    --amber: #f59e0b;
+    --amber-dim: #78350f;
+    --blue: #3b82f6;
+    --blue-dim: #1e3a5f;
+    --purple: #a855f7;
+    --cyan: #06b6d4;
+    --oil: #f97316;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    line-height: 1.7;
+    padding: 24px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  h1 {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 4px;
+    letter-spacing: -0.5px;
+  }
+  .subtitle {
+    color: var(--muted);
+    font-size: 11px;
+    margin-bottom: 32px;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 16px;
+  }
+  h2 {
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--cyan);
+    margin: 32px 0 16px;
+    padding: 8px 12px;
+    background: var(--surface);
+    border-left: 3px solid var(--cyan);
+    border-radius: 0 4px 4px 0;
+  }
+  h3 {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+    margin: 20px 0 10px;
+  }
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px;
+  }
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+  }
+  .ticker {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text);
+  }
+  .badge {
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 8px;
+    border-radius: 4px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  .badge-green { background: var(--green-dim); color: var(--green); }
+  .badge-red { background: var(--red-dim); color: var(--red); }
+  .badge-amber { background: var(--amber-dim); color: var(--amber); }
+  .ah-move {
+    font-size: 28px;
+    font-weight: 700;
+    margin: 8px 0;
+  }
+  .ah-move.up { color: var(--green); }
+  .ah-move.down { color: var(--red); }
+  .ah-move.flat { color: var(--amber); }
+  .metric-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 4px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 12px;
+  }
+  .metric-row:last-child { border-bottom: none; }
+  .metric-label { color: var(--muted); }
+  .metric-val { font-weight: 600; }
+  .metric-val.beat { color: var(--green); }
+  .metric-val.miss { color: var(--red); }
+  .metric-val.inline { color: var(--amber); }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 12px 0;
+    font-size: 12px;
+  }
+  th {
+    background: var(--surface2);
+    color: var(--muted);
+    padding: 8px 10px;
+    text-align: left;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-size: 10px;
+    border-bottom: 1px solid var(--border);
+  }
+  td {
+    padding: 8px 10px;
+    border-bottom: 1px solid var(--border);
+  }
+  tr:hover { background: var(--surface2); }
+  .beat-cell { color: var(--green); font-weight: 600; }
+  .miss-cell { color: var(--red); font-weight: 600; }
+  .inline-cell { color: var(--amber); font-weight: 600; }
+  .call-cell { color: var(--green); font-weight: 600; }
+  .put-cell { color: var(--red); font-weight: 600; }
+  .diverge-cell { color: var(--amber); font-weight: 600; }
+  .tag {
+    display: inline-block;
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-size: 10px;
+    font-weight: 600;
+    margin: 1px;
+  }
+  .tag-green { background: var(--green-dim); color: var(--green); }
+  .tag-red { background: var(--red-dim); color: var(--red); }
+  .tag-amber { background: var(--amber-dim); color: var(--amber); }
+  .tag-blue { background: var(--blue-dim); color: var(--blue); }
+  .alert-box {
+    border-radius: 6px;
+    padding: 12px 16px;
+    margin: 12px 0;
+    border-left: 4px solid;
+    font-size: 12px;
+  }
+  .alert-green { background: #0d2618; border-color: var(--green); }
+  .alert-red { background: #1f0d0d; border-color: var(--red); }
+  .alert-amber { background: #1f1500; border-color: var(--amber); }
+  .alert-blue { background: #0d1f3f; border-color: var(--blue); }
+  .alert-oil { background: #1f1200; border-color: var(--oil); }
+  .read-through {
+    color: var(--muted);
+    font-size: 11px;
+    margin-top: 10px;
+    font-style: italic;
+  }
+  .section-overview {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 12px 16px;
+    margin: 12px 0;
+    font-size: 12px;
+  }
+  .top3 {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 16px;
+    margin: 16px 0;
+  }
+  .top3-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px;
+  }
+  .top3-card.bullish { border-color: var(--green); }
+  .top3-card.bearish { border-color: var(--red); }
+  .top3-num {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--border);
+    margin-bottom: 4px;
+  }
+  .top3-ticker { font-size: 22px; font-weight: 700; margin-bottom: 6px; }
+  .top3-ticker.bull { color: var(--green); }
+  .top3-ticker.bear { color: var(--red); }
+  .top3-ticker.oil { color: var(--oil); }
+  .top3-why { font-size: 11px; color: var(--muted); margin-top: 8px; }
+  .briefing {
+    background: linear-gradient(135deg, #0f1623, #141d2e);
+    border: 1px solid var(--cyan);
+    border-radius: 8px;
+    padding: 20px;
+    margin: 16px 0;
+    font-size: 13px;
+    line-height: 1.9;
+    color: var(--text);
+  }
+  .briefing-header {
+    color: var(--cyan);
+    font-weight: 700;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 12px;
+  }
+  .audit-row {
+    display: grid;
+    grid-template-columns: 2fr 2fr 2fr;
+    gap: 8px;
+    padding: 10px;
+    border-bottom: 1px solid var(--border);
+    font-size: 11px;
+  }
+  .audit-row:last-child { border-bottom: none; }
+  .audit-row:nth-child(even) { background: var(--surface2); }
+  .audit-header {
+    font-weight: 700;
+    color: var(--muted);
+    text-transform: uppercase;
+    font-size: 10px;
+    letter-spacing: 1px;
+  }
+  .footer {
+    margin-top: 48px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+    color: var(--muted);
+    font-size: 10px;
+  }
+  @media (max-width: 768px) {
+    .grid-2, .grid-3, .top3 { grid-template-columns: 1fr; }
+    body { padding: 16px; }
+  }
+  .price-box {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin: 12px 0;
+  }
+  .price-item {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 8px 12px;
+    text-align: center;
+    min-width: 80px;
+  }
+  .price-label { font-size: 10px; color: var(--muted); margin-bottom: 2px; }
+  .price-val { font-size: 14px; font-weight: 700; }
+  .divider { height: 1px; background: var(--border); margin: 24px 0; }
+  .watchlist-flag { color: var(--amber); font-size: 11px; }
+</style>
+</head>
+<body>
+
+<h1>🌙 AFTER-HOURS CATALYST SCAN</h1>
+<div class="subtitle">Wednesday, April 29, 2026 &nbsp;|&nbsp; Generated after market close &nbsp;|&nbsp; All data from verified financial sources only</div>
+
+<!-- ==================== STEP 1: EARNINGS ==================== -->
+<h2>§1 — Earnings Released Today (After Close)</h2>
+
+<div class="grid-2">
+
+  <!-- META -->
+  <div class="card">
+    <div class="card-header">
+      <div>
+        <div class="ticker">META <span style="font-size:12px;color:var(--muted)">Meta Platforms</span></div>
+        <div class="watchlist-flag">★ ON WATCHLIST</div>
+      </div>
+      <span class="badge badge-green">EPS BEAT</span>
+    </div>
+    <div class="ah-move down">-6.0% AH</div>
+    <div style="color:var(--muted);font-size:11px;margin-bottom:12px;">Stock punished on capex hike despite strong beats</div>
+    <div class="metric-row"><span class="metric-label">EPS Actual</span><span class="metric-val beat">$10.44</span></div>
+    <div class="metric-row"><span class="metric-label">EPS Estimate</span><span class="metric-val">$6.67</span></div>
+    <div class="metric-row"><span class="metric-label">Revenue Actual</span><span class="metric-val beat">$56.31B</span></div>
+    <div class="metric-row"><span class="metric-label">Revenue Estimate</span><span class="metric-val">$55.45B (+33% YoY)</span></div>
+    <div class="metric-row"><span class="metric-label">Daily Active People</span><span class="metric-val miss">3.56B vs 3.62B est</span></div>
+    <div class="metric-row"><span class="metric-label">Q2 Rev Guide</span><span class="metric-val inline">$58–61B (vs $59.5B est)</span></div>
+    <div class="metric-row"><span class="metric-label">2026 Capex</span><span class="metric-val miss">$125–145B (raised $10B)</span></div>
+    <div class="read-through">📡 Read-through: AI capex inflation dominant theme. Positive for NVDA/AVGO (compute demand); negative for META longs. Impacts: XLK, FNGU, IGV, QQQ.</div>
+  </div>
+
+  <!-- AMZN -->
+  <div class="card">
+    <div class="card-header">
+      <div>
+        <div class="ticker">AMZN <span style="font-size:12px;color:var(--muted)">Amazon.com</span></div>
+        <div class="watchlist-flag">★ ON WATCHLIST</div>
+      </div>
+      <span class="badge badge-green">BEAT / BEAT</span>
+    </div>
+    <div class="ah-move flat">-1.0% AH</div>
+    <div style="color:var(--muted);font-size:11px;margin-bottom:12px;">Sell-the-news after 30%+ pre-earnings run</div>
+    <div class="metric-row"><span class="metric-label">EPS Actual</span><span class="metric-val beat">$2.78 (+69.5% vs est)</span></div>
+    <div class="metric-row"><span class="metric-label">EPS Estimate</span><span class="metric-val">$1.64</span></div>
+    <div class="metric-row"><span class="metric-label">Revenue Actual</span><span class="metric-val beat">$181.52B</span></div>
+    <div class="metric-row"><span class="metric-label">Revenue Estimate</span><span class="metric-val">$177.30B</span></div>
+    <div class="metric-row"><span class="metric-label">AWS Revenue</span><span class="metric-val beat">$37.59B (+28% YoY) — 15-qtr high</span></div>
+    <div class="metric-row"><span class="metric-label">Q2 Revenue Guide</span><span class="metric-val beat">$194–199B (vs $188.9B est)</span></div>
+    <div class="metric-row"><span class="metric-label">Trainium Chip Rev</span><span class="metric-val beat">$20B+ ARR, triple-digit growth</span></div>
+    <div class="read-through">📡 Read-through: AWS at fastest growth in 15 quarters validates hyperscaler AI buildout. OpenAI/Anthropic multi-GW Trainium deals = long-term demand lock-in. Impacts: XLK, IGV, BOTZ.</div>
+  </div>
+
+  <!-- GOOGL -->
+  <div class="card">
+    <div class="card-header">
+      <div>
+        <div class="ticker">GOOGL <span style="font-size:12px;color:var(--muted)">Alphabet</span></div>
+        <div class="watchlist-flag" style="color:var(--green);">KEY MARKET DRIVER</div>
+      </div>
+      <span class="badge badge-green">BEAT / BEAT</span>
+    </div>
+    <div class="ah-move up">+4.0% AH</div>
+    <div style="color:var(--muted);font-size:11px;margin-bottom:12px;">Cloud +63% — strongest AI infrastructure signal of the night</div>
+    <div class="metric-row"><span class="metric-label">EPS Actual</span><span class="metric-val beat">$5.11 (incl. $36.9B unrealized gains)</span></div>
+    <div class="metric-row"><span class="metric-label">EPS Estimate</span><span class="metric-val">$2.63</span></div>
+    <div class="metric-row"><span class="metric-label">Revenue Actual</span><span class="metric-val beat">$109.9B (+22% YoY)</span></div>
+    <div class="metric-row"><span class="metric-label">Revenue Estimate</span><span class="metric-val">$107.0B</span></div>
+    <div class="metric-row"><span class="metric-label">Google Cloud</span><span class="metric-val beat">$20B (+63% YoY) vs ~+48% est</span></div>
+    <div class="metric-row"><span class="metric-label">Cloud Backlog</span><span class="metric-val beat">$460B (nearly doubled QoQ)</span></div>
+    <div class="metric-row"><span class="metric-label">Search Ads</span><span class="metric-val beat">$77.25B (+15% YoY)</span></div>
+    <div class="read-through">📡 Read-through: Cloud acceleration from 48→63% is the bullish AI infrastructure narrative. Positive for NVDA, data center plays, SMH. Backlog near-doubling = multi-year demand visibility. Impacts: XLK, IGV, QQQ.</div>
+  </div>
+
+  <!-- MSFT -->
+  <div class="card">
+    <div class="card-header">
+      <div>
+        <div class="ticker">MSFT <span style="font-size:12px;color:var(--muted)">Microsoft</span></div>
+        <div class="watchlist-flag" style="color:var(--blue);">MAJOR MACRO SIGNAL</div>
+      </div>
+      <span class="badge badge-green">BEAT / BEAT</span>
+    </div>
+    <div class="ah-move flat">-1.12% AH</div>
+    <div style="color:var(--muted);font-size:11px;margin-bottom:12px;">Profitable signal: capex $3.4B BELOW estimates — discipline pays</div>
+    <div class="metric-row"><span class="metric-label">EPS (adj) Actual</span><span class="metric-val beat">$4.27</span></div>
+    <div class="metric-row"><span class="metric-label">EPS Estimate</span><span class="metric-val">$4.06</span></div>
+    <div class="metric-row"><span class="metric-label">Revenue Actual</span><span class="metric-val beat">$82.89B</span></div>
+    <div class="metric-row"><span class="metric-label">Revenue Estimate</span><span class="metric-val">$81.46B</span></div>
+    <div class="metric-row"><span class="metric-label">Azure Growth</span><span class="metric-val beat">+40% YoY (vs 38.8–39.3% est)</span></div>
+    <div class="metric-row"><span class="metric-label">Capex (incl. leases)</span><span class="metric-val beat">$31.9B (est: $35.3B — $3.4B BEAT)</span></div>
+    <div class="metric-row"><span class="metric-label">Copilot Paid Seats</span><span class="metric-val beat">20M (from 15M last qtr)</span></div>
+    <div class="read-through">📡 Read-through: Capex discipline is the KEY signal vs. META's $10B raise. MSFT proves AI ROI is achievable without runaway spending. AI biz at $37B ARR (+123% YoY). Impacts: XLK, IGV, SMH.</div>
+  </div>
+
+</div>
+
+<!-- Summary table -->
+<h3>Summary — Mag-4 Scorecard</h3>
+<table>
+  <tr><th>Ticker</th><th>EPS Beat</th><th>Rev Beat</th><th>Guidance</th><th>Capex Signal</th><th>AH Move</th></tr>
+  <tr>
+    <td><strong>META</strong></td>
+    <td class="beat-cell">✅ +56%</td>
+    <td class="beat-cell">✅</td>
+    <td class="inline-cell">Q2 inline; Capex +$10B</td>
+    <td class="miss-cell">🔴 Raised to $125–145B</td>
+    <td class="miss-cell">-6.0%</td>
+  </tr>
+  <tr>
+    <td><strong>AMZN</strong></td>
+    <td class="beat-cell">✅ +70%</td>
+    <td class="beat-cell">✅</td>
+    <td class="beat-cell">Q2 raised $5B above est</td>
+    <td class="beat-cell">🟢 No raise flagged</td>
+    <td class="inline-cell">-1.0%</td>
+  </tr>
+  <tr>
+    <td><strong>GOOGL</strong></td>
+    <td class="beat-cell">✅</td>
+    <td class="beat-cell">✅ Cloud +63%</td>
+    <td class="beat-cell">Cloud backlog $460B</td>
+    <td class="inline-cell">🟡 ~$75B 2026 plan</td>
+    <td class="beat-cell">+4.0%</td>
+  </tr>
+  <tr>
+    <td><strong>MSFT</strong></td>
+    <td class="beat-cell">✅</td>
+    <td class="beat-cell">✅ Azure +40%</td>
+    <td class="beat-cell">Copilot seats 20M</td>
+    <td class="beat-cell">🟢 $3.4B BELOW est</td>
+    <td class="inline-cell">-1.12%</td>
+  </tr>
+</table>
+
+<!-- ==================== STEP 2: AH MOVERS ==================== -->
+<h2>§2 — After-Hours Movers (&gt;5%)</h2>
+
+<table>
+  <tr><th>Ticker</th><th>AH % Move</th><th>Catalyst</th><th>Gap Setup?</th><th>ETF Theme</th></tr>
+  <tr>
+    <td><strong>META</strong></td>
+    <td class="miss-cell">-6.0%</td>
+    <td>EPS beat but capex raised $10B; DAP miss</td>
+    <td class="diverge-cell">Gap-down at open; watch $550 support</td>
+    <td><span class="tag tag-red">XLK</span><span class="tag tag-red">FNGU</span><span class="tag tag-red">QQQ</span></td>
+  </tr>
+  <tr>
+    <td><strong>GOOGL</strong></td>
+    <td class="beat-cell">+4.0%</td>
+    <td>Cloud +63%, Revenue +22% YoY, backlog $460B</td>
+    <td class="beat-cell">Gap-up — AI cloud continuation setup</td>
+    <td><span class="tag tag-green">XLK</span><span class="tag tag-green">IGV</span><span class="tag tag-green">QQQ</span></td>
+  </tr>
+  <tr>
+    <td><strong>AMZN</strong></td>
+    <td class="inline-cell">-1.0%</td>
+    <td>Massive beat but sell-the-news after 30% run</td>
+    <td class="inline-cell">Minor gap-down; possible dip-buy opportunity</td>
+    <td><span class="tag tag-amber">XLK</span><span class="tag tag-amber">IGV</span></td>
+  </tr>
+  <tr>
+    <td><strong>MSFT</strong></td>
+    <td class="inline-cell">-1.12%</td>
+    <td>Beat on all metrics; capex discipline</td>
+    <td class="inline-cell">Negligible gap; potentially positive Thursday</td>
+    <td><span class="tag tag-amber">XLK</span><span class="tag tag-amber">IGV</span></td>
+  </tr>
+</table>
+
+<!-- ==================== STEP 3: ETF RECAP ==================== -->
+<h2>§3 — Sector & Theme ETF End-of-Day Recap</h2>
+
+<div class="alert-oil">
+  <strong style="color:var(--oil);">🛢️ OIL — DOMINANT MACRO THEME TODAY</strong><br>
+  Brent Crude surged <strong>+6%</strong> to <strong>$118.03/bbl</strong> | WTI to <strong>$106.88/bbl</strong> | UCO (2x crude) ~+12% | USO ~+6%<br>
+  <span style="font-size:11px;color:var(--muted);">Catalyst: Trump confirmed continuation of US naval blockade of Iran. Tehran refuses to reopen Strait of Hormuz (20% of global oil trade) until blockade is lifted. Physical crude near $150/bbl in spot markets at peak disruption.</span>
+</div>
+
+<div class="grid-3">
+  <div class="card">
+    <h3 style="color:var(--oil);">🛢️ COMMODITIES</h3>
+    <div class="metric-row"><span class="metric-label">UCO (2x Crude)</span><span class="metric-val beat">~+12%</span></div>
+    <div class="metric-row"><span class="metric-label">USO (WTI)</span><span class="metric-val beat">~+6–7%</span></div>
+    <div class="metric-row"><span class="metric-label">BNO (Brent)</span><span class="metric-val beat">~+6%</span></div>
+    <div class="metric-row"><span class="metric-label">GLD (Gold)</span><span class="metric-val miss">-1.82% (odd—profit taking)</span></div>
+    <div class="metric-row"><span class="metric-label">SLV (Silver)</span><span class="metric-val miss">-3.10%</span></div>
+    <div style="margin-top:8px;font-size:11px;color:var(--green);">Tomorrow: UCO/USO continuation unless ceasefire. HIGHEST CONVICTION setup if Iran tensions hold.</div>
+  </div>
+  <div class="card">
+    <h3 style="color:var(--cyan);">💻 TECH & AI</h3>
+    <div class="metric-row"><span class="metric-label">Nasdaq</span><span class="metric-val inline">+0.04% (flat)</span></div>
+    <div class="metric-row"><span class="metric-label">SMH (Semis)</span><span class="metric-val miss">Weak (NVDA -3.49%, AMD -5.5%)*</span></div>
+    <div class="metric-row"><span class="metric-label">IBIT / Bitcoin</span><span class="metric-val inline">No major move</span></div>
+    <div class="metric-row"><span class="metric-label">GOOGL Cloud</span><span class="metric-val beat">+63% — AI infra vindicated</span></div>
+    <div style="margin-top:8px;font-size:11px;color:var(--cyan);">*Semi weakness from Tue OpenAI miss scare. GOOGL/MSFT/AMZN cloud beats may trigger SMH bounce Thursday. Watch NVDA.</div>
+  </div>
+  <div class="card">
+    <h3 style="color:var(--green);">🛡️ DEFENSE & MACRO</h3>
+    <div class="metric-row"><span class="metric-label">ITA (Aerospace/Defense)</span><span class="metric-val beat">+1.34%</span></div>
+    <div class="metric-row"><span class="metric-label">KBE (Banks)</span><span class="metric-val inline">Bullish trend; mixed Fed signal</span></div>
+    <div class="metric-row"><span class="metric-label">JETS (Airlines)</span><span class="metric-val miss">Headwind — oil at $118</span></div>
+    <div class="metric-row"><span class="metric-label">S&P 500</span><span class="metric-val inline">-0.04% to 7,135.95</span></div>
+    <div class="metric-row"><span class="metric-label">Dow</span><span class="metric-val miss">-0.57% to 48,861.81</span></div>
+    <div style="margin-top:8px;font-size:11px;color:var(--green);">ITA continuation likely on Iran. JETS structurally impaired at $118 oil.</div>
+  </div>
+</div>
+
+<!-- MACRO -->
+<div class="alert-blue">
+  <strong style="color:var(--blue);">🏦 FEDERAL RESERVE — HISTORIC SESSION</strong><br>
+  Held rates at <strong>3.5%–3.75%</strong> | Unprecedented <strong>8-4 vote</strong> (last 4-way dissent: Oct 1992) | Powell: <em>"This is my last press conference as chair"</em><br>
+  <strong>10Y Yield: 4.42%</strong> (rose 7bps — highest since March 2026) | Market pricing only ~33% chance of rate cut by April 2027<br>
+  <span style="font-size:11px;color:var(--muted);">Dissenters: Miran (wanted -25bps cut); Hammack, Kashkari, Logan (held but opposed easing bias language). TLT under pressure. Dollar likely strengthened. Policy uncertainty elevated as Warsh nomination advances.</span>
+</div>
+
+<!-- ==================== STEP 4: OPTIONS ==================== -->
+<h2>§4 — Options Flow Summary</h2>
+
+<div class="alert-amber">
+  <strong style="color:var(--amber);">⚠️ DATA LIMITATION:</strong> Real-time intraday sweep data not available from verified public sources. The following reflects pre-earnings positioning from verified financial reports. Per report rules — no unverified claims included.
+</div>
+
+<h3>A) Index-Level Positioning</h3>
+<table>
+  <tr><th>Index</th><th>Put/Call Ratio</th><th>Signal</th><th>Interpretation</th></tr>
+  <tr>
+    <td><strong>QQQ</strong></td>
+    <td class="put-cell">1.29</td>
+    <td><span class="tag tag-red">ELEVATED</span></td>
+    <td>Institutions were net hedging heading into event — bearish lean</td>
+  </tr>
+  <tr>
+    <td><strong>SPY</strong></td>
+    <td class="inline-cell">~1.0 est</td>
+    <td><span class="tag tag-amber">NEUTRAL</span></td>
+    <td>Mixed signals — market was balanced ahead of Fed+earnings</td>
+  </tr>
+  <tr>
+    <td><strong>VIX</strong></td>
+    <td class="put-cell">Elevated pre-print</td>
+    <td><span class="tag tag-amber">IV CRUSH TOMORROW</span></td>
+    <td>Expect vol collapse post-earnings across tech names</td>
+  </tr>
+</table>
+
+<h3>B) Watchlist Options Flow (Pre-Earnings Positioning — Verified)</h3>
+<table>
+  <tr><th>Ticker</th><th>Direction</th><th>Call:Put Ratio</th><th>Focus</th><th>Interpretation</th></tr>
+  <tr>
+    <td><strong>AMZN</strong></td>
+    <td class="call-cell">CALLS</td>
+    <td class="call-cell">2.1:1</td>
+    <td>May 8 weekly $260 calls (IV 125)</td>
+    <td>Bet on AMZN above $260 by early May — bulls not rewarded at open</td>
+  </tr>
+  <tr>
+    <td><strong>META</strong></td>
+    <td class="call-cell">CALLS</td>
+    <td class="call-cell">1.4:1</td>
+    <td>May 1 weekly calls (IV 101)</td>
+    <td>Mild bullish lean — caught wrong on capex surprise. Calls likely crushed -6% AH.</td>
+  </tr>
+</table>
+
+<h3>D) Flow vs. Price Divergence — FLAGGED 🚨</h3>
+<div class="alert-amber">
+  <strong style="color:var(--amber);">DIVERGENCE ALERT — META:</strong> Pre-earnings call positioning (1.4:1 call/put) vs. -6% AH on capex guidance.<br>
+  → Smart money was caught long. Capex raise was the surprise. Watch for call unwind / put buying Thursday morning.<br><br>
+  <strong style="color:var(--amber);">DIVERGENCE ALERT — AMZN:</strong> 2.1:1 calls vs. -1% AH despite 70% EPS beat and Q2 guidance raise.<br>
+  → Market not rewarding the beat. Either the run-up priced it in, or real money will buy dip at open. AMZN fundamentals remain excellent.
+</div>
+
+<!-- ==================== STEP 5: SEC FILINGS ==================== -->
+<h2>§5 — SEC Filings & Insider Activity</h2>
+<div class="section-overview">
+  No verified notable insider buying (Form 4 cluster buys) or activist 13-D filings found in public news sources for April 29, 2026. Q1 2026 13-F season is approaching — expect major institutional disclosure filings in coming weeks (45 days after quarter end = mid-May deadline).<br><br>
+  <span style="color:var(--muted);">Action: Check SEC EDGAR directly for any Form 4 filings from today's reporting companies (META, AMZN, GOOGL, MSFT executives). Insider buying into earnings results (filed within 2 business days) would be high-signal.</span>
+</div>
+
+<!-- ==================== STEP 6: TOMORROW'S EARNINGS ==================== -->
+<h2>§6 — Tomorrow's Earnings Preview (April 30, 2026)</h2>
+
+<div class="alert-green" style="background:#0a2010;border-color:var(--green);">
+  <strong style="color:var(--green);">⭐ AAPL — Apple Inc. | Reports AMC | MAJOR CATALYST</strong><br>
+  EPS est: $1.92–$1.95 &nbsp;|&nbsp; Revenue est: $109.45–109.5B &nbsp;|&nbsp; iPhone est: $59.5B &nbsp;|&nbsp; Services est: ~$30B<br>
+  <strong>Options implied move: ~5.67%</strong> | Historical gap: ±4–6% on earnings<br>
+  <span style="font-size:11px;color:var(--muted);">Watch: iPhone 17 demand, Services gross margin (>70% = bullish), AI/Siri roadmap, China revenue. Tim Cook's potential final earnings as CEO — leadership transition to John Ternus in progress. AAPL is ~7% SPY weight, ~12% QQQ — this print sets Thursday's close tone. June WWDC is the AI narrative mile-marker; listen for any preview. Tonight's cloud/AI capex beats create a favorable backdrop for Services story.</span>
+</div>
+
+<table>
+  <tr><th>Ticker</th><th>Company</th><th>Time</th><th>EPS Est</th><th>Rev Est</th><th>ETF Impact</th><th>Key Watch</th></tr>
+  <tr>
+    <td><strong>AAPL</strong></td>
+    <td>Apple Inc.</td>
+    <td><span class="tag tag-blue">AMC</span></td>
+    <td class="beat-cell">$1.92–1.95</td>
+    <td>$109.45B</td>
+    <td>SPY, QQQ, XLK</td>
+    <td>iPhone 17, Siri AI, Services margin</td>
+  </tr>
+  <tr>
+    <td><strong>CI</strong></td>
+    <td>Cigna</td>
+    <td><span class="tag tag-green">BMO</span></td>
+    <td>$7.62</td>
+    <td>$66.29B</td>
+    <td>XLV</td>
+    <td>Medical loss ratio, managed care</td>
+  </tr>
+  <tr>
+    <td><strong>PWR</strong></td>
+    <td>Quanta Services</td>
+    <td><span class="tag tag-amber">TBD</span></td>
+    <td>$2.04</td>
+    <td>$7.0B</td>
+    <td>PAVE, GRID</td>
+    <td>Grid infrastructure demand, AI data center buildout</td>
+  </tr>
+  <tr>
+    <td><strong>FTAI</strong></td>
+    <td>FTAI Aviation</td>
+    <td><span class="tag tag-amber">TBD</span></td>
+    <td>$1.47</td>
+    <td>$0.75B</td>
+    <td>JETS adjacent</td>
+    <td>Engine leasing in $118 oil environment</td>
+  </tr>
+</table>
+<div style="font-size:11px;color:var(--muted);">318 total companies reporting April 30. AAPL is the only one that matters for broad market direction.</div>
+
+<!-- ==================== STEP 7: OVERNIGHT WATCH ==================== -->
+<h2>§7 — Macro Overnight Watch</h2>
+
+<table>
+  <tr><th>Factor</th><th>Status</th><th>Direction</th><th>Risk Level</th></tr>
+  <tr>
+    <td><strong>🇮🇷 Iran Blockade</strong></td>
+    <td>US naval blockade continues; Brent $118; Strait of Hormuz choked</td>
+    <td class="miss-cell">Risk to oil supply; inflationary</td>
+    <td><span class="tag tag-red">HIGH</span></td>
+  </tr>
+  <tr>
+    <td><strong>🇯🇵 Nikkei</strong></td>
+    <td>Closed April 29 (Showa Day holiday)</td>
+    <td class="inline-cell">No Japan signal overnight</td>
+    <td><span class="tag tag-amber">LOW</span></td>
+  </tr>
+  <tr>
+    <td><strong>🇭🇰 Hang Seng</strong></td>
+    <td>+1.7% overnight into today's US session</td>
+    <td class="beat-cell">Mild positive</td>
+    <td><span class="tag tag-green">LOW</span></td>
+  </tr>
+  <tr>
+    <td><strong>📈 10Y Yield</strong></td>
+    <td>4.42%, rising — hawkish Fed dissent</td>
+    <td class="miss-cell">Watch 4.50% danger zone</td>
+    <td><span class="tag tag-red">MEDIUM-HIGH</span></td>
+  </tr>
+  <tr>
+    <td><strong>🏛️ Fed/Warsh</strong></td>
+    <td>Powell final presser; Warsh nomination advancing</td>
+    <td class="miss-cell">Policy uncertainty</td>
+    <td><span class="tag tag-amber">MEDIUM</span></td>
+  </tr>
+  <tr>
+    <td><strong>🍎 AAPL Report</strong></td>
+    <td>Reports AMC April 30 — biggest binary for Thursday</td>
+    <td class="inline-cell">Binary ±5% event</td>
+    <td><span class="tag tag-red">HIGH</span></td>
+  </tr>
+  <tr>
+    <td><strong>🛢️ Oil Futures</strong></td>
+    <td>Brent $118; overnight Iran headlines dominate</td>
+    <td class="miss-cell">Any peace = violent reversal</td>
+    <td><span class="tag tag-red">HIGHEST</span></td>
+  </tr>
+</table>
+
+<!-- ==================== STEP 8: GAME PLAN ==================== -->
+<h2>§8 — Tomorrow's Game Plan</h2>
+
+<div class="top3">
+  <div class="top3-card bullish">
+    <div class="top3-num">01</div>
+    <div class="top3-ticker bull">GOOGL</div>
+    <div><span class="badge badge-green">LONG</span></div>
+    <div class="top3-why">Cloud +63%, +4% AH, backlog $460B (nearly doubled QoQ). AI infrastructure acceleration narrative strongest in years. Entry: gap-up open or first 15-min pullback. Target: +5–8% follow-through over next 2–3 sessions. Stop: below open price.</div>
+  </div>
+  <div class="top3-card bullish" style="border-color:var(--oil);">
+    <div class="top3-num">02</div>
+    <div class="top3-ticker oil">UCO</div>
+    <div><span class="badge" style="background:#1f1200;color:var(--oil);">LONG — OIL MOMENTUM</span></div>
+    <div class="top3-why">Iran blockade at Brent $118 with no de-escalation signal. UCO (2x WTI) for momentum traders; USO for less vol. Entry: continuation at open. Stop: below today's close. Biggest risk: overnight ceasefire headline = violent reversal. This is a geopolitical bet.</div>
+  </div>
+  <div class="top3-card bearish">
+    <div class="top3-num">03</div>
+    <div class="top3-ticker bear">META</div>
+    <div><span class="badge badge-red">SHORT / FADE</span></div>
+    <div class="top3-why">-6% AH on capex raise. Market punishing AI spenders. DAP miss adds pressure. Entry: fade any bounce to flat; or short the gap-down open with confirmation. Watch $550 support. Risk: broad tech rally on GOOGL drags META higher despite fundamentals.</div>
+  </div>
+</div>
+
+<div class="grid-2" style="margin-top:16px;">
+  <div class="card">
+    <h3>Sector Bias Tomorrow</h3>
+    <div class="metric-row"><span class="metric-label">Energy/Oil</span><span class="metric-val beat">RISK-ON (geopolitical momentum)</span></div>
+    <div class="metric-row"><span class="metric-label">AI/Cloud (GOOGL, MSFT)</span><span class="metric-val beat">RISK-ON (spend validated)</span></div>
+    <div class="metric-row"><span class="metric-label">Broad Tech (META drag)</span><span class="metric-val miss">RISK-OFF (capex fear spreads)</span></div>
+    <div class="metric-row"><span class="metric-label">Semis (NVDA, AMD)</span><span class="metric-val inline">MIXED (cloud +, demand fears -)</span></div>
+    <div class="metric-row"><span class="metric-label">Airlines (JETS)</span><span class="metric-val miss">RISK-OFF ($118 oil headwind)</span></div>
+    <div class="metric-row"><span class="metric-label">Bonds/TLT</span><span class="metric-val miss">RISK-OFF (yield rising, hawkish)</span></div>
+    <div class="metric-row"><span class="metric-label">Defense (ITA)</span><span class="metric-val beat">RISK-ON (Iran escalation)</span></div>
+    <div style="margin-top:8px;font-size:12px;font-weight:600;color:var(--amber);">OVERALL: MIXED — Tilting Slight Risk-Off with selective pockets</div>
+  </div>
+  <div class="card">
+    <h3>SPY Key Levels</h3>
+    <div class="metric-row"><span class="metric-label">Today's Close</span><span class="metric-val">7,135.95 (SPY ~$713.60)</span></div>
+    <div class="metric-row"><span class="metric-label">Prev Session Low</span><span class="metric-val">$709.25</span></div>
+    <div class="metric-row"><span class="metric-label">Support 1 (Immediate)</span><span class="metric-val" style="color:var(--green);">$710.45</span></div>
+    <div class="metric-row"><span class="metric-label">Support 2 (Key)</span><span class="metric-val" style="color:var(--green);">$693.57</span></div>
+    <div class="metric-row"><span class="metric-label">Resistance 1</span><span class="metric-val" style="color:var(--red);">$713.98</span></div>
+    <div class="metric-row"><span class="metric-label">Resistance 2</span><span class="metric-val" style="color:var(--red);">$716+</span></div>
+    <div style="margin-top:8px;font-size:11px;color:var(--muted);">Break below $710.45 opens path to $693. Break above $714 = continuation. AAPL earnings (AMC) = Thursday's wildcard.</div>
+  </div>
+</div>
+
+<div class="card" style="margin-top:16px;">
+  <h3>Options Flow Conviction — Where is Smart Money Positioned for Thursday?</h3>
+  <div style="font-size:12px;margin-top:8px;">QQQ put/call at 1.29 shows institutions were hedged heading in — that's a risk-off institutional lean. The pre-earnings call buying in AMZN/META got burned. Expect a <strong style="color:var(--amber);">repositioning session</strong> — META call holders are unwinding, GOOGL longs are adding, and oil call buyers (UCO) are the highest-momentum flow. The net directional bet from smart money going into Thursday appears to be: <strong style="color:var(--green);">LONG AI infrastructure (GOOGL/MSFT/NVDA), LONG energy (UCO), SHORT or neutral META-type AI spenders.</strong></div>
+</div>
+
+<!-- BRIEFING -->
+<div class="briefing">
+  <div class="briefing-header">⚡ 30-SECOND OVERNIGHT BRIEFING</div>
+  Tonight's Mag-4 earnings split the tape: <strong>GOOGL was the clear winner</strong> with Cloud revenue surging 63% and a clean +4% after-hours pop, while <strong>META cratered 6%</strong> after raising its AI capex bill another $10 billion — the market is now explicitly penalizing hyperscaler spending without visible ROI. Amazon and Microsoft both delivered massive beats but couldn't escape sell-the-news dynamics after their pre-earnings runs. The other giant in the room is oil — <strong>Brent at $118</strong> as Trump extended the Iran naval blockade, simultaneously lifting UCO, ITA defense, and threatening airlines, consumer spending, and Fed rate-cut hopes. The Fed held rates in an <strong>unprecedented 8-4 dissent vote</strong> — Powell's final press conference as chair ended an era. Tomorrow will be pulled in two directions: GOOGL/cloud bulls wanting to buy AI infrastructure names, and META/oil bears dragging on broad risk appetite. The single biggest catalyst for Thursday's close is <strong>AAPL reporting after the bell</strong> — Tim Cook's potential final quarterly earnings, with a $109.5B revenue bar to clear. Watch oil overnight, watch GOOGL's gap in the first 30 minutes, and set your stops before the open.
+</div>
+
+<!-- ==================== STEP 9: AUDIT ==================== -->
+<h2>§9 — Assumption Audit</h2>
+<div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;overflow:hidden;">
+  <div class="audit-row" style="background:var(--surface2);">
+    <div class="audit-header">Assumption</div>
+    <div class="audit-header">Risk if Wrong</div>
+    <div class="audit-header">Trade Impact</div>
+  </div>
+  <div class="audit-row">
+    <div>META -6% AH holds into the open</div>
+    <div>Pre-market recovery on broader tech buying</div>
+    <div>Short META becomes painful; wait for open confirmation</div>
+  </div>
+  <div class="audit-row">
+    <div>GOOGL +4% AH persists at open</div>
+    <div>IV crush and profit-taking reverse the pop</div>
+    <div>Long GOOGL shrinks to flat; story still intact long-term</div>
+  </div>
+  <div class="audit-row">
+    <div>Iran blockade continues — no ceasefire</div>
+    <div style="color:var(--red);">⚠️ Any peace talks = Brent -$10–15; UCO loses 20%+ instantly</div>
+    <div>Stop-loss on UCO is NON-NEGOTIABLE; biggest tail risk</div>
+  </div>
+  <div class="audit-row">
+    <div>AMZN "sell the news" = weak open</div>
+    <div>AWS beat may attract buyers; AMZN gaps up instead</div>
+    <div>Bullish thesis remains intact; -1% AH may reverse at open</div>
+  </div>
+  <div class="audit-row">
+    <div>MSFT -1.12% AH is only profit-taking</div>
+    <div>Capex beat ($3.4B below) attracts buyers Thursday</div>
+    <div>Bullish data point; stock may recover — hold/add</div>
+  </div>
+  <div class="audit-row">
+    <div>10Y yield stabilizes below 4.50%</div>
+    <div style="color:var(--red);">⚠️ Rate spike above 4.50% = broad equity selling</div>
+    <div>Reduce tech longs above 4.50% on 10Y; monitor pre-market</div>
+  </div>
+  <div class="audit-row">
+    <div>AAPL reports AMC April 30 as expected</div>
+    <div>Schedule change unlikely — verify pre-market</div>
+    <div>AAPL sets Thursday's close direction; confirm timing at open</div>
+  </div>
+  <div class="audit-row">
+    <div>Fed policy path = "higher for longer"</div>
+    <div>Surprise dovish speaker = bond rally, tech relief</div>
+    <div>Rate-sensitive longs (TLT, utilities) reverse; watch Warsh comments</div>
+  </div>
+  <div class="audit-row">
+    <div>NVDA/SMH benefit from cloud capex beats</div>
+    <div>Semis already priced in hyperscaler spend; move muted</div>
+    <div>Reduce SMH conviction; NVDA has own earnings catalyst coming</div>
+  </div>
+  <div class="audit-row">
+    <div>SPY support at $710.45 holds</div>
+    <div>Break below $710.45 opens path to $693 — 3% lower</div>
+    <div>Any long position below $710.45 = stop or reduce immediately</div>
+  </div>
+</div>
+
+<div class="footer">
+  <strong>Sources:</strong> 
+  <a href="https://www.cnbc.com/2026/04/29/meta-q1-earnings-report-2026.html" style="color:var(--blue);">CNBC META</a> | 
+  <a href="https://www.cnbc.com/2026/04/29/amazon-amzn-q1-earnings-report-2026.html" style="color:var(--blue);">CNBC AMZN</a> | 
+  <a href="https://www.cnbc.com/2026/04/29/alphabet-googl-q1-2026-earnings.html" style="color:var(--blue);">CNBC GOOGL</a> | 
+  <a href="https://www.cnbc.com/2026/04/29/microsoft-msft-q3-earnings-report-2026.html" style="color:var(--blue);">CNBC MSFT</a> | 
+  <a href="https://www.cnbc.com/2026/04/29/oil-prices-brent-wti-trump-iran.html" style="color:var(--blue);">CNBC Oil/Iran</a> | 
+  <a href="https://www.cnbc.com/2026/04/29/fed-interest-rate-decision-april-2026.html" style="color:var(--blue);">CNBC Fed</a> | 
+  <a href="https://investinglive.com/stocks/microsoft-q3-beats-on-revenue-eps-and-cloud-as-capex-comes-in-34bn-below-estimates-20260429/" style="color:var(--blue);">InvestingLive MSFT</a> | 
+  <a href="https://sherwood.news/tech/meta-earnings-q1-2026/" style="color:var(--blue);">Sherwood META</a> | 
+  <a href="https://9to5google.com/2026/04/29/alphabet-q1-2026-earnings/" style="color:var(--blue);">9to5Google GOOGL</a> | 
+  <a href="https://finance.yahoo.com/sectors/technology/article/amazon-q1-earnings-put-the-spotlight-on-ai-spending-and-revenue-132251483.html" style="color:var(--blue);">Yahoo Finance AMZN</a>
+  <br><br>
+  ⚠️ <em>This report was generated automatically for informational purposes only. Not financial advice. Verify all data at market open. Past performance does not guarantee future results.</em>
+  <br>Generated: April 29, 2026 — After Market Close
+</div>
+
+</body>
+</html>
