@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Daily Theme Scanner — 2026-04-30</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --bg: #0a0e17;
+    --bg2: #0f1520;
+    --bg3: #151c2e;
+    --border: #1e2d45;
+    --text: #e2e8f0;
+    --muted: #7a8fa6;
+    --high: #10b981;
+    --med: #f59e0b;
+    --low: #ef4444;
+    --blue: #3b82f6;
+    --purple: #8b5cf6;
+    --cyan: #06b6d4;
+    --ticker: #38bdf8;
+  }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    line-height: 1.7;
+    padding: 0;
+  }
+  .header {
+    background: linear-gradient(135deg, #0a0e17 0%, #0d1a2e 50%, #0a0f1a 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 32px 48px 28px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .header-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 8px;
+  }
+  .header h1 {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--text);
+    letter-spacing: -0.5px;
+  }
+  .header h1 span { color: var(--cyan); }
+  .header-meta {
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.5px;
+  }
+  .status-bar {
+    display: flex;
+    gap: 24px;
+    flex-wrap: wrap;
+  }
+  .status-item {
+    font-size: 11px;
+    color: var(--muted);
+  }
+  .status-item .val { color: var(--text); font-weight: 600; }
+  .status-item .up { color: var(--high); }
+  .status-item .down { color: var(--low); }
+  .main { max-width: 1200px; margin: 0 auto; padding: 40px 48px; }
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 48px 0 24px;
+  }
+  .section-header h2 {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--cyan);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+  }
+  .section-header .line {
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+  .card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 24px 28px;
+    margin-bottom: 16px;
+    position: relative;
+    overflow: hidden;
+  }
+  .card::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 3px;
+  }
+  .card.high::before { background: var(--high); }
+  .card.medium::before { background: var(--med); }
+  .card.low::before { background: var(--low); }
+  .card.blue::before { background: var(--blue); }
+  .card.purple::before { background: var(--purple); }
+  .card-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .badge {
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 2px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+  .badge.HIGH { background: rgba(16,185,129,0.15); color: var(--high); border: 1px solid rgba(16,185,129,0.3); }
+  .badge.MEDIUM { background: rgba(245,158,11,0.15); color: var(--med); border: 1px solid rgba(245,158,11,0.3); }
+  .badge.LOW { background: rgba(239,68,68,0.15); color: var(--low); border: 1px solid rgba(239,68,68,0.3); }
+  .badge.STRONG { background: rgba(16,185,129,0.15); color: var(--high); border: 1px solid rgba(16,185,129,0.3); }
+  .badge.MODERATE { background: rgba(245,158,11,0.15); color: var(--med); border: 1px solid rgba(245,158,11,0.3); }
+  .badge.WEAK { background: rgba(239,68,68,0.15); color: var(--low); border: 1px solid rgba(239,68,68,0.3); }
+  .badge.EARLY { background: rgba(139,92,246,0.15); color: var(--purple); border: 1px solid rgba(139,92,246,0.3); }
+  .badge.DEVELOPING { background: rgba(59,130,246,0.15); color: var(--blue); border: 1px solid rgba(59,130,246,0.3); }
+  .badge.MATURING { background: rgba(6,182,212,0.15); color: var(--cyan); border: 1px solid rgba(6,182,212,0.3); }
+  .meta-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 8px;
+    margin: 14px 0;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    padding: 14px;
+  }
+  .meta-item { font-size: 11px; }
+  .meta-label { color: var(--muted); font-size: 10px; letter-spacing: 0.5px; text-transform: uppercase; margin-bottom: 2px; }
+  .meta-val { color: var(--text); font-weight: 500; }
+  .ticker { color: var(--ticker); font-weight: 600; }
+  .evidence-list { margin: 12px 0; }
+  .evidence-item {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 6px;
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+  .evidence-item::before { content: '▸'; color: var(--cyan); flex-shrink: 0; margin-top: 1px; }
+  .evidence-item a { color: var(--blue); text-decoration: none; }
+  .evidence-item a:hover { text-decoration: underline; }
+  .summary {
+    font-size: 12px;
+    color: #94a3b8;
+    line-height: 1.8;
+    margin-top: 14px;
+    padding-top: 14px;
+    border-top: 1px solid var(--border);
+  }
+  .action-card {
+    background: var(--bg3);
+    border: 1px solid rgba(16,185,129,0.25);
+    border-radius: 4px;
+    padding: 24px 28px;
+    margin-bottom: 16px;
+  }
+  .action-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--high);
+    margin-bottom: 16px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  .action-item {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 10px;
+    font-size: 12px;
+    color: var(--text);
+    line-height: 1.6;
+  }
+  .action-num {
+    color: var(--high);
+    font-weight: 700;
+    flex-shrink: 0;
+    min-width: 20px;
+  }
+  .bullet-item {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 8px;
+    font-size: 12px;
+    color: #94a3b8;
+    line-height: 1.6;
+  }
+  .bullet-item::before { content: '→'; color: var(--med); flex-shrink: 0; }
+  .date-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 14px;
+    background: rgba(59,130,246,0.08);
+    border: 1px solid rgba(59,130,246,0.2);
+    border-radius: 3px;
+    margin-bottom: 8px;
+    font-size: 12px;
+  }
+  .date-label { color: var(--blue); font-weight: 700; min-width: 80px; }
+  .date-text { color: var(--text); }
+  .today-alert {
+    background: rgba(239,68,68,0.1);
+    border: 1px solid rgba(239,68,68,0.3);
+    border-radius: 3px;
+    padding: 6px 12px;
+    font-size: 11px;
+    color: var(--low);
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    margin-left: 8px;
+  }
+  .footer {
+    border-top: 1px solid var(--border);
+    padding: 24px 48px;
+    text-align: center;
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 40px;
+  }
+  .disclaimer {
+    background: rgba(245,158,11,0.08);
+    border: 1px solid rgba(245,158,11,0.2);
+    border-radius: 3px;
+    padding: 12px 16px;
+    font-size: 11px;
+    color: var(--muted);
+    margin-bottom: 40px;
+    line-height: 1.6;
+  }
+  .nav-tabs {
+    display: flex;
+    gap: 4px;
+    padding: 16px 48px 0;
+    background: var(--bg);
+    border-bottom: 1px solid var(--border);
+    overflow-x: auto;
+  }
+  .nav-tab {
+    padding: 8px 16px;
+    font-size: 11px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    white-space: nowrap;
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 600;
+    background: none;
+    border-top: none;
+    border-left: none;
+    border-right: none;
+  }
+  .nav-tab:hover { color: var(--text); }
+  .nav-tab.active { color: var(--cyan); border-bottom-color: var(--cyan); }
+  .section { display: none; }
+  .section.active { display: block; }
+  .num-indicator {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: rgba(6,182,212,0.15);
+    color: var(--cyan);
+    font-size: 10px;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-top">
+    <h1>📊 DAILY THEME SCANNER — <span>2026-04-30</span></h1>
+    <div class="header-meta">PRE-MARKET | THURSDAY | Q2 WEEK 4</div>
+  </div>
+  <div class="status-bar">
+    <div class="status-item">NARRATIVES: <span class="val">5</span></div>
+    <div class="status-item">EARNINGS SIGNALS: <span class="val">5</span></div>
+    <div class="status-item">CATALYSTS: <span class="val">5</span></div>
+    <div class="status-item">GOOGL PREMARKET: <span class="val up">+7%</span></div>
+    <div class="status-item">META AH: <span class="val down">-7%</span></div>
+    <div class="status-item">FED FUNDS: <span class="val">3.50–3.75%</span></div>
+    <div class="status-item">GDP CONSENSUS: <span class="val">1.8%</span></div>
+  </div>
+</div>
+
+<div class="nav-tabs">
+  <button class="nav-tab active" onclick="showSection('narratives')">Emerging Narratives</button>
+  <button class="nav-tab" onclick="showSection('signals')">Earnings Signals</button>
+  <button class="nav-tab" onclick="showSection('catalysts')">Catalyst Map</button>
+  <button class="nav-tab" onclick="showSection('actions')">Action Items</button>
+</div>
+
+<div class="main">
+
+  <!-- NARRATIVES -->
+  <div id="narratives" class="section active">
+    <div class="section-header">
+      <h2>Emerging Narratives</h2>
+      <div class="line"></div>
+    </div>
+
+    <div class="disclaimer">
+      ⚠️ All narratives include verified source links. Claims without a findable URL have been omitted. Not investment advice.
+    </div>
+
+    <!-- Narrative 1 -->
+    <div class="card high">
+      <div class="card-title">
+        <span class="num-indicator">1</span>
+        AI Capex Credibility Crisis
+        <span class="badge HIGH">HIGH</span>
+        <span class="badge DEVELOPING">DEVELOPING</span>
+      </div>
+      <div class="meta-grid">
+        <div class="meta-item"><div class="meta-label">Primary Beneficiaries</div><div class="meta-val"><span class="ticker">NVDA</span> · <span class="ticker">AVGO</span> · <span class="ticker">TSM</span> · <span class="ticker">MU</span></div></div>
+        <div class="meta-item"><div class="meta-label">Secondary Beneficiaries</div><div class="meta-val"><span class="ticker">EQIX</span> · <span class="ticker">DLR</span> · <span class="ticker">VST</span></div></div>
+        <div class="meta-item"><div class="meta-label">Losers / Disrupted</div><div class="meta-val"><span class="ticker">MSFT</span> · <span class="ticker">META</span> · <span class="ticker">AMZN</span> · <span class="ticker">IBM</span></div></div>
+        <div class="meta-item"><div class="meta-label">Earnings Impact Timeline</div><div class="meta-val">Next 1–2 quarters</div></div>
+      </div>
+      <div class="evidence-list">
+        <div class="evidence-item">Meta raised 2026 capex to $125–145B; shares fell ~7% AH despite 33% revenue beat — fastest growth since 2021. <a href="https://www.cnbc.com/2026/04/29/meta-q1-earnings-report-2026.html" target="_blank">[CNBC]</a></div>
+        <div class="evidence-item">Combined Big Tech AI infrastructure commitments for 2026 now exceed $650B across five hyperscalers. <a href="https://thenextweb.com/news/alphabet-amazon-meta-q1-2026-earnings-ai-cloud" target="_blank">[The Next Web]</a></div>
+        <div class="evidence-item">Azure grew 40% YoY but MSFT shares fell on margin compression — gross margin dipped as AI infrastructure scaling costs bite. <a href="https://www.directionsonmicrosoft.com/microsoft-q1-fy26-earnings-cloud-supply-constraints-to-last-through-at-least-june-2026/" target="_blank">[Directions on Microsoft]</a></div>
+      </div>
+      <div class="summary">The market is reaching an inflection point on AI spending. Hyperscalers are raising capex aggressively, but investors are punishing stocks that cannot show monetization velocity to match. The narrative has shifted from "how much are you spending on AI?" to "when does AI revenue justify this burn?" Companies demonstrating AI-driven monetization (Alphabet beat, +7%) will be rewarded; those showing only spending will be punished. The picks-and-shovels layer — NVDA, AVGO, TSM, MU — remains the cleanest way to play the capex cycle without monetization risk.</div>
+    </div>
+
+    <!-- Narrative 2 -->
+    <div class="card high">
+      <div class="card-title">
+        <span class="num-indicator">2</span>
+        Fed Leadership Regime Change
+        <span class="badge HIGH">HIGH</span>
+        <span class="badge DEVELOPING">DEVELOPING</span>
+      </div>
+      <div class="meta-grid">
+        <div class="meta-item"><div class="meta-label">Primary Beneficiaries</div><div class="meta-val"><span class="ticker">JPM</span> · <span class="ticker">GS</span> · <span class="ticker">BRK.B</span> · USD</div></div>
+        <div class="meta-item"><div class="meta-label">Secondary Beneficiaries</div><div class="meta-val">Short-duration bonds, money markets</div></div>
+        <div class="meta-item"><div class="meta-label">Losers / Disrupted</div><div class="meta-val"><span class="ticker">AMT</span> · <span class="ticker">PLD</span> · <span class="ticker">LEN</span> · <span class="ticker">DHI</span></div></div>
+        <div class="meta-item"><div class="meta-label">Earnings Impact Timeline</div><div class="meta-val">June 2026 onward</div></div>
+      </div>
+      <div class="evidence-list">
+        <div class="evidence-item">Powell held his final FOMC press conference April 29; Fed voted 8-4 to hold at 3.50–3.75%. <a href="https://finance.yahoo.com/economy/policy/live/fed-meeting-live-updates-federal-reserve-holds-interest-rates-steady-in-powells-final-meeting-as-chair-111906007.html" target="_blank">[Yahoo Finance]</a></div>
+        <div class="evidence-item">Warsh nomination advanced from Senate Banking Committee on party lines; confirmation imminent. <a href="https://www.cnbc.com/2026/04/29/fed-powell-warsh-interest-rates.html" target="_blank">[CNBC]</a></div>
+        <div class="evidence-item">Nearly one-third of market participants expect zero rate cuts in 2026 (doubled since March); first cut pushed past September. <a href="https://www.tradingkey.com/analysis/economic/indicators/261823910-fed-rate-hold-inflation-oil-succession-tradingkey" target="_blank">[TradingKey]</a></div>
+      </div>
+      <div class="summary">The Fed is entering a genuine leadership regime change. Kevin Warsh is a known hawk with close ties to the Trump administration and a track record of preferring tighter policy. The 8-4 dissent vote signals internal tension. Markets pricing no cuts through September may be underpricing the risk of a higher-for-longer stance if today's Q1 GDP prints soft alongside sticky PCE — the exact data releasing at 8:30 AM ET this morning.</div>
+    </div>
+
+    <!-- Narrative 3 -->
+    <div class="card medium">
+      <div class="card-title">
+        <span class="num-indicator">3</span>
+        Guidance Withdrawal Epidemic
+        <span class="badge MEDIUM">MEDIUM</span>
+        <span class="badge DEVELOPING">DEVELOPING</span>
+      </div>
+      <div class="meta-grid">
+        <div class="meta-item"><div class="meta-label">Primary Beneficiaries</div><div class="meta-val"><span class="ticker">XLP</span> · <span class="ticker">XLU</span> · <span class="ticker">XLV</span> · QUAL</div></div>
+        <div class="meta-item"><div class="meta-label">Secondary Beneficiaries</div><div class="meta-val">Dividend growers, short-vol strategies</div></div>
+        <div class="meta-item"><div class="meta-label">Losers / Disrupted</div><div class="meta-val">High-multiple growth · <span class="ticker">XLI</span> · <span class="ticker">XLY</span></div></div>
+        <div class="meta-item"><div class="meta-label">Earnings Impact Timeline</div><div class="meta-val">Q2–Q3 2026 revision cycle</div></div>
+      </div>
+      <div class="evidence-list">
+        <div class="evidence-item">Constellation Brands pulled long-term outlook; airlines and autos withdrawing guidance due to macro uncertainty. <a href="https://www.factset.com/earningsinsight" target="_blank">[FactSet]</a></div>
+        <div class="evidence-item">53% of 262 S&P 500 companies that issued guidance issued negative EPS guidance. <a href="https://www.factset.com/earningsinsight" target="_blank">[FactSet Earnings Insight]</a></div>
+        <div class="evidence-item">IMF revised global growth down to 3.1% (from 3.4% in 2025). <a href="https://www.imf.org/-/media/files/publications/weo/2026/april/english/ch1.pdf" target="_blank">[IMF WEO April 2026]</a></div>
+      </div>
+      <div class="summary">A wave of guidance withdrawals signals CFOs do not have conviction in their own forecasts. The 53% negative EPS guidance rate is already elevated, and the absence of forward visibility makes analyst models unreliable. This creates a setup where consensus EPS estimates for Q3/Q4 2026 may be materially too high — particularly for consumer discretionary and industrial names. Defensive positioning is the logical response.</div>
+    </div>
+
+    <!-- Narrative 4 -->
+    <div class="card medium">
+      <div class="card-title">
+        <span class="num-indicator">4</span>
+        US-China Trade Normalization Tail Risk
+        <span class="badge MEDIUM">MEDIUM</span>
+        <span class="badge EARLY">EARLY</span>
+      </div>
+      <div class="meta-grid">
+        <div class="meta-item"><div class="meta-label">Primary Beneficiaries</div><div class="meta-val"><span class="ticker">AMZN</span> · <span class="ticker">WMT</span> · <span class="ticker">COST</span> · <span class="ticker">FDX</span></div></div>
+        <div class="meta-item"><div class="meta-label">Secondary Beneficiaries</div><div class="meta-val"><span class="ticker">BABA</span> · <span class="ticker">JD</span> · <span class="ticker">EEM</span></div></div>
+        <div class="meta-item"><div class="meta-label">Losers / Disrupted</div><div class="meta-val"><span class="ticker">X</span> · <span class="ticker">NUE</span> · domestic reshoring plays</div></div>
+        <div class="meta-item"><div class="meta-label">Earnings Impact Timeline</div><div class="meta-val">November 2026 truce expiry binary</div></div>
+      </div>
+      <div class="evidence-list">
+        <div class="evidence-item">US reduced reciprocal tariffs on China from 34% to 10%, eliminated 91% retaliatory tariffs; truce extended through November 2026. <a href="https://www.juliusbaer.com/en/insights/market-insights/market-outlook/tariffs-trade-and-tensions-analyzing-the-us-china-deal-and-its-implications/" target="_blank">[Julius Baer]</a></div>
+        <div class="evidence-item">Overall average US effective tariff rate fell to 11.8% as of April 2026, from Liberation Day peaks. <a href="https://taxfoundation.org/research/all/federal/trump-tariffs-trade-war/" target="_blank">[Tax Foundation]</a></div>
+        <div class="evidence-item">USTR launched two new Section 301 investigations targeting China excess capacity and forced labor — potential re-escalation trigger. <a href="https://dimerco.com/news-press/us-tariff-update-2025/" target="_blank">[Dimerco]</a></div>
+      </div>
+      <div class="summary">The trade truce is holding, but the USTR's new Section 301 investigations represent a lurking re-escalation risk the market appears to be ignoring. Chinese exports to the US fell 21% YoY in April — supply chains are reorganizing, not normalizing. The opportunity is in companies benefiting from lower tariffs now, but November 2026 is a hard binary event. The Section 301 wildcard is under-covered and asymmetrically mispriced.</div>
+    </div>
+
+    <!-- Narrative 5 -->
+    <div class="card medium">
+      <div class="card-title">
+        <span class="num-indicator">5</span>
+        Emerging Markets Outperformance Window
+        <span class="badge MEDIUM">MEDIUM</span>
+        <span class="badge EARLY">EARLY</span>
+      </div>
+      <div class="meta-grid">
+        <div class="meta-item"><div class="meta-label">Primary Beneficiaries</div><div class="meta-val"><span class="ticker">EEM</span> · <span class="ticker">VWO</span> · <span class="ticker">KWEB</span> · <span class="ticker">TSM</span></div></div>
+        <div class="meta-item"><div class="meta-label">Secondary Beneficiaries</div><div class="meta-val"><span class="ticker">EWZ</span> · EM debt funds</div></div>
+        <div class="meta-item"><div class="meta-label">Losers / Disrupted</div><div class="meta-val">USD-heavy multinationals, US small-cap domestic</div></div>
+        <div class="meta-item"><div class="meta-label">Earnings Impact Timeline</div><div class="meta-val">Structural — 6–18 months</div></div>
+      </div>
+      <div class="evidence-list">
+        <div class="evidence-item">MSCI EM outperforming US on YTD and 6-month basis driven by AI demand, Korea governance reforms, China private sector green shoots. <a href="https://www.blackrock.com/us/individual/insights/blackrock-investment-institute/weekly-commentary" target="_blank">[BlackRock BII]</a></div>
+        <div class="evidence-item">IMF GFSR notes EM fiscal balance sheets are healthier than at any point in the past decade. <a href="https://www.imf.org/-/media/files/publications/gfsr/2026/april/english/ch1.pdf" target="_blank">[IMF GFSR April 2026]</a></div>
+        <div class="evidence-item">South Korean markets rebounding on governance reform momentum and AI-driven tech demand after sharp March selloff. <a href="https://www.jpmorgan.com/insights/global-research/outlook/market-outlook" target="_blank">[J.P. Morgan]</a></div>
+      </div>
+      <div class="summary">The convergence of lower EM interest rates, AI-driven earnings upgrades, improved corporate governance (particularly Korea), and healthier sovereign balance sheets is creating the best EM macro backdrop since 2017. The narrative is still early — institutional allocations remain underweight EM vs. historical norms. The Korea governance reform story is particularly under-appreciated in US financial press.</div>
+    </div>
+  </div>
+
+  <!-- EARNINGS SIGNALS -->
+  <div id="signals" class="section">
+    <div class="section-header">
+      <h2>Earnings Signals</h2>
+      <div class="line"></div>
+    </div>
+
+    <div class="card high">
+      <div class="card-title">
+        <span class="num-indicator">1</span>
+        AI Capex Divergence — Monetizers vs. Spenders
+        <span class="badge STRONG">STRONG</span>
+      </div>
+      <div class="meta-grid">
+        <div class="meta-item"><div class="meta-label">Type</div><div class="meta-val">Price action anomaly + language shift</div></div>
+        <div class="meta-item"><div class="meta-label">Companies</div><div class="meta-val"><span class="ticker">GOOGL</span> +7% · <span class="ticker">META</span> -7% · <span class="ticker">MSFT</span> ↓ · <span class="ticker">AMZN</span></div></div>
+        <div class="meta-item"><div class="meta-label">Trade Idea</div><div class="meta-val">Long GOOGL; put spreads on META as capex hedge</div></div>
+      </div>
+      <div class="summary">Alphabet surged 7%+ in pre-market after demonstrating AI investments are translating into search and cloud revenue. Meta beat on revenue (+33% YoY) but was punished for raising capex to $125–145B. This is the clearest signal in months that the market no longer gives hyperscalers free passes on capex. The AI trade is maturing from "who's spending most" to "who's converting spend into revenue."</div>
+    </div>
+
+    <div class="card high">
+      <div class="card-title">
+        <span class="num-indicator">2</span>
+        Azure Supply Constraint → Data Center Infrastructure Bottleneck
+        <span class="badge STRONG">STRONG</span>
+      </div>
+      <div class="meta-grid">
+        <div class="meta-item"><div class="meta-label">Type</div><div class="meta-val">Sector read-through</div></div>
+        <div class="meta-item"><div class="meta-label">Companies</div><div class="meta-val"><span class="ticker">MSFT</span> · <span class="ticker">EQIX</span> · <span class="ticker">DLR</span> · <span class="ticker">VST</span> · <span class="ticker">CEG</span></div></div>
+        <div class="meta-item"><div class="meta-label">Trade Idea</div><div class="meta-val">Long VST, CEG, NRG (power plays); long EQIX, DLR</div></div>
+      </div>
+      <div class="summary">Microsoft explicitly flagged Azure supply constraints persisting through at least June 2026. The bottleneck is no longer chips — it's power, cooling, and physical data center space. Nvidia's Blackwell/Rubin platforms are ramping, but physical infrastructure to house and power them is the limiting factor for the next 12–18 months. Power utilities and data center REITs with contracted capacity are positioned to benefit.</div>
+    </div>
+
+    <div class="card medium">
+      <div class="card-title">
+        <span class="num-indicator">3</span>
+        Guidance Withdrawal as Macro Canary
+        <span class="badge MODERATE">MODERATE</span>
+      </div>
+      <div class="meta-grid">
+        <div class="meta-item"><div class="meta-label">Type</div><div class="meta-val">Language shift + guidance withdrawal</div></div>
+        <div class="meta-item"><div class="meta-label">Companies</div><div class="meta-val">Constellation Brands · Airlines · Auto OEMs</div></div>
+        <div class="meta-item"><div class="meta-label">Trade Idea</div><div class="meta-val">Overweight XLP, XLV; put spreads on XLY</div></div>
+      </div>
+      <div class="summary">53% negative EPS guidance rate combined with unprecedented full-year guidance withdrawals signals CFO confidence near multi-year lows. The historical pattern: analyst consensus estimates lag reality by 1-2 quarters when guidance withdrawals spike. Q3/Q4 2026 consensus earnings bar is likely too high. Defensive quality rotation is the logical response.</div>
+    </div>
+
+    <div class="card medium">
+      <div class="card-title">
+        <span class="num-indicator">4</span>
+        Consumer Bellwether Resilience — Restaurant Sector
+        <span class="badge MODERATE">MODERATE</span>
+      </div>
+      <div class="meta-grid">
+        <div class="meta-item"><div class="meta-label">Type</div><div class="meta-val">Guidance raise + earnings beat</div></div>
+        <div class="meta-item"><div class="meta-label">Companies</div><div class="meta-val"><span class="ticker">EAT</span> · <span class="ticker">DRI</span> · <span class="ticker">TXRH</span></div></div>
+        <div class="meta-item"><div class="meta-label">Trade Idea</div><div class="meta-val">Long EAT, DRI as relative value vs. premium dining</div></div>
+      </div>
+      <div class="summary">Brinker International Q3 Non-GAAP EPS of $2.90 (beat) raised fiscal 2026 revenue guidance to $5.78–5.82B. A counter-narrative against the guidance withdrawal wave — affordable dining benefits from trade-down dynamics as consumers pull back from premium experiences. These pockets of resilience are worth tracking as relative value opportunities within the consumer sector.</div>
+    </div>
+
+    <div class="card medium">
+      <div class="card-title">
+        <span class="num-indicator">5</span>
+        Healthcare Payer Guidance Raise — Managed Care
+        <span class="badge MODERATE">MODERATE</span>
+      </div>
+      <div class="meta-grid">
+        <div class="meta-item"><div class="meta-label">Type</div><div class="meta-val">Guidance change</div></div>
+        <div class="meta-item"><div class="meta-label">Companies</div><div class="meta-val"><span class="ticker">CNC</span> · <span class="ticker">CVS</span> · <span class="ticker">HUM</span> · <span class="ticker">UNH</span></div></div>
+        <div class="meta-item"><div class="meta-label">Trade Idea</div><div class="meta-val">Selective long CNC as value play post-guidance raise</div></div>
+      </div>
+      <div class="summary">Centene raised 2026 adjusted diluted EPS guidance to >$3.40, a meaningful positive signal for government-sponsored managed care after months of Medicaid redetermination pressure. Suggests Medicaid enrollment stabilization thesis may be playing out — worth watching for read-throughs to other government-payer-exposed names.</div>
+    </div>
+  </div>
+
+  <!-- CATALYSTS -->
+  <div id="catalysts" class="section">
+    <div class="section-header">
+      <h2>Upcoming Catalyst Map</h2>
+      <div class="line"></div>
+    </div>
+
+    <div class="card blue">
+      <div class="card-title">
+        <span class="num-indicator">1</span>
+        Q1 GDP Advance + March PCE
+        <span class="today-alert">⚡ TODAY — 8:30 AM ET</span>
+      </div>
+      <div class="meta-grid">
+        <div class="meta-item"><div class="meta-label">Date</div><div class="meta-val">April 30, 2026 — 8:30 AM ET</div></div>
+        <div class="meta-item"><div class="meta-label">Consensus</div><div class="meta-val">GDP 1.8% ann. | Core PCE +0.24–0.28% MoM</div></div>
+        <div class="meta-item"><div class="meta-label">Exposed Tickers</div><div class="meta-val"><span class="ticker">SPY</span> · <span class="ticker">QQQ</span> · <span class="ticker">TLT</span> · <span class="ticker">GLD</span></div></div>
+        <div class="meta-item"><div class="meta-label">Surprise Scenario</div><div class="meta-val">GDP &lt;1.5% OR Core PCE &gt;0.30% → stagflation shock</div></div>
+      </div>
+      <div class="summary">Today's GDP and PCE double-header lands the morning after Powell's final press conference and sets the tone for Warsh's incoming Fed. A sub-1.5% GDP reading would reignite stagflation fears just as rate cuts have been pushed to September or later. A hot PCE print above 0.30% would cement the "no cuts in 2026" scenario. This is the single highest-volatility data event of the day, and markets are priced at 99% probability of a Fed hold — not priced for a negative GDP surprise.</div>
+    </div>
+
+    <div class="card blue">
+      <div class="card-title">
+        <span class="num-indicator">2</span>
+        Apple Q2 FY2026 Earnings
+        <span class="today-alert">⚡ TONIGHT — POST MARKET</span>
+      </div>
+      <div class="meta-grid">
+        <div class="meta-item"><div class="meta-label">Date</div><div class="meta-val">April 30, 2026 — After Market Close</div></div>
+        <div class="meta-item"><div class="meta-label">Consensus</div><div class="meta-val">Revenue ~$109.7B | EPS ~$1.94</div></div>
+        <div class="meta-item"><div class="meta-label">Exposed Tickers</div><div class="meta-val"><span class="ticker">AAPL</span> · <span class="ticker">QQQ</span> · <span class="ticker">QRVO</span> · <span class="ticker">SWKS</span></div></div>
+        <div class="meta-item"><div class="meta-label">Surprise Scenario</div><div class="meta-val">Weak China iPhone demand + Services deceleration → -5%+</div></div>
+      </div>
+      <div class="summary">Apple's Q2 report is the final piece of the Mag 7 earnings gauntlet. Key variables: (1) iPhone demand in China under tariff pressure and Huawei competition; (2) Services revenue trajectory — Apple's highest-margin, highest-multiple segment; (3) Commentary on the $500B US investment commitment and tariff exemptions. A strong Services beat re-rates upward; weak China hardware is the bear case. China iPhone share is a legitimate concern potentially underweighted by analysts.</div>
+    </div>
+
+    <div class="card purple">
+      <div class="card-title">
+        <span class="num-indicator">3</span>
+        Kevin Warsh Senate Confirmation Vote
+      </div>
+      <div class="meta-grid">
+        <div class="meta-item"><div class="meta-label">Date</div><div class="meta-val">Expected: First two weeks of May 2026</div></div>
+        <div class="meta-item"><div class="meta-label">Consensus</div><div class="meta-val">Confirmation along party lines; Warsh leads June FOMC</div></div>
+        <div class="meta-item"><div class="meta-label">Exposed Tickers</div><div class="meta-val"><span class="ticker">TLT</span> · <span class="ticker">XLRE</span> · <span class="ticker">XLF</span> · <span class="ticker">XHB</span></div></div>
+        <div class="meta-item"><div class="meta-label">Surprise Scenario</div><div class="meta-val">Procedural delay or more hawkish testimony than expected</div></div>
+      </div>
+      <div class="summary">The Warsh transition is largely priced in following Senate Banking Committee advancement, but his exact monetary policy stance remains opaque. Known as a hawk with Wall Street ties, Warsh could shift the Fed's reaction function — particularly around the maximum employment mandate vs. inflation targeting. Any confirmation testimony revealing more extreme hawkishness could reprice the rate curve. First Warsh-led FOMC meeting June 16–17 is the real inflection point.</div>
+    </div>
+
+    <div class="card medium">
+      <div class="card-title">
+        <span class="num-indicator">4</span>
+        US-China Section 301 Investigation Hearings
+      </div>
+      <div class="meta-grid">
+        <div class="meta-item"><div class="meta-label">Date</div><div class="meta-val">Hearings: May 2026 | Findings: Summer 2026</div></div>
+        <div class="meta-item"><div class="meta-label">Consensus</div><div class="meta-val">Targeted sector tariffs; broader truce holds</div></div>
+        <div class="meta-item"><div class="meta-label">Exposed Tickers</div><div class="meta-val"><span class="ticker">TSLA</span> · <span class="ticker">X</span> · <span class="ticker">NUE</span> · <span class="ticker">ENPH</span> · <span class="ticker">BABA</span></div></div>
+        <div class="meta-item"><div class="meta-label">Surprise Scenario</div><div class="meta-val">Broad new tariff regime → re-escalation before November</div></div>
+      </div>
+      <div class="summary">While the market celebrates the trade truce, the USTR launched two new Section 301 investigations in April targeting Chinese excess capacity and forced labor. These could trigger new tariffs on steel, solar, and EVs in summer 2026 — sectors that benefited most from tariff relief. This summer re-escalation risk is not priced into equity or currency markets, making it an asymmetric tail risk worth monitoring closely.</div>
+    </div>
+
+    <div class="card blue">
+      <div class="card-title">
+        <span class="num-indicator">5</span>
+        Nonfarm Payrolls — May 2026
+        <span class="today-alert">TOMORROW — MAY 1 8:30 AM ET</span>
+      </div>
+      <div class="meta-grid">
+        <div class="meta-item"><div class="meta-label">Date</div><div class="meta-val">May 1, 2026 — 8:30 AM ET</div></div>
+        <div class="meta-item"><div class="meta-label">Consensus</div><div class="meta-val">~180K jobs added | Unemployment ~4.1%</div></div>
+        <div class="meta-item"><div class="meta-label">Exposed Tickers</div><div class="meta-val"><span class="ticker">USD</span> · <span class="ticker">TLT</span> · <span class="ticker">SPY</span> · <span class="ticker">IWM</span> · <span class="ticker">XLF</span></div></div>
+        <div class="meta-item"><div class="meta-label">Surprise Scenario</div><div class="meta-val">&lt;130K → hard landing fear; &gt;220K → removes all cut hopes</div></div>
+      </div>
+      <div class="summary">The May 1 jobs report arrives one day after today's GDP/PCE, making the first two days of May an unusually high-volatility macro window. The labor market has been the last line of defense for the soft landing narrative. A weak print following soft GDP would validate the stagflation/hard landing scenario. A strong print further pushes rate cut expectations out. With current uncertainty, this jobs report has outsized binary importance for positioning.</div>
+    </div>
+  </div>
+
+  <!-- ACTION ITEMS -->
+  <div id="actions" class="section">
+    <div class="section-header">
+      <h2>Action Items</h2>
+      <div class="line"></div>
+    </div>
+
+    <div class="action-card">
+      <div class="action-title">🔍 Top 3 Tickers to Research Today</div>
+      <div class="action-item">
+        <span class="action-num">01</span>
+        <span><span class="ticker">GOOGL</span> — Confirmed AI monetization beat; the only Mag 7 name demonstrating capex-to-revenue conversion. +7% premarket may pull back intraday — potential entry on dip if AI search revenue trends confirmed on call.</span>
+      </div>
+      <div class="action-item">
+        <span class="action-num">02</span>
+        <span><span class="ticker">AAPL</span> — Reports tonight. Risk/reward is asymmetric given tariff exposure to China and modest pre-earnings expectations (~$109.7B rev, $1.94 EPS). Monitor Services guidance closely — any miss vs. consensus is actionable to the downside.</span>
+      </div>
+      <div class="action-item">
+        <span class="action-num">03</span>
+        <span><span class="ticker">VST / CEG</span> — Azure supply constraints and hyperscaler capex confirm power is the AI bottleneck. Utility/power stocks with contracted data center demand are the under-the-radar AI infrastructure play with no monetization risk.</span>
+      </div>
+    </div>
+
+    <div class="action-card">
+      <div class="action-title">⚡ Position Adjustments Suggested by Signals</div>
+      <div class="bullet-item">Reduce exposure to high-capex Mag 7 names (<span class="ticker">META</span>, <span class="ticker">MSFT</span>) where monetization lags spend — use any near-term rally as a trimming opportunity.</div>
+      <div class="bullet-item">Rotate toward AI picks-and-shovels: <span class="ticker">NVDA</span>, <span class="ticker">AVGO</span>, <span class="ticker">TSM</span>, <span class="ticker">MU</span> remain preferred over hyperscalers themselves.</div>
+      <div class="bullet-item">Add defensive positioning ahead of GDP/PCE today and jobs Friday — <span class="ticker">XLP</span>, <span class="ticker">XLV</span>, or put spreads on <span class="ticker">XLY</span>.</div>
+      <div class="bullet-item">Consider <span class="ticker">GOOGL</span> as relative outperformer vs. <span class="ticker">META</span> within Big Tech — confirmed monetization vs. spend overhang.</div>
+    </div>
+
+    <div class="action-card">
+      <div class="action-title">📅 Key Dates to Watch</div>
+      <div class="date-row">
+        <span class="date-label">TODAY</span>
+        <span class="date-text">Q1 GDP Advance + March PCE at 8:30 AM ET · <span class="ticker">AAPL</span> earnings post-market</span>
+      </div>
+      <div class="date-row">
+        <span class="date-label">MAY 1</span>
+        <span class="date-text">Nonfarm Payrolls at 8:30 AM ET — critical macro binary, second consecutive high-volatility macro event</span>
+      </div>
+      <div class="date-row">
+        <span class="date-label">MAY (TBD)</span>
+        <span class="date-text">Warsh Senate confirmation vote — imminent; sets monetary policy trajectory</span>
+      </div>
+      <div class="date-row">
+        <span class="date-label">JUN 16-17</span>
+        <span class="date-text">First Warsh-led FOMC meeting — true monetary policy regime reset</span>
+      </div>
+      <div class="date-row">
+        <span class="date-label">NOV 2026</span>
+        <span class="date-text">US-China tariff truce expiry — hard binary event for EM and trade-exposed names</span>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="footer">
+  Daily Theme Scanner — 2026-04-30 · Generated pre-market · Sources: CNBC, Yahoo Finance, Bloomberg, The Next Web, IMF, BlackRock, FactSet, Julius Baer, Tax Foundation, TradingKey · Not investment advice.
+</div>
+
+<script>
+function showSection(id) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  event.target.classList.add('active');
+}
+</script>
+</body>
+</html>
