@@ -1,0 +1,1082 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pre-Market Catalyst Scan — May 1, 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0e17;
+    --bg2: #0f1420;
+    --bg3: #141926;
+    --bg4: #1a2030;
+    --border: #1e2638;
+    --text: #e2e8f0;
+    --text-dim: #8892a4;
+    --text-muted: #5a6478;
+    --green: #22c55e;
+    --green-dim: #16a34a;
+    --green-bg: rgba(34, 197, 94, 0.08);
+    --red: #ef4444;
+    --red-dim: #dc2626;
+    --red-bg: rgba(239, 68, 68, 0.08);
+    --amber: #f59e0b;
+    --amber-bg: rgba(245, 158, 11, 0.08);
+    --blue: #3b82f6;
+    --blue-bg: rgba(59, 130, 246, 0.08);
+    --purple: #a855f7;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'JetBrains Mono', 'Courier New', monospace;
+    font-size: 13px;
+    line-height: 1.6;
+    padding: 20px;
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+  a { color: var(--blue); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  /* Header */
+  .header {
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 16px;
+    margin-bottom: 24px;
+  }
+  .header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .header h1 {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--amber);
+    letter-spacing: 0.5px;
+  }
+  .header .subtitle {
+    color: var(--text-dim);
+    font-size: 11px;
+    margin-top: 4px;
+  }
+  .timestamp {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 6px 12px;
+    font-size: 11px;
+    color: var(--text-dim);
+  }
+
+  /* Nav */
+  .nav {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-bottom: 24px;
+  }
+  .nav a {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 4px 10px;
+    font-size: 11px;
+    color: var(--text-dim);
+    transition: all 0.15s;
+  }
+  .nav a:hover { background: var(--bg4); color: var(--text); border-color: var(--blue); text-decoration: none; }
+
+  /* Section */
+  .section { margin-bottom: 32px; }
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 14px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+  }
+  .section-header h2 {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--amber);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  .section-num {
+    background: var(--amber);
+    color: var(--bg);
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 6px;
+    border-radius: 3px;
+  }
+
+  /* Cards */
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+    gap: 12px;
+  }
+  .card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 14px;
+    position: relative;
+    overflow: hidden;
+  }
+  .card::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+  }
+  .card.bullish::before { background: var(--green); }
+  .card.bearish::before { background: var(--red); }
+  .card.neutral::before { background: var(--amber); }
+  .card.watch::before { background: var(--blue); }
+
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 10px;
+  }
+  .ticker {
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: 1px;
+  }
+  .card.bullish .ticker { color: var(--green); }
+  .card.bearish .ticker { color: var(--red); }
+  .card.neutral .ticker { color: var(--amber); }
+  .card.watch .ticker { color: var(--blue); }
+
+  .badges {
+    display: flex;
+    gap: 4px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+  }
+  .badge {
+    font-size: 9px;
+    font-weight: 700;
+    padding: 2px 6px;
+    border-radius: 3px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .badge-green { background: var(--green-bg); color: var(--green); border: 1px solid var(--green-dim); }
+  .badge-red { background: var(--red-bg); color: var(--red); border: 1px solid var(--red-dim); }
+  .badge-amber { background: var(--amber-bg); color: var(--amber); border: 1px solid #b45309; }
+  .badge-blue { background: var(--blue-bg); color: var(--blue); border: 1px solid #1d4ed8; }
+
+  .card-headline {
+    font-size: 12px;
+    color: var(--text);
+    font-weight: 500;
+    margin-bottom: 8px;
+    line-height: 1.4;
+  }
+  .card-meta {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+    margin-bottom: 8px;
+  }
+  .meta-item label {
+    display: block;
+    font-size: 9px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 2px;
+  }
+  .meta-item span {
+    font-size: 11px;
+    color: var(--text-dim);
+  }
+  .meta-item .positive { color: var(--green); }
+  .meta-item .negative { color: var(--red); }
+  .meta-item .neutral { color: var(--amber); }
+
+  .card-summary {
+    font-size: 11px;
+    color: var(--text-dim);
+    border-top: 1px solid var(--border);
+    padding-top: 8px;
+    margin-top: 8px;
+    line-height: 1.5;
+  }
+
+  /* Morning briefing */
+  .briefing {
+    background: var(--bg2);
+    border: 1px solid var(--amber);
+    border-radius: 6px;
+    padding: 16px 20px;
+    margin-bottom: 24px;
+  }
+  .briefing h3 {
+    color: var(--amber);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+  }
+  .briefing p {
+    font-size: 12px;
+    line-height: 1.7;
+    color: var(--text);
+  }
+
+  /* Trade ideas */
+  .trade-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 12px;
+  }
+  .trade-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 14px;
+  }
+  .trade-card.long { border-left: 3px solid var(--green); }
+  .trade-card.short { border-left: 3px solid var(--red); }
+  .trade-card.watch-trade { border-left: 3px solid var(--amber); }
+  .trade-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+  .trade-ticker {
+    font-size: 16px;
+    font-weight: 700;
+  }
+  .trade-card.long .trade-ticker { color: var(--green); }
+  .trade-card.short .trade-ticker { color: var(--red); }
+  .trade-card.watch-trade .trade-ticker { color: var(--amber); }
+  .trade-dir {
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 3px;
+  }
+  .trade-card.long .trade-dir { background: var(--green-bg); color: var(--green); }
+  .trade-card.short .trade-dir { background: var(--red-bg); color: var(--red); }
+  .trade-card.watch-trade .trade-dir { background: var(--amber-bg); color: var(--amber); }
+  .trade-body { font-size: 11px; color: var(--text-dim); line-height: 1.5; }
+  .trade-body strong { color: var(--text); }
+
+  /* Table */
+  .table-wrap { overflow-x: auto; margin: 10px 0; }
+  table { width: 100%; border-collapse: collapse; font-size: 11px; }
+  th {
+    background: var(--bg3);
+    color: var(--text-muted);
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 8px 10px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+  }
+  td {
+    padding: 7px 10px;
+    border-bottom: 1px solid var(--border);
+    color: var(--text-dim);
+    vertical-align: top;
+  }
+  tr:hover td { background: var(--bg3); }
+  .t-bull { color: var(--green); font-weight: 600; }
+  .t-bear { color: var(--red); font-weight: 600; }
+  .t-amb { color: var(--amber); font-weight: 600; }
+  .t-tick { color: var(--text); font-weight: 700; }
+  .t-flag { background: var(--red-bg); color: var(--red); }
+
+  /* ETF themes */
+  .theme-row {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 12px 16px;
+    margin-bottom: 8px;
+    display: grid;
+    grid-template-columns: 140px 1fr;
+    gap: 12px;
+    align-items: start;
+  }
+  .theme-name {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--amber);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .theme-body { font-size: 11px; color: var(--text-dim); line-height: 1.5; }
+
+  /* Events table */
+  .event-row {
+    display: grid;
+    grid-template-columns: 160px 1fr 80px;
+    gap: 12px;
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--border);
+    align-items: center;
+  }
+  .event-row:last-child { border-bottom: none; }
+  .event-time { font-size: 11px; color: var(--amber); font-weight: 600; }
+  .event-name { font-size: 11px; color: var(--text); }
+  .event-impact { font-size: 10px; font-weight: 700; text-align: right; }
+
+  /* Avoid / Risk */
+  .avoid-row {
+    background: var(--red-bg);
+    border: 1px solid var(--red-dim);
+    border-radius: 4px;
+    padding: 8px 12px;
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 11px;
+  }
+  .avoid-tick { color: var(--red); font-weight: 700; font-size: 13px; min-width: 50px; }
+  .avoid-reason { color: var(--text-dim); }
+
+  /* Footer */
+  .footer {
+    margin-top: 32px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+    font-size: 10px;
+    color: var(--text-muted);
+    line-height: 1.8;
+  }
+
+  /* Highlight row in table */
+  .hl-watch { background: rgba(245, 158, 11, 0.05); }
+
+  @media (max-width: 600px) {
+    .card-grid { grid-template-columns: 1fr; }
+    .trade-cards { grid-template-columns: 1fr; }
+    .theme-row { grid-template-columns: 1fr; }
+    .event-row { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-top">
+    <div>
+      <h1>☀️ PRE-MARKET CATALYST SCAN</h1>
+      <div class="subtitle">Friday, May 1, 2026 &nbsp;|&nbsp; Sources: Benzinga · CNBC · Yahoo Finance · Sherwood News · Bloomberg · StockTitan · Motley Fool · Seeking Alpha</div>
+    </div>
+    <div class="timestamp">Generated: 2026-05-01 &nbsp;|&nbsp; Model: Claude Sonnet 4.6</div>
+  </div>
+</div>
+
+<div class="nav">
+  <a href="#briefing">📻 Briefing</a>
+  <a href="#watchlist">Step 1: Watchlist</a>
+  <a href="#etfs">Step 2: ETFs</a>
+  <a href="#earnings">Step 3: Earnings</a>
+  <a href="#flow">Step 4: Options</a>
+  <a href="#analysts">Step 5: Analysts</a>
+  <a href="#events">Step 6: Events</a>
+  <a href="#trades">Step 7: Trade Ideas</a>
+</div>
+
+<!-- BRIEFING -->
+<div class="briefing" id="briefing">
+  <h3>📻 30-Second Morning Briefing</h3>
+  <p>Mega-cap tech is running the show this Friday. <strong>AAPL</strong> blew out Q2 earnings with iPhone 17 record demand and a $100B buyback — stock +3% PM, cleanest gap-up long. <strong>META</strong> had the wildest overnight ride: -7% AH on user miss → reversed to <span style="color:var(--green)">+8.5% PM</span> as bulls bought the EPS beat and AI capex conviction ($125–145B); gap-up continuation is the play. <strong>AMZN</strong> modestly higher on AWS re-acceleration to +28% YoY — muted PM leaves room for intraday follow. <strong>SNDK</strong> crushed every metric (+252% revenue YoY) but is <span style="color:var(--red)">-6% AH</span> — sell-the-news after +295% YTD run. <strong>SOFI</strong> is the clearest fade: <span style="color:var(--red)">-9.59% PM</span> on unchanged guidance. The AI infrastructure theme is confirmed across the board. The Fed held rates at 3.5–3.75% Wed with historic 8-4 dissent — Warsh era incoming; bonds under pressure. Gold above $4,643, oil at $105 on Middle East tensions. <strong style="color:var(--green)">EDGE EXISTS today — AAPL and META long, SOFI short, SNDK gap-watch.</strong></p>
+</div>
+
+<!-- STEP 1: WATCHLIST -->
+<div class="section" id="watchlist">
+  <div class="section-header">
+    <span class="section-num">01</span>
+    <h2>Watchlist Overnight Catalysts</h2>
+  </div>
+  <div class="card-grid">
+
+    <!-- META -->
+    <div class="card bullish">
+      <div class="card-header">
+        <div class="ticker">META</div>
+        <div class="badges">
+          <span class="badge badge-green">BULLISH</span>
+          <span class="badge badge-green">YES — LONG</span>
+        </div>
+      </div>
+      <div class="card-headline">Q1 2026: EPS beat $7.31 vs $6.79 est; Revenue beat — user miss initially crushed to -7% AH → recovered +8.49% PM</div>
+      <div class="card-meta">
+        <div class="meta-item"><label>PM Reaction</label><span class="positive">+8.49%</span></div>
+        <div class="meta-item"><label>Reported</label><span>Apr 29 AMC</span></div>
+        <div class="meta-item"><label>EPS</label><span class="positive">BEAT ($7.31 vs $6.79)</span></div>
+        <div class="meta-item"><label>Capex Raise</label><span>$125–145B AI spend</span></div>
+      </div>
+      <div class="card-summary">Wild overnight — AH selloff reversed entirely. AI capex conviction won over user miss. Gap-up open, watch VWAP. Sources: <a href="https://www.cnbc.com/2026/04/29/meta-q1-earnings-report-2026.html">CNBC</a> · <a href="https://www.fool.com/investing/2026/04/30/magnificent-seven-companies-microsoft-amazon-alpha/">Motley Fool</a></div>
+    </div>
+
+    <!-- AMZN -->
+    <div class="card bullish">
+      <div class="card-header">
+        <div class="ticker">AMZN</div>
+        <div class="badges">
+          <span class="badge badge-green">BULLISH</span>
+          <span class="badge badge-blue">WATCH</span>
+        </div>
+      </div>
+      <div class="card-headline">Q1 2026: EPS $2.78 vs $1.64 est (massive beat); AWS +28% YoY — fastest growth in 15 quarters</div>
+      <div class="card-meta">
+        <div class="meta-item"><label>PM Reaction</label><span class="positive">+0.76%</span></div>
+        <div class="meta-item"><label>Reported</label><span>Apr 29 AMC</span></div>
+        <div class="meta-item"><label>EPS Beat</label><span class="positive">+69% vs estimate</span></div>
+        <div class="meta-item"><label>AWS Rev</label><span class="positive">$37.6B, +28% YoY</span></div>
+      </div>
+      <div class="card-summary">Muted PM reaction despite enormous beat — may see intraday upside. AWS re-acceleration confirms AI cloud demand. Sources: <a href="https://www.cnbc.com/2026/04/29/amazon-amzn-q1-earnings-report-2026.html">CNBC</a> · <a href="https://www.heygotrade.com/en/blog/amazon-q1-2026-earnings-reaction/">HeyGoTrade</a></div>
+    </div>
+
+    <!-- SNDK -->
+    <div class="card bearish">
+      <div class="card-header">
+        <div class="ticker">SNDK</div>
+        <div class="badges">
+          <span class="badge badge-red">BEARISH ST</span>
+          <span class="badge badge-amber">WATCH GAP</span>
+        </div>
+      </div>
+      <div class="card-headline">🚨 Q3 FY2026: Revenue $5.95B vs $4.72B (+252% YoY); EPS $23.41 vs $14.62 — stock -6% AH despite blowout</div>
+      <div class="card-meta">
+        <div class="meta-item"><label>AH Reaction</label><span class="negative">-6%</span></div>
+        <div class="meta-item"><label>Reported</label><span>Apr 30 AMC</span></div>
+        <div class="meta-item"><label>Rev Beat</label><span class="positive">$5.95B vs $4.72B</span></div>
+        <div class="meta-item"><label>Q4 Guide</label><span class="positive">$30–33 EPS vs $23.38 est</span></div>
+      </div>
+      <div class="card-summary">Sell-the-news after +295% YTD run. Watch gap-down open — if stabilizes within 30 min, potential long for fundamental buyers. Weekly call IV was 226 (extreme). Sources: <a href="https://www.stocktitan.net/news/SNDK/sandisk-reports-fiscal-third-quarter-2026-financial-d4lrldefb6us.html">StockTitan</a> · <a href="https://sherwood.news/markets/sandisk-quarterly-earnings-report/">Sherwood</a></div>
+    </div>
+
+    <!-- SOFI -->
+    <div class="card bearish">
+      <div class="card-header">
+        <div class="ticker">SOFI</div>
+        <div class="badges">
+          <span class="badge badge-red">BEARISH</span>
+          <span class="badge badge-red">YES — FADE</span>
+        </div>
+      </div>
+      <div class="card-headline">🚨 Q1 2026: EPS $0.12 in-line; Revenue $1.1B (+41% YoY) beat — but unchanged guidance crushes stock</div>
+      <div class="card-meta">
+        <div class="meta-item"><label>PM Reaction</label><span class="negative">-9.59%</span></div>
+        <div class="meta-item"><label>Reported</label><span>Q1 2026</span></div>
+        <div class="meta-item"><label>Guidance</label><span class="negative">UNCHANGED (miss)</span></div>
+        <div class="meta-item"><label>BoFA Rating</label><span class="negative">SELL / $17 PT</span></div>
+      </div>
+      <div class="card-summary">Tech Platform revenue declining; guidance not raised despite 41% revenue growth. 10th profitable quarter ignored. Clear gap-down fade. Source: <a href="https://www.investing.com/news/transcripts/earnings-call-transcript-sofi-technologies-q1-2026-sees-revenue-growth-stock-dips-93CH-4645289/">Investing.com</a></div>
+    </div>
+
+    <!-- PLTR -->
+    <div class="card watch">
+      <div class="card-header">
+        <div class="ticker">PLTR</div>
+        <div class="badges">
+          <span class="badge badge-green">BULLISH SETUP</span>
+          <span class="badge badge-blue">WATCH — MON</span>
+        </div>
+      </div>
+      <div class="card-headline">Earnings Monday May 4 AMC; options pricing 10.55% swing; Wedbush, Baird, Oppenheimer all bullish</div>
+      <div class="card-meta">
+        <div class="meta-item"><label>Current Price</label><span>~$141.69</span></div>
+        <div class="meta-item"><label>Earnings</label><span>May 4 AMC</span></div>
+        <div class="meta-item"><label>Expected EPS</label><span class="positive">$0.28 (+115% YoY)</span></div>
+        <div class="meta-item"><label>Oppenheimer PT</label><span class="positive">$200 (Outperform)</span></div>
+      </div>
+      <div class="card-summary">AIP (AI Platform) momentum + government contracts driving bullish consensus. 3 Buy-side calls this week. Consider pre-earnings position or straddle. Source: <a href="https://www.tipranks.com/news/palantir-pltr-q1-earnings-on-may-4-options-market-braces-for-a-10-55-swing/">TipRanks</a></div>
+    </div>
+
+    <!-- TSLA -->
+    <div class="card bearish">
+      <div class="card-header">
+        <div class="ticker">TSLA</div>
+        <div class="badges">
+          <span class="badge badge-red">BEARISH</span>
+          <span class="badge badge-blue">WATCH</span>
+        </div>
+      </div>
+      <div class="card-headline">10-K/A filing: $573M web of related-party transactions — $430M Megapacks to xAI, $143M vehicles to SpaceX; shareholders hold SpaceX stake</div>
+      <div class="card-meta">
+        <div class="meta-item"><label>Filing</label><span>Apr 30, 10-K/A</span></div>
+        <div class="meta-item"><label>Close</label><span>$380.99 (Apr 30)</span></div>
+        <div class="meta-item"><label>Issue</label><span class="negative">Governance concerns</span></div>
+        <div class="meta-item"><label>Capex '26</label><span>$25B+ (autonomy/AI)</span></div>
+      </div>
+      <div class="card-summary">SpaceX acquired xAI Holdings; Tesla preferred converted to SpaceX Class A. TSLA shareholders now minority SpaceX holders. Conflict-of-interest narrative bearish. Source: <a href="https://electrek.co/2026/05/01/tesla-tsla-web-transactions-musk-companies-spacex-xai-10ka-2025/">Electrek</a></div>
+    </div>
+
+    <!-- NVDA -->
+    <div class="card bullish">
+      <div class="card-header">
+        <div class="ticker">NVDA</div>
+        <div class="badges">
+          <span class="badge badge-green">BULLISH</span>
+          <span class="badge badge-blue">WATCH</span>
+        </div>
+      </div>
+      <div class="card-headline">Large call sweep: 7,500 contracts $230-strike calls exp. May 15 (~$413K); AI capex cycle confirmed by mega-caps; earnings May 20</div>
+      <div class="card-meta">
+        <div class="meta-item"><label>PM Price</label><span>~$201</span></div>
+        <div class="meta-item"><label>Earnings</label><span>May 20</span></div>
+        <div class="meta-item"><label>Options Bet</label><span class="positive">7,500 $230C May 15</span></div>
+        <div class="meta-item"><label>AI Tailwind</label><span class="positive">META $145B, AWS +28%</span></div>
+      </div>
+      <div class="card-summary">No direct overnight catalyst but AI capex wave from AMZN/META/MSFT/GOOGL all bullish for NVDA chip demand. May 20 earnings loom. Source: <a href="https://marketrebellion.com/news/daily-iv-report/mid-session-iv-report-april-29-2026/">Market Rebellion</a></div>
+    </div>
+
+    <!-- AMD -->
+    <div class="card neutral">
+      <div class="card-header">
+        <div class="ticker">AMD</div>
+        <div class="badges">
+          <span class="badge badge-amber">NEUTRAL</span>
+          <span class="badge badge-amber">NO ACTION</span>
+        </div>
+      </div>
+      <div class="card-headline">No overnight catalyst; earnings Tuesday May 5; guided Q1 to $9.8B rev (+32% YoY); trading at ATH ~$345</div>
+      <div class="card-meta">
+        <div class="meta-item"><label>Earnings</label><span>May 5</span></div>
+        <div class="meta-item"><label>Q1 Rev Guide</label><span>$9.8B ±$300M</span></div>
+        <div class="meta-item"><label>Price</label><span>~$345 (ATH)</span></div>
+        <div class="meta-item"><label>Key Driver</label><span>MI300X GPU sales</span></div>
+      </div>
+      <div class="card-summary">No fresh overnight catalyst. Pre-earnings quiet period. AI capex wave is positive macro backdrop. Hold for May 5 report.</div>
+    </div>
+
+    <!-- MARA -->
+    <div class="card neutral">
+      <div class="card-header">
+        <div class="ticker">MARA</div>
+        <div class="badges">
+          <span class="badge badge-amber">NEUTRAL</span>
+          <span class="badge badge-amber">NO ACTION</span>
+        </div>
+      </div>
+      <div class="card-headline">Bitcoin consolidating $76,000–$79,000; Kalshi pricing 37% probability of reclaiming $77K; limited overnight catalyst</div>
+      <div class="card-meta">
+        <div class="meta-item"><label>MARA Price</label><span>$11.18</span></div>
+        <div class="meta-item"><label>BTC Level</label><span>~$76,200 support</span></div>
+        <div class="meta-item"><label>BTC Direction</label><span class="neutral">Neutral consolidation</span></div>
+        <div class="meta-item"><label>Sentiment</label><span>Risk-averse macro</span></div>
+      </div>
+      <div class="card-summary">No verified catalyst found. BTC consolidating with limited upside per options pricing. Crypto stocks surged in April — digestion period likely. Source: <a href="https://www.ccn.com/analysis/crypto/crypto-price-predictions-may-btc-eth-xrp-bnb-sol-doge-xmr/">CCN</a></div>
+    </div>
+
+    <!-- COIN -->
+    <div class="card neutral">
+      <div class="card-header">
+        <div class="ticker">COIN</div>
+        <div class="badges">
+          <span class="badge badge-amber">NEUTRAL</span>
+          <span class="badge badge-amber">NO ACTION</span>
+        </div>
+      </div>
+      <div class="card-headline">No verified overnight catalyst found</div>
+      <div class="card-meta">
+        <div class="meta-item"><label>Status</label><span class="neutral">No data</span></div>
+        <div class="meta-item"><label>Context</label><span>BTC range-bound</span></div>
+      </div>
+      <div class="card-summary">No verified catalyst found. Crypto stocks surged broadly in April per CryptoTimes. No specific COIN catalyst overnight. Pass today.</div>
+    </div>
+
+  </div>
+</div>
+
+<!-- STEP 2: ETFs -->
+<div class="section" id="etfs">
+  <div class="section-header">
+    <span class="section-num">02</span>
+    <h2>Sector &amp; Theme ETF Overnight Scan</h2>
+  </div>
+
+  <div class="theme-row">
+    <div>
+      <div class="theme-name" style="color:var(--green)">🟢 TECH &amp; AI</div>
+      <div style="font-size:10px;color:var(--text-muted);margin-top:4px;">SMH · IGV · XLK · FNGU · IBIT</div>
+    </div>
+    <div class="theme-body">
+      <strong style="color:var(--green)">BULLISH</strong> — SMH pre-market $504.99 (+1.1% from $499.58 close). Mega-cap AI earnings wave: AAPL +3%, META +8.5%, AMZN +0.76%, GOOGL +10%, MSFT +3.9%. AI capex confirmed: META $125–145B, AWS +28% YoY. NVDA bullish call sweep ($230 May 15). SNDK -6% AH is only negative data point (sell-the-news, not structural).<br>
+      <strong>Key tickers at open:</strong> NVDA (AI capex tailwind), SNDK (gap-down watch), AAPL (gap up), SMH (sector momentum)<br>
+      <a href="https://finance.yahoo.com/quote/SMH/">SMH Quote</a> · <a href="https://www.benzinga.com/markets/tech/26/04/52183870/ai-memory-crunch-stocks-higher-but-big-tech-must-pay-up">Benzinga AI Memory</a>
+    </div>
+  </div>
+
+  <div class="theme-row">
+    <div>
+      <div class="theme-name" style="color:var(--green)">🟢 COMMODITIES</div>
+      <div style="font-size:10px;color:var(--text-muted);margin-top:4px;">GLD · SLV · UCO · USO</div>
+    </div>
+    <div class="theme-body">
+      <strong style="color:var(--green)">BULLISH</strong> — Gold at $4,643.20 (+$13.60/+0.29%); Silver at $73.67 vs $72.09 prior close (<strong style="color:var(--green)">+2.2% overnight</strong> — notable move); Crude Oil at $105.82 (+0.71%). Middle East conflict and near-Strait of Hormuz disruption risk. Dollar weakening post-FOMC. FOMC holding rates with hawkish dissent = dollar drag = commodity tailwind.<br>
+      <strong>Key tickers at open:</strong> GLD (gold above $4,600), SLV (silver +2.2% breakout watch), UCO/USO (oil holding above $105)<br>
+      <a href="https://tradingeconomics.com/commodities">Trading Economics</a>
+    </div>
+  </div>
+
+  <div class="theme-row">
+    <div>
+      <div class="theme-name" style="color:var(--red)">🔴 MACRO (TLT/UUP)</div>
+      <div style="font-size:10px;color:var(--text-muted);margin-top:4px;">TLT · UUP</div>
+    </div>
+    <div class="theme-body">
+      <strong style="color:var(--red)">BEARISH TLT</strong> — FOMC held rates 3.5–3.75% on April 29 with historic <strong style="color:var(--red)">8-4 dissent</strong> (highest in 30+ years). Powell's final meeting; Warsh (known hawk) incoming. Inflation "elevated" per Fed statement. Rate cut bets being pushed out; 2027 hike being priced by some. Bonds under pressure. MIXED UUP (dollar uncertain with dissent).<br>
+      <strong>Key watch:</strong> TLT at open for continued breakdown; yield curve reaction to Warsh signals<br>
+      <a href="https://www.federalreserve.gov/newsevents/pressreleases/monetary20260429a.htm">Fed Statement</a> · <a href="https://www.cnbc.com/2026/04/29/fed-meeting-today-live-updates-warsh-powell.html">CNBC Fed Recap</a>
+    </div>
+  </div>
+
+  <div class="theme-row">
+    <div>
+      <div class="theme-name" style="color:var(--text-muted)">— CLEAN ENERGY</div>
+      <div style="font-size:10px;color:var(--text-muted);margin-top:4px;">TAN · ICLN · GRID · PAVE</div>
+    </div>
+    <div class="theme-body" style="color:var(--text-muted)">No verified overnight catalyst found. Skip today.</div>
+  </div>
+
+  <div class="theme-row">
+    <div>
+      <div class="theme-name" style="color:var(--text-muted)">— DEFENSE / SPECIALTY</div>
+      <div style="font-size:10px;color:var(--text-muted);margin-top:4px;">ITA · JETS · CIBR · KBE</div>
+    </div>
+    <div class="theme-body" style="color:var(--text-muted)">No verified overnight catalyst found. SOFI earnings bearish for KBE/fintech adjacent. Skip others today.</div>
+  </div>
+</div>
+
+<!-- STEP 3: EARNINGS -->
+<div class="section" id="earnings">
+  <div class="section-header">
+    <span class="section-num">03</span>
+    <h2>Overnight Earnings Results</h2>
+  </div>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Ticker</th>
+          <th>Company</th>
+          <th>EPS</th>
+          <th>Revenue</th>
+          <th>Guidance</th>
+          <th>PM Move</th>
+          <th>Sector Read-Through</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="t-tick">AAPL</td>
+          <td>Apple</td>
+          <td class="t-bull">BEAT ($2.01 vs $1.95)</td>
+          <td class="t-bull">BEAT ($111.2B vs $109.7B)</td>
+          <td class="t-bull">+14-17% YoY; $100B buyback</td>
+          <td class="t-bull">+3%</td>
+          <td>iPhone 17 record; Services ATH $31B; consumer tech demand strong</td>
+        </tr>
+        <tr>
+          <td class="t-tick">META</td>
+          <td>Meta Platforms</td>
+          <td class="t-bull">BEAT ($7.31 vs $6.79)</td>
+          <td class="t-bull">BEAT</td>
+          <td class="t-bull">AI capex raised $125–145B</td>
+          <td class="t-bull">+8.49%</td>
+          <td>AI conviction; bullish for NVDA, AMZN cloud, chip demand</td>
+        </tr>
+        <tr>
+          <td class="t-tick">AMZN</td>
+          <td>Amazon</td>
+          <td class="t-bull">BEAT ($2.78 vs $1.64)</td>
+          <td class="t-bull">BEAT (AWS +28% YoY)</td>
+          <td>Maintained</td>
+          <td class="t-bull">+0.76%</td>
+          <td>Cloud AI re-acceleration; confirms MSFT Azure, GOOGL Cloud trend</td>
+        </tr>
+        <tr>
+          <td class="t-tick">GOOGL</td>
+          <td>Alphabet</td>
+          <td class="t-bull">BEAT</td>
+          <td class="t-bull">BEAT</td>
+          <td class="t-bull">Strong AI gains</td>
+          <td class="t-bull">+10%</td>
+          <td>Search durable; AI products monetizing; cloud strong</td>
+        </tr>
+        <tr>
+          <td class="t-tick">MSFT</td>
+          <td>Microsoft</td>
+          <td class="t-bull">BEAT</td>
+          <td class="t-bull">BEAT</td>
+          <td class="t-bull">Strong</td>
+          <td class="t-bull">+3.90%</td>
+          <td>Azure AI growth; enterprise cloud healthy</td>
+        </tr>
+        <tr class="hl-watch">
+          <td class="t-tick" style="color:var(--amber)">⚠️ SNDK</td>
+          <td>SanDisk ★ WATCHLIST</td>
+          <td class="t-bull">BEAT ($23.41 vs $14.62)</td>
+          <td class="t-bull">BEAT ($5.95B vs $4.72B, +252% YoY)</td>
+          <td class="t-bull">Q4 guide FAR above consensus</td>
+          <td class="t-bear">-6% AH</td>
+          <td>SELL-THE-NEWS; MU / SK Hynix memory peers; AI memory supply demand</td>
+        </tr>
+        <tr class="hl-watch">
+          <td class="t-tick" style="color:var(--red)">🚨 SOFI</td>
+          <td>SoFi Technologies ★ WATCHLIST</td>
+          <td>IN-LINE ($0.12)</td>
+          <td class="t-bull">BEAT ($1.1B, +41% YoY)</td>
+          <td class="t-bear">UNCHANGED (miss)</td>
+          <td class="t-bear">-9.59%</td>
+          <td>Fintech caution; KBE, IPAY; tech platform declining</td>
+        </tr>
+        <tr>
+          <td class="t-tick">TWLO</td>
+          <td>Twilio</td>
+          <td class="t-bull">BEAT</td>
+          <td class="t-bull">BEAT</td>
+          <td class="t-bull">RAISED</td>
+          <td class="t-bull">+20.6%</td>
+          <td>Communications APIs + AI integration demand</td>
+        </tr>
+        <tr>
+          <td class="t-tick">TEAM</td>
+          <td>Atlassian</td>
+          <td class="t-bull">BEAT</td>
+          <td class="t-bull">BEAT</td>
+          <td class="t-bull">Strong</td>
+          <td class="t-bull">+24.4%</td>
+          <td>Enterprise software spending healthy; IGV bullish</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div style="font-size:10px;color:var(--text-muted);margin-top:6px;">Sources: <a href="https://www.cnbc.com/2026/04/29/meta-q1-earnings-report-2026.html">CNBC META</a> · <a href="https://www.cnbc.com/2026/04/29/amazon-amzn-q1-earnings-report-2026.html">CNBC AMZN</a> · <a href="https://www.cnbc.com/2026/04/30/apple-aapl-q2-2026-earnings-report.html">CNBC AAPL</a> · <a href="https://www.stocktitan.net/news/SNDK/sandisk-reports-fiscal-third-quarter-2026-financial-d4lrldefb6us.html">StockTitan SNDK</a> · <a href="https://www.fool.com/investing/2026/04/30/magnificent-seven-companies-microsoft-amazon-alpha/">Motley Fool Mag7</a></div>
+</div>
+
+<!-- STEP 4: OPTIONS FLOW -->
+<div class="section" id="flow">
+  <div class="section-header">
+    <span class="section-num">04</span>
+    <h2>Pre-Market Options Flow</h2>
+  </div>
+  <div style="background:var(--bg2);border:1px solid var(--border);border-radius:6px;padding:14px;">
+    <p style="font-size:11px;color:var(--amber);margin-bottom:10px;">⚠️ No verified real-time options flow data from @unusual_whales, @FlowAlgo, or Benzinga was retrieved for this morning. Data below is from research gathered this week.</p>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Ticker</th><th>Type</th><th>Strike</th><th>Expiry</th><th>Size</th><th>Notional</th><th>Signal</th><th>Source</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="t-tick">NVDA</td>
+            <td class="t-bull">CALL SWEEP</td>
+            <td>$230</td>
+            <td>May 15</td>
+            <td>7,500 contracts</td>
+            <td>~$413,000</td>
+            <td class="t-bull">BULLISH — betting 13% move before May 15</td>
+            <td><a href="https://marketrebellion.com/news/daily-iv-report/mid-session-iv-report-april-29-2026/">Market Rebellion</a></td>
+          </tr>
+          <tr>
+            <td class="t-tick">SNDK</td>
+            <td class="t-amb">HIGH IV</td>
+            <td>Weekly</td>
+            <td>May 1</td>
+            <td>—</td>
+            <td>—</td>
+            <td class="t-amb">IV 226 vs 52-wk high 123; call/put 1:1.2; CRUSH expected post-earnings</td>
+            <td><a href="https://marketrebellion.com/news/daily-iv-report/mid-session-iv-report-april-30-2026/">Market Rebellion Apr30</a></td>
+          </tr>
+          <tr>
+            <td class="t-tick">PLTR</td>
+            <td class="t-bull">STRADDLE BID</td>
+            <td>ATM</td>
+            <td>May 4 expiry</td>
+            <td>—</td>
+            <td>—</td>
+            <td class="t-bull">Options market pricing 10.55% swing on May 4 earnings</td>
+            <td><a href="https://www.tipranks.com/news/palantir-pltr-q1-earnings-on-may-4-options-market-braces-for-a-10-55-swing/">TipRanks</a></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- STEP 5: ANALYSTS -->
+<div class="section" id="analysts">
+  <div class="section-header">
+    <span class="section-num">05</span>
+    <h2>Analyst Actions Today</h2>
+  </div>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>Firm</th><th>Action</th><th>Ticker</th><th>Rating</th><th>New PT</th><th>Old PT</th><th>Note</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Oppenheimer</td>
+          <td class="t-bull">INITIATE</td>
+          <td class="t-tick">PLTR</td>
+          <td class="t-bull">Outperform</td>
+          <td class="t-bull">$200</td>
+          <td>—</td>
+          <td>AIP adoption thesis; ahead of May 4 earnings</td>
+        </tr>
+        <tr>
+          <td>Wedbush</td>
+          <td class="t-bull">REITERATE</td>
+          <td class="t-tick">PLTR</td>
+          <td class="t-bull">Buy</td>
+          <td>—</td>
+          <td>—</td>
+          <td>Bullish ahead of May 4 earnings</td>
+        </tr>
+        <tr>
+          <td>Baird</td>
+          <td class="t-bull">REITERATE</td>
+          <td class="t-tick">PLTR</td>
+          <td class="t-bull">Buy</td>
+          <td>—</td>
+          <td>—</td>
+          <td>Bullish ahead of May 4 earnings</td>
+        </tr>
+        <tr>
+          <td>Bank of America</td>
+          <td class="t-bear">REITERATE</td>
+          <td class="t-tick">SOFI</td>
+          <td class="t-bear">Sell</td>
+          <td class="t-bear">$17</td>
+          <td>—</td>
+          <td>Unchanged guidance; tech platform declining</td>
+        </tr>
+        <tr>
+          <td>Stifel</td>
+          <td class="t-bull">RAISE PT</td>
+          <td class="t-tick">KLAC</td>
+          <td>—</td>
+          <td class="t-bull">$1,910</td>
+          <td>$1,700</td>
+          <td>Semis equipment bullish; SMH tailwind</td>
+        </tr>
+        <tr>
+          <td>UBS</td>
+          <td class="t-bull">RAISE PT</td>
+          <td class="t-tick">QCOM</td>
+          <td>—</td>
+          <td class="t-bull">$170</td>
+          <td>$150</td>
+          <td>Chip sector bullish; SMH tailwind</td>
+        </tr>
+        <tr>
+          <td>DA Davidson</td>
+          <td class="t-amb">RESET PT</td>
+          <td class="t-tick">AMD</td>
+          <td>—</td>
+          <td class="t-amb">TBD</td>
+          <td>—</td>
+          <td>Monitoring AI GPU trajectory ahead of May 5 earnings</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <p style="font-size:10px;color:var(--text-muted);margin-top:6px;">📌 3 separate Buy-side calls on PLTR today. SOFI Sell reiteration confirms fade. KLAC/QCOM PT raises bullish for SMH sector.</p>
+</div>
+
+<!-- STEP 6: EVENTS -->
+<div class="section" id="events">
+  <div class="section-header">
+    <span class="section-num">06</span>
+    <h2>Today's Scheduled Events — May 1, 2026</h2>
+  </div>
+  <div style="background:var(--bg2);border:1px solid var(--border);border-radius:6px;overflow:hidden;">
+    <div class="event-row">
+      <div class="event-time">Pre-Market Now</div>
+      <div class="event-name">AAPL, SNDK, SOFI, META, AMZN earnings reactions hitting tape (reported Apr 29–30)</div>
+      <div class="event-impact" style="color:var(--red)">HIGH</div>
+    </div>
+    <div class="event-row">
+      <div class="event-time">8:30 AM ET</div>
+      <div class="event-name">No major economic data today (NFP April scheduled for May 8)</div>
+      <div class="event-impact" style="color:var(--text-muted)">NONE</div>
+    </div>
+    <div class="event-row">
+      <div class="event-time">All Day</div>
+      <div class="event-name">83 Q1 2026 earnings reports scheduled today (smaller caps)</div>
+      <div class="event-impact" style="color:var(--amber)">MEDIUM</div>
+    </div>
+    <div class="event-row">
+      <div class="event-time">Week of May 11</div>
+      <div class="event-name">Senate vote on Warsh nomination for Fed Chair (Powell's term ends May 15)</div>
+      <div class="event-impact" style="color:var(--amber)">MEDIUM-HIGH</div>
+    </div>
+    <div class="event-row" style="background:rgba(59,130,246,0.05);">
+      <div class="event-time" style="color:var(--blue)">Monday May 4 AMC</div>
+      <div class="event-name"><strong>🔵 PLTR Q1 2026 Earnings</strong> — Options pricing 10.55% swing; 3 Buy calls this week</div>
+      <div class="event-impact" style="color:var(--blue)">HIGH</div>
+    </div>
+    <div class="event-row" style="background:rgba(59,130,246,0.05);">
+      <div class="event-time" style="color:var(--blue)">Tuesday May 5</div>
+      <div class="event-name"><strong>🔵 AMD Q1 2026 Earnings</strong> — Guided $9.8B revenue; AI GPU watch</div>
+      <div class="event-impact" style="color:var(--blue)">HIGH</div>
+    </div>
+    <div class="event-row" style="background:rgba(59,130,246,0.05);">
+      <div class="event-time" style="color:var(--blue)">Friday May 8 — 8:30 AM</div>
+      <div class="event-name"><strong>🔵 April Nonfarm Payrolls</strong> — Key macro; previous was +178K (above 60K est)</div>
+      <div class="event-impact" style="color:var(--blue)">HIGH</div>
+    </div>
+    <div class="event-row">
+      <div class="event-time">May 20</div>
+      <div class="event-name">NVDA Q1 2026 Earnings</div>
+      <div class="event-impact" style="color:var(--amber)">HIGH</div>
+    </div>
+    <div class="event-row">
+      <div class="event-time">June 16–17</div>
+      <div class="event-name">FOMC Meeting (Warsh's first as Fed Chair; rate projections released)</div>
+      <div class="event-impact" style="color:var(--red)">HIGH</div>
+    </div>
+    <div class="event-row">
+      <div class="event-time">Ongoing</div>
+      <div class="event-name">Middle East conflict / Strait of Hormuz disruption risk → Oil &amp; Gold volatility</div>
+      <div class="event-impact" style="color:var(--amber)">MEDIUM</div>
+    </div>
+  </div>
+</div>
+
+<!-- STEP 7: TRADE IDEAS -->
+<div class="section" id="trades">
+  <div class="section-header">
+    <span class="section-num">07</span>
+    <h2>Morning Trade Ideas</h2>
+  </div>
+
+  <div class="trade-cards" style="margin-bottom:16px;">
+    <div class="trade-card long">
+      <div class="trade-title">
+        <div class="trade-ticker">META</div>
+        <div class="trade-dir">LONG</div>
+        <span class="badge badge-green" style="font-size:9px;">🟢 #1 PICK</span>
+      </div>
+      <div class="trade-body">
+        <strong>Catalyst:</strong> Massive EPS beat + $125–145B AI capex conviction + wild AH reversal from -7% to +8.49% PM<br><br>
+        <strong>Entry logic:</strong> Gap-up open; watch first 15-min consolidation; enter on pullback to VWAP or gap fill support; target prior week highs<br><br>
+        <strong>Risk:</strong> User growth stagnation narrative could resurface; gap fill below open if AI narrative cracks<br><br>
+        <strong>PM Move:</strong> <span style="color:var(--green)">+8.49%</span>
+      </div>
+    </div>
+
+    <div class="trade-card long">
+      <div class="trade-title">
+        <div class="trade-ticker">AAPL</div>
+        <div class="trade-dir">LONG</div>
+        <span class="badge badge-green" style="font-size:9px;">🟢 #2 PICK</span>
+      </div>
+      <div class="trade-body">
+        <strong>Catalyst:</strong> iPhone 17 record demand, Services all-time high ($31B), $100B buyback, +3% PM — clean fundamental catalyst<br><br>
+        <strong>Entry logic:</strong> Buy dips near open; $100B buyback provides a floor; look for hold above prior close; target new ATH<br><br>
+        <strong>Risk:</strong> Already priced in much; tariff/China overhang; tech sector crowding<br><br>
+        <strong>PM Move:</strong> <span style="color:var(--green)">+3%</span>
+      </div>
+    </div>
+
+    <div class="trade-card watch-trade">
+      <div class="trade-title">
+        <div class="trade-ticker">SNDK</div>
+        <div class="trade-dir">WATCH</div>
+        <span class="badge badge-amber" style="font-size:9px;">⚡ GAP FADE/BUY</span>
+      </div>
+      <div class="trade-body">
+        <strong>Catalyst:</strong> Blowout earnings (+252% revenue YoY) but -6% AH after +295% YTD run<br><br>
+        <strong>Entry logic (LONG):</strong> If gap-down stabilizes within 30 min and reclaims key level → fundamental buyers stepped in → ride bounce<br>
+        <strong>Entry logic (SHORT):</strong> If no stabilization below open → momentum fade, target gap fill lower<br><br>
+        <strong>Risk:</strong> Options IV crush severe; extreme volatility both directions; high conviction required<br><br>
+        <strong>AH Move:</strong> <span style="color:var(--red)">-6%</span>
+      </div>
+    </div>
+  </div>
+
+  <div style="margin-bottom:16px;">
+    <div style="font-size:11px;font-weight:700;color:var(--amber);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;">🏆 Top Theme: AI Infrastructure &amp; Mega-Cap Tech</div>
+    <div style="background:var(--bg2);border:1px solid var(--green-dim);border-radius:6px;padding:12px;font-size:11px;color:var(--text-dim);line-height:1.6;">
+      AWS +28%, META AI capex $125–145B, AAPL record iPhone 17, GOOGL +10%, MSFT +3.9% — all roads lead to AI infrastructure spending. SMH at $504.99 pre-market (+1.1%). NVDA call sweep bullish. KLAC and QCOM PT raises. The AI theme dominates the May 2026 tape. <strong style="color:var(--text)">Watch NVDA, AMD (May 5 earnings), SMH, FNGU for sector momentum throughout May.</strong>
+    </div>
+  </div>
+
+  <div style="margin-bottom:16px;">
+    <div style="font-size:11px;font-weight:700;color:var(--red);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;">🔴 Names to AVOID Today</div>
+    <div class="avoid-row">
+      <div class="avoid-tick">SOFI</div>
+      <div class="avoid-reason">-9.59% PM on unchanged guidance + BoFA Sell reiteration + Tech Platform declining. Avoid long; potential short at open.</div>
+    </div>
+    <div class="avoid-row">
+      <div class="avoid-tick">MARA</div>
+      <div class="avoid-reason">Bitcoin consolidating at $76K with limited upside priced in. No fresh catalyst. No edge today.</div>
+    </div>
+    <div class="avoid-row">
+      <div class="avoid-tick">COIN</div>
+      <div class="avoid-reason">No verified overnight catalyst. BTC range-bound. Pass.</div>
+    </div>
+  </div>
+
+  <div>
+    <div style="font-size:11px;font-weight:700;color:var(--amber);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;">⚠️ Key Risk Events &amp; Timing</div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Risk</th><th>Timing</th><th>Impact</th></tr></thead>
+        <tbody>
+          <tr><td>SNDK gap-down volatility at open</td><td>9:30 AM today</td><td class="t-bear">HIGH</td></tr>
+          <tr><td>SOFI gap-down / fintech contagion</td><td>9:30 AM today</td><td class="t-amb">MEDIUM</td></tr>
+          <tr><td>PLTR Q1 earnings (10.55% swing priced)</td><td>Monday May 4 AMC</td><td class="t-bear">HIGH</td></tr>
+          <tr><td>AMD Q1 earnings</td><td>Tuesday May 5</td><td class="t-bear">HIGH</td></tr>
+          <tr><td>Warsh Fed Chair confirmation (hawk)</td><td>Week of May 11</td><td class="t-amb">MEDIUM-HIGH</td></tr>
+          <tr><td>April NFP Jobs Report (8:30 AM)</td><td>Friday May 8</td><td class="t-bear">HIGH</td></tr>
+          <tr><td>NVDA Q1 earnings</td><td>May 20</td><td class="t-bear">HIGH</td></tr>
+          <tr><td>Middle East / Strait of Hormuz disruption</td><td>Ongoing</td><td class="t-amb">MEDIUM</td></tr>
+          <tr><td>First FOMC under Warsh + rate projections</td><td>June 16–17</td><td class="t-bear">HIGH</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<div class="footer">
+  <strong>Sources:</strong>
+  <a href="https://electrek.co/2026/05/01/tesla-tsla-web-transactions-musk-companies-spacex-xai-10ka-2025/">Electrek TSLA</a> ·
+  <a href="https://www.cnbc.com/2026/04/29/meta-q1-earnings-report-2026.html">CNBC META</a> ·
+  <a href="https://www.cnbc.com/2026/04/29/amazon-amzn-q1-earnings-report-2026.html">CNBC AMZN</a> ·
+  <a href="https://www.cnbc.com/2026/04/30/apple-aapl-q2-2026-earnings-report.html">CNBC AAPL</a> ·
+  <a href="https://www.stocktitan.net/news/SNDK/sandisk-reports-fiscal-third-quarter-2026-financial-d4lrldefb6us.html">StockTitan SNDK</a> ·
+  <a href="https://sherwood.news/markets/sandisk-quarterly-earnings-report/">Sherwood SNDK</a> ·
+  <a href="https://www.tipranks.com/news/palantir-pltr-q1-earnings-on-may-4-options-market-braces-for-a-10-55-swing/">TipRanks PLTR</a> ·
+  <a href="https://www.federalreserve.gov/newsevents/pressreleases/monetary20260429a.htm">Federal Reserve FOMC</a> ·
+  <a href="https://www.cnbc.com/2026/04/29/fed-meeting-today-live-updates-warsh-powell.html">CNBC Fed Recap</a> ·
+  <a href="https://www.fool.com/investing/2026/04/30/magnificent-seven-companies-microsoft-amazon-alpha/">Motley Fool Mag7</a> ·
+  <a href="https://www.investing.com/news/transcripts/earnings-call-transcript-sofi-technologies-q1-2026-sees-revenue-growth-stock-dips-93CH-4645289/">Investing.com SOFI</a> ·
+  <a href="https://www.bloomberg.com/news/articles/2026-04-30/alphabet-amazon-outpace-meta-in-ai-during-earnings-bonanza">Bloomberg AI Earnings</a> ·
+  <a href="https://marketrebellion.com/news/daily-iv-report/mid-session-iv-report-april-29-2026/">Market Rebellion IV</a> ·
+  <a href="https://tradingeconomics.com/commodities">Trading Economics</a>
+  <br><br>
+  ⚠️ This report is for informational purposes only. Not financial advice. All catalyst data sourced from verifiable news outlets. Trade at your own risk.
+</div>
+
+</body>
+</html>
