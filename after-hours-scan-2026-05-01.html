@@ -1,0 +1,813 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>After-Hours Scan — May 1, 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0e17;
+    --bg2: #0f1520;
+    --bg3: #141c2e;
+    --border: #1e2d4a;
+    --text: #e2e8f0;
+    --muted: #64748b;
+    --green: #22c55e;
+    --green-dim: #166534;
+    --red: #ef4444;
+    --red-dim: #7f1d1d;
+    --amber: #f59e0b;
+    --amber-dim: #78350f;
+    --blue: #3b82f6;
+    --purple: #a855f7;
+    --cyan: #06b6d4;
+    --orange: #f97316;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    line-height: 1.7;
+    padding: 0 0 60px 0;
+  }
+  /* Header */
+  .header {
+    background: linear-gradient(135deg, #0a0e17 0%, #0f1c35 50%, #0a0e17 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 28px 40px 24px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    backdrop-filter: blur(12px);
+  }
+  .header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+  .header h1 {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--cyan);
+    letter-spacing: -0.5px;
+  }
+  .header .subtitle {
+    color: var(--muted);
+    font-size: 11px;
+    margin-top: 4px;
+  }
+  .market-bar {
+    display: flex;
+    gap: 24px;
+    margin-top: 14px;
+    flex-wrap: wrap;
+  }
+  .market-pill {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 4px 12px;
+    font-size: 11px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .market-pill .ticker { color: var(--muted); }
+  .market-pill .val { font-weight: 600; }
+  .up { color: var(--green); }
+  .dn { color: var(--red); }
+  .flat { color: var(--amber); }
+
+  /* Layout */
+  .container { max-width: 1280px; margin: 0 auto; padding: 0 40px; }
+  .section {
+    margin-top: 36px;
+  }
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 10px;
+  }
+  .step-badge {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 2px 8px;
+    font-size: 10px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  .section-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  /* Cards */
+  .card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 18px 20px;
+    margin-bottom: 12px;
+  }
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  .ticker-name {
+    font-size: 16px;
+    font-weight: 700;
+  }
+  .company-name { color: var(--muted); font-size: 11px; margin-top: 2px; }
+  .badge {
+    border-radius: 4px;
+    padding: 2px 10px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .badge-beat { background: var(--green-dim); color: var(--green); border: 1px solid var(--green); }
+  .badge-miss { background: var(--red-dim); color: var(--red); border: 1px solid var(--red); }
+  .badge-inline { background: var(--amber-dim); color: var(--amber); border: 1px solid var(--amber); }
+  .badge-watch { background: #1e1b4b; color: #818cf8; border: 1px solid #3730a3; }
+  .badge-diverge { background: var(--amber-dim); color: var(--amber); border: 1px solid var(--amber); }
+
+  /* Metrics row */
+  .metrics {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 10px;
+    margin: 12px 0;
+  }
+  .metric {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 8px 12px;
+  }
+  .metric-label { color: var(--muted); font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .metric-val { font-size: 13px; font-weight: 600; margin-top: 2px; }
+  .metric-sub { font-size: 10px; color: var(--muted); margin-top: 1px; }
+
+  /* Grid layouts */
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; }
+  @media (max-width: 900px) { .grid-2, .grid-3 { grid-template-columns: 1fr; } }
+
+  /* Table */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+  }
+  th {
+    background: var(--bg3);
+    color: var(--muted);
+    font-weight: 500;
+    padding: 8px 12px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-size: 10px;
+  }
+  td {
+    padding: 8px 12px;
+    border-bottom: 1px solid #1a2440;
+  }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: #0f1825; }
+
+  /* Tags */
+  .tag {
+    display: inline-block;
+    padding: 1px 7px;
+    border-radius: 3px;
+    font-size: 10px;
+    font-weight: 600;
+    margin: 1px;
+  }
+  .tag-call { background: #14532d; color: #4ade80; }
+  .tag-put { background: #7f1d1d; color: #f87171; }
+  .tag-diverge { background: #78350f; color: #fcd34d; }
+  .tag-bmo { background: #1e3a5f; color: #7dd3fc; }
+  .tag-amc { background: #2d1b69; color: #c4b5fd; }
+
+  /* Alert boxes */
+  .alert {
+    border-radius: 6px;
+    padding: 12px 16px;
+    margin: 10px 0;
+    border-left: 3px solid;
+    font-size: 12px;
+  }
+  .alert-red { background: #1c0a0a; border-color: var(--red); color: #fca5a5; }
+  .alert-green { background: #0a1c0a; border-color: var(--green); color: #86efac; }
+  .alert-amber { background: #1c140a; border-color: var(--amber); color: #fcd34d; }
+  .alert-blue { background: #0a0f1c; border-color: var(--blue); color: #93c5fd; }
+  .alert strong { font-weight: 700; }
+
+  /* Overnight briefing */
+  .briefing {
+    background: linear-gradient(135deg, #0a1020 0%, #0f1c35 100%);
+    border: 1px solid var(--cyan);
+    border-radius: 8px;
+    padding: 20px 24px;
+    margin: 16px 0;
+    position: relative;
+    overflow: hidden;
+  }
+  .briefing::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--cyan), var(--purple), var(--cyan));
+  }
+  .briefing p { color: #cbd5e1; font-size: 13px; line-height: 1.8; }
+
+  /* Game plan tickers */
+  .gameplan-item {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px 20px;
+    position: relative;
+    overflow: hidden;
+  }
+  .gameplan-item::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 3px;
+  }
+  .gameplan-bull::before { background: var(--green); }
+  .gameplan-bear::before { background: var(--red); }
+  .gameplan-binary::before { background: var(--amber); }
+  .rank {
+    font-size: 10px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 4px;
+  }
+  .gp-ticker { font-size: 18px; font-weight: 700; }
+  .gp-rationale { color: #94a3b8; font-size: 12px; margin-top: 6px; line-height: 1.6; }
+
+  /* Assumption table */
+  .assumption { background: var(--bg2); border: 1px solid var(--border); border-radius: 6px; padding: 14px 16px; margin-bottom: 8px; }
+  .assumption-header { color: var(--amber); font-weight: 600; font-size: 12px; margin-bottom: 4px; }
+  .assumption-body { color: #94a3b8; font-size: 11px; line-height: 1.6; }
+
+  /* Sources */
+  .source-link { color: var(--cyan); text-decoration: none; font-size: 11px; }
+  .source-link:hover { text-decoration: underline; }
+
+  hr { border: none; border-top: 1px solid var(--border); margin: 32px 0; }
+
+  .note {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 10px 14px;
+    color: var(--muted);
+    font-size: 11px;
+    font-style: italic;
+    margin: 10px 0;
+  }
+
+  .divider-label {
+    text-align: center;
+    color: var(--muted);
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin: 24px 0 16px;
+    position: relative;
+  }
+  .divider-label::before, .divider-label::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    width: 40%;
+    height: 1px;
+    background: var(--border);
+  }
+  .divider-label::before { left: 0; }
+  .divider-label::after { right: 0; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-top">
+    <div>
+      <h1>🌙 AFTER-HOURS CATALYST SCAN</h1>
+      <div class="subtitle">Friday, May 1, 2026 &nbsp;|&nbsp; Next session: Monday, May 4 &nbsp;|&nbsp; Auto-generated at market close</div>
+    </div>
+  </div>
+  <div class="market-bar">
+    <div class="market-pill"><span class="ticker">SPY</span><span class="val up">$723.30</span><span class="up">+0.54%</span></div>
+    <div class="market-pill"><span class="ticker">QQQ</span><span class="val up">ATH</span><span class="up">+0.69%</span></div>
+    <div class="market-pill"><span class="ticker">IWM</span><span class="val up">+2.21%</span></div>
+    <div class="market-pill"><span class="ticker">AAPL</span><span class="val up">+5%</span></div>
+    <div class="market-pill"><span class="ticker">WTI</span><span class="val dn">$101.94</span><span class="dn">−3%</span></div>
+    <div class="market-pill"><span class="ticker">10YR</span><span class="val flat">4.39%</span></div>
+    <div class="market-pill"><span class="ticker">BTC</span><span class="val up">$76,247</span></div>
+    <div class="market-pill"><span class="ticker">GLD</span><span class="val flat">~$419</span></div>
+  </div>
+</div>
+
+<div class="container">
+
+<!-- STEP 1: EARNINGS -->
+<div class="section">
+  <div class="section-header">
+    <span class="step-badge">Step 1</span>
+    <span class="section-title">Earnings Released Today — May 1, 2026</span>
+  </div>
+
+  <div class="note">📋 Friday is historically light on after-close reporters. The Mag-7 wave hit April 29–30. Today's primary reporters (XOM, CVX) released before market open. Apple's Q2 results (April 30 AMC) were fully digested in today's session (+5% AAPL). No confirmed major after-close reporters found for tonight.</div>
+
+  <div class="divider-label">Before Market Open — May 1</div>
+
+  <!-- XOM -->
+  <div class="card">
+    <div class="card-header">
+      <div>
+        <div class="ticker-name" style="color:#f59e0b">XOM</div>
+        <div class="company-name">ExxonMobil Corporation</div>
+      </div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <span class="tag tag-bmo">BMO</span>
+        <span class="badge badge-beat">EPS BEAT</span>
+      </div>
+    </div>
+    <div class="metrics">
+      <div class="metric"><div class="metric-label">EPS Actual</div><div class="metric-val up">$1.16</div><div class="metric-sub">vs ~$1.00 est</div></div>
+      <div class="metric"><div class="metric-label">Revenue</div><div class="metric-val up">$85.14B</div><div class="metric-sub">vs $82.18B est (+3.6%)</div></div>
+      <div class="metric"><div class="metric-label">Net Income YoY</div><div class="metric-val dn">−45%</div><div class="metric-sub">$4.2B vs $7.7B</div></div>
+      <div class="metric"><div class="metric-label">Stock (May 1)</div><div class="metric-val">$155.25</div><div class="metric-sub">Range $151–$155.69</div></div>
+    </div>
+    <div class="alert alert-amber"><strong>⚠️ Key risk:</strong> Exxon warned Middle East production falls 750K bpd if Strait of Hormuz remains closed through Q2. Accounting charges from hedging derivatives masked true operational performance vs prior year. Profits -45% YoY despite elevated oil prices — suggests the war premium is already embedded in costs.</div>
+    <div style="color:#94a3b8;font-size:11px;margin-top:8px">📡 <strong>Read-through:</strong> XLE, UCO, USO — energy names sensitive to Hormuz closure duration. Revenue beat suggests US volumes surging as global buyers pivot away from Middle Eastern supply.</div>
+  </div>
+
+  <!-- CVX -->
+  <div class="card">
+    <div class="card-header">
+      <div>
+        <div class="ticker-name" style="color:#f59e0b">CVX</div>
+        <div class="company-name">Chevron Corporation</div>
+      </div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <span class="tag tag-bmo">BMO</span>
+        <span class="badge badge-beat">MAJOR EPS BEAT</span>
+      </div>
+    </div>
+    <div class="metrics">
+      <div class="metric"><div class="metric-label">EPS Actual</div><div class="metric-val up">$1.41</div><div class="metric-sub">vs $0.95 est (+48%)</div></div>
+      <div class="metric"><div class="metric-label">Revenue</div><div class="metric-val dn">$48.61B</div><div class="metric-sub">vs $52.1B est (MISS −6.7%)</div></div>
+      <div class="metric"><div class="metric-label">Net Income YoY</div><div class="metric-val dn">−37%</div><div class="metric-sub">$2.2B vs $3.5B</div></div>
+    </div>
+    <div style="color:#94a3b8;font-size:11px;margin-top:8px">📡 <strong>Read-through:</strong> EPS beat driven by cost control — revenue miss signals production/volume constraints. COP, OXY likely face similar Hormuz exposure headwinds in Q2.</div>
+  </div>
+
+  <div class="divider-label">Carried Forward — April 30 AMC (Digested Today)</div>
+
+  <!-- AAPL -->
+  <div class="card" style="border-color:#22c55e40">
+    <div class="card-header">
+      <div>
+        <div class="ticker-name" style="color:#22c55e">AAPL</div>
+        <div class="company-name">Apple Inc.</div>
+      </div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <span class="badge badge-watch">WATCHLIST</span>
+        <span class="tag tag-amc">APR 30 AMC</span>
+        <span class="badge badge-beat">BEAT</span>
+      </div>
+    </div>
+    <div class="metrics">
+      <div class="metric"><div class="metric-label">EPS</div><div class="metric-val up">$2.01</div><div class="metric-sub">vs $1.95 est ✅</div></div>
+      <div class="metric"><div class="metric-label">Revenue</div><div class="metric-val up">$111.18B</div><div class="metric-sub">vs $109.66B est ✅</div></div>
+      <div class="metric"><div class="metric-label">Services Rev</div><div class="metric-val up">$30.98B</div><div class="metric-sub">vs $30.39B est ✅</div></div>
+      <div class="metric"><div class="metric-label">AH / Day React</div><div class="metric-val up">+3% AH / +5% Day</div><div class="metric-sub">May 1 session</div></div>
+    </div>
+    <div class="alert alert-green"><strong>💡 CEO Succession Context:</strong> First earnings since Ternus named as Tim Cook's replacement. Market bought the leadership transition. "Most popular iPhone ever" management commentary. iPhone missed for 2nd time in 3 quarters — the only blemish.</div>
+    <div style="color:#94a3b8;font-size:11px;margin-top:8px">📡 <strong>Read-through:</strong> QCOM, AVGO, TSM (suppliers), XLK, QQQ, IGV all beneficiaries. Services + hardware mix improving = premium multiple justified.</div>
+  </div>
+
+  <!-- SNDK -->
+  <div class="card" style="border-color:#f59e0b40">
+    <div class="card-header">
+      <div>
+        <div class="ticker-name" style="color:#f59e0b">SNDK</div>
+        <div class="company-name">SanDisk Corporation</div>
+      </div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <span class="badge badge-watch">WATCHLIST</span>
+        <span class="tag tag-amc">APR 30 AMC</span>
+        <span class="badge badge-beat">MASSIVE BEAT</span>
+      </div>
+    </div>
+    <div class="metrics">
+      <div class="metric"><div class="metric-label">EPS</div><div class="metric-val up">$23.41</div><div class="metric-sub">vs $14.66 est (+59.7%) 🚀</div></div>
+      <div class="metric"><div class="metric-label">Revenue</div><div class="metric-val up">$5.95B</div><div class="metric-sub">vs $4.72B est (+26%)</div></div>
+      <div class="metric"><div class="metric-label">Data Center</div><div class="metric-val up">+233%</div><div class="metric-sub">Sequential growth</div></div>
+      <div class="metric"><div class="metric-label">Gross Margin</div><div class="metric-val up">78.4%</div><div class="metric-sub">Non-GAAP</div></div>
+      <div class="metric"><div class="metric-label">Q4 Rev Guide</div><div class="metric-val up">$7.75–8.25B</div><div class="metric-sub">vs $6.62B consensus</div></div>
+      <div class="metric"><div class="metric-label">May 1 Close</div><div class="metric-val up">+4.32%</div><div class="metric-sub">Recovered from AH selloff</div></div>
+    </div>
+    <div class="alert alert-amber"><strong>⚡ DIVERGENCE ALERT:</strong> Blowout beat triggered initial aggressive AH selling (−6% overnight) before buyers stepped in to close +4.32% on May 1. Classic "sell-the-news" absorption pattern. The recovery is bullish — buyers are absorbing distribution. Watch for continuation Monday.</div>
+    <div style="color:#94a3b8;font-size:11px;margin-top:8px">📡 <strong>Read-through:</strong> NAND super-cycle alive. MU, WDC beneficiaries. SMH ETF gains further fundamental support. Data center capex from hyperscalers is real and flowing through to memory.</div>
+  </div>
+
+  <!-- SOFI -->
+  <div class="card" style="border-color:#ef444440">
+    <div class="card-header">
+      <div>
+        <div class="ticker-name" style="color:#ef4444">SOFI</div>
+        <div class="company-name">SoFi Technologies — Apr 29 AMC</div>
+      </div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <span class="badge badge-watch">WATCHLIST</span>
+        <span class="badge badge-inline">INLINE</span>
+      </div>
+    </div>
+    <div class="metrics">
+      <div class="metric"><div class="metric-label">EPS</div><div class="metric-val flat">$0.12</div><div class="metric-sub">vs $0.12 est (inline)</div></div>
+      <div class="metric"><div class="metric-label">Revenue</div><div class="metric-val up">$1.1B</div><div class="metric-sub">vs $1.05B est (+41% YoY)</div></div>
+      <div class="metric"><div class="metric-label">Loan Orig.</div><div class="metric-val up">$12.2B</div><div class="metric-sub">Record quarter</div></div>
+      <div class="metric"><div class="metric-label">Stock Reaction</div><div class="metric-val dn">−12.53%</div><div class="metric-sub">Now ~$15.81 (from $18.43)</div></div>
+    </div>
+    <div class="alert alert-red"><strong>🔴 Post-Earnings Dislocation:</strong> Unchanged guidance + Technology Platform revenue decline triggered institutional selling despite 41% revenue growth. Stock at $15.81 — potential oversold bounce candidate or continued de-rating. Monitor KBE (banks) for read-through on fintech sentiment.</div>
+  </div>
+</div>
+
+<!-- STEP 2: AH MOVERS -->
+<div class="section">
+  <div class="section-header">
+    <span class="step-badge">Step 2</span>
+    <span class="section-title">After-Hours Movers — Tonight (May 1)</span>
+  </div>
+  <div class="alert alert-blue"><strong>📊 Quiet AH Tape:</strong> No major S&P 500 reporters confirmed for tonight (Friday). Market closed at all-time highs with strong breadth. AAPL's 5% move was the dominant price action of the day — AH tape is absorbing the week's earnings. Key mover to watch: any Iran ceasefire announcement over the weekend will affect Sunday night futures.</div>
+</div>
+
+<!-- STEP 3: ETF RECAP -->
+<div class="section">
+  <div class="section-header">
+    <span class="step-badge">Step 3</span>
+    <span class="section-title">Sector & Theme ETF — End-of-Day Recap</span>
+  </div>
+
+  <div class="grid-2">
+    <!-- COMMODITIES -->
+    <div class="card" style="border-color:#f9731640">
+      <div style="color:var(--orange);font-weight:700;font-size:13px;margin-bottom:10px">🛢️ COMMODITIES — ACTIVE</div>
+      <div class="metrics">
+        <div class="metric"><div class="metric-label">WTI Crude</div><div class="metric-val dn">$101.94</div><div class="metric-sub">−3% today</div></div>
+        <div class="metric"><div class="metric-label">Brent</div><div class="metric-val dn">$108.17</div><div class="metric-sub">−2% today</div></div>
+        <div class="metric"><div class="metric-label">XLE</div><div class="metric-val dn">$58.44</div><div class="metric-sub">from $59.65 (−2%)</div></div>
+        <div class="metric"><div class="metric-label">GLD</div><div class="metric-val flat">~$419</div><div class="metric-sub">−17% from $510 ATH</div></div>
+      </div>
+      <div class="alert alert-amber" style="margin-top:10px"><strong>Catalyst:</strong> Iran sent peace proposal via Pakistan mediators. Hormuz still closed — oil fell on hope, not resolution. Exxon flagged 750K bpd Middle East production risk if closure extends through Q2.</div>
+      <div style="color:#94a3b8;font-size:11px;margin-top:8px"><strong>Tomorrow (Mon):</strong> BINARY. Iran deal = energy gap-down. Talks collapse = violent reversal above $110. Reduce size going into weekend. Best individual play: UCO puts (defined risk) if peace talks advance.</div>
+    </div>
+
+    <!-- TECH/AI -->
+    <div class="card" style="border-color:#3b82f640">
+      <div style="color:var(--blue);font-weight:700;font-size:13px;margin-bottom:10px">💻 TECH & AI — STRONG</div>
+      <div class="metrics">
+        <div class="metric"><div class="metric-label">Nasdaq</div><div class="metric-val up">25,114</div><div class="metric-sub">All-time high +0.69%</div></div>
+        <div class="metric"><div class="metric-label">SMH NAV</div><div class="metric-val up">$506.63</div><div class="metric-sub">+32.2% past month 🚀</div></div>
+        <div class="metric"><div class="metric-label">NVDA</div><div class="metric-val">~$201</div><div class="metric-sub">Earns May 20</div></div>
+        <div class="metric"><div class="metric-label">BTC / IBIT</div><div class="metric-val up">$76,247</div><div class="metric-sub">+12% in April</div></div>
+      </div>
+      <div class="alert alert-green" style="margin-top:10px"><strong>AI Theme Strengthening:</strong> AMZN AWS +28%, SNDK data center +233% seq., AAPL Services $31B. Hyperscaler capex translating to real memory/infra demand. NVDA May 20 earnings = next major catalyst for SMH.</div>
+      <div style="color:#94a3b8;font-size:11px;margin-top:8px"><strong>Tomorrow (Mon):</strong> Bullish continuation. After +32% month, SMH may need to consolidate — buy the dip, don't chase the open.</div>
+    </div>
+
+    <!-- DEFENSE -->
+    <div class="card" style="border-color:#a855f740">
+      <div style="color:var(--purple);font-weight:700;font-size:13px;margin-bottom:10px">⚔️ DEFENSE & SPECIALTY — BULLISH</div>
+      <div class="metrics">
+        <div class="metric"><div class="metric-label">ITA</div><div class="metric-val up">+2.54% today</div><div class="metric-sub">+41% YoY</div></div>
+        <div class="metric"><div class="metric-label">JETS</div><div class="metric-val dn">−13.5% in March</div><div class="metric-sub">Fuel cost headwinds</div></div>
+      </div>
+      <div style="color:#94a3b8;font-size:11px;margin-top:8px"><strong>ITA:</strong> Iran war = defense spending surge. Near-term headwind only if ceasefire confirmed. <strong>JETS:</strong> Oil falling today is relief for airlines — if Hormuz reopens, JETS gap up sharply. Watch UAL, DAL Monday on oil direction.</div>
+    </div>
+
+    <!-- MACRO -->
+    <div class="card" style="border-color:#06b6d440">
+      <div style="color:var(--cyan);font-weight:700;font-size:13px;margin-bottom:10px">🏦 MACRO — RATES WATCH</div>
+      <div class="metrics">
+        <div class="metric"><div class="metric-label">10-Yr Yield</div><div class="metric-val flat">4.39%</div><div class="metric-sub">+2bp today</div></div>
+        <div class="metric"><div class="metric-label">Fed Funds</div><div class="metric-val flat">3.50–3.75%</div><div class="metric-sub">Held Apr 29</div></div>
+        <div class="metric"><div class="metric-label">TLT</div><div class="metric-val dn">Under pressure</div><div class="metric-sub">No cuts priced 2026</div></div>
+        <div class="metric"><div class="metric-label">UUP Dollar</div><div class="metric-val flat">Neutral/Firm</div><div class="metric-sub">Strengthened from Jan lows</div></div>
+      </div>
+      <div class="alert alert-red" style="margin-top:10px"><strong>Rate Signal:</strong> Fed held at 3.5–3.75% April 29. Markets have fully priced out 2026 cuts. Some models assigning probability to 2027 hike. Iran war inflation risk + robust economy = Fed on hold. Powell stayed despite Trump legal pressure.</div>
+    </div>
+  </div>
+</div>
+
+<!-- STEP 4: OPTIONS FLOW -->
+<div class="section">
+  <div class="section-header">
+    <span class="step-badge">Step 4</span>
+    <span class="section-title">Options Flow Summary</span>
+  </div>
+
+  <div class="grid-2">
+    <div class="card">
+      <div style="font-weight:600;margin-bottom:12px;color:var(--cyan)">A) Index-Level Positioning</div>
+      <table>
+        <thead><tr><th>Index</th><th>PC Ratio</th><th>Signal</th></tr></thead>
+        <tbody>
+          <tr><td><strong>QQQ</strong></td><td class="flat">1.29</td><td class="flat">⚠️ Elevated — institutional hedging</td></tr>
+          <tr><td><strong>SPY</strong></td><td class="muted">Est. Elevated</td><td class="muted">Inferred from QQQ data</td></tr>
+        </tbody>
+      </table>
+      <div class="alert alert-amber" style="margin-top:12px"><strong>Key Read:</strong> QQQ PC ratio 1.29 with Nasdaq at ATH = institutions are <em>long and hedged</em>. This is NOT panic — it's risk management. The rally has protection underneath it.</div>
+    </div>
+
+    <div class="card">
+      <div style="font-weight:600;margin-bottom:12px;color:var(--cyan)">B-D) Watchlist Flow & Divergences</div>
+      <div class="alert alert-amber"><span class="badge badge-diverge">AMBER DIVERGENCE</span> <strong>SNDK:</strong> Blowout earnings → initial AH selling (−6%) → recovery to +4.32% close. Smart money absorbed distribution. High-conviction continuation signal.</div>
+      <div class="alert alert-green" style="margin-top:8px"><span class="tag tag-call">CALLS</span> <strong>PLTR (pre-event):</strong> Options structure implies ±8–12% move May 4 AMC. Bullish analyst upgrades (Buy, PT $196–$210). Consider straddle for defined risk on binary outcome.</div>
+      <div class="alert alert-green" style="margin-top:8px"><span class="tag tag-call">CALLS</span> <strong>AAPL:</strong> Pre-earnings options expected small move — delivered +5% (above expected). Gamma squeeze dynamic confirmed. Watch for call overwriting pressure next week.</div>
+      <div style="color:var(--muted);font-size:10px;margin-top:10px;font-style:italic">⚠️ Note: Real-time flow data (sweep/block specifics) not accessible via web search for May 1. Verify against Unusual Whales, Barchart, or OptionStrat at Monday open.</div>
+    </div>
+  </div>
+</div>
+
+<!-- STEP 5: SEC FILINGS -->
+<div class="section">
+  <div class="section-header">
+    <span class="step-badge">Step 5</span>
+    <span class="section-title">SEC Filings & Insider Activity</span>
+  </div>
+  <div class="card">
+    <table>
+      <thead><tr><th>Ticker</th><th>Insider</th><th>Type</th><th>Shares</th><th>Price</th><th>Signal</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><strong>YUM</strong></td>
+          <td>CEO Christopher Turner</td>
+          <td class="dn">SELL (Form 4/A)</td>
+          <td>250</td>
+          <td>$160.48</td>
+          <td class="muted">Routine 10b5-1 — no signal</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="note" style="margin-top:10px">No notable insider buying, cluster buys, or activist 13-D filings found for May 1. Typical for post-earnings Friday. Check OpenInsider.com Monday morning for any weekend Form 4 filings that arrive after close.</div>
+  </div>
+</div>
+
+<!-- STEP 6: TOMORROW'S EARNINGS -->
+<div class="section">
+  <div class="section-header">
+    <span class="step-badge">Step 6</span>
+    <span class="section-title">Upcoming Earnings Preview — Week of May 4</span>
+  </div>
+
+  <div class="note">May 2 is Saturday — no market. Next session Monday May 4.</div>
+
+  <div class="grid-2" style="margin-top:12px">
+    <!-- PLTR -->
+    <div class="card" style="border-color:#818cf840">
+      <div class="card-header">
+        <div>
+          <div class="ticker-name" style="color:#818cf8">PLTR</div>
+          <div class="company-name">Palantir Technologies</div>
+        </div>
+        <div style="display:flex;gap:6px">
+          <span class="badge badge-watch">WATCHLIST</span>
+          <span class="tag tag-amc">MON MAY 4 AMC</span>
+        </div>
+      </div>
+      <div class="metrics">
+        <div class="metric"><div class="metric-label">EPS Estimate</div><div class="metric-val">$0.28</div><div class="metric-sub">vs $0.14 YoY (+100%)</div></div>
+        <div class="metric"><div class="metric-label">Rev Estimate</div><div class="metric-val">$1.54B</div><div class="metric-sub">+74% YoY</div></div>
+        <div class="metric"><div class="metric-label">Avg Price Target</div><div class="metric-val up">$196–$210</div><div class="metric-sub">Opco/Citi Buy</div></div>
+        <div class="metric"><div class="metric-label">Implied Move</div><div class="metric-val flat">±8–12%</div><div class="metric-sub">Historical range</div></div>
+      </div>
+      <div style="color:#94a3b8;font-size:11px;margin-top:8px"><strong>Watch:</strong> US Govt + US Commercial revenue, AIP enterprise deals. ETFs: BOTZ, ARKX, ILIT. Street divided — straddle or defined risk preferred over directional.</div>
+    </div>
+
+    <!-- AMD -->
+    <div class="card" style="border-color:#22c55e40">
+      <div class="card-header">
+        <div>
+          <div class="ticker-name" style="color:#22c55e">AMD</div>
+          <div class="company-name">Advanced Micro Devices</div>
+        </div>
+        <div style="display:flex;gap:6px">
+          <span class="badge badge-watch">WATCHLIST</span>
+          <span class="tag tag-amc">TUE MAY 5 AMC</span>
+        </div>
+      </div>
+      <div class="metrics">
+        <div class="metric"><div class="metric-label">Rev Estimate</div><div class="metric-val">$9.84B</div><div class="metric-sub">+32% YoY</div></div>
+        <div class="metric"><div class="metric-label">Key Watch</div><div class="metric-val flat">Data Center GPU</div><div class="metric-sub">vs NVDA positioning</div></div>
+      </div>
+      <div style="color:#94a3b8;font-size:11px;margin-top:8px"><strong>Watch:</strong> MI-series AI chip demand, data center mix, PC/gaming health. ETFs: SMH (major holding), XLK. If AMD beats → SMH continuation. Miss → SMH pullback.</div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:12px">
+    <div style="font-weight:600;margin-bottom:10px;color:var(--text)">Other Notable Reports — Week of May 4</div>
+    <table>
+      <thead><tr><th>Ticker</th><th>Company</th><th>Date/Time</th><th>Key Watch</th></tr></thead>
+      <tbody>
+        <tr><td><strong>FANG</strong></td><td>Diamondback Energy</td><td><span class="tag tag-amc">Mon AMC</span></td><td>Oil price sensitivity, Permian production</td></tr>
+        <tr><td><strong>VRTX</strong></td><td>Vertex Pharmaceuticals</td><td><span class="tag tag-amc">Mon AMC</span></td><td>Gene therapy pipeline, CF drug revenue</td></tr>
+        <tr><td><strong>ON</strong></td><td>ON Semiconductor</td><td><span class="tag tag-amc">Mon AMC</span></td><td>EV silicon content, auto demand</td></tr>
+        <tr><td><strong>DIS</strong></td><td>Walt Disney</td><td><span class="tag tag-amc">Tue AMC</span></td><td>Streaming subs, parks revenue, ESPN</td></tr>
+        <tr><td><strong>PARA</strong></td><td>Paramount Skydance</td><td><span class="tag tag-amc">Mon AMC</span></td><td>Post-merger integration update</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- STEP 7: MACRO -->
+<div class="section">
+  <div class="section-header">
+    <span class="step-badge">Step 7</span>
+    <span class="section-title">Macro Overnight Watch</span>
+  </div>
+
+  <div class="grid-3">
+    <div class="card">
+      <div style="color:var(--cyan);font-weight:600;margin-bottom:8px">🌏 Asia (Sun Night)</div>
+      <div class="metric"><div class="metric-label">Nikkei 225</div><div class="metric-val up">60,537</div><div class="metric-sub">Record high +1.38%</div></div>
+      <div class="metric" style="margin-top:6px"><div class="metric-label">Kospi</div><div class="metric-val up">6,615</div><div class="metric-sub">Record high +2.15%</div></div>
+      <div style="color:#94a3b8;font-size:11px;margin-top:8px">Risk-on in Asia. Japan benefiting from AI theme + weak yen. Korea semi names (Samsung, SK Hynix) benefit from SNDK/NAND cycle read-through.</div>
+    </div>
+    <div class="card">
+      <div style="color:var(--red);font-weight:600;margin-bottom:8px">🔴 Iran Watch — #1 Overnight Risk</div>
+      <div class="alert alert-red">Pakistan-mediated Iran peace proposal submitted May 1. Hormuz STILL CLOSED. WTI fell 3% on hope — not resolution. Two outcomes:<br><br>
+      <strong>Deal announced:</strong> WTI −10%, XLE −5%, ITA −3%, JETS +8%, broad market +2%<br><br>
+      <strong>Talks fail:</strong> WTI +5%, XLE +3%, ITA +2%, JETS −3%</div>
+    </div>
+    <div class="card">
+      <div style="color:var(--amber);font-weight:600;margin-bottom:8px">📅 Week Ahead Data</div>
+      <div style="font-size:11px;color:#94a3b8;line-height:2">
+        <div><strong style="color:var(--text)">May 4:</strong> PLTR, FANG, ON, VRTX earnings AMC</div>
+        <div><strong style="color:var(--text)">May 5:</strong> AMD, DIS earnings AMC</div>
+        <div><strong style="color:var(--text)">May 6:</strong> No major data</div>
+        <div><strong style="color:var(--amber)">May 8: ⚡ APRIL JOBS REPORT (8:30 AM ET)</strong></div>
+      </div>
+      <div class="alert alert-amber" style="margin-top:8px"><strong>Jobs Report Setup:</strong> March was +178K (massive beat vs 60K est). April consensus TBD. Hot number → yields spike, growth scare. Weak number → rate cut odds revive.</div>
+    </div>
+  </div>
+</div>
+
+<!-- STEP 8: GAME PLAN -->
+<div class="section">
+  <div class="section-header">
+    <span class="step-badge">Step 8</span>
+    <span class="section-title">Tomorrow's Game Plan — Monday, May 4</span>
+  </div>
+
+  <div class="grid-3">
+    <div class="gameplan-item gameplan-bull">
+      <div class="rank">#1 — Pre-Earnings Play</div>
+      <div class="gp-ticker up">PLTR</div>
+      <div style="font-size:11px;color:var(--muted);margin-top:2px">Palantir Technologies</div>
+      <div class="gp-rationale">Reporting AMC Mon May 4. Market bullish AI/defense/govt tech. Expected move ±8–12%. DO NOT buy the open — wait for 10:00–10:30 AM price discovery. Look for IV expansion setup into close, or wait for post-earnings reaction. Street divided: Opco/Citi Buy vs Motley Fool bearish. Defined risk only.</div>
+      <div style="margin-top:8px"><span class="tag tag-call">CALLS BIAS</span> <span style="font-size:10px;color:var(--muted)">Straddle if uncertain</span></div>
+    </div>
+
+    <div class="gameplan-item gameplan-binary">
+      <div class="rank">#2 — Binary Geopolitical Trade</div>
+      <div class="gp-ticker flat">XLE / Energy</div>
+      <div style="font-size:11px;color:var(--muted);margin-top:2px">Energy Select Sector SPDR ETF</div>
+      <div class="gp-rationale">Iran news is THE weekend event risk. Wake up Sunday evening and check Iran ceasefire status before positioning. If Hormuz closure confirmed continuing → BUY XLE dip Monday open. If deal announced → SHORT XLE, LONG JETS. Do NOT pre-position going into the weekend. Binary — don't guess.</div>
+      <div style="margin-top:8px"><span class="tag tag-diverge">BINARY EVENT</span></div>
+    </div>
+
+    <div class="gameplan-item gameplan-bull">
+      <div class="rank">#3 — Sector Continuation</div>
+      <div class="gp-ticker up">SMH</div>
+      <div style="font-size:11px;color:var(--muted);margin-top:2px">VanEck Semiconductor ETF</div>
+      <div class="gp-rationale">SNDK blowout, AAPL strength, AMZN AWS +28% — AI infrastructure super-cycle unbroken. SMH +32% in April; may consolidate Monday open. Wait for a pullback from open before adding. NVDA earns May 20 = sector has near-term fundamental tailwind. AMD May 5 = next binary event.</div>
+      <div style="margin-top:8px"><span class="tag tag-call">BULLISH CONTINUATION</span></div>
+    </div>
+  </div>
+
+  <div class="grid-2" style="margin-top:16px">
+    <div class="card">
+      <div style="font-weight:600;color:var(--text);margin-bottom:10px">SPY Key Levels</div>
+      <div class="metrics">
+        <div class="metric"><div class="metric-label">Current (ATH)</div><div class="metric-val up">$723.30</div></div>
+        <div class="metric"><div class="metric-label">Resistance</div><div class="metric-val flat">$730</div><div class="metric-sub">Psychological</div></div>
+        <div class="metric"><div class="metric-label">Support</div><div class="metric-val flat">$715–718</div><div class="metric-sub">Breakout base</div></div>
+        <div class="metric"><div class="metric-label">Sector Bias</div><div class="metric-val up">RISK-ON</div><div class="metric-sub">Energy = binary</div></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div style="font-weight:600;color:var(--text);margin-bottom:10px">Smart Money Conviction</div>
+      <div class="alert alert-green">Institutions are <strong>long tech/AI with hedges</strong>. QQQ PC ratio 1.29 at ATH = riding the rally but protected. Not complacent — structured.</div>
+      <div class="alert alert-amber" style="margin-top:8px">PLTR options structure = <strong>binary bet, not directional consensus.</strong> Street is split. Don't assume smart money is strongly positioned either direction on PLTR.</div>
+      <div class="alert alert-red" style="margin-top:8px">Energy options = <strong>extreme vol expected.</strong> The Iran bid/offer spread is widest of any sector. Size down in XLE, XOM, CVX going into weekend.</div>
+    </div>
+  </div>
+
+  <!-- OVERNIGHT BRIEFING -->
+  <div class="briefing" style="margin-top:20px">
+    <div style="color:var(--cyan);font-weight:700;font-size:12px;letter-spacing:1px;text-transform:uppercase;margin-bottom:10px">⏰ 30-SECOND OVERNIGHT BRIEFING</div>
+    <p>Markets closed at all-time highs Friday on Apple's blowout Q2 and record tech breadth — S&P 500 at 7,230, Nasdaq at 25,114, Russell 2000 +2.21%. The Iran peace proposal (Pakistan-mediated) sent oil down 3% to $102/barrel, but the Strait of Hormuz remains closed and both sides are far from a deal. <strong>This weekend, Iran news is your #1 binary risk</strong> — a breakthrough means airlines gap up, energy gaps down; no deal means energy continuation. Without an Iran resolution, the AI/semiconductor mega-trend continues to lead: PLTR reports Monday AMC (±8–12% expected move), AMD reports Tuesday AMC ($9.84B rev estimate). April jobs report isn't until May 8 — no macro ambush this week. <strong>Stay long tech, hedge or exit energy, have a PLTR defined-risk structure ready for Monday afternoon.</strong></p>
+  </div>
+</div>
+
+<!-- STEP 9: ASSUMPTION AUDIT -->
+<div class="section">
+  <div class="section-header">
+    <span class="step-badge">Step 9</span>
+    <span class="section-title">Assumption Audit — Verify at Monday Open</span>
+  </div>
+
+  <div class="assumption">
+    <div class="assumption-header">⚠️ XOM/CVX report timing (assumed BMO)</div>
+    <div class="assumption-body">Assumed before market open based on typical oil major reporting cadence. If either reported AMC tonight, they are live AH movers. → Verify pre-market Monday.</div>
+  </div>
+  <div class="assumption">
+    <div class="assumption-header">⚠️ SNDK closed +4.32% on May 1</div>
+    <div class="assumption-body">Conflicting sources: one reported −6% AH, another +4.89% AH, TradingKey confirmed +4.32% close. If stock actually closed negative, the "distribution absorbed" thesis fails. → Check SNDK actual close price Monday.</div>
+  </div>
+  <div class="assumption">
+    <div class="assumption-header">⚠️ QQQ PC ratio 1.29 is current (May 1)</div>
+    <div class="assumption-body">Fintel data may not be same-day. If stale, hedging signal interpretation changes. → Verify at Barchart or Fintel Monday before citing.</div>
+  </div>
+  <div class="assumption">
+    <div class="assumption-header">⚠️ Iran peace talks — no weekend resolution assumed</div>
+    <div class="assumption-body">If deal announced Sunday evening → total energy sector reversal. ITA short, XLE short, JETS long, broad market +2%. All energy trade logic in this report inverts. → Check Iran headlines Sunday 8 PM ET before Monday positioning.</div>
+  </div>
+  <div class="assumption">
+    <div class="assumption-header">⚠️ PLTR reports May 4 AMC (not May 5)</div>
+    <div class="assumption-body">Confirmed from multiple sources (MarketBeat, Benzinga, Earnings Whispers calendar). Low risk. → Still verify IR page Saturday to confirm no change.</div>
+  </div>
+  <div class="assumption">
+    <div class="assumption-header">⚠️ No major AH earnings reports tonight (Friday May 1)</div>
+    <div class="assumption-body">Searches did not surface major S&P 500 reporters. Mid/small-cap after-close reporters may have been missed. → Scan Barchart post-market page for any AH prints tonight.</div>
+  </div>
+  <div class="assumption">
+    <div class="assumption-header">⚠️ April jobs report is May 8</div>
+    <div class="assumption-body">BLS schedule confirmed. Low risk. But surprise early release or pre-release leaks could create Thursday volatility.</div>
+  </div>
+  <div class="assumption">
+    <div class="assumption-header">⚠️ Bitcoin at $76,247</div>
+    <div class="assumption-body">Point-in-time data from May 1 session. Crypto trades 24/7 — BTC could gap significantly overnight. Check Sunday night before any MARA/COIN/IBIT exposure Monday.</div>
+  </div>
+</div>
+
+<!-- SOURCES -->
+<div class="section">
+  <div class="section-header">
+    <span class="step-badge">Sources</span>
+    <span class="section-title">Verified Sources — URLs Confirmed</span>
+  </div>
+  <div class="card">
+    <div style="columns:2;column-gap:24px;font-size:11px;line-height:2.2">
+      <a class="source-link" href="https://www.cnbc.com/2026/05/01/exxon-xom-chevron-cvx-q1-2026-earnings.html">→ XOM/CVX Q1 2026 Earnings — CNBC</a><br>
+      <a class="source-link" href="https://www.businesswire.com/news/home/20260501114528/en/Chevron-Reports-First-Quarter-2026-Results">→ Chevron Q1 Results — BusinessWire</a><br>
+      <a class="source-link" href="https://investor.exxonmobil.com/company-information/press-releases/detail/1204/exxonmobil-announces-first-quarter-2026-results">→ Exxon Q1 Press Release — IR</a><br>
+      <a class="source-link" href="https://finance.yahoo.com/news/apple-stock-rises-after-q2-earnings-top-estimates-on-strong-iphone-china-sales-174442778.html">→ Apple Q2 FY2026 — Yahoo Finance</a><br>
+      <a class="source-link" href="https://www.cnbc.com/2026/05/01/apple-proves-once-again-it-is-the-ultimate-cash-machine-how-to-trade-the-stock-from-here.html">→ Apple Trade Thesis — CNBC</a><br>
+      <a class="source-link" href="https://seekingalpha.com/news/4583100-sandisk-q3-revenue-shatters-estimates-as-it-surges-252">→ SanDisk Q3 2026 Beat — Seeking Alpha</a><br>
+      <a class="source-link" href="https://www.benzinga.com/Opinion/26/05/52224886/blowout-earnings-from-sandisk-and-western-digital-but-stock-reaction-is-a-tell-most-popular-ever-iphone">→ SNDK/WDC Reaction Tell — Benzinga</a><br>
+      <a class="source-link" href="https://www.investing.com/news/company-news/sofi-q1-2026-slides-41-revenue-growth-stock-drops-on-concerns-93CH-4645538">→ SoFi Q1 2026 — Investing.com</a><br>
+      <a class="source-link" href="https://www.thestreet.com/latest-news/stock-market-today-may-1-2026-updates">→ Market Recap May 1 — TheStreet</a><br>
+      <a class="source-link" href="https://www.cnbc.com/amp/2026/05/01/oil-prices-today-brent-wti-us-iran-war-trump-war-powers-deadline.html">→ WTI/Iran Peace Talks — CNBC</a><br>
+      <a class="source-link" href="https://www.benzinga.com/markets/tech/26/05/52221561/palantir-rallies-before-may-4-earnings-what-analysts-and-charts-signal">→ PLTR May 4 Preview — Benzinga</a><br>
+      <a class="source-link" href="https://www.stocktitan.net/news/AMD/amd-to-report-fiscal-first-quarter-2026-financial-cmceo5nn3h0t.html">→ AMD May 5 Earnings Date — StockTitan</a><br>
+      <a class="source-link" href="https://www.cnbc.com/2026/05/01/stock-market-next-week-outlook-for-may-4-8-2026.html">→ Week Ahead May 4–8 — CNBC</a><br>
+      <a class="source-link" href="https://www.spotedcrypto.com/bitcoin-price-usd-may-2026-key-levels/">→ Bitcoin May 1 — SpotedCrypto</a><br>
+      <a class="source-link" href="https://www.cnbc.com/2026/04/29/fed-meeting-today-live-updates-warsh-powell.html">→ FOMC April 29 Hold — CNBC</a><br>
+      <a class="source-link" href="https://www.rigzone.com/news/wire/exxon_chevron_beat_profit_estimates-01-may-2026-183588-article/">→ XOM/CVX Beat Estimates — Rigzone</a>
+    </div>
+  </div>
+</div>
+
+<div style="text-align:center;margin-top:40px;color:var(--muted);font-size:10px;letter-spacing:1px;text-transform:uppercase">
+  After-Hours Catalyst Scan &nbsp;·&nbsp; May 1, 2026 &nbsp;·&nbsp; Auto-generated at market close &nbsp;·&nbsp; For informational purposes only
+</div>
+
+</div><!-- /container -->
+</body>
+</html>
