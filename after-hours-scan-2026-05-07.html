@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>After-Hours Scan — May 7, 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0e17;
+    --bg2: #0f1520;
+    --bg3: #141c2b;
+    --border: #1e2d45;
+    --text: #e2e8f0;
+    --muted: #8899aa;
+    --green: #22c55e;
+    --red: #ef4444;
+    --amber: #f59e0b;
+    --blue: #3b82f6;
+    --purple: #a855f7;
+    --teal: #14b8a6;
+    --pink: #ec4899;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: 'JetBrains Mono', monospace; font-size: 13px; line-height: 1.6; padding: 24px; }
+  .header { border-bottom: 1px solid var(--border); padding-bottom: 20px; margin-bottom: 28px; }
+  .header h1 { font-size: 22px; font-weight: 700; color: var(--text); letter-spacing: 0.05em; }
+  .header .meta { color: var(--muted); font-size: 12px; margin-top: 6px; }
+  .header .regime { background: #0c2340; border: 1px solid #1a4060; border-radius: 6px; padding: 10px 16px; margin-top: 12px; color: var(--blue); font-size: 12px; }
+  h2 { font-size: 14px; font-weight: 700; color: var(--blue); letter-spacing: 0.1em; text-transform: uppercase; margin: 32px 0 16px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+  h3 { font-size: 13px; font-weight: 600; margin: 20px 0 10px; }
+  .section { background: var(--bg2); border: 1px solid var(--border); border-radius: 8px; padding: 20px; margin-bottom: 20px; }
+  .card { background: var(--bg3); border: 1px solid var(--border); border-radius: 6px; padding: 16px; margin-bottom: 14px; }
+  .card-header { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+  .ticker { font-size: 18px; font-weight: 700; letter-spacing: 0.05em; }
+  .badge { font-size: 10px; padding: 3px 8px; border-radius: 4px; font-weight: 600; letter-spacing: 0.1em; }
+  .badge-beat { background: #052e16; color: var(--green); border: 1px solid #166534; }
+  .badge-miss { background: #2d0a0a; color: var(--red); border: 1px solid #7f1d1d; }
+  .badge-inline { background: #2d1f00; color: var(--amber); border: 1px solid #78350f; }
+  .badge-watchlist { background: #1e1060; color: #a5b4fc; border: 1px solid #312e81; }
+  .badge-warn { background: #2d1f00; color: var(--amber); border: 1px solid #78350f; }
+  table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  th { text-align: left; padding: 8px 10px; background: var(--bg); color: var(--muted); font-weight: 500; border-bottom: 1px solid var(--border); }
+  td { padding: 8px 10px; border-bottom: 1px solid #1a2333; }
+  tr:last-child td { border-bottom: none; }
+  .green { color: var(--green); }
+  .red { color: var(--red); }
+  .amber { color: var(--amber); }
+  .blue { color: var(--blue); }
+  .purple { color: var(--purple); }
+  .muted { color: var(--muted); }
+  .metric-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 10px; margin: 12px 0; }
+  .metric { background: var(--bg); border: 1px solid var(--border); border-radius: 5px; padding: 10px; }
+  .metric-label { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; }
+  .metric-value { font-size: 16px; font-weight: 700; margin-top: 4px; }
+  .ah-move { font-size: 20px; font-weight: 700; }
+  .quote { background: #0c1820; border-left: 3px solid var(--blue); padding: 12px; border-radius: 0 6px 6px 0; margin: 10px 0; font-style: italic; color: var(--muted); font-size: 12px; }
+  .readthrough { background: #0c1820; border-left: 3px solid var(--amber); padding: 12px; border-radius: 0 6px 6px 0; margin: 10px 0; color: var(--text); font-size: 12px; }
+  .game-plan { background: #0a1520; border: 1px solid var(--blue); border-radius: 8px; padding: 20px; margin-bottom: 14px; }
+  .game-plan-header { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+  .rank { background: var(--blue); color: #000; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 12px; flex-shrink: 0; }
+  .briefing-box { background: #0a1a2e; border: 2px solid var(--blue); border-radius: 8px; padding: 20px; margin-top: 20px; }
+  .briefing-box h3 { color: var(--blue); text-transform: uppercase; letter-spacing: 0.1em; font-size: 11px; margin-bottom: 12px; }
+  .briefing-text { font-size: 13px; line-height: 1.8; color: var(--text); }
+  .audit-item { background: var(--bg3); border: 1px solid var(--border); border-radius: 6px; padding: 12px; margin-bottom: 8px; }
+  .audit-label { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 4px; }
+  .warning-box { background: #1a0a00; border: 1px solid #f59e0b; border-radius: 6px; padding: 12px; margin: 10px 0; color: var(--amber); font-size: 12px; }
+  .divider { height: 1px; background: var(--border); margin: 24px 0; }
+  .tag { display: inline-block; background: var(--bg); border: 1px solid var(--border); border-radius: 4px; padding: 2px 8px; font-size: 10px; color: var(--muted); margin: 2px; }
+  .steps-nav { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 24px; }
+  .steps-nav a { background: var(--bg2); border: 1px solid var(--border); color: var(--muted); text-decoration: none; padding: 6px 12px; border-radius: 5px; font-size: 11px; transition: all 0.2s; }
+  .steps-nav a:hover { border-color: var(--blue); color: var(--blue); }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>🌙 AFTER-HOURS CATALYST SCAN</h1>
+  <div class="meta">Thursday, May 7, 2026 &nbsp;|&nbsp; After Market Close &nbsp;|&nbsp; Automated Scanner</div>
+  <div class="regime">⚡ MARKET REGIME: RISK-ON — SPY/QQQ at all-time highs &nbsp;|&nbsp; US-Iran peace deal catalyst &nbsp;|&nbsp; Oil -7%+ &nbsp;|&nbsp; Inflation fears easing</div>
+</div>
+
+<div class="steps-nav">
+  <a href="#step1">① Earnings</a>
+  <a href="#step2">② AH Movers</a>
+  <a href="#step3">③ ETF Recap</a>
+  <a href="#step4">④ Options Flow</a>
+  <a href="#step5">⑤ SEC Filings</a>
+  <a href="#step6">⑥ Tomorrow's Earnings</a>
+  <a href="#step7">⑦ Macro Watch</a>
+  <a href="#step8">⑧ Game Plan</a>
+  <a href="#step9">⑨ Assumption Audit</a>
+</div>
+
+<!-- STEP 1 -->
+<div id="step1">
+<h2>① Earnings Released Today — After Close</h2>
+
+<!-- COIN -->
+<div class="card">
+  <div class="card-header">
+    <span class="ticker red">COIN</span>
+    <span class="badge badge-watchlist">WATCHLIST</span>
+    <span class="badge badge-miss">MISS</span>
+    <span class="badge" style="background:#1a0a0a;color:#ef4444;border:1px solid #7f1d1d;">LAYOFFS</span>
+    <span class="ah-move red" style="margin-left:auto;">▼ -2.53% AH</span>
+  </div>
+  <div class="metric-grid">
+    <div class="metric"><div class="metric-label">Revenue</div><div class="metric-value red">$1.41B</div><div style="font-size:10px;color:var(--muted)">Est: $1.48B ← MISS</div></div>
+    <div class="metric"><div class="metric-label">GAAP EPS</div><div class="metric-value red">-$1.49</div><div style="font-size:10px;color:var(--muted)">Est: $0.04 ← BIG MISS</div></div>
+    <div class="metric"><div class="metric-label">Adj. EBITDA</div><div class="metric-value green">$303M</div><div style="font-size:10px;color:var(--muted)">13th consecutive positive</div></div>
+    <div class="metric"><div class="metric-label">AH Price</div><div class="metric-value red">~$188</div><div style="font-size:10px;color:var(--muted)">Closed: $192.96</div></div>
+  </div>
+  <div class="quote">"Crashing volumes, layoffs, and an 81% EPS drop" — $482M unrealized crypto asset losses; 14% global workforce reduction announced</div>
+  <div class="readthrough">📊 <strong>Read-Through:</strong> Bearish for MARA, RIOT, HOOD, FDIG, BKCH. COIN miss + BTC below 200-day MA = near-term crypto overhang. Watch if BTC reclaims $82,228 overnight — that's the flip trigger.</div>
+</div>
+
+<!-- ABNB -->
+<div class="card">
+  <div class="card-header">
+    <span class="ticker green">ABNB</span>
+    <span class="badge badge-beat">BEAT</span>
+    <span class="badge" style="background:#052e16;color:#22c55e;border:1px solid #166534;">GUIDANCE RAISED</span>
+    <span class="ah-move green" style="margin-left:auto;">▲ +0.11% AH</span>
+  </div>
+  <div class="metric-grid">
+    <div class="metric"><div class="metric-label">Revenue</div><div class="metric-value green">$2.70B</div><div style="font-size:10px;color:var(--muted)">Est: $2.62B ← BEAT +18% YoY</div></div>
+    <div class="metric"><div class="metric-label">Adj. EBITDA</div><div class="metric-value green">$519M</div><div style="font-size:10px;color:var(--muted)">Est: $485M ← BEAT</div></div>
+    <div class="metric"><div class="metric-label">EBITDA Margin</div><div class="metric-value green">≥35%</div><div style="font-size:10px;color:var(--muted)">Full-year 2026 guide</div></div>
+    <div class="metric"><div class="metric-label">Q2 Guide</div><div class="metric-value green">$3.54-3.60B</div><div style="font-size:10px;color:var(--muted)">Revenue guidance</div></div>
+  </div>
+  <div class="readthrough">📊 <strong>Read-Through:</strong> Positive for JETS, AWAY, travel names. Carnival +0.5%, Marriott +0.5-0.7%; Expedia -1.22%. Nights/Seats booked +9% confirms demand resilience. ~100bps Middle East headwind in Q2.</div>
+</div>
+
+<!-- XYZ Block -->
+<div class="card">
+  <div class="card-header">
+    <span class="ticker green">XYZ</span>
+    <span style="font-size:11px;color:var(--muted)">Block, Inc.</span>
+    <span class="badge badge-beat">BEAT</span>
+    <span class="ah-move" style="margin-left:auto;color:var(--amber)">— Contained</span>
+  </div>
+  <div class="metric-grid">
+    <div class="metric"><div class="metric-label">Gross Profit</div><div class="metric-value green">$2.91B</div><div style="font-size:10px;color:var(--muted)">Guide: $2.80B ← BEAT</div></div>
+    <div class="metric"><div class="metric-label">GP Growth</div><div class="metric-value green">+19% YoY</div><div style="font-size:10px;color:var(--muted)">Financial Solutions +51% YoY</div></div>
+  </div>
+  <div class="readthrough">📊 <strong>Read-Through:</strong> Positive for FINX, SOFI. Financial solutions growth (+51% YoY) is the standout metric. Full EPS/revenue breakdown needed before trading.</div>
+</div>
+
+<!-- MARA -->
+<div class="card" style="border-color: #78350f;">
+  <div class="card-header">
+    <span class="ticker amber">MARA</span>
+    <span class="badge badge-watchlist">WATCHLIST</span>
+    <span class="badge badge-warn">RESULTS PENDING</span>
+    <span style="margin-left:auto;font-size:11px;color:var(--muted)">Call: May 8, 2026</span>
+  </div>
+  <div class="metric-grid">
+    <div class="metric"><div class="metric-label">Consensus EPS</div><div class="metric-value amber">-$0.40</div><div style="font-size:10px;color:var(--muted)">Estimate only</div></div>
+    <div class="metric"><div class="metric-label">BTC Holdings</div><div class="metric-value">53,822 BTC</div><div style="font-size:10px;color:var(--muted)">Mark-to-market key</div></div>
+    <div class="metric"><div class="metric-label">BTC Price</div><div class="metric-value amber">$81,540</div><div style="font-size:10px;color:var(--muted)">200-day MA: $82,228</div></div>
+  </div>
+  <div class="readthrough">⚠️ BTC rejected at $82,500 (200-day MA at $82,228). COIN miss weighs on crypto sentiment. If BTC stays below 200-day + any MARA miss → gap down to $10-11 range.</div>
+</div>
+
+<!-- Previously Reported -->
+<div class="section">
+  <h3 style="color:var(--muted);">Previously Reported This Week — Still Price Discovery</h3>
+  <table>
+    <thead><tr><th>Ticker</th><th>Reported</th><th>EPS (Act/Est)</th><th>Revenue (Act/Est)</th><th>Reaction</th><th>Today</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><strong class="green">AMD</strong> <span class="badge badge-watchlist" style="font-size:9px;">WATCHLIST</span></td>
+        <td class="muted">May 5</td>
+        <td class="green">$1.37 / $1.28 ✓</td>
+        <td class="green">$10.25B / $9.89B ✓</td>
+        <td class="green">+18% AH</td>
+        <td class="green">Continued strength; MS PT $360</td>
+      </tr>
+      <tr>
+        <td><strong class="green">PLTR</strong> <span class="badge badge-watchlist" style="font-size:9px;">WATCHLIST</span></td>
+        <td class="muted">May 4</td>
+        <td class="green">$0.33 / $0.27 ✓</td>
+        <td class="green">$1.63B / $1.54B ✓ (+85% YoY)</td>
+        <td class="green">Strong initial move</td>
+        <td class="green">+3.08% today; Argus Buy upgrade</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+</div>
+
+<!-- STEP 2 -->
+<div id="step2">
+<h2>② After-Hours Movers (&gt;5%)</h2>
+<table>
+  <thead><tr><th>Ticker</th><th>AH Move</th><th>Catalyst</th><th>Gap Setup?</th><th>Sector ETF</th></tr></thead>
+  <tbody>
+    <tr>
+      <td><strong>AGL</strong></td>
+      <td class="green">▲ +56.9%</td>
+      <td>Q1 EPS $2.94 vs $1.05 est; raised FY guidance (Medicare value-based care)</td>
+      <td class="green">🟢 YES — gap up; watch opening range reversal</td>
+      <td>XLV</td>
+    </tr>
+    <tr>
+      <td><strong>SITM</strong></td>
+      <td class="green">▲ +32.7%</td>
+      <td>Massive Q2 outlook hike; AI infrastructure demand</td>
+      <td class="green">🟢 YES — semi AI theme continuation</td>
+      <td>SMH adjacent</td>
+    </tr>
+    <tr>
+      <td><strong>ONEG</strong></td>
+      <td class="red">▼ -71.2%</td>
+      <td>Phase 1/2 Duchenne study data — adverse results</td>
+      <td class="red">🔴 Gap down; small-cap biotech liquidation</td>
+      <td>XBI</td>
+    </tr>
+    <tr>
+      <td><strong>TRDA</strong></td>
+      <td class="red">▼ -46.9%</td>
+      <td>Phase 1/2 Duchenne study data — adverse results</td>
+      <td class="red">🔴 Gap down; XBI overhang</td>
+      <td>XBI</td>
+    </tr>
+    <tr>
+      <td><strong class="badge-watchlist">COIN</strong></td>
+      <td class="red">▼ -2.53%</td>
+      <td>Earnings miss; 14% layoffs; BTC soft</td>
+      <td class="red">🔴 Modest gap; may stabilize if BTC firms</td>
+      <td>IBIT, FDIG</td>
+    </tr>
+    <tr>
+      <td><strong>ABNB</strong></td>
+      <td class="amber">▲ +0.11%</td>
+      <td>Beat + raised guidance; priced in at 52-wk highs</td>
+      <td class="amber">⚪ Flat; travel sector broadly firmer</td>
+      <td>AWAY, JETS</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+<!-- STEP 3 -->
+<div id="step3">
+<h2>③ Sector & Theme ETF End-of-Day Recap</h2>
+
+<div class="section" style="border-left: 3px solid #ef4444;">
+  <h3 class="red">📉 COMMODITIES (GLD, SLV, UCO, USO, BNO)</h3>
+  <p><strong class="red">OIL (UCO/USO/BNO) — SHARPLY LOWER</strong> — Brent below $100; WTI to ~$88 (-7-15% from peak)</p>
+  <p style="margin-top:8px;color:var(--muted)">Catalyst: US-Iran 14-point MOU under review; Strait of Hormuz reopening on table. Iran responding within 48 hours.</p>
+  <p style="margin-top:8px;color:var(--amber)">Setup: Binary headline risk. Iran accepts → continue lower. Deal collapses → oil snapback to $95+. HIGH UNCERTAINTY — avoid overnight energy longs.</p>
+</div>
+
+<div class="section" style="border-left: 3px solid #22c55e;">
+  <h3 class="green">🖥️ TECH & AI (SMH, IGV, XLK, BOTZ, FNGU, IBIT)</h3>
+  <p><strong class="green">SMH — Closed $538.30 (high $549.70)</strong> — +30% on the month; AMD +18% still rippling through sector</p>
+  <p style="margin-top:8px;color:var(--muted)">AI capex + TSMC node demand + AMD Data Center +57% YoY lifted all semis. QQQ at new ATH ~$696.</p>
+  <p style="margin-top:8px;"><strong class="red">IBIT — $45.79 (down $0.40)</strong> — BTC rejected at $82,500; COIN miss adds overhang.</p>
+  <p style="margin-top:8px;color:var(--amber)">Setup: Semis long as AI capex intact. BTC needs to reclaim 200-day ($82,228) to re-accelerate crypto ETFs.</p>
+</div>
+
+<div class="section" style="border-left: 3px solid #22c55e;">
+  <h3 class="green">☀️ CLEAN ENERGY (TAN, ICLN, GRID, PAVE)</h3>
+  <p><strong>TAN — Intraday range $60.80-$62.01</strong> — YTD +22%, 1-year +110%</p>
+  <p style="margin-top:8px;color:var(--muted)">No specific catalyst today. Lower oil and rate relief (if NFP soft tomorrow) = positive for capex-heavy solar.</p>
+  <p style="margin-top:8px;color:var(--amber)">Setup: Positive trend intact. Watch TAN for continuation if NFP is weak (rate relief).</p>
+</div>
+
+<div class="section" style="border-left: 3px solid #f59e0b;">
+  <h3 class="amber">✈️ DEFENSE & SPECIALTY (ITA, JETS, ARKX, CIBR, KBE)</h3>
+  <p><strong class="red">ITA (Defense) ~$224</strong> — Risk: Iran deal confirmation removes geopolitical risk premium. ITA ran +28%+ on Middle East tensions. Gap-down risk Friday.</p>
+  <p style="margin-top:8px;"><strong class="green">JETS ~$25.76</strong> — Direct beneficiary of oil collapse. Lower jet fuel + strong Airbnb booking data = JETS setup Friday.</p>
+  <p style="margin-top:8px;color:var(--amber)">Setup: Long JETS, cautious ITA. If Iran deal finalizes → ITA gap down, JETS pop.</p>
+</div>
+
+<div class="section" style="border-left: 3px solid #3b82f6;">
+  <h3 class="blue">📊 MACRO (UUP, TLT)</h3>
+  <table>
+    <thead><tr><th>Asset</th><th>Level</th><th>Direction</th><th>Catalyst</th></tr></thead>
+    <tbody>
+      <tr><td><strong>10-yr Yield</strong></td><td>4.34%</td><td class="green">▼ -2bps</td><td>Iran deal → oil down → disinflation narrative</td></tr>
+      <tr><td><strong>TLT</strong></td><td>Likely up</td><td class="green">▲</td><td>Yield decline + soft NFP expected tomorrow</td></tr>
+      <tr><td><strong>UUP (Dollar)</strong></td><td>Mixed</td><td class="amber">→</td><td>Lower rates = dollar headwind; risk-on = mild support</td></tr>
+      <tr><td><strong>Oil (Brent)</strong></td><td>~$97-100</td><td class="red">▼▼</td><td>Iran deal MOU review; Hormuz reopening narrative</td></tr>
+    </tbody>
+  </table>
+</div>
+</div>
+
+<!-- STEP 4 -->
+<div id="step4">
+<h2>④ Options Flow Summary</h2>
+<div class="warning-box">⚠️ Real-time sweep/block data not retrievable from public search for May 7, 2026. Analysis below is context-derived. Verify live at open via Unusual Whales / Barchart.</div>
+
+<div class="section">
+  <h3 class="blue">A) Index-Level Positioning</h3>
+  <table>
+    <thead><tr><th>Index</th><th>Put/Call Estimate</th><th>Signal</th></tr></thead>
+    <tbody>
+      <tr><td><strong>SPY</strong></td><td class="green">Likely &lt;0.70</td><td class="green">Complacent / risk-on — ATH conditions, Iran catalyst reduced tail-risk hedging</td></tr>
+      <tr><td><strong>QQQ</strong></td><td class="green">Likely &lt;0.65</td><td class="green">Low hedging — QQQ at ATH, AI names leading</td></tr>
+      <tr><td><strong>VIX</strong></td><td>Likely sub-15</td><td class="green">Compressed; geopolitical premium collapsed with oil</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="section">
+  <h3 class="blue">B) Watchlist Options Flow (Inferred)</h3>
+  <table>
+    <thead><tr><th>Ticker</th><th>Signal</th><th>Direction</th><th>Interpretation</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><strong class="green">PLTR</strong></td>
+        <td class="green">CALLS (inferred)</td>
+        <td class="green">Bullish</td>
+        <td>+3.08% continuation; Argus Buy upgrade; multiple PT raises — call buying likely continued</td>
+      </tr>
+      <tr>
+        <td><strong class="red">COIN</strong></td>
+        <td class="red">PUTS (inferred)</td>
+        <td class="red">Bearish</td>
+        <td>Revenue miss + layoffs; AH -2.53%; near-term put flow likely elevated post-earnings</td>
+      </tr>
+      <tr>
+        <td><strong class="green">AMD</strong></td>
+        <td class="green">CALLS (inferred)</td>
+        <td class="green">Bullish</td>
+        <td>Still digesting +18% AH move; MS PT $360 upgrade — call buying extension</td>
+      </tr>
+      <tr>
+        <td><strong class="amber">MARA</strong></td>
+        <td class="amber">STRADDLE (inferred)</td>
+        <td class="amber">Binary</td>
+        <td>Results tonight + BTC at key MA = high-IV straddle setup; directionally unclear</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="section">
+  <h3 class="amber">D) Flow vs. Price Divergences (Highest-Signal Alerts)</h3>
+  <table>
+    <thead><tr><th>Setup</th><th>Type</th><th>Signal</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><strong>ITA rallied on defense thesis but Iran peace deal imminent</strong></td>
+        <td class="red">Bearish divergence</td>
+        <td class="amber">Smart money likely buying ITA puts ahead of Iran confirmation. Watch for AH put sweep on defense ETFs.</td>
+      </tr>
+      <tr>
+        <td><strong>BTC ETF inflows ($1.63B since May 1) but spot BTC weakening</strong></td>
+        <td class="amber">Mixed</td>
+        <td class="amber">ETF buyers accumulating at 200-day MA — either dip-buyers or pre-catalysts. Watch BTC reclaim $82,228 as signal.</td>
+      </tr>
+      <tr>
+        <td><strong>COIN AH reaction -2.53% modest despite brutal miss</strong></td>
+        <td class="green">Potential washout</td>
+        <td class="green">Light put flow possible — if shorts already positioned and earnings were "known bad," decline may be bottoming near $185-188.</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+</div>
+
+<!-- STEP 5 -->
+<div id="step5">
+<h2>⑤ SEC Filings & Insider Activity</h2>
+<table>
+  <thead><tr><th>Filing</th><th>Company</th><th>Type</th><th>Detail</th><th>Signal</th></tr></thead>
+  <tbody>
+    <tr>
+      <td>Form 4</td>
+      <td><strong>Crown Castle (CCI)</strong></td>
+      <td class="green">BUY</td>
+      <td>Director Kevin Stephens bought 820 shares @ $90.24 (May 5)</td>
+      <td class="green">Director buying near 52-wk lows; conviction signal in REIT infrastructure</td>
+    </tr>
+    <tr>
+      <td>Form 4</td>
+      <td><strong>Purple Innovation (PRPL)</strong></td>
+      <td class="green">BUY</td>
+      <td>CFO bought 60,000 shares @ $0.49 (May 4)</td>
+      <td class="amber">Large share count; distressed small-cap; CFO buy notable but size is immaterial in $</td>
+    </tr>
+    <tr>
+      <td>8-K</td>
+      <td><strong>Patterson-UTI (PTEN)</strong></td>
+      <td class="muted">Debt</td>
+      <td>$500M 6.05% Senior Notes due 2036 to refinance 2028 debt</td>
+      <td class="amber">Energy sector refinancing at higher rates; watch leverage vs Iran oil risk</td>
+    </tr>
+    <tr>
+      <td>8-K</td>
+      <td><strong>Genesis Energy (GEL)</strong></td>
+      <td class="muted">Earnings</td>
+      <td>Q1 2026 profitable; leverage 5.38x after $750M notes</td>
+      <td class="red">High leverage in midstream energy; oil price decline = risk</td>
+    </tr>
+  </tbody>
+</table>
+<p style="color:var(--muted);font-size:11px;margin-top:10px;">No major 13-D activist filings or cluster insider buys on watchlist names found for May 7, 2026.</p>
+</div>
+
+<!-- STEP 6 -->
+<div id="step6">
+<h2>⑥ Tomorrow's Earnings Preview (May 8, 2026)</h2>
+
+<div class="card" style="border-color: #f59e0b;">
+  <div class="card-header">
+    <span class="ticker amber">MARA</span>
+    <span class="badge badge-watchlist">WATCHLIST</span>
+    <span class="badge badge-warn">AMC / Call May 8</span>
+  </div>
+  <p>Consensus EPS: <strong class="amber">-$0.40</strong> &nbsp;|&nbsp; BTC holdings: 53,822 BTC &nbsp;|&nbsp; Q1 BTC price averaged ~$95K → major unrealized losses expected</p>
+  <p style="margin-top:8px;color:var(--muted)">Rosenblatt PT $15 (upgraded May 5). BTC soft at $81,540 heading into results.</p>
+  <div class="readthrough" style="margin-top:10px;">Gap tendency: MARA is a leveraged BTC proxy — binary gap setup. Beat + BTC reclaims 200-day → short squeeze. Miss + BTC stays soft → gap to $10-11.</div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <span class="ticker" style="color:var(--blue)">FLR</span>
+    <span style="font-size:11px;color:var(--muted)">Fluor Corporation — BMO</span>
+    <span style="margin-left:auto;font-size:11px;color:var(--muted)">Infrastructure / PAVE</span>
+  </div>
+  <p>Consensus: EPS <strong>$0.66</strong> | Revenue <strong>$3.89B</strong></p>
+  <p style="margin-top:8px;color:var(--muted)">Engineering/construction giant. DoD contract commentary relevant given Iran deal geopolitics. Watch infrastructure project backlog guidance.</p>
+</div>
+
+<div class="card" style="border-color: #ef4444;">
+  <div class="card-header">
+    <span class="ticker red">NFP</span>
+    <span style="font-size:11px;font-weight:700;color:var(--red)">NON-FARM PAYROLLS — 8:30 AM ET</span>
+    <span class="badge badge-miss" style="margin-left:auto;">⚡ MACRO CATALYST #1</span>
+  </div>
+  <div class="metric-grid">
+    <div class="metric"><div class="metric-label">Consensus Jobs Added</div><div class="metric-value amber">+49,000</div><div style="font-size:10px;color:var(--muted)">Very weak — labor cooling</div></div>
+    <div class="metric"><div class="metric-label">Unemployment Rate</div><div class="metric-value">4.3%</div><div style="font-size:10px;color:var(--muted)">Expected stable</div></div>
+  </div>
+  <div class="readthrough" style="margin-top:10px;">Soft NFP = bonds rally, dollar falls, tech extends rally (Fed cut narrative). Hot NFP (+150K+) = rates spike, dollar surges, risk-off. This is the #1 market mover Friday.</div>
+</div>
+</div>
+
+<!-- STEP 7 -->
+<div id="step7">
+<h2>⑦ Macro Overnight Watch</h2>
+<table>
+  <thead><tr><th>Category</th><th>Detail</th><th>Risk</th></tr></thead>
+  <tbody>
+    <tr><td><strong class="red">🇮🇷 Iran MOU Response</strong></td><td>Iran reviewing 14-point peace proposal. Response expected within 48 hours. Covers enrichment moratorium, sanction relief, Hormuz reopening.</td><td class="red">🔴 HIGH — Binary oil catalyst</td></tr>
+    <tr><td><strong class="red">📊 NFP (8:30 AM ET)</strong></td><td>April jobs report. Consensus +49K. Major deviation = large SPY/QQQ move at open.</td><td class="red">🔴 HIGH — #1 market mover</td></tr>
+    <tr><td><strong class="amber">₿ BTC/Crypto</strong></td><td>Bitcoin at $81,540. 200-day MA at $82,228. MARA results overnight = binary gap.</td><td class="amber">🟡 MEDIUM</td></tr>
+    <tr><td><strong class="amber">🌏 Asia Markets</strong></td><td>Nikkei likely up — Japan is major oil importer, benefits from oil collapse. Risk-on mood overnight.</td><td class="amber">🟡 MEDIUM</td></tr>
+    <tr><td><strong>🛢️ Oil Futures</strong></td><td>WTI near $88; Brent near $97-100. Overnight direction = Iran headlines.</td><td class="red">🔴 HIGH</td></tr>
+    <tr><td><strong class="muted">🏦 Fed Speakers</strong></td><td>No confirmed Fed speakers Friday. No major Fed catalyst expected.</td><td class="muted">⚪ LOW</td></tr>
+  </tbody>
+</table>
+</div>
+
+<!-- STEP 8 -->
+<div id="step8">
+<h2>⑧ Tomorrow's Game Plan</h2>
+
+<div class="game-plan" style="border-color: #ef4444;">
+  <div class="game-plan-header">
+    <div class="rank" style="background:var(--red);">1</div>
+    <div>
+      <span class="ticker red">COIN</span>
+      <span class="badge badge-miss" style="margin-left:8px;">SHORT / FADE</span>
+    </div>
+  </div>
+  <p><strong>Why:</strong> Revenue miss ($1.41B vs $1.48B), GAAP EPS -$1.49 (vs $0.04 est), 14% layoffs, BTC at $81,540 below 200-day MA.</p>
+  <p style="margin-top:8px;"><strong>Entry Logic:</strong> Short any gap-fill attempt into <strong>$193–195</strong> resistance. Target <strong>$183–185</strong>. Stop above <strong>$196</strong>.</p>
+  <p style="margin-top:8px;" class="amber"><strong>Risk:</strong> BTC reclaims $82,500+ overnight → flip bullish on crypto. Check BTC price at pre-market open.</p>
+</div>
+
+<div class="game-plan" style="border-color: #22c55e;">
+  <div class="game-plan-header">
+    <div class="rank" style="background:var(--green);color:#000;">2</div>
+    <div>
+      <span class="ticker green">JETS</span>
+      <span class="badge badge-beat" style="margin-left:8px;">LONG / BUY</span>
+    </div>
+  </div>
+  <p><strong>Why:</strong> Oil -7%+ = direct jet fuel cost reduction. Airbnb strong booking data confirms travel demand. Iran deal = sustained lower oil thesis.</p>
+  <p style="margin-top:8px;"><strong>Entry Logic:</strong> Buy gap-up if JETS holds above <strong>$26.50</strong> on strong volume. Target <strong>$28–29</strong>. Stop below <strong>$25.80</strong>.</p>
+  <p style="margin-top:8px;" class="amber"><strong>Risk:</strong> Iran deal collapses → oil reverses → JETS reverses. Binary overnight risk.</p>
+</div>
+
+<div class="game-plan">
+  <div class="game-plan-header">
+    <div class="rank">3</div>
+    <div>
+      <span class="ticker" style="color:#a855f7;">PLTR</span>
+      <span class="badge badge-watchlist" style="margin-left:8px;">WATCHLIST — LONG</span>
+    </div>
+  </div>
+  <p><strong>Why:</strong> +3.08% today on top of 85% YoY revenue beat. Argus Buy upgrade. AI government platform showing no signs of slowing. Wedbush $230 PT.</p>
+  <p style="margin-top:8px;"><strong>Entry Logic:</strong> Buy dips to <strong>$130–132</strong> if market is up. Target continuation toward <strong>$140+</strong>. Stop below <strong>$128</strong>.</p>
+  <p style="margin-top:8px;" class="amber"><strong>Risk:</strong> Soft NFP broadly fine for PLTR; hot NFP = tech selloff takes PLTR down in sympathy.</p>
+</div>
+
+<div class="divider"></div>
+
+<div class="section">
+  <h3>Key Levels & Positioning</h3>
+  <table>
+    <thead><tr><th>Category</th><th>Level / Signal</th></tr></thead>
+    <tbody>
+      <tr><td><strong>SPY Resistance</strong></td><td class="red">$736–738 (all-time high zone)</td></tr>
+      <tr><td><strong>SPY Support</strong></td><td class="green">$728–730 (prior breakout)</td></tr>
+      <tr><td><strong>Key Tell</strong></td><td>SPY opens above $735 and holds post-NFP → bulls in full control</td></tr>
+      <tr><td><strong>Sector Bias</strong></td><td class="amber">MIXED / RISK-ON LEAN — Tech/AI + travel up; energy/defense down</td></tr>
+      <tr><td><strong>Smart Money Positioning</strong></td><td>Lower oil (USO puts) + AI calls (PLTR, AMD, SMH) + rate relief (TLT calls) + BTC uncertainty</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="briefing-box">
+  <h3>⚡ 30-SECOND OVERNIGHT BRIEFING</h3>
+  <div class="briefing-text">
+    Markets closed at all-time highs Thursday as US-Iran peace deal optimism crushed oil prices (WTI to ~$88) and eased inflation fears, sending SPY +1.5% and QQQ +2%. After the bell, <strong>Coinbase missed badly</strong> (revenue $1.41B vs $1.48B est, GAAP loss $1.49/share), announcing 14% layoffs — bearish for crypto names. <strong>Airbnb beat and raised guidance</strong> (+18% revenue, $519M adj EBITDA) but barely moved AH. <strong>Block beat on gross profit</strong> (+19%). MARA reports tonight or May 8 call — watch BTC at the $82,228 200-day MA. Tomorrow's <strong>#1 catalyst is April NFP at 8:30 AM</strong> (consensus only +49K jobs); weak number = rates down, tech up, rally extends. <strong>Iran response to peace MOU expected within 48 hours</strong> — if confirmed: ITA gaps down, JETS pops, oil continues lower. PLTR and AMD remain AI momentum leaders. <strong>Reduce or hedge defense and energy longs before open.</strong>
+  </div>
+</div>
+</div>
+
+<!-- STEP 9 -->
+<div id="step9">
+<h2>⑨ Assumption Audit</h2>
+
+<div class="audit-item">
+  <div class="audit-label">Assumption #1</div>
+  <p><strong>Iran deal progresses → oil stays down</strong></p>
+  <p style="margin-top:4px;color:var(--red);font-size:12px;">Risk: Iran rejects MOU; Trump escalates → oil spikes back to $100+ → FLIP: Short JETS, long UCO, long ITA; avoid energy shorts</p>
+</div>
+
+<div class="audit-item">
+  <div class="audit-label">Assumption #2</div>
+  <p><strong>NFP is weak (consensus +49K)</strong></p>
+  <p style="margin-top:4px;color:var(--red);font-size:12px;">Risk: Hot print (+150K+) → rates spike, dollar surges, tech sells off → Reduce PLTR/AMD longs; short TLT</p>
+</div>
+
+<div class="audit-item">
+  <div class="audit-label">Assumption #3</div>
+  <p><strong>COIN is a clean short on earnings miss</strong></p>
+  <p style="margin-top:4px;color:var(--amber);font-size:12px;">Risk: BTC reclaims $82,500 overnight → crypto sentiment reverses → Close COIN short; flip to BTC/IBIT long</p>
+</div>
+
+<div class="audit-item">
+  <div class="audit-label">Assumption #4</div>
+  <p><strong>MARA reports results tonight before market open</strong></p>
+  <p style="margin-top:4px;color:var(--amber);font-size:12px;">Risk: Call may be May 8 only; no results before 9:30 AM → No MARA gap trade Friday; wait for call</p>
+</div>
+
+<div class="audit-item">
+  <div class="audit-label">Assumption #5</div>
+  <p><strong>PLTR continues post-earnings drift</strong></p>
+  <p style="margin-top:4px;color:var(--amber);font-size:12px;">Risk: Valuation concerns resurface after +85% YoY → selling fatigue → Only buy PLTR on proven intraday strength, not at open</p>
+</div>
+
+<div class="audit-item">
+  <div class="audit-label">Assumption #6</div>
+  <p><strong>SMH/semis maintain leadership</strong></p>
+  <p style="margin-top:4px;color:var(--red);font-size:12px;">Risk: Any NVDA warning or AI capex reduction news → SMH selloff → Cut semi exposure immediately</p>
+</div>
+
+<div class="audit-item">
+  <div class="audit-label">Assumption #7</div>
+  <p><strong>Block (XYZ) AH move contained</strong></p>
+  <p style="margin-top:4px;color:var(--amber);font-size:12px;">Risk: Full EPS/revenue breakdown shows revenue miss → stock gaps down → Don't chase XYZ long until full results verified</p>
+</div>
+
+</div>
+
+<div class="divider"></div>
+<div style="color:var(--muted);font-size:11px;text-align:center;padding-bottom:20px;">
+  After-Hours Catalyst Scanner &nbsp;|&nbsp; May 7, 2026 &nbsp;|&nbsp; accntsnk369@gmail.com<br>
+  Sources: TheStreet, CNBC, Yahoo Finance, Motley Fool, TipRanks, Meyka, CCN, StockTitan, NBC News, Bloomberg, Axios, CNN, 247wallst, MarketBeat, Rosenblatt Securities, Argus Research
+</div>
+
+</body>
+</html>
