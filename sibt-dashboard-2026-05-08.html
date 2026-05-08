@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SIBT Dashboard — 2026-05-08</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0a0e17; --bg2:#0e1422; --bg3:#131a2a; --line:#1f2a3f;
+    --txt:#d6deeb; --mute:#7b8aa6; --dim:#4d5a73;
+    --green:#10b981; --red:#ef4444; --amber:#f59e0b; --cyan:#22d3ee; --blue:#60a5fa;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:var(--bg);color:var(--txt);font-family:'JetBrains Mono',monospace;font-size:13px;line-height:1.45}
+  a{color:var(--cyan);text-decoration:none}
+  .ticker{background:#06090f;border-bottom:1px solid var(--line);padding:7px 0;overflow:hidden;white-space:nowrap;font-size:12px;letter-spacing:.5px}
+  .ticker-track{display:inline-block;animation:scroll 80s linear infinite;padding-left:100%}
+  .ticker span{margin-right:34px;color:var(--mute)}
+  .ticker .sym{color:var(--txt);font-weight:700;margin-right:6px}
+  .ticker .pos{color:var(--green)} .ticker .neg{color:var(--red)}
+  @keyframes scroll{0%{transform:translateX(0)}100%{transform:translateX(-100%)}}
+  header{padding:18px 24px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;background:linear-gradient(180deg,#0c1322 0%,#0a0e17 100%)}
+  header h1{margin:0;font-size:18px;letter-spacing:2px;color:var(--txt);font-weight:800}
+  header h1 .v{color:var(--cyan);font-size:11px;margin-left:10px;letter-spacing:1px}
+  .stamp{font-size:11px;color:var(--mute)}
+  .toggle{display:flex;gap:0;border:1px solid var(--line);border-radius:4px;overflow:hidden}
+  .toggle button{background:transparent;border:0;color:var(--mute);padding:8px 18px;cursor:pointer;font-family:inherit;font-size:12px;letter-spacing:1px}
+  .toggle button.active{background:var(--cyan);color:#031024;font-weight:700}
+  main{padding:18px 24px;max-width:1600px;margin:0 auto}
+  .hero{background:var(--bg2);border:1px solid var(--line);border-radius:6px;padding:20px;margin-bottom:18px;display:grid;grid-template-columns:1fr 280px;gap:24px;align-items:center}
+  .hero-left .label{color:var(--mute);font-size:11px;letter-spacing:2px;margin-bottom:8px}
+  .hero-decision{font-size:54px;font-weight:800;letter-spacing:3px;line-height:1}
+  .hero-decision.yes{color:var(--green)} .hero-decision.caution{color:var(--amber)} .hero-decision.no{color:var(--red)}
+  .hero-sub{color:var(--mute);font-size:12px;margin-top:8px}
+  .gauge{position:relative}
+  .gauge-num{font-size:46px;font-weight:800;color:var(--txt);text-align:center}
+  .gauge-bar{height:10px;background:var(--bg3);border-radius:5px;overflow:hidden;margin:8px 0}
+  .gauge-fill{height:100%;background:linear-gradient(90deg,var(--red) 0%,var(--amber) 50%,var(--green) 100%)}
+  .gauge-scale{display:flex;justify-content:space-between;color:var(--dim);font-size:10px}
+  .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:18px}
+  .panel{background:var(--bg2);border:1px solid var(--line);border-radius:6px;padding:14px}
+  .panel h3{margin:0 0 10px 0;color:var(--mute);font-size:10px;letter-spacing:2px;font-weight:600;display:flex;justify-content:space-between}
+  .panel h3 .badge{padding:2px 6px;border-radius:3px;font-size:9px}
+  .badge.green{background:rgba(16,185,129,.15);color:var(--green)}
+  .badge.red{background:rgba(239,68,68,.15);color:var(--red)}
+  .badge.amber{background:rgba(245,158,11,.15);color:var(--amber)}
+  .row{display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px dashed var(--line);font-size:12px}
+  .row:last-child{border-bottom:0}
+  .row .k{color:var(--mute)} .row .v{color:var(--txt);font-weight:500}
+  .v.green{color:var(--green)} .v.red{color:var(--red)} .v.amber{color:var(--amber)}
+  .heatmap{display:grid;grid-template-columns:repeat(11,1fr);gap:6px;margin:14px 0}
+  .heat-cell{background:var(--bg2);border:1px solid var(--line);border-radius:4px;padding:10px 6px;text-align:center}
+  .heat-cell .t{font-weight:700;font-size:13px;color:var(--txt)}
+  .heat-cell .c{font-size:11px;font-weight:600;margin-top:3px}
+  table{width:100%;border-collapse:collapse;font-size:11px}
+  table th{background:var(--bg3);color:var(--mute);text-align:left;padding:8px 10px;font-weight:600;letter-spacing:.5px;border-bottom:1px solid var(--line);font-size:10px}
+  table td{padding:7px 10px;border-bottom:1px solid var(--line);color:var(--txt)}
+  table tr.top3{background:rgba(34,211,238,.06)}
+  table tr:hover{background:rgba(255,255,255,.02)}
+  .ep-section{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .terminal{background:#06090f;border:1px solid var(--line);border-radius:6px;padding:18px 20px;margin-top:18px;font-size:12px;color:#9fb6d8;line-height:1.7}
+  .terminal::before{content:'> SIBT TERMINAL ANALYSIS';display:block;color:var(--cyan);font-weight:700;letter-spacing:2px;margin-bottom:12px;font-size:11px}
+  .terminal strong{color:var(--txt);font-weight:700}
+  .terminal .verdict{color:var(--amber);font-weight:700}
+  .standout{margin-top:14px;background:var(--bg2);border:1px solid var(--line);border-radius:6px;padding:16px}
+  .standout h4{margin:0 0 10px 0;color:var(--cyan);letter-spacing:1.5px;font-size:11px}
+  .standout-card{padding:10px;border-left:3px solid var(--cyan);background:#0d1424;margin-bottom:8px;border-radius:0 4px 4px 0}
+  .standout-card .tk{font-weight:800;font-size:14px;color:var(--txt)}
+  .standout-card .why{color:var(--mute);font-size:11px;margin-top:4px;line-height:1.5}
+  .footer{text-align:center;color:var(--dim);font-size:10px;padding:18px 0;letter-spacing:1px}
+  .hidden{display:none}
+  .pos{color:var(--green)} .neg{color:var(--red)}
+  @media (max-width:1200px){.grid{grid-template-columns:repeat(2,1fr)}.heatmap{grid-template-columns:repeat(6,1fr)}}
+</style>
+</head>
+<body>
+<div class="ticker"><div class="ticker-track">
+  <span><span class="sym">SPY</span>731.58 <span class="neg">-0.31%</span></span>
+  <span><span class="sym">QQQ</span>694.94 <span class="neg">-0.12%</span></span>
+  <span><span class="sym">VIX</span>16.84 <span class="pos">-1.41%</span></span>
+  <span><span class="sym">UUP</span>27.41 <span class="pos">+0.22%</span></span>
+  <span><span class="sym">XLY</span>119.88 <span class="pos">+0.01%</span></span>
+  <span><span class="sym">XLC</span>117.38 <span class="pos">+0.03%</span></span>
+  <span><span class="sym">XLK</span>169.69 <span class="neg">-0.20%</span></span>
+  <span><span class="sym">XLP</span>83.98 <span class="neg">-0.31%</span></span>
+  <span><span class="sym">XLV</span>144.72 <span class="neg">-0.47%</span></span>
+  <span><span class="sym">XLF</span>51.55 <span class="neg">-0.56%</span></span>
+  <span><span class="sym">XLRE</span>44.40 <span class="neg">-0.76%</span></span>
+  <span><span class="sym">XLU</span>45.12 <span class="neg">-1.29%</span></span>
+  <span><span class="sym">XLI</span>174.00 <span class="neg">-1.62%</span></span>
+  <span><span class="sym">XLE</span>55.95 <span class="neg">-1.84%</span></span>
+  <span><span class="sym">XLB</span>51.40 <span class="neg">-1.93%</span></span>
+  <span><span class="sym">TSLA</span>411.79 <span class="pos">+3.28%</span></span>
+  <span><span class="sym">PLTR</span>137.05 <span class="pos">+2.44%</span></span>
+  <span><span class="sym">NVDA</span>211.50 <span class="pos">+1.77%</span></span>
+  <span><span class="sym">META</span>616.81 <span class="pos">+0.64%</span></span>
+  <span><span class="sym">AMZN</span>271.17 <span class="neg">-1.39%</span></span>
+  <span><span class="sym">SOFI</span>16.00 <span class="neg">-1.84%</span></span>
+  <span><span class="sym">MARA</span>12.70 <span class="neg">-2.53%</span></span>
+  <span><span class="sym">COIN</span>192.96 <span class="neg">-2.53%</span></span>
+  <span><span class="sym">AMD</span>408.46 <span class="neg">-3.07%</span></span>
+  <span><span class="sym">SNDK</span>1339.96 <span class="neg">-4.97%</span></span>
+</div></div>
+
+<header>
+  <h1>SIBT DASHBOARD <span class="v">v2.8 / CDP</span></h1>
+  <div class="toggle">
+    <button id="btn-swing" class="active" onclick="setMode('swing')">SWING</button>
+    <button id="btn-day" onclick="setMode('day')">DAY TRADE</button>
+  </div>
+  <div class="stamp">2026-05-08 · GENERATED <span id="gen"></span></div>
+</header>
+
+<main>
+
+<!-- ============================ SWING ============================ -->
+<section id="swing">
+  <div class="hero">
+    <div class="hero-left">
+      <div class="label">SHOULD I BE TRADING (SWING)?</div>
+      <div class="hero-decision caution">CAUTION</div>
+      <div class="hero-sub">Composite back to 76.50/100 (-7.00 vs yesterday) — fell below the 80 line. Action Code 3 (HALF). Breadth crashed to 58.33 from 75. MMFI cooled to 75 from 85. The "YES" reading yesterday was already tape-divergent — actual close confirmed the warning.</div>
+    </div>
+    <div class="gauge">
+      <div class="gauge-num" style="color:var(--amber)">76.50</div>
+      <div class="gauge-bar"><div class="gauge-fill" style="width:76.5%"></div></div>
+      <div class="gauge-scale"><span>0</span><span>NO</span><span>60</span><span>80</span><span>YES</span><span>100</span></div>
+      <div style="text-align:center;color:var(--mute);font-size:10px;margin-top:8px;letter-spacing:1.5px">MACRO COMPOSITE · ACTION CODE 3 (HALF)</div>
+    </div>
+  </div>
+
+  <div class="grid">
+    <div class="panel">
+      <h3>VOLATILITY <span class="badge green">SWEET SPOT</span></h3>
+      <div class="row"><span class="k">VIX</span><span class="v green">16.84</span></div>
+      <div class="row"><span class="k">Prev Close</span><span class="v">17.08</span></div>
+      <div class="row"><span class="k">Δ Day</span><span class="v green">-1.41%</span></div>
+      <div class="row"><span class="k">Zone</span><span class="v green">COMPLACENT</span></div>
+      <div class="row"><span class="k">SMA10</span><span class="v">~17.5</span></div>
+      <div class="row"><span class="k">Hedge Signal</span><span class="v green">OFF</span></div>
+      <div class="row"><span class="k">VIX Score</span><span class="v">70.00</span></div>
+    </div>
+
+    <div class="panel">
+      <h3>TREND <span class="badge amber">PULLING BACK</span></h3>
+      <div class="row"><span class="k">SPY</span><span class="v red">731.58 (-0.31%)</span></div>
+      <div class="row"><span class="k">QQQ</span><span class="v red">694.94 (-0.12%)</span></div>
+      <div class="row"><span class="k">HTF Weekly</span><span class="v green">BULLISH</span></div>
+      <div class="row"><span class="k">Chart State</span><span class="v amber">DIGESTION</span></div>
+      <div class="row"><span class="k">Index Score</span><span class="v">100.00</span></div>
+      <div class="row"><span class="k">Tone</span><span class="v amber">NARROW (TECH ONLY)</span></div>
+    </div>
+
+    <div class="panel">
+      <h3>BREADTH <span class="badge red">CRASHED</span></h3>
+      <div class="row"><span class="k">Score</span><span class="v red">58.33</span></div>
+      <div class="row"><span class="k">Δ vs yesterday</span><span class="v red">-16.67</span></div>
+      <div class="row"><span class="k">S.A. Action</span><span class="v amber">HALF (BREADTH)</span></div>
+      <div class="row"><span class="k">Phase</span><span class="v amber">DETERIORATING</span></div>
+      <div class="row"><span class="k">Thrust</span><span class="v red">REVERSING</span></div>
+      <div class="row"><span class="k">Liquidity</span><span class="v">ADEQUATE</span></div>
+    </div>
+
+    <div class="panel">
+      <h3>FACTOR REGIME <span class="badge amber">RISK NEUTRAL</span></h3>
+      <div class="row"><span class="k">Risk State</span><span class="v amber">RISK-ON FADING</span></div>
+      <div class="row"><span class="k">Regime</span><span class="v green">GOLDILOCKS</span></div>
+      <div class="row"><span class="k">Goldilocks %</span><span class="v">58%</span></div>
+      <div class="row"><span class="k">Reflation %</span><span class="v">22%</span></div>
+      <div class="row"><span class="k">Stagflation %</span><span class="v">14%</span></div>
+      <div class="row"><span class="k">Deflation %</span><span class="v">6%</span></div>
+    </div>
+
+    <div class="panel">
+      <h3>IMPLIED CORRELATION</h3>
+      <div class="row"><span class="k">Avg Corr</span><span class="v">0.55</span></div>
+      <div class="row"><span class="k">First Green</span><span class="v green">YES</span></div>
+      <div class="row"><span class="k">Trend</span><span class="v amber">RISING</span></div>
+      <div class="row"><span class="k">Status</span><span class="v amber">CONVERGING</span></div>
+      <div class="row"><span class="k">Read</span><span class="v">RISK-OFF EDGE BUILDING</span></div>
+    </div>
+
+    <div class="panel">
+      <h3>MMFI <span class="badge amber">COOLING</span></h3>
+      <div class="row"><span class="k">Value</span><span class="v">75.00</span></div>
+      <div class="row"><span class="k">Zone</span><span class="v green">GREED</span></div>
+      <div class="row"><span class="k">Trend</span><span class="v amber">FALLING</span></div>
+      <div class="row"><span class="k">Δ vs yesterday</span><span class="v red">-10.00</span></div>
+      <div class="row"><span class="k">Read</span><span class="v amber">DEFLATING</span></div>
+    </div>
+
+    <div class="panel">
+      <h3>VOLUME ROTATION (W)</h3>
+      <div class="row"><span class="k">Hot</span><span class="v green">XLY · XLC · XLK</span></div>
+      <div class="row"><span class="k">Cold</span><span class="v red">XLB · XLE · XLI</span></div>
+      <div class="row"><span class="k">Read</span><span class="v">CONSUMER/COMM BID</span></div>
+      <div class="row"><span class="k">Cyclicals</span><span class="v red">SOLD HARD</span></div>
+    </div>
+
+    <div class="panel">
+      <h3>VOLUME ROTATION (D)</h3>
+      <div class="row"><span class="k">Leader</span><span class="v green">XLC +0.03%</span></div>
+      <div class="row"><span class="k">2nd</span><span class="v green">XLY +0.01%</span></div>
+      <div class="row"><span class="k">Worst</span><span class="v red">XLB -1.93%</span></div>
+      <div class="row"><span class="k">Bottom 2</span><span class="v red">XLE -1.84%</span></div>
+      <div class="row"><span class="k">Hot Sector</span><span class="v amber">DEFENSIVE TILT</span></div>
+    </div>
+  </div>
+
+  <h3 style="color:var(--mute);font-size:10px;letter-spacing:2px;margin:18px 0 8px">SECTOR HEATMAP — DAILY % CHANGE (sorted, 5/7 close vs 5/6 close)</h3>
+  <div class="heatmap">
+    <div class="heat-cell" style="background:rgba(16,185,129,.04);border-color:#10b981"><div class="t">XLY</div><div class="c pos">+0.01%</div></div>
+    <div class="heat-cell" style="background:rgba(16,185,129,.05);border-color:#10b981"><div class="t">XLC</div><div class="c pos">+0.03%</div></div>
+    <div class="heat-cell" style="background:rgba(239,68,68,.05);border-color:#ef4444"><div class="t">XLK</div><div class="c neg">-0.20%</div></div>
+    <div class="heat-cell" style="background:rgba(239,68,68,.06);border-color:#ef4444"><div class="t">XLP</div><div class="c neg">-0.31%</div></div>
+    <div class="heat-cell" style="background:rgba(239,68,68,.08);border-color:#ef4444"><div class="t">XLV</div><div class="c neg">-0.47%</div></div>
+    <div class="heat-cell" style="background:rgba(239,68,68,.09);border-color:#ef4444"><div class="t">XLF</div><div class="c neg">-0.56%</div></div>
+    <div class="heat-cell" style="background:rgba(239,68,68,.12);border-color:#ef4444"><div class="t">XLRE</div><div class="c neg">-0.76%</div></div>
+    <div class="heat-cell" style="background:rgba(239,68,68,.18);border-color:#ef4444"><div class="t">XLU</div><div class="c neg">-1.29%</div></div>
+    <div class="heat-cell" style="background:rgba(239,68,68,.22);border-color:#ef4444"><div class="t">XLI</div><div class="c neg">-1.62%</div></div>
+    <div class="heat-cell" style="background:rgba(239,68,68,.24);border-color:#ef4444"><div class="t">XLE</div><div class="c neg">-1.84%</div></div>
+    <div class="heat-cell" style="background:rgba(239,68,68,.26);border-color:#ef4444"><div class="t">XLB</div><div class="c neg">-1.93%</div></div>
+  </div>
+
+  <div class="terminal">
+<strong>SWING ENVIRONMENT — 2026-05-08.</strong> Yesterday's "YES" called CAUTION on the dispersion warning — and the close confirmed it. SPY ended <strong>-0.31%</strong> (after my intraday +0.14% read), <strong>9 of 11 sectors closed RED</strong>, materials -1.93%, energy -1.84%, industrials -1.62%. Composite dropped from 83.50 → <strong>76.50</strong>. Breadth crashed from 75 → <strong>58.33</strong> (-16.67 in one session — that's a real deterioration, not noise). MMFI cooled from 85 → <strong>75</strong>.
+<br><br>
+The <strong>narrow-tech-only tape</strong> is now obvious: TSLA +3.28%, PLTR +2.44%, NVDA +1.77% are still bid, but <strong>everything else is selling</strong>. AMD -3.07%, SNDK -4.97% (continuation of the climax exhaustion), AMZN -1.39%, COIN -2.53%, MARA -2.53%, SOFI -1.84%. Even within tech, dispersion is brutal. SNDK now down ~7% from $1,439 ATH = the parabolic call from May 6 is fully validated.
+<br><br>
+<strong>VERDICT:</strong> <span class="verdict">PROCEED HALF SIZE — NOT FULL.</span> The composite still says CAUTION, not NO, because HTF stays bullish, VIX is in the sweet spot at 16.84, and regime is GOLDILOCKS / RISK-ON. But <strong>the breadth deterioration is the kind of warning that precedes broader pullbacks</strong>. Take only A+ setups in the names that are actually leading (mega-cap tech: NVDA, TSLA, META, PLTR). <strong>Skip B/Os entirely in cyclicals (XLB, XLE, XLI, XLU)</strong> — they're in distribution. If you can't find a setup grading 80+ on your own checklist, <strong>sit out today</strong>. I'd rather miss a winner than buy into a deteriorating tape.
+  </div>
+</section>
+
+<!-- ============================ DAY TRADE ============================ -->
+<section id="day" class="hidden">
+  <div class="hero">
+    <div class="hero-left">
+      <div class="label">SHOULD I BE TRADING (DAY)?</div>
+      <div class="hero-decision yes">YES</div>
+      <div class="hero-sub">VIX 16.84 — deepest in sweet spot all week. EP tape is THICK with AI/datacenter setups: FLNC 85, IREN 77, MASK 75. Earnings cycle still producing real catalysts. Day trade ≠ swing — fast money over edge over conviction.</div>
+    </div>
+    <div class="gauge">
+      <div class="gauge-num" style="color:var(--green)">82</div>
+      <div class="gauge-bar"><div class="gauge-fill" style="width:82%"></div></div>
+      <div class="gauge-scale"><span>0</span><span>DEAD</span><span>60</span><span>80</span><span>HOT</span><span>100</span></div>
+      <div style="text-align:center;color:var(--mute);font-size:10px;margin-top:8px;letter-spacing:1.5px">DAY TRADE READINESS</div>
+    </div>
+  </div>
+
+  <div class="panel" style="margin-bottom:14px">
+    <h3>RETAIL WATCHLIST <span class="badge amber">DISPERSED</span></h3>
+    <table>
+      <thead><tr><th>TKR</th><th>PRICE</th><th>Δ DAY</th><th>OPEN</th><th>HIGH</th><th>LOW</th><th>PREV CLOSE</th><th>TONE</th></tr></thead>
+      <tbody>
+        <tr><td><strong>TSLA</strong></td><td>411.79</td><td class="pos">+3.28%</td><td>407.48</td><td>415.83</td><td>402.12</td><td>398.73</td><td class="pos">HOT</td></tr>
+        <tr><td><strong>PLTR</strong></td><td>137.05</td><td class="pos">+2.44%</td><td>135.10</td><td>140.95</td><td>134.78</td><td>133.79</td><td class="pos">STRONG</td></tr>
+        <tr><td><strong>NVDA</strong></td><td>211.50</td><td class="pos">+1.77%</td><td>208.34</td><td>214.20</td><td>206.50</td><td>207.83</td><td class="pos">LEADER</td></tr>
+        <tr><td><strong>META</strong></td><td>616.81</td><td class="pos">+0.64%</td><td>614.72</td><td>624.98</td><td>613.54</td><td>612.88</td><td>STEADY</td></tr>
+        <tr><td><strong>AMZN</strong></td><td>271.17</td><td class="neg">-1.39%</td><td>275.02</td><td>276.63</td><td>270.49</td><td>274.99</td><td class="amber">SOFT</td></tr>
+        <tr><td><strong>SOFI</strong></td><td>16.00</td><td class="neg">-1.84%</td><td>16.26</td><td>16.46</td><td>15.83</td><td>16.30</td><td class="amber">FADE</td></tr>
+        <tr><td><strong>MARA</strong></td><td>12.70</td><td class="neg">-2.53%</td><td>12.73</td><td>13.05</td><td>12.23</td><td>13.03</td><td class="amber">WEAK</td></tr>
+        <tr><td><strong>COIN</strong></td><td>192.96</td><td class="neg">-2.53%</td><td>196.03</td><td>198.15</td><td>190.32</td><td>197.96</td><td class="red">DUMP</td></tr>
+        <tr><td><strong>AMD</strong></td><td>408.46</td><td class="neg">-3.07%</td><td>417.07</td><td>421.71</td><td>401.08</td><td>421.39</td><td class="red">REVERSAL</td></tr>
+        <tr><td><strong>SNDK</strong></td><td>1339.96</td><td class="neg">-4.97%</td><td>1379.42</td><td>1400.99</td><td>1292.57</td><td>1409.98</td><td class="red">CLIMAX UNWIND</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="ep-section">
+    <div class="panel">
+      <h3>EP MOVERS — TOP GAINERS <span class="badge green">RANKED</span></h3>
+      <table>
+        <thead><tr><th>#</th><th>TKR</th><th>EP</th><th>GAP</th><th>$</th><th>VOL</th><th>BIAS</th><th>CATALYST</th></tr></thead>
+        <tbody>
+          <tr class="top3"><td>1</td><td><strong>FLNC</strong></td><td><strong>85</strong></td><td class="pos">+18.08%</td><td>22.40</td><td>4.05M</td><td class="pos">LONG</td><td>Data center deals, Q1 [5/7 9:36AM]</td></tr>
+          <tr class="top3"><td>2</td><td><strong>IREN</strong></td><td><strong>77</strong></td><td class="pos">+16.08%</td><td>65.99</td><td>7.41M</td><td class="pos">LONG</td><td>$3.4B Nvidia AI cloud deal [5/8 2:33AM]</td></tr>
+          <tr class="top3"><td>3</td><td><strong>MASK</strong></td><td><strong>75</strong></td><td class="pos">+13.71%</td><td>2.82</td><td>4.09M</td><td class="pos">LONG</td><td>$1.3M conv note (continuation) [5/4 4:25PM]</td></tr>
+          <tr><td>4</td><td>AEHL</td><td>65</td><td class="pos">+95.29%</td><td>1.00</td><td>44.6M</td><td class="pos">LONG</td><td>Bitcoin gain → buyback [5/8 12:26PM]</td></tr>
+          <tr><td>5</td><td>INOD</td><td>65</td><td class="pos">+50.94%</td><td>68.89</td><td>996K</td><td class="pos">LONG</td><td>Q1 record + $51M Big Tech deal [5/7 8:15PM]</td></tr>
+          <tr><td>6</td><td>TRAW</td><td>65</td><td class="pos">+22.35%</td><td>2.08</td><td>37.3M</td><td class="pos">LONG</td><td>Hantavirus drug pipeline [5/8 11:32AM]</td></tr>
+          <tr><td>7</td><td>RXT</td><td>65</td><td class="pos">+9.38%</td><td>3.85</td><td>12.1M</td><td class="pos">LONG</td><td>Reaffirmed FY + AMD agreement [5/7 4:42PM]</td></tr>
+          <tr><td>8</td><td>RKLB</td><td>65</td><td class="pos">+9.12%</td><td>85.75</td><td>1.57M</td><td class="pos">LONG</td><td>Earnings beat, defense deals [5/7 5:18PM]</td></tr>
+          <tr><td>9</td><td>AKAM</td><td>57</td><td class="pos">+23.98%</td><td>144.67</td><td>694K</td><td class="pos">LONG</td><td>Landmark cloud AI deal [5/8 7:54AM]</td></tr>
+          <tr><td>10</td><td>FROG</td><td>55</td><td class="pos">+17.15%</td><td>66.80</td><td>117K</td><td class="pos">LONG</td><td>Raised FY + $300M buyback [5/8 4:27AM]</td></tr>
+          <tr><td>11</td><td>LASR</td><td>55</td><td class="pos">+12.55%</td><td>74.50</td><td>45K</td><td class="pos">LONG</td><td>EPS beat by $0.12 [5/7 4:53PM]</td></tr>
+          <tr><td>12</td><td>PHOE</td><td>55</td><td class="pos">+83.89%</td><td>35.05</td><td>782K</td><td class="pos">LONG</td><td>Pharma pivot — extended [5/7 8:35PM]</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="panel">
+      <h3>EP MOVERS — TOP LOSERS <span class="badge red">SHORT BIAS</span></h3>
+      <table>
+        <thead><tr><th>#</th><th>TKR</th><th>EP</th><th>GAP</th><th>$</th><th>VOL</th><th>BIAS</th><th>CATALYST</th></tr></thead>
+        <tbody>
+          <tr class="top3"><td>1</td><td><strong>TTD</strong></td><td><strong>75</strong></td><td class="neg">-12.89%</td><td>20.46</td><td>1.73M</td><td class="neg">SHORT</td><td>Q2 rev guide $750M [5/7 10:32PM]</td></tr>
+          <tr class="top3"><td>2</td><td><strong>GMEX</strong></td><td><strong>67</strong></td><td class="neg">-17.97%</td><td>1.78</td><td>1.26M</td><td class="neg">SHORT</td><td>Kitchen rollout AU$4.2M [5/5 12:46PM]</td></tr>
+          <tr class="top3"><td>3</td><td><strong>KDK</strong></td><td><strong>65</strong></td><td class="neg">-35.82%</td><td>5.84</td><td>745K</td><td class="neg">SHORT</td><td>EPS beat (paradox sell) [5/7 5:22PM]</td></tr>
+          <tr><td>4</td><td>UPWK</td><td>55</td><td class="neg">-26.30%</td><td>7.82</td><td>1.05M</td><td class="neg">SHORT</td><td>24% workforce reduction [5/7 5:44PM]</td></tr>
+          <tr><td>5</td><td>HUBS</td><td>55</td><td class="neg">-23.85%</td><td>185.60</td><td>384K</td><td class="neg">SHORT</td><td>FY26 forecast soft [5/8 2:43AM]</td></tr>
+          <tr><td>6</td><td>TSSI</td><td>55</td><td class="neg">-23.23%</td><td>12.16</td><td>181K</td><td class="neg">SHORT</td><td>Earnings + guide [5/7 8:10PM]</td></tr>
+          <tr><td>7</td><td>ABSI</td><td>55</td><td class="neg">-22.43%</td><td>4.46</td><td>351K</td><td class="neg">SHORT</td><td>Interim data H2 [5/8 8:02AM]</td></tr>
+          <tr><td>8</td><td>AMPH</td><td>55</td><td class="neg">-20.93%</td><td>19.00</td><td>56K</td><td class="neg">SHORT</td><td>BAQSIMI flat [5/8 6:42AM]</td></tr>
+          <tr><td>9</td><td>DXC</td><td>55</td><td class="neg">-19.73%</td><td>9.64</td><td>83K</td><td class="neg">SHORT</td><td>FY27 organic decline [5/8 1:42AM]</td></tr>
+          <tr><td>10</td><td>TOST</td><td>55</td><td class="neg">-12.87%</td><td>25.60</td><td>359K</td><td class="neg">SHORT</td><td>Slides despite higher guide [5/8 5:07AM]</td></tr>
+          <tr><td>11</td><td>NET</td><td>45</td><td class="neg">-16.08%</td><td>215.50</td><td>623K</td><td class="neg">SHORT</td><td>1100 jobs cut, agentic AI shift [5/8 2:58AM]</td></tr>
+          <tr><td>12</td><td>FWRD</td><td>53</td><td class="neg">-43.75%</td><td>9.75</td><td>381K</td><td class="neg">SHORT</td><td>Failed Intermodal sale [5/7 8:04PM]</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="standout">
+    <h4>★ STANDOUT SETUPS — ACTIONABLE TRADE IDEAS</h4>
+    <div class="standout-card">
+      <div class="tk">FLNC — LONG <span style="color:var(--mute);font-weight:400;font-size:11px">EP 85 · +18.08% · 4.05M vol · $22.40</span></div>
+      <div class="why">Highest-grade gainer. Hyperscaler data-center deals = real institutional thesis, AI infra theme is the only thing working in this tape (NVDA / IREN / AKAM all confirming). 4M+ pre-mkt vol on a $22 stock with earnings catalyst = clean. <strong>Plan:</strong> 5-min ORB long above pre-market VWAP. <strong>Stop:</strong> below pre-mkt low. <strong>Targets:</strong> $24 first trim, $25 round number, runner $27.</div>
+    </div>
+    <div class="standout-card">
+      <div class="tk">IREN — LONG <span style="color:var(--mute);font-weight:400;font-size:11px">EP 77 · +16.08% · 7.41M vol · $65.99</span></div>
+      <div class="why">$3.4B / 5-year Nvidia AI cloud contract. This is bitcoin-miner-pivots-to-AI thesis playing out — same narrative as RXT/AKAM. 7.4M pre-mkt vol on a sub-$70 stock = institutional-quality flow. <strong>Plan:</strong> long the first 5-min higher-high above pre-mkt range. <strong>Stop:</strong> $63 (under pre-mkt support). <strong>Targets:</strong> $69, $72, runner $75 if NVDA holds bid.</div>
+    </div>
+    <div class="standout-card">
+      <div class="tk">TTD — SHORT <span style="color:var(--mute);font-weight:400;font-size:11px">EP 75 · -12.89% · 1.73M vol · $20.46</span></div>
+      <div class="why">Best short setup. Q2 guide $750M+ but stock down 12.89% on real volume = institutions exiting positions. Confirms with HUBS -23.85% and TOST -12.87% — <strong>ad-tech / SaaS sector unwind underway</strong>. <strong>Plan:</strong> short the first 5-min lower-high after open. <strong>Stop:</strong> above pre-mkt HOD. <strong>Targets:</strong> $19.50, $19. Watch peers for confirmation. Cover into round numbers.</div>
+    </div>
+  </div>
+
+  <div class="terminal">
+<strong>DAY TRADE TAPE — 2026-05-08.</strong> <span class="verdict" style="color:var(--green)">GREEN LIGHT for active day trading.</span> VIX 16.84 — the lowest read of the week, full sweet spot. EP tape is <strong>thick</strong>: 8 setups grading 65+, three at 75+ on the gainer side, one strong short setup at 75. The thematic alignment is the tell — <strong>AI infrastructure (FLNC, IREN, AKAM, RXT, INOD)</strong> is winning, <strong>ad-tech / SaaS (TTD, HUBS, TOST, NET)</strong> is unwinding. That's tradeable directionality, not noise.
+<br><br>
+<strong>The contrast with swing mode is real.</strong> Macro composite says CAUTION on the broad market — and that's correct. But for day trades, <strong>dispersion = opportunity</strong>. When sectors decouple this hard, the best EP names move further than the index suggests because retail and fast money concentrate flow.
+<br><br>
+Be careful with the <strong>retail watchlist</strong>: AMD -3.07%, SNDK -4.97%, COIN -2.53% are <span style="color:var(--red)">red flags</span>. Don't fight them long. NVDA / TSLA / PLTR are still bid but the YTD parabolics (SNDK in particular) are unwinding hard — second consecutive day of selling in the SNDK climax pattern.
+<br><br>
+<strong>VERDICT:</strong> <span class="verdict" style="color:var(--green)">DAY TRADE — YES, but disciplined.</span> Stack FLNC + IREN long, TTD short. Take 5-min ORB triggers only. <strong>Hard rule: walk away after 2 losers</strong>, especially with the macro deteriorating. Cap risk at 0.25R per trade. Don't try to swing trade these into Friday close — the tape closes weak on red breadth days.
+  </div>
+
+</section>
+
+<div class="footer">SIBT DASHBOARD · CLOSED-LOOP DATA SNAPSHOT · TRADINGVIEW MCP · STOCK CATALYST</div>
+
+</main>
+
+<script>
+  function setMode(m){
+    document.getElementById('swing').classList.toggle('hidden', m!=='swing');
+    document.getElementById('day').classList.toggle('hidden', m!=='day');
+    document.getElementById('btn-swing').classList.toggle('active', m==='swing');
+    document.getElementById('btn-day').classList.toggle('active', m==='day');
+  }
+  (function(){
+    var d=new Date();
+    var p=function(n){return n<10?'0'+n:n};
+    document.getElementById('gen').textContent = d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate())+' '+p(d.getHours())+':'+p(d.getMinutes())+':'+p(d.getSeconds());
+  })();
+</script>
+</body>
+</html>
