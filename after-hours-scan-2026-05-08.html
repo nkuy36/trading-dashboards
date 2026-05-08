@@ -1,0 +1,793 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>After-Hours Scan — May 8, 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0e17;
+    --bg2: #0f1624;
+    --bg3: #141d2e;
+    --bg4: #1a2438;
+    --text: #e2e8f0;
+    --muted: #8899aa;
+    --green: #00e676;
+    --green-dim: #1a3d2a;
+    --red: #ff4444;
+    --red-dim: #3d1a1a;
+    --amber: #ffb300;
+    --amber-dim: #3d2e00;
+    --blue: #4fc3f7;
+    --blue-dim: #0d2a3d;
+    --purple: #b388ff;
+    --border: #1e2d42;
+    --tech-color: #4fc3f7;
+    --commodity-color: #ffb300;
+    --energy-color: #00e676;
+    --defense-color: #b388ff;
+    --macro-color: #ff7043;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    line-height: 1.7;
+    padding: 0;
+  }
+  .header {
+    background: linear-gradient(135deg, #0a0e17 0%, #0d1929 50%, #0a1520 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 28px 40px 20px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .header h1 {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--text);
+    letter-spacing: -0.5px;
+  }
+  .header h1 span { color: var(--blue); }
+  .header .subtitle {
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 4px;
+  }
+  .market-bar {
+    display: flex;
+    gap: 24px;
+    margin-top: 14px;
+    flex-wrap: wrap;
+  }
+  .market-stat { text-align: center; }
+  .market-stat .label { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; }
+  .market-stat .val { font-size: 15px; font-weight: 600; }
+  .market-stat .val.up { color: var(--green); }
+  .market-stat .val.dn { color: var(--red); }
+  .main { max-width: 1200px; margin: 0 auto; padding: 32px 40px; }
+  .section {
+    margin-bottom: 40px;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .section-header {
+    padding: 14px 24px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border-bottom: 1px solid var(--border);
+  }
+  .section-header.tech { background: linear-gradient(90deg, var(--blue-dim), transparent); color: var(--tech-color); border-color: var(--blue-dim); }
+  .section-header.commodity { background: linear-gradient(90deg, var(--amber-dim), transparent); color: var(--commodity-color); border-color: var(--amber-dim); }
+  .section-header.energy { background: linear-gradient(90deg, var(--green-dim), transparent); color: var(--energy-color); border-color: var(--green-dim); }
+  .section-header.defense { background: linear-gradient(90deg, rgba(179,136,255,0.1), transparent); color: var(--defense-color); border-color: rgba(179,136,255,0.15); }
+  .section-header.macro { background: linear-gradient(90deg, rgba(255,112,67,0.1), transparent); color: var(--macro-color); border-color: rgba(255,112,67,0.15); }
+  .section-header.options { background: linear-gradient(90deg, rgba(255,179,0,0.08), transparent); color: var(--amber); border-color: var(--amber-dim); }
+  .section-header.default { background: linear-gradient(90deg, rgba(255,255,255,0.03), transparent); color: var(--text); }
+  .section-body { padding: 20px 24px; }
+  .earnings-card {
+    border-radius: 6px;
+    padding: 16px 20px;
+    margin-bottom: 16px;
+    border-left: 4px solid;
+  }
+  .earnings-card.beat { background: var(--green-dim); border-color: var(--green); }
+  .earnings-card.miss { background: var(--red-dim); border-color: var(--red); }
+  .earnings-card.inline { background: var(--amber-dim); border-color: var(--amber); }
+  .earnings-card h3 {
+    font-size: 15px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .earnings-card h3 .ticker { font-size: 17px; }
+  .badge {
+    font-size: 10px;
+    padding: 2px 8px;
+    border-radius: 3px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+  }
+  .badge.beat { background: var(--green); color: #000; }
+  .badge.miss { background: var(--red); color: #fff; }
+  .badge.inline { background: var(--amber); color: #000; }
+  .badge.call { background: var(--green); color: #000; }
+  .badge.put { background: var(--red); color: #fff; }
+  .badge.div { background: var(--amber); color: #000; }
+  .metric-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 10px;
+    margin: 10px 0;
+  }
+  .metric {
+    background: rgba(0,0,0,0.3);
+    border-radius: 4px;
+    padding: 8px 12px;
+  }
+  .metric .m-label { font-size: 9px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; }
+  .metric .m-val { font-size: 13px; font-weight: 600; margin-top: 2px; }
+  .metric .m-val.up { color: var(--green); }
+  .metric .m-val.dn { color: var(--red); }
+  .metric .m-val.neutral { color: var(--amber); }
+  .quote-block {
+    background: rgba(0,0,0,0.3);
+    border-left: 3px solid var(--muted);
+    padding: 10px 16px;
+    margin: 10px 0;
+    color: var(--muted);
+    font-style: italic;
+    font-size: 12px;
+    border-radius: 0 4px 4px 0;
+  }
+  .readthrough {
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 8px;
+    padding: 8px 12px;
+    background: rgba(0,0,0,0.2);
+    border-radius: 4px;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+  }
+  th {
+    background: var(--bg3);
+    color: var(--muted);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 8px 12px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+  }
+  td {
+    padding: 9px 12px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: rgba(255,255,255,0.02); }
+  .up { color: var(--green); }
+  .dn { color: var(--red); }
+  .neutral { color: var(--amber); }
+  .muted { color: var(--muted); }
+  .etf-block {
+    border-left: 3px solid;
+    padding: 14px 16px;
+    margin-bottom: 16px;
+    background: rgba(0,0,0,0.2);
+    border-radius: 0 6px 6px 0;
+  }
+  .etf-block.tech { border-color: var(--tech-color); }
+  .etf-block.commodity { border-color: var(--commodity-color); }
+  .etf-block.energy { border-color: var(--energy-color); }
+  .etf-block.defense { border-color: var(--defense-color); }
+  .etf-block.macro { border-color: var(--macro-color); }
+  .etf-block h4 {
+    font-size: 12px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .etf-block.tech h4 { color: var(--tech-color); }
+  .etf-block.commodity h4 { color: var(--commodity-color); }
+  .etf-block.energy h4 { color: var(--energy-color); }
+  .etf-block.defense h4 { color: var(--defense-color); }
+  .etf-block.macro h4 { color: var(--macro-color); }
+  .flow-card {
+    border-radius: 6px;
+    padding: 14px 18px;
+    margin-bottom: 12px;
+    border: 1px solid;
+  }
+  .flow-card.call { background: var(--green-dim); border-color: rgba(0,230,118,0.3); }
+  .flow-card.put { background: var(--red-dim); border-color: rgba(255,68,68,0.3); }
+  .flow-card.div { background: var(--amber-dim); border-color: rgba(255,179,0,0.3); }
+  .gameplan-card {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 18px 20px;
+    margin-bottom: 14px;
+  }
+  .gameplan-card h4 {
+    font-size: 14px;
+    font-weight: 700;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .gameplan-card h4.long { color: var(--green); }
+  .gameplan-card h4.watch { color: var(--amber); }
+  .briefing-box {
+    background: linear-gradient(135deg, var(--bg3), var(--bg4));
+    border: 1px solid var(--blue);
+    border-radius: 8px;
+    padding: 20px 24px;
+    margin: 16px 0;
+    font-size: 13px;
+    line-height: 1.8;
+    color: var(--text);
+  }
+  .briefing-box .label {
+    font-size: 10px;
+    color: var(--blue);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 10px;
+    font-weight: 700;
+  }
+  .assumption-row td:first-child { color: var(--amber); font-weight: 600; }
+  .warning-box {
+    background: rgba(255,179,0,0.07);
+    border: 1px solid var(--amber-dim);
+    border-radius: 6px;
+    padding: 12px 16px;
+    font-size: 12px;
+    color: var(--amber);
+    margin: 12px 0;
+  }
+  .level-row {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin: 10px 0;
+  }
+  .level-chip {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 6px 14px;
+    font-size: 12px;
+  }
+  .level-chip .lbl { font-size: 9px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; display: block; }
+  .footer {
+    border-top: 1px solid var(--border);
+    padding: 20px 40px;
+    color: var(--muted);
+    font-size: 10px;
+    text-align: center;
+    letter-spacing: 0.5px;
+  }
+  .watchlist-tag {
+    display: inline-block;
+    background: rgba(79,195,247,0.15);
+    color: var(--blue);
+    border: 1px solid rgba(79,195,247,0.3);
+    border-radius: 3px;
+    padding: 1px 6px;
+    font-size: 10px;
+    margin-left: 4px;
+  }
+  .no-setup {
+    background: rgba(255,68,68,0.07);
+    border: 1px solid var(--red-dim);
+    border-radius: 6px;
+    padding: 12px 16px;
+    color: var(--red);
+    font-size: 12px;
+    font-weight: 600;
+    margin: 8px 0;
+  }
+  .divider { height: 1px; background: var(--border); margin: 16px 0; }
+  code { background: rgba(0,0,0,0.4); padding: 1px 6px; border-radius: 3px; font-family: 'JetBrains Mono', monospace; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-top">
+    <div>
+      <h1>🌙 AFTER-HOURS SCAN — <span>May 8, 2026</span></h1>
+      <div class="subtitle">Next Trading Day: Monday, May 11, 2026 &nbsp;|&nbsp; Generated after close</div>
+    </div>
+  </div>
+  <div class="market-bar">
+    <div class="market-stat">
+      <div class="label">S&P 500</div>
+      <div class="val up">7,398.93 ▲ +0.84% 🏆ATH</div>
+    </div>
+    <div class="market-stat">
+      <div class="label">NASDAQ</div>
+      <div class="val up">26,247.08 ▲ +1.71%</div>
+    </div>
+    <div class="market-stat">
+      <div class="label">DOW</div>
+      <div class="val up">49,609.16 ▲ +0.02%</div>
+    </div>
+    <div class="market-stat">
+      <div class="label">RUSSELL 2000</div>
+      <div class="val dn">▼ -1.63%</div>
+    </div>
+    <div class="market-stat">
+      <div class="label">BRENT OIL</div>
+      <div class="val dn">$97.61 ▼ -3.61%</div>
+    </div>
+    <div class="market-stat">
+      <div class="label">BITCOIN</div>
+      <div class="val neutral">~$79,800</div>
+    </div>
+  </div>
+</div>
+
+<div class="main">
+
+<!-- STEP 1: EARNINGS -->
+<div class="section">
+  <div class="section-header default">📊 STEP 1 — EARNINGS RELEASED TODAY / AROUND CLOSE</div>
+  <div class="section-body">
+
+    <div class="earnings-card beat">
+      <h3><span class="ticker">INOD</span> — Innodata Inc. <span class="badge beat">MASSIVE BEAT</span> <span class="badge beat">GUIDANCE RAISED</span></h3>
+      <div class="metric-row">
+        <div class="metric"><div class="m-label">Revenue (Actual)</div><div class="m-val up">$90.1M</div></div>
+        <div class="metric"><div class="m-label">Revenue (Est.)</div><div class="m-val muted">$76.5M</div></div>
+        <div class="metric"><div class="m-label">Rev Beat</div><div class="m-val up">+18%</div></div>
+        <div class="metric"><div class="m-label">Rev YoY</div><div class="m-val up">+54%</div></div>
+        <div class="metric"><div class="m-label">Adj. EBITDA</div><div class="m-val up">$25M vs $10.4M est.</div></div>
+        <div class="metric"><div class="m-label">AH Move</div><div class="m-val up">+91% 🚀</div></div>
+      </div>
+      <div class="quote-block">"A big tech customer that generated zero revenue 12 months ago is now on track to become our second-largest customer this year." First Evaluation &amp; Observability Platform engagement ($1M) closed with a hyperscaler.</div>
+      <div class="readthrough">📡 Read-Through: White-hot AI data annotation demand. Positive signal for IGV, BOTZ. AI enterprise services narrative intact. Hyperscaler spend accelerating.</div>
+    </div>
+
+    <div class="earnings-card inline">
+      <h3><span class="ticker">FLNC</span> — Fluence Energy <span class="badge miss">REV MISS</span> <span class="badge inline">EPS INLINE</span> <span class="badge beat">+20.6% AH</span></h3>
+      <div class="metric-row">
+        <div class="metric"><div class="m-label">Revenue (Actual)</div><div class="m-val neutral">$464.9M</div></div>
+        <div class="metric"><div class="m-label">Revenue (Est.)</div><div class="m-val muted">$611.5M</div></div>
+        <div class="metric"><div class="m-label">Rev Miss</div><div class="m-val dn">-24%</div></div>
+        <div class="metric"><div class="m-label">EPS</div><div class="m-val neutral">-$0.16 vs -$0.17 est.</div></div>
+        <div class="metric"><div class="m-label">Backlog</div><div class="m-val up">$5.5B Record</div></div>
+        <div class="metric"><div class="m-label">AH Move</div><div class="m-val up">+20.6%</div></div>
+      </div>
+      <div class="quote-block">Record $5.5B backlog. New hyperscaler agreements. FY revenue guidance ~$3.4B midpoint (1.1% above analyst est.). Market rewarding forward visibility over Q1 timing miss.</div>
+      <div class="readthrough">📡 Read-Through: Grid-scale battery storage demand structural tailwind. GRID, ICLN, PAVE beneficiaries. Backlog quality &gt; near-term revenue timing.</div>
+    </div>
+
+    <div class="earnings-card miss">
+      <h3><span class="ticker">FWRD</span> — Forward Air Corporation <span class="badge miss">MAJOR MISS</span> <span class="badge miss">-41% AH</span></h3>
+      <div class="metric-row">
+        <div class="metric"><div class="m-label">EPS (Actual)</div><div class="m-val dn">-$1.09/share</div></div>
+        <div class="metric"><div class="m-label">EPS (Est.)</div><div class="m-val muted">-$0.35</div></div>
+        <div class="metric"><div class="m-label">EPS Miss</div><div class="m-val dn">-211%</div></div>
+        <div class="metric"><div class="m-label">Revenue</div><div class="m-val dn">$582M (-5% YoY)</div></div>
+        <div class="metric"><div class="m-label">Revenue at Risk</div><div class="m-val dn">~$250M (~10%)</div></div>
+        <div class="metric"><div class="m-label">AH Move</div><div class="m-val dn">-41%</div></div>
+      </div>
+      <div class="quote-block">"A contract logistics customer representing ~10% of annual revenue intends to diversify logistics partners as part of a broader internal risk management strategy."</div>
+      <div class="readthrough">📡 Read-Through: Idiosyncratic — not a macro freight signal. Negative for XLI indirectly. No strategic sale bids received. Asset sales likely. Avoid chasing short without Monday confirmation.</div>
+    </div>
+
+    <div class="earnings-card miss">
+      <h3><span class="ticker">KDK</span> — Kodiak AI <span class="badge miss">-34.5% AH</span></h3>
+      <div class="metric-row">
+        <div class="metric"><div class="m-label">Catalyst</div><div class="m-val dn">$100M equity raise at steep discount</div></div>
+        <div class="metric"><div class="m-label">Signal</div><div class="m-val dn">Cash burn pressure, dilutive</div></div>
+      </div>
+      <div class="readthrough">📡 Read-Through: Not a sector signal. Autonomous vehicle / AI safety space. Avoid unless dead-cat bounce scalp with tight stop.</div>
+    </div>
+
+    <div class="earnings-card beat">
+      <h3><span class="ticker">PHOE</span> — Phoenix Asia Holdings <span class="badge beat">+128.2% AH</span></h3>
+      <div class="metric-row">
+        <div class="metric"><div class="m-label">Catalyst</div><div class="m-val up">$1B stock deal to acquire ACEA Pharma</div></div>
+        <div class="metric"><div class="m-label">Tradeable?</div><div class="m-val dn">⚠️ NO — low float/liquidity</div></div>
+      </div>
+      <div class="readthrough">📡 Construction→Oncology pivot. Highly idiosyncratic. Do not chase.</div>
+    </div>
+  </div>
+</div>
+
+<!-- STEP 2: AH MOVERS -->
+<div class="section">
+  <div class="section-header default">🔥 STEP 2 — AFTER-HOURS MOVERS</div>
+  <div class="section-body">
+    <table>
+      <thead>
+        <tr>
+          <th>Ticker</th><th>AH % Chg</th><th>Catalyst</th><th>Gap Setup Monday?</th><th>ETF/Sector</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>INOD</strong></td>
+          <td class="up"><strong>+91%</strong> 🚀</td>
+          <td>Record Q1 2026 beat, AI data services, guidance raised 40%+ YoY</td>
+          <td class="up">✅ YES — Gap-and-go continuation. #1 setup.</td>
+          <td>IGV, BOTZ</td>
+        </tr>
+        <tr>
+          <td><strong>FLNC</strong></td>
+          <td class="up"><strong>+20.6%</strong></td>
+          <td>Rev miss but record $5.5B backlog; FY guidance held; hyperscaler deals</td>
+          <td class="up">✅ YES — Continuation. Watch pre-mkt sellers.</td>
+          <td>GRID, ICLN</td>
+        </tr>
+        <tr>
+          <td><strong>FWRD</strong></td>
+          <td class="dn"><strong>-41%</strong></td>
+          <td>Major customer (~$250M / 10% rev) diversifying away; Q1 EPS miss -211%</td>
+          <td class="dn">⚠️ YES — Gap-down. Needs volume confirmation. Watch for dead cat.</td>
+          <td>XLI</td>
+        </tr>
+        <tr>
+          <td><strong>KDK</strong></td>
+          <td class="dn"><strong>-34.5%</strong></td>
+          <td>$100M dilutive equity raise priced at discount</td>
+          <td class="neutral">⚠️ RISKY — Dead cat possible but avoid</td>
+          <td>ARKX</td>
+        </tr>
+        <tr>
+          <td><strong>PHOE</strong></td>
+          <td class="up"><strong>+128.2%</strong></td>
+          <td>$1B stock deal to acquire ACEA Pharma; pivot from construction to oncology</td>
+          <td class="dn">❌ NO — Low float/liquidity. Do not chase.</td>
+          <td>None</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- STEP 3: ETF RECAP -->
+<div class="section">
+  <div class="section-header default">📈 STEP 3 — SECTOR & THEME ETF RECAP</div>
+  <div class="section-body">
+
+    <div class="etf-block tech">
+      <h4>🖥️ TECH & AI — SMH / XLK / BOTZ / IGV / FNGU / IBIT</h4>
+      <p><strong class="up">SECTOR WINNER: Tech +3.27%</strong> — Far and away best performer. Nasdaq hit new all-time high 26,247.08. S&P pushed to record 7,398.93.</p>
+      <p style="margin-top:8px">SMH: Semis led. <strong>NVDA</strong> (18.1% weight) near ATH ($216.83 on Apr 27). AMD overbought but trending. INOD +91% amplifies AI narrative. PLTR (85% Q1 rev growth, reported May 4) sustains AI enterprise leadership.</p>
+      <p style="margin-top:8px"><strong class="neutral">Bitcoin ~$79K-$80K.</strong> IBIT +1.43%. MARA -2.5% (positioning into earnings). COIN cautious. Crypto muted vs. equity rally.</p>
+      <p style="margin-top:8px"><strong style="color:var(--blue)">Monday Setup:</strong> Continuation likely. INOD gap-up leads sector sympathy. Buy SMH/NVDA on any morning dip. AMD overbought — tighter stop.</p>
+    </div>
+
+    <div class="etf-block commodity">
+      <h4>🛢️ COMMODITIES — GLD / UCO / USO / BNO / COPX / SLV</h4>
+      <p><strong class="dn">OIL: Brent -3.61% → $97.61.</strong> Catalyst: US-Iran diplomatic progress. Operation Project Freedom (US Navy escort mission) paused May 6 on "great progress." Strait of Hormuz fears easing.</p>
+      <p style="margin-top:8px"><strong class="up">GOLD: Structural bull intact.</strong> Near record highs. Geopolitical uncertainty (US-Iran war since Feb 28) keeping demand elevated. Central bank buying, geopolitical premium.</p>
+      <p style="margin-top:8px"><strong style="color:var(--amber)">Monday Setup:</strong> OIL is the key swing — any overnight reversal in US-Iran talks = violent oil snapback. GLD remains bid as geopolitical hedge. <strong>BNO/UCO: conditional long if Iran talks break down.</strong></p>
+    </div>
+
+    <div class="etf-block energy">
+      <h4>⚡ CLEAN ENERGY & INFRA — TAN / ICLN / GRID / PAVE</h4>
+      <p>FLNC +20.6% lifts grid storage and clean energy sentiment. Hyperscaler energy demand narrative driving structural tailwind for GRID/PAVE.</p>
+      <p style="margin-top:8px">No new policy news today. AI infrastructure buildout = power demand = grid investment. This theme is structural, not just one-day.</p>
+      <p style="margin-top:8px"><strong style="color:var(--green)">Monday Setup:</strong> FLNC gap-continuation likely. GRID/ICLN sympathy possible. Best play: FLNC direct or GRID for ETF-level exposure.</p>
+    </div>
+
+    <div class="etf-block defense">
+      <h4>🛡️ DEFENSE & SPECIALTY — ITA / JETS / CIBR / KBE</h4>
+      <p><strong>ITA:</strong> US-Iran military exchange ongoing but markets shrugged today on jobs/tech strength. If overnight talks break down = ITA bid.</p>
+      <p style="margin-top:8px"><strong>JETS:</strong> FWRD -41% is aviation-adjacent negative. Freight stress. Watch for cargo airline read-through.</p>
+      <p style="margin-top:8px"><strong>KBE (Banks):</strong> 9 of 11 sectors ended negative ex-tech. Financials pressured by rate uncertainty. Strong jobs = no rate cut urgency = bank NIM compression concern.</p>
+      <p style="margin-top:8px"><strong style="color:var(--purple)">Monday Setup:</strong> ITA conditional bid on geopolitical escalation. JETS cautious. KBE range-bound.</p>
+    </div>
+
+    <div class="etf-block macro">
+      <h4>🌐 MACRO — UUP (Dollar) / TLT (Bonds)</h4>
+      <p><strong>April Jobs Report:</strong> +115K jobs vs. +65K expected. Unemployment 4.3% steady. First back-to-back monthly gains since last May. Labor market beating expectations but "frozen" by mobility concerns (CNN).</p>
+      <p style="margin-top:8px"><strong>TLT:</strong> Under pressure. Strong jobs = Fed on hold. Fed fund futures pricing no rate change near-term. Long-duration bonds face "higher for longer" headwind.</p>
+      <p style="margin-top:8px"><strong>UUP (Dollar):</strong> Supported by strong jobs data. Oil decline reduces inflationary pressure. Dollar strength vs. EM could be a headwind for commodities.</p>
+      <p style="margin-top:8px"><strong style="color:var(--macro-color)">Monday Setup:</strong> TLT likely soft. UUP supported. Rate-sensitive sectors (utilities, REITs) may lag. No Fed speakers confirmed for Monday. Next: May 20 FOMC minutes.</p>
+    </div>
+  </div>
+</div>
+
+<!-- STEP 4: OPTIONS FLOW -->
+<div class="section">
+  <div class="section-header options">⚡ STEP 4 — OPTIONS FLOW SUMMARY</div>
+  <div class="section-body">
+    <div class="warning-box">⚠️ Real-time options flow data for May 8, 2026 was not directly accessible from public search. The following reflects structural positioning context based on available data. Verify at open via Unusual Whales / Barchart.</div>
+
+    <h4 style="margin:14px 0 10px; color:var(--muted); font-size:11px; text-transform:uppercase; letter-spacing:1px;">A) INDEX-LEVEL POSITIONING</h4>
+    <div class="metric-row">
+      <div class="metric"><div class="m-label">QQQ OI P/C Ratio</div><div class="m-val neutral">1.59 — Elevated Hedging</div></div>
+      <div class="metric"><div class="m-label">SPY P/C (Daily)</div><div class="m-val muted">Not confirmed today</div></div>
+      <div class="metric"><div class="m-label">VIX Large Calls</div><div class="m-val muted">None confirmed</div></div>
+      <div class="metric"><div class="m-label">Market Bias</div><div class="m-val up">Bullish + Hedged</div></div>
+    </div>
+
+    <h4 style="margin:14px 0 10px; color:var(--muted); font-size:11px; text-transform:uppercase; letter-spacing:1px;">B) WATCHLIST FLOW — Structural Context</h4>
+    <div class="flow-card call">
+      <strong class="up">PLTR</strong> <span class="badge call">CALLS</span> — Active in options per StreetInsider. 85% Q1 revenue growth (May 4 report). Heavy institutional call interest expected to persist. Call activity elevated post-ATH guidance raise.
+    </div>
+    <div class="flow-card call">
+      <strong class="up">NVDA / SMH</strong> <span class="badge call">CALLS</span> — Tech +3.27% day. Semis leading. NVDA near ATH. Call skew expected dominant. SMH institutional call sweeps likely.
+    </div>
+    <div class="flow-card put">
+      <strong class="dn">AMD</strong> <span class="badge put">PUTS (possible)</span> — Overbought RSI flagged by multiple analysts. Short-term hedging via puts likely. Monitor for put-call divergence at Monday open.
+    </div>
+    <div class="flow-card put">
+      <strong class="dn">MARA</strong> <span class="badge put">MIXED</span> — Down ~2.5% pre-earnings. Options pricing wide implied move. Watch for post-earnings skew shift.
+    </div>
+
+    <h4 style="margin:14px 0 10px; color:var(--muted); font-size:11px; text-transform:uppercase; letter-spacing:1px;">D) ⚠️ FLOW vs. PRICE DIVERGENCES — HIGHEST SIGNAL ALERTS</h4>
+    <div class="flow-card div">
+      <strong class="neutral">QQQ OI P/C 1.59 vs. Nasdaq +1.71% TODAY</strong> <span class="badge div">DIVERGENCE</span><br>
+      <span style="font-size:11px; margin-top:6px; display:block">Smart money has accumulated PUT hedges even as Nasdaq hits all-time highs. Two interpretations: (1) Passive tail-risk hedge against US-Iran escalation / geopolitical blow-up, or (2) Rotation conviction fading at ATH. Does NOT mean sell — means institutions are long equity WITH put protection. <strong>This is the #1 risk signal to track into Monday.</strong></span>
+    </div>
+    <div class="flow-card div">
+      <strong class="neutral">OIL -3.6% on Iran talks vs. Conflict Not Resolved</strong> <span class="badge div">DIVERGENCE</span><br>
+      <span style="font-size:11px; margin-top:6px; display:block">If UCO/BNO call buying exists (dip buyers in energy), it signals "smart money fading the Iran deal narrative." Any overnight breakdown in talks = violent oil gap-up Monday. Flag: check energy ETF call/put balance at open.</span>
+    </div>
+  </div>
+</div>
+
+<!-- STEP 5: SEC FILINGS -->
+<div class="section">
+  <div class="section-header default">📋 STEP 5 — SEC FILINGS & INSIDER ACTIVITY</div>
+  <div class="section-body">
+    <div class="warning-box">⚠️ No verified specific notable Form 4 or 8-K filings confirmed for May 8, 2026 from public search results.</div>
+    <p style="margin-top:12px"><strong>Functional Material Disclosure Events Today:</strong></p>
+    <ul style="margin:8px 0 0 16px; line-height:2">
+      <li><strong>FWRD:</strong> Q1 results + customer transition disclosure = material event (effective 8-K equivalent)</li>
+      <li><strong>MARA:</strong> Prior $1.5B Long Ridge Energy acquisition announcement drives positioning into earnings</li>
+    </ul>
+    <p style="margin-top:12px; color:var(--muted); font-size:11px">📌 Action: Check <a href="http://openinsider.com" style="color:var(--blue)">OpenInsider.com</a> Monday morning for weekend Form 4 cluster buys, especially in AI, energy, and beaten-down names.</p>
+  </div>
+</div>
+
+<!-- STEP 6: TOMORROW'S EARNINGS -->
+<div class="section">
+  <div class="section-header default">🔭 STEP 6 — NEXT TRADING SESSION EARNINGS PREVIEW (Week of May 11)</div>
+  <div class="section-body">
+    <p style="color:var(--muted); font-size:11px; margin-bottom:14px">⚠️ May 9 (Sat) and May 10 (Sun) have no trading session. Next session: Monday May 11.</p>
+    <table>
+      <thead>
+        <tr><th>Ticker</th><th>Company</th><th>Time</th><th>Key Metrics</th><th>ETF Impact</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>DDOG</strong></td>
+          <td>Datadog</td>
+          <td class="muted">TBD</td>
+          <td>AI observability demand; cloud spend. ARR growth rate key.</td>
+          <td>IGV, BOTZ</td>
+        </tr>
+        <tr>
+          <td><strong>SQ/XYZ</strong></td>
+          <td>Block</td>
+          <td class="muted">TBD</td>
+          <td>Crypto/fintech cross. Bitcoin exposure via Cash App. Square GPV.</td>
+          <td>ARKK, IBIT</td>
+        </tr>
+        <tr>
+          <td><strong>CPA</strong></td>
+          <td>Copa Holdings</td>
+          <td class="muted">TBD</td>
+          <td>Historically +1.9% on earnings. Latin America airline demand.</td>
+          <td>JETS</td>
+        </tr>
+        <tr>
+          <td><strong>DIS</strong></td>
+          <td>Walt Disney</td>
+          <td class="muted">TBD</td>
+          <td>Streaming subs, parks revenue, ESPN bundle. Key macro signal.</td>
+          <td>XLY, IGV</td>
+        </tr>
+        <tr>
+          <td><strong>MARA</strong> <span class="watchlist-tag">WATCHLIST</span></td>
+          <td>Marathon Digital</td>
+          <td class="neutral">⚠️ VERIFY TIMING</td>
+          <td>Bitcoin holdings ~38,689 BTC. $1.5B Long Ridge Energy acq. Q1 hashrate.</td>
+          <td>IBIT, MARA</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- STEP 7: MACRO OVERNIGHT -->
+<div class="section">
+  <div class="section-header macro">🌍 STEP 7 — MACRO OVERNIGHT WATCH</div>
+  <div class="section-body">
+    <table>
+      <thead><tr><th>Factor</th><th>Signal</th><th>Risk Level</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><strong>US-Iran Diplomatic Talks</strong></td>
+          <td>"Great progress" — Project Freedom paused May 6. Any reversal = oil spike.</td>
+          <td class="dn">🔴 HIGH</td>
+        </tr>
+        <tr>
+          <td><strong>Brent Crude Futures</strong></td>
+          <td>-3.6% on deal progress. Overnight direction = oil market confidence test.</td>
+          <td class="neutral">🟡 MEDIUM</td>
+        </tr>
+        <tr>
+          <td><strong>Bitcoin (~$79K)</strong></td>
+          <td>Polymarket 100% prob up on May 8. Holding support. MARA earnings imminent.</td>
+          <td class="neutral">🟡 MEDIUM</td>
+        </tr>
+        <tr>
+          <td><strong>Nikkei / Asia Futures</strong></td>
+          <td>US-Iran resolution = positive for Asian supply chains. Strong US jobs = risk-on.</td>
+          <td class="up">🟢 LOW-MED</td>
+        </tr>
+        <tr>
+          <td><strong>DAX / Europe</strong></td>
+          <td>Oil price drop benefits European manufacturers. Strong US jobs = global risk-on.</td>
+          <td class="up">🟢 LOW-MED</td>
+        </tr>
+        <tr>
+          <td><strong>Fed Speakers</strong></td>
+          <td>None confirmed for Monday. May 20 FOMC minutes = next key event.</td>
+          <td class="up">🟢 LOW</td>
+        </tr>
+        <tr>
+          <td><strong>Gold Overnight</strong></td>
+          <td>Structural bid intact. Watch: confirmed Iran deal = gold sells off (risk premium deflates).</td>
+          <td class="neutral">🟡 MEDIUM</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- STEP 8: GAME PLAN -->
+<div class="section">
+  <div class="section-header default">🎯 STEP 8 — MONDAY MAY 11 GAME PLAN</div>
+  <div class="section-body">
+
+    <h4 style="color:var(--muted); font-size:11px; text-transform:uppercase; letter-spacing:1px; margin-bottom:14px">Top 3 Tickers at Monday's Open</h4>
+
+    <div class="gameplan-card">
+      <h4 class="long">🟢 #1 INOD — Innodata Inc. | LONG</h4>
+      <p><strong>Why:</strong> +91% earnings day on record Q1 beat, 40%+ YoY guidance raise, $1M hyperscaler platform deal. AI data annotation demand white-hot. AI enterprise theme strongest narrative in market.</p>
+      <p style="margin-top:8px"><strong>Entry Logic:</strong> Gap-up open expected. Wait for initial 5-10 min consolidation. Buy first pullback to VWAP. Target continuation toward $100+. Stop: below $80 round-number support.</p>
+      <p style="margin-top:8px"><strong>Caveat:</strong> Stock already moved enormously. Size down. Pure momentum trade — not a value entry.</p>
+    </div>
+
+    <div class="gameplan-card">
+      <h4 class="long">🟢 #2 FLNC — Fluence Energy | LONG</h4>
+      <p><strong>Why:</strong> +20.6% AH despite revenue miss. Record $5.5B backlog rewarded by market. Hyperscaler grid storage demand = structural tailwind. FY guide held. Six-day winning streak.</p>
+      <p style="margin-top:8px"><strong>Entry Logic:</strong> Gap open expected. Buy consolidation above prior day's close. First target: prior resistance. Stop: back below AH levels.</p>
+      <p style="margin-top:8px"><strong>Caveat:</strong> Clean energy trades are policy-sentiment-driven. Any policy risk headline hurts. Smaller position size.</p>
+    </div>
+
+    <div class="gameplan-card">
+      <h4 class="watch">⚠️ #3 BNO (Brent Oil) — CONDITIONAL WATCH</h4>
+      <p><strong>Why:</strong> Oil -3.6% on Iran talk progress. If talks break down overnight = violent oil gap-up Monday. BNO is cleanest instrument for Brent crude exposure.</p>
+      <p style="margin-top:8px"><strong>Entry Logic:</strong> NOT a buy at open — WATCH ONLY until geopolitical clarity. If oil opens +1.5%+ on Iran escalation, buy BNO for intraday momentum. If deal confirmed = avoid oil longs entirely.</p>
+      <p style="margin-top:8px"><strong>Caveat:</strong> This is fully binary on weekend Iran news. Confirm overnight before Monday open.</p>
+    </div>
+
+    <div class="divider"></div>
+
+    <h4 style="color:var(--muted); font-size:11px; text-transform:uppercase; letter-spacing:1px; margin-bottom:10px">Key SPY Levels</h4>
+    <div class="level-row">
+      <div class="level-chip"><span class="lbl">ATH Close (Today)</span><span class="up">7,398.93</span></div>
+      <div class="level-chip"><span class="lbl">Support 1</span><span class="neutral">~7,320</span></div>
+      <div class="level-chip"><span class="lbl">Support 2</span><span class="neutral">~7,200</span></div>
+      <div class="level-chip"><span class="lbl">Resistance</span><span class="muted">ATH territory — no ceiling</span></div>
+      <div class="level-chip"><span class="lbl">Sector Bias</span><span class="up">RISK-ON / TECH-LED</span></div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="briefing-box">
+      <div class="label">⚡ 30-Second Overnight Briefing</div>
+      S&P hit a new all-time high at <strong>7,399</strong> and Nasdaq jumped <strong>+1.71%</strong> as a blowout April jobs report (+115K vs +65K est.) overshadowed fresh US-Iran military action. Tech and AI dominated — <strong>INOD</strong> exploded +91% on record Q1 earnings, <strong>FLNC</strong> +20.6% on energy storage demand, while <strong>FWRD</strong> cratered -41% on a major customer exit. Oil fell -3.6% on diplomatic progress in the US-Iran conflict. Bitcoin held near $79K. Geopolitical risk remains the key overnight variable — a deal sends oil lower and risk-on higher; a breakdown spikes oil and benefits ITA/GLD. Monday open: watch <strong>INOD</strong> and <strong>FLNC</strong> for gap-continuation setups. Semis (SMH/NVDA) remain the structural long. Key risk: QQQ OI put/call at 1.59 signals institutional hedging at ATHs — not a red flag yet, but respect the divergence.
+    </div>
+  </div>
+</div>
+
+<!-- STEP 9: ASSUMPTION AUDIT -->
+<div class="section">
+  <div class="section-header default">🔍 STEP 9 — ASSUMPTION AUDIT</div>
+  <div class="section-body">
+    <table>
+      <thead><tr><th>Assumption</th><th>Risk if Wrong</th><th>Trade Change</th></tr></thead>
+      <tbody class="assumption-row">
+        <tr>
+          <td>INOD +91% one-day move verified and sustainable</td>
+          <td class="dn">Gap could reverse hard if short squeeze or data error</td>
+          <td>Reduce size; wait for 5-min candle confirmation at open</td>
+        </tr>
+        <tr>
+          <td>FLNC +20.6% AH reaction holds into Monday</td>
+          <td class="dn">Institutional sellers could erase gap pre-market</td>
+          <td>Check pre-market price before entering; don't chase gap open</td>
+        </tr>
+        <tr>
+          <td>FWRD -41% continues lower Monday</td>
+          <td class="dn">Customer retention news → dead cat bounce</td>
+          <td>Do not short FWRD without Monday pre-market confirmation</td>
+        </tr>
+        <tr>
+          <td>US-Iran talks progressing (oil bearish)</td>
+          <td class="dn">Overnight breakdown → oil gaps up 5%+ → energy surge</td>
+          <td>Have BNO/UCO levels ready; reassess energy shorts at open</td>
+        </tr>
+        <tr>
+          <td>No major overnight TSLA/NVDA/AAPL/AMD news</td>
+          <td class="dn">Any product recall, geopolitical targeting, or major announcement</td>
+          <td>Scan headlines at 8:00 AM ET before open</td>
+        </tr>
+        <tr>
+          <td>No Fed speakers Monday</td>
+          <td class="dn">Surprise Fed commentary → rate-sensitive sectors reprice</td>
+          <td>Check Fed calendar Sunday night</td>
+        </tr>
+        <tr>
+          <td>MARA earnings timing TBD</td>
+          <td class="dn">If MARA reports BMO Monday → moves Bitcoin-adjacent at open</td>
+          <td><strong>Verify MARA earnings date Sunday night.</strong> HIGH PRIORITY.</td>
+        </tr>
+        <tr>
+          <td>Strong jobs = good news for equities</td>
+          <td class="dn">Re-read as "Fed won't cut → higher for longer" → rate selloff</td>
+          <td>Watch TLT direction at Monday open for macro signal</td>
+        </tr>
+        <tr>
+          <td>Small cap underperformance (-1.63%) is one-day divergence</td>
+          <td class="dn">IWM continues to lag → rotation signal, risk-off shift</td>
+          <td>Monitor IWM vs. SPY on Monday — widening divergence = warning</td>
+        </tr>
+        <tr>
+          <td>QQQ OI P/C 1.59 reflects hedging, not directional shorts</td>
+          <td class="dn">If actual directional shorts → large players fading rally → accelerated downside</td>
+          <td>If SPY drops >1% intraday Monday, respect the puts. Tighten stops.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+</div><!-- end .main -->
+
+<div class="footer">
+  After-Hours Catalyst Scanner | May 8, 2026 | Sources: TheStreet · Yahoo Finance · Alphastreet · StockTitan · FreightWaves · Investing.com · CNBC · Seeking Alpha · TimothySykes · Fortune · Polymarket · FreightWaves
+  <br>⚠️ This report is for informational purposes only and does not constitute financial advice.
+</div>
+
+</body>
+</html>
