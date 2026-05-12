@@ -1,0 +1,860 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>After-Hours Scan — 2026-05-12</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0e17;
+    --bg2: #111827;
+    --bg3: #1a2235;
+    --text: #e2e8f0;
+    --muted: #94a3b8;
+    --border: #1e293b;
+    --green: #22c55e;
+    --green-dim: #166534;
+    --red: #ef4444;
+    --red-dim: #7f1d1d;
+    --amber: #f59e0b;
+    --amber-dim: #78350f;
+    --blue: #3b82f6;
+    --cyan: #06b6d4;
+    --purple: #a855f7;
+    --orange: #f97316;
+    --yellow: #eab308;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    line-height: 1.6;
+    padding: 24px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  /* Header */
+  .header {
+    border-bottom: 2px solid var(--border);
+    padding-bottom: 16px;
+    margin-bottom: 24px;
+  }
+  .header-title {
+    font-size: 22px;
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: 1px;
+  }
+  .header-meta {
+    color: var(--muted);
+    font-size: 11px;
+    margin-top: 4px;
+  }
+  .alert-banner {
+    background: linear-gradient(135deg, #1a0a0a 0%, #1a1000 100%);
+    border: 1px solid #f97316;
+    border-left: 4px solid #f97316;
+    border-radius: 6px;
+    padding: 14px 16px;
+    margin-bottom: 24px;
+  }
+  .alert-banner h3 { color: #f97316; font-size: 13px; font-weight: 700; margin-bottom: 6px; }
+  .alert-banner ul { list-style: none; padding: 0; }
+  .alert-banner li { color: var(--text); padding: 2px 0; }
+  .alert-banner li::before { content: "⚡ "; }
+  /* Section */
+  .section {
+    margin-bottom: 32px;
+  }
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--cyan);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 8px;
+    margin-bottom: 16px;
+  }
+  /* Cards */
+  .card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px 16px;
+    margin-bottom: 12px;
+  }
+  .card-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+    flex-wrap: wrap;
+  }
+  .ticker {
+    font-size: 16px;
+    font-weight: 700;
+    color: #fff;
+  }
+  .company {
+    color: var(--muted);
+    font-size: 11px;
+  }
+  .badge {
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 4px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  .beat { background: var(--green-dim); color: var(--green); }
+  .miss { background: var(--red-dim); color: var(--red); }
+  .inline { background: var(--amber-dim); color: var(--amber); }
+  .guide-cut { background: #450a0a; color: #fca5a5; }
+  .guide-raise { background: #052e16; color: #86efac; }
+  .ah-down { color: var(--red); font-weight: 700; font-size: 15px; }
+  .ah-up { color: var(--green); font-weight: 700; font-size: 15px; }
+  /* Stats row */
+  .stats-row {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin: 8px 0;
+  }
+  .stat {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .stat-label { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; }
+  .stat-value { font-size: 13px; font-weight: 600; }
+  .green { color: var(--green); }
+  .red { color: var(--red); }
+  .amber { color: var(--amber); }
+  .blue { color: var(--blue); }
+  .cyan { color: var(--cyan); }
+  .purple { color: var(--purple); }
+  .orange { color: var(--orange); }
+  .white { color: #fff; }
+  .muted { color: var(--muted); }
+  /* Readthrough */
+  .readthrough {
+    background: var(--bg3);
+    border-left: 3px solid var(--purple);
+    padding: 8px 12px;
+    border-radius: 0 4px 4px 0;
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 8px;
+  }
+  .readthrough strong { color: var(--purple); }
+  /* Table */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+    margin-bottom: 12px;
+  }
+  th {
+    background: var(--bg3);
+    color: var(--cyan);
+    text-transform: uppercase;
+    font-size: 10px;
+    letter-spacing: 1px;
+    padding: 8px 10px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+  }
+  td {
+    padding: 8px 10px;
+    border-bottom: 1px solid var(--border);
+    color: var(--text);
+  }
+  tr:hover td { background: var(--bg3); }
+  /* Macro panel */
+  .macro-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+  .macro-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 12px;
+  }
+  .macro-label { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; }
+  .macro-value { font-size: 18px; font-weight: 700; }
+  .macro-change { font-size: 11px; margin-top: 2px; }
+  /* Sector rows */
+  .sector-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 12px;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    margin-bottom: 8px;
+  }
+  .sector-ticker { font-weight: 700; width: 50px; color: #fff; }
+  .sector-bar-wrap { flex: 1; height: 8px; background: var(--bg3); border-radius: 4px; overflow: hidden; }
+  .sector-bar { height: 100%; border-radius: 4px; }
+  .sector-pct { width: 60px; text-align: right; font-weight: 700; }
+  .sector-note { font-size: 11px; color: var(--muted); flex: 2; }
+  /* Game plan */
+  .game-plan-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 12px;
+  }
+  .game-plan-ticker {
+    font-size: 20px;
+    font-weight: 700;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+  .direction-long { color: var(--green); }
+  .direction-short { color: var(--red); }
+  /* Briefing box */
+  .briefing-box {
+    background: linear-gradient(135deg, #0a1628 0%, #0a1218 100%);
+    border: 1px solid var(--blue);
+    border-left: 4px solid var(--blue);
+    border-radius: 6px;
+    padding: 16px;
+    font-size: 13px;
+    line-height: 1.8;
+    color: #cbd5e1;
+  }
+  .briefing-box h4 { color: var(--blue); margin-bottom: 8px; font-size: 11px; text-transform: uppercase; letter-spacing: 2px; }
+  /* Assumption table */
+  .assumption-row td:first-child { color: var(--cyan); font-weight: 600; }
+  /* Flow divergence */
+  .divergence-alert {
+    background: linear-gradient(135deg, #1c1300 0%, #1a0a00 100%);
+    border: 1px solid var(--amber);
+    border-radius: 6px;
+    padding: 12px 16px;
+    margin-bottom: 8px;
+  }
+  .divergence-alert .div-header { color: var(--amber); font-weight: 700; font-size: 12px; margin-bottom: 4px; }
+  .divergence-alert .div-body { color: var(--text); font-size: 12px; }
+  /* Sources */
+  .sources { font-size: 10px; color: var(--muted); margin-top: 32px; border-top: 1px solid var(--border); padding-top: 16px; }
+  .sources a { color: var(--blue); text-decoration: none; }
+  .sources a:hover { text-decoration: underline; }
+  .pill {
+    display: inline-block;
+    font-size: 10px;
+    padding: 2px 8px;
+    border-radius: 20px;
+    font-weight: 600;
+  }
+  .pill-red { background: var(--red-dim); color: var(--red); }
+  .pill-green { background: var(--green-dim); color: var(--green); }
+  .pill-amber { background: var(--amber-dim); color: var(--amber); }
+  .pill-blue { background: #172554; color: var(--blue); }
+  .pill-cyan { background: #0c2e35; color: var(--cyan); }
+  .watchlist { color: var(--yellow); font-weight: 700; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 20px 0; }
+  p { margin-bottom: 8px; color: var(--text); }
+  ul, ol { padding-left: 20px; color: var(--text); }
+  li { margin-bottom: 3px; }
+  strong { font-weight: 700; }
+  a { color: var(--blue); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-title">🌙 AFTER-HOURS CATALYST SCAN</div>
+  <div class="header-meta">Tuesday, May 12, 2026 &nbsp;|&nbsp; Generated by Automated Scanner &nbsp;|&nbsp; Claude Sonnet</div>
+</div>
+
+<!-- MACRO ALERT BANNER -->
+<div class="alert-banner">
+  <h3>⚠️ DUAL MACRO SHOCK — TWO HIGH-IMPACT EVENTS TODAY</h3>
+  <ul>
+    <li>April 2026 CPI: <strong>+3.8% YoY</strong> — highest since May 2023. Energy CPI +17.9% YoY. Core +2.8% YoY. Fed hike probability rises to 25% by December.</li>
+    <li>Iran ceasefire on <strong>"massive life support"</strong> — Trump rejected Tehran's proposal. WTI crude +4.2% to $102.18. Brent +3.4% to $107.77. Hormuz supply loss: ~100M barrels/week.</li>
+  </ul>
+</div>
+
+<!-- MACRO SNAPSHOT -->
+<div class="section">
+  <div class="section-header">📊 MARKET SNAPSHOT — EOD MAY 12</div>
+  <div class="macro-grid">
+    <div class="macro-card">
+      <div class="macro-label">S&P 500</div>
+      <div class="macro-value green">7,412.84</div>
+      <div class="macro-change green">+13.91 (+0.2%)</div>
+    </div>
+    <div class="macro-card">
+      <div class="macro-label">SPY ETF</div>
+      <div class="macro-value green">737.34</div>
+      <div class="macro-change green">+0.79%</div>
+    </div>
+    <div class="macro-card">
+      <div class="macro-label">VIX</div>
+      <div class="macro-value red">18.38</div>
+      <div class="macro-change red">+6.9% ⚠️ Fear Rising</div>
+    </div>
+    <div class="macro-card">
+      <div class="macro-label">WTI Crude</div>
+      <div class="macro-value orange">$102.18</div>
+      <div class="macro-change orange">+4.2% 🛢️</div>
+    </div>
+    <div class="macro-card">
+      <div class="macro-label">Brent Crude</div>
+      <div class="macro-value orange">$107.77</div>
+      <div class="macro-change orange">+3.4%</div>
+    </div>
+    <div class="macro-card">
+      <div class="macro-label">10-Yr Yield</div>
+      <div class="macro-value red">4.459%</div>
+      <div class="macro-change red">1-Year HIGH</div>
+    </div>
+    <div class="macro-card">
+      <div class="macro-label">2-Yr Yield</div>
+      <div class="macro-value amber">3.989%</div>
+      <div class="macro-change muted">+4bps</div>
+    </div>
+    <div class="macro-card">
+      <div class="macro-label">30-Yr Yield</div>
+      <div class="macro-value red">5.023%</div>
+      <div class="macro-change red">Above 5% 🚨</div>
+    </div>
+    <div class="macro-card">
+      <div class="macro-label">Bitcoin (BTC)</div>
+      <div class="macro-value amber">$80,621</div>
+      <div class="macro-change muted">~Flat</div>
+    </div>
+    <div class="macro-card">
+      <div class="macro-label">CPI (April 2026)</div>
+      <div class="macro-value red">3.8% YoY</div>
+      <div class="macro-change red">+0.6% MoM HOT 🔥</div>
+    </div>
+    <div class="macro-card">
+      <div class="macro-label">Core CPI</div>
+      <div class="macro-value amber">2.8% YoY</div>
+      <div class="macro-change amber">+0.4% MoM</div>
+    </div>
+    <div class="macro-card">
+      <div class="macro-label">Fed Hike Prob (Dec)</div>
+      <div class="macro-value red">25%</div>
+      <div class="macro-change red">↑ from 21.5%</div>
+    </div>
+  </div>
+</div>
+
+<!-- STEP 1: EARNINGS -->
+<div class="section">
+  <div class="section-header">📈 STEP 1 — EARNINGS RELEASED TODAY (Around Close)</div>
+
+  <!-- GTM -->
+  <div class="card">
+    <div class="card-header">
+      <span class="ticker">GTM</span>
+      <span class="company">ZoomInfo Technologies</span>
+      <span class="badge miss">EPS MISS</span>
+      <span class="badge beat">REV BEAT</span>
+      <span class="badge guide-cut">GUIDANCE CUT 🔴</span>
+      <span class="ah-down">-28.6% AH → $4.32</span>
+    </div>
+    <div class="stats-row">
+      <div class="stat"><div class="stat-label">EPS Actual</div><div class="stat-value red">$0.10</div></div>
+      <div class="stat"><div class="stat-label">EPS Estimate</div><div class="stat-value muted">$0.12</div></div>
+      <div class="stat"><div class="stat-label">Adj EPS</div><div class="stat-value green">$0.28 (beat)</div></div>
+      <div class="stat"><div class="stat-label">Revenue</div><div class="stat-value green">$310.2M</div></div>
+      <div class="stat"><div class="stat-label">Rev Estimate</div><div class="stat-value muted">$307.93M</div></div>
+      <div class="stat"><div class="stat-label">Rev Beat</div><div class="stat-value green">+0.8%</div></div>
+      <div class="stat"><div class="stat-label">Adj Op Margin</div><div class="stat-value green">35% (+2pts YoY)</div></div>
+    </div>
+    <p style="font-size:12px;color:var(--muted);margin-top:8px;">
+      <strong style="color:var(--red)">Guidance:</strong> FY2026 revenue cut to $1.185–1.205B (below consensus). Q2 guided $300–303M (below est).
+    </p>
+    <div class="readthrough">
+      <strong>Read-Through:</strong> Weak guidance signals continued B2B SaaS spend softness. Peers HUBS, CRM, VEEV may face sympathy pressure at open. GTM guidance cut in rising-rate environment = double pressure on software multiples. <strong>IGV (software ETF) headwind tomorrow.</strong>
+    </div>
+  </div>
+
+  <!-- MARA -->
+  <div class="card" style="border-left: 3px solid var(--yellow);">
+    <div class="card-header">
+      <span class="ticker watchlist">MARA</span>
+      <span class="company">MARA Holdings ⭐ WATCHLIST</span>
+      <span class="badge miss">REV MISS</span>
+      <span class="badge miss">EPS MISS</span>
+      <span class="pill pill-blue">AI PIVOT</span>
+      <span class="ah-down">-10.27% on May 12 session</span>
+    </div>
+    <div class="stats-row">
+      <div class="stat"><div class="stat-label">Revenue</div><div class="stat-value red">$174.6M</div></div>
+      <div class="stat"><div class="stat-label">YoY Change</div><div class="stat-value red">-18%</div></div>
+      <div class="stat"><div class="stat-label">Net Loss</div><div class="stat-value red">-$1.3B</div></div>
+      <div class="stat"><div class="stat-label">EPS</div><div class="stat-value red">-$3.31</div></div>
+      <div class="stat"><div class="stat-label">EPS (YoY)</div><div class="stat-value muted">-$1.55</div></div>
+      <div class="stat"><div class="stat-label">BTC Sold</div><div class="stat-value amber">15,100 BTC (~$1.5B)</div></div>
+    </div>
+    <p style="font-size:12px;color:var(--muted);margin-top:8px;">
+      Loss driven by unrealized BTC mark-to-market (~$1B). Dropped from 2nd → 4th largest public BTC treasury. Pivoting to AI infrastructure/HPC.
+    </p>
+    <div class="readthrough">
+      <strong>Read-Through:</strong> Pure-play BTC miners RIOT, BTBT, CLSK under pressure. BTC at $80,621 — monitor overnight. AI pivot narrative may create a dead-cat bounce. <strong>IBIT/crypto ETFs not directly affected unless BTC moves materially.</strong>
+    </div>
+  </div>
+
+  <!-- HIMS -->
+  <div class="card">
+    <div class="card-header">
+      <span class="ticker">HIMS</span>
+      <span class="company">Hims & Hers Health</span>
+      <span class="badge miss">NET LOSS</span>
+      <span class="badge guide-cut">MARGINS COLLAPSING</span>
+      <span class="ah-down">-13–15% on May 12 session</span>
+    </div>
+    <div class="stats-row">
+      <div class="stat"><div class="stat-label">Revenue</div><div class="stat-value green">$608M</div></div>
+      <div class="stat"><div class="stat-label">Rev Growth</div><div class="stat-value green">+4% YoY</div></div>
+      <div class="stat"><div class="stat-label">Net Loss</div><div class="stat-value red">-$92M</div></div>
+      <div class="stat"><div class="stat-label">Loss (YoY)</div><div class="stat-value muted">-$50M</div></div>
+      <div class="stat"><div class="stat-label">Adj EBITDA</div><div class="stat-value red">$44M</div></div>
+      <div class="stat"><div class="stat-label">EBITDA (YoY)</div><div class="stat-value muted">$91M</div></div>
+    </div>
+    <p style="font-size:12px;color:var(--muted);margin-top:8px;">
+      <strong style="color:var(--amber)">Guidance:</strong> Q2 revenue $680–700M; FY2026 $2.8–3.0B. Brand pivot (compounded → branded) causing near-term margin compression + restructuring costs.
+    </p>
+    <div class="readthrough">
+      <strong>Read-Through:</strong> Telehealth/wellness space (TDOC, RO) may face sympathy selling. Weight-loss drug adjacency theme in play but execution risk elevated.
+    </div>
+  </div>
+
+  <p style="color:var(--muted);font-size:11px;">No reports tonight from <span class="watchlist">TSLA, NVDA, SOFI, AMD, PLTR, COIN, SNDK, META, AMZN</span>. NVDA reports May 20 AMC.</p>
+</div>
+
+<!-- STEP 2: AH MOVERS -->
+<div class="section">
+  <div class="section-header">🚀 STEP 2 — AFTER-HOURS MOVERS</div>
+  <table>
+    <thead>
+      <tr>
+        <th>Ticker</th>
+        <th>AH Price</th>
+        <th>AH Move</th>
+        <th>Catalyst</th>
+        <th>Tradeable Tomorrow</th>
+        <th>Sector ETF</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>GTM</strong></td>
+        <td>$4.32</td>
+        <td class="red">-28.6%</td>
+        <td>Guidance sharply cut, EPS miss</td>
+        <td><span class="pill pill-red">Gap-Down Short</span></td>
+        <td>IGV</td>
+      </tr>
+      <tr>
+        <td><strong>HIMS</strong></td>
+        <td>TBD</td>
+        <td class="red">-13 to -15%</td>
+        <td>Q1 net loss, EBITDA collapse, margin headwinds</td>
+        <td><span class="pill pill-amber">Gap-Down, Wait for Base</span></td>
+        <td>XLV</td>
+      </tr>
+      <tr>
+        <td><strong class="watchlist">MARA</strong> ⭐</td>
+        <td>TBD</td>
+        <td class="red">-10.27%</td>
+        <td>Q1 revenue miss, $1.3B BTC loss, AI pivot</td>
+        <td><span class="pill pill-amber">BTC-Dependent</span></td>
+        <td>IBIT, crypto</td>
+      </tr>
+      <tr>
+        <td><strong>GME</strong></td>
+        <td>$21.73</td>
+        <td class="red">-6.21%</td>
+        <td>eBay rejected $56B acquisition bid ($125/share)</td>
+        <td><span class="pill pill-red">Gap-Down Short</span></td>
+        <td>None (meme)</td>
+      </tr>
+      <tr>
+        <td><strong>EBAY</strong></td>
+        <td>~$107.80</td>
+        <td class="amber">-2.5% from high</td>
+        <td>Rejected GameStop bid — "neither credible nor attractive"</td>
+        <td><span class="pill pill-amber">Wait — Uncertainty Lingers</span></td>
+        <td>XRT</td>
+      </tr>
+    </tbody>
+  </table>
+  <div class="readthrough">
+    <strong>Highest-Signal AH Mover:</strong> GTM at -28.6% is a significant gap-down setup. Watch whether IGV/software peers gap lower at open. GME -6.21% reinforces that Ryan Cohen's M&A credibility took a hit — no immediate catalyst for recovery.
+  </div>
+</div>
+
+<!-- STEP 3: SECTOR RECAP -->
+<div class="section">
+  <div class="section-header">🏛️ STEP 3 — SECTOR & THEME ETF RECAP</div>
+
+  <p style="color:var(--muted);font-size:11px;margin-bottom:12px;">Today's sector story: Energy dominated, Communication Services collapsed. CPI forced a re-rating.</p>
+
+  <!-- Sector bars -->
+  <div class="sector-row">
+    <div class="sector-ticker">XLE</div>
+    <div class="sector-bar-wrap"><div class="sector-bar" style="width:100%;background:var(--green);"></div></div>
+    <div class="sector-pct green">+2.6%</div>
+    <div class="sector-note">🛢️ WTI +4.2%, Iran escalation. Best sector. Continuation likely tomorrow.</div>
+  </div>
+  <div class="sector-row">
+    <div class="sector-ticker">XLB</div>
+    <div class="sector-bar-wrap"><div class="sector-bar" style="width:54%;background:var(--green);"></div></div>
+    <div class="sector-pct green">+1.4%</div>
+    <div class="sector-note">Materials reflation bid. Copper + inflation pass-through.</div>
+  </div>
+  <div class="sector-row">
+    <div class="sector-ticker">XLI</div>
+    <div class="sector-bar-wrap"><div class="sector-bar" style="width:38%;background:var(--green);"></div></div>
+    <div class="sector-pct green">+1.0%</div>
+    <div class="sector-note">Industrials held up. Defense/infra demand from Iran conflict.</div>
+  </div>
+  <div class="sector-row">
+    <div class="sector-ticker">XLC</div>
+    <div class="sector-bar-wrap"><div class="sector-bar" style="width:88%;background:var(--red);"></div></div>
+    <div class="sector-pct red">-2.3%</div>
+    <div class="sector-note">⚠️ WORST sector. Rate-sensitive growth names. META, GOOGL/GOOG pressured.</div>
+  </div>
+  <div class="sector-row">
+    <div class="sector-ticker">TLT</div>
+    <div class="sector-bar-wrap"><div class="sector-bar" style="width:75%;background:var(--red);"></div></div>
+    <div class="sector-pct red">SOLD OFF</div>
+    <div class="sector-note">10-yr at 4.459% (1-yr high). 30-yr above 5%. Hot CPI kills the bond bid.</div>
+  </div>
+  <div class="sector-row">
+    <div class="sector-ticker">SMH</div>
+    <div class="sector-bar-wrap"><div class="sector-bar" style="width:20%;background:var(--amber);"></div></div>
+    <div class="sector-pct amber">Mixed</div>
+    <div class="sector-note">No specific chip news. NVDA May 20. AI demand intact but rate headwinds.</div>
+  </div>
+  <div class="sector-row">
+    <div class="sector-ticker">IBIT</div>
+    <div class="sector-bar-wrap"><div class="sector-bar" style="width:15%;background:var(--amber);"></div></div>
+    <div class="sector-pct amber">~Flat</div>
+    <div class="sector-note">BTC at $80,621. MARA pivot to AI is sector-specific, not BTC bearish signal.</div>
+  </div>
+
+  <div class="card" style="margin-top:16px;border-left:3px solid var(--orange);">
+    <strong class="orange">🛢️ ENERGY IS THE STORY</strong>
+    <p style="margin-top:6px;font-size:12px;">
+      The 2026 Strait of Hormuz crisis (war started Feb 28) has driven WTI/Brent +45% since conflict. Saudi Aramco CEO warns losing ~100M barrels/week. Ceasefire declared "on life support" tonight. Energy CPI hitting +17.9% YoY — this is a structural supply shock, not speculation.
+    </p>
+    <p style="font-size:12px;margin-top:4px;color:var(--muted);">Clean energy (TAN, ICLN): Under pressure from rising yields. Staglflation is bad for rate-sensitive names. KBE (banks): Steeper yield curve = positive NIM outlook. ITA (defense): Iran escalation is a tailwind for defense contractors.</p>
+  </div>
+</div>
+
+<!-- STEP 4: OPTIONS FLOW -->
+<div class="section">
+  <div class="section-header">⚡ STEP 4 — OPTIONS FLOW SUMMARY</div>
+
+  <div class="macro-grid" style="margin-bottom:16px;">
+    <div class="macro-card" style="border-color:var(--red);">
+      <div class="macro-label">QQQ Put/Call Ratio</div>
+      <div class="macro-value red">1.7</div>
+      <div class="macro-change red">↑ +4.9% in 5 days. Above 52-wk avg (1.6)</div>
+    </div>
+    <div class="macro-card" style="border-color:var(--red);">
+      <div class="macro-label">VIX Close</div>
+      <div class="macro-value red">18.38</div>
+      <div class="macro-change red">+6.9% on a flat close ⚠️</div>
+    </div>
+    <div class="macro-card" style="border-color:var(--amber);">
+      <div class="macro-label">Fed Hike Prob (Dec)</div>
+      <div class="macro-value amber">25%</div>
+      <div class="macro-change amber">↑ from 21.5% on hot CPI</div>
+    </div>
+  </div>
+
+  <div class="divergence-alert">
+    <div class="div-header">⚠️ FLOW vs. PRICE DIVERGENCE #1 — CRITICAL SIGNAL</div>
+    <div class="div-body"><strong>S&P 500 +0.2% BUT VIX +6.9%</strong> → Institutions are buying protection INTO the rally. Surface-level green close is misleading. Smart money is NOT buying dips — they are hedging.</div>
+  </div>
+
+  <div class="divergence-alert">
+    <div class="div-header">⚠️ FLOW vs. PRICE DIVERGENCE #2 — QQQ</div>
+    <div class="div-body"><strong>QQQ put/call ratio at 1.7 (above 52-week average) while Nasdaq partially recovered losses</strong> → Institutional put accumulation on QQQ is accelerating. This is bearish for tech/growth into tomorrow.</div>
+  </div>
+
+  <div class="card" style="border-left:3px solid var(--muted);">
+    <strong style="color:var(--muted);">Watchlist Options Flow (TSLA, NVDA, SOFI, AMD, PLTR, MARA, COIN, SNDK, META, AMZN)</strong>
+    <p style="font-size:11px;color:var(--muted);margin-top:6px;">No verified URL-sourced sweep data found for individual watchlist names today. Check <a href="https://unusualwhales.com" target="_blank">unusualwhales.com</a> and <a href="https://fintel.io" target="_blank">fintel.io</a> directly for today's flow. Do not trade on unverified claims.</p>
+  </div>
+
+  <div class="readthrough" style="margin-top:8px;">
+    <strong>Flow Conviction Summary:</strong> Smart money is BEARISH on tech (QQQ p/c 1.7), BULLISH on energy (oil structural bid). VIX buying on a green day = sophisticated downside hedging. The directional bias from today's options market: <strong style="color:var(--red)">SELL TECH RALLIES</strong>, <strong style="color:var(--green)">BUY ENERGY DIPS</strong>.
+  </div>
+</div>
+
+<!-- STEP 5: SEC FILINGS -->
+<div class="section">
+  <div class="section-header">📄 STEP 5 — SEC FILINGS & INSIDER ACTIVITY</div>
+  <table>
+    <thead>
+      <tr><th>Ticker</th><th>Insider</th><th>Shares</th><th>Price</th><th>Date</th><th>Signal Quality</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>PSN</strong> — Parsons Corp</td>
+        <td>CEO Carey Smith</td>
+        <td class="green">12,500 shares</td>
+        <td>~$50</td>
+        <td>May 8</td>
+        <td><span class="pill pill-green">HIGH — CEO open-market buy</span></td>
+      </tr>
+      <tr>
+        <td><strong>EVTC</strong> — EVERTEC</td>
+        <td>COO Joaquin Castrillo</td>
+        <td class="green">20,000 shares</td>
+        <td>N/A</td>
+        <td>May 8</td>
+        <td><span class="pill pill-amber">MEDIUM — COO cluster buy</span></td>
+      </tr>
+      <tr>
+        <td><strong>POR</strong> — Portland General</td>
+        <td>Director R. Hoglund</td>
+        <td class="green">2,000 shares</td>
+        <td>$48.80</td>
+        <td>May 11</td>
+        <td><span class="pill pill-amber">MEDIUM — Director buy</span></td>
+      </tr>
+    </tbody>
+  </table>
+  <div class="readthrough">
+    <strong>Highest Conviction:</strong> PSN (Parsons Corp) — Defense/IT firm CEO open-market buy of 12,500 shares at ~$50 is meaningful. Context: Iran war escalating → defense/intelligence spend accelerating. PSN serves defense and intelligence community directly. This could be worth tracking as a defense play alongside ITA.
+  </div>
+</div>
+
+<!-- STEP 6: TOMORROW'S EARNINGS PREVIEW -->
+<div class="section">
+  <div class="section-header">📅 STEP 6 — TOMORROW'S EARNINGS PREVIEW (May 13, 2026)</div>
+  <p style="color:var(--muted);font-size:11px;margin-bottom:12px;">195 total reports scheduled tomorrow.</p>
+
+  <!-- CSCO -->
+  <div class="card" style="border-left:3px solid var(--cyan);">
+    <div class="card-header">
+      <span class="ticker">CSCO</span>
+      <span class="company">Cisco Systems</span>
+      <span class="pill pill-cyan">AMC — After Close</span>
+      <span class="pill pill-amber">~9.87% IMPLIED MOVE</span>
+    </div>
+    <div class="stats-row">
+      <div class="stat"><div class="stat-label">EPS Estimate</div><div class="stat-value cyan">$1.04</div></div>
+      <div class="stat"><div class="stat-label">Revenue Estimate</div><div class="stat-value cyan">$15.56B</div></div>
+      <div class="stat"><div class="stat-label">Mgmt Guidance</div><div class="stat-value green">$15.4–15.6B / $1.02–1.04 EPS</div></div>
+      <div class="stat"><div class="stat-label">AI Orders FY Guidance</div><div class="stat-value green">>$5B</div></div>
+      <div class="stat"><div class="stat-label">Implied Move</div><div class="stat-value amber">±9.87%</div></div>
+    </div>
+    <p style="font-size:12px;color:var(--muted);margin-top:8px;">
+      Key metrics: AI infrastructure order momentum (Q2 alone: $2.1B in AI orders). Splunk integration (500 new logos H1, targeting 1,000/year). Gross margin guidance amid elevated memory prices.
+    </p>
+    <div class="readthrough">
+      <strong>Read-Through:</strong> A CSCO beat on AI orders is a tailwind for <strong>SMH, XLK, ANET, JNPR</strong>. Cisco is the "cheap AI infrastructure" play. A miss on guidance could drag networking/AI infrastructure theme. Watch the first AH reaction closely — implied move of ~10% means straddle players are active.
+    </div>
+  </div>
+
+  <!-- BABA -->
+  <div class="card">
+    <div class="card-header">
+      <span class="ticker">BABA</span>
+      <span class="company">Alibaba Group</span>
+      <span class="pill pill-amber">BMO — Before Market Open</span>
+    </div>
+    <div class="stats-row">
+      <div class="stat"><div class="stat-label">EPS Estimate</div><div class="stat-value amber">~$0.89–1.22</div></div>
+      <div class="stat"><div class="stat-label">Revenue Estimate</div><div class="stat-value amber">$35.2–36.4B</div></div>
+      <div class="stat"><div class="stat-label">YoY Rev Growth Est</div><div class="stat-value muted">+4–8%</div></div>
+      <div class="stat"><div class="stat-label">EPS YoY Change</div><div class="stat-value red">~-30% (investment cycle)</div></div>
+    </div>
+    <p style="font-size:12px;color:var(--muted);margin-top:8px;">
+      Key metrics: Cloud/AI revenue growth, international commerce GMV, Taobao/Tmall. Heavy AI + quick-commerce capex is compressing net income. Reports before open — gap risk pre-market. Watch FXI, KWEB, JD, PDD for China tech read-through.
+    </p>
+  </div>
+</div>
+
+<!-- STEP 7: OVERNIGHT MACRO -->
+<div class="section">
+  <div class="section-header">🌏 STEP 7 — MACRO OVERNIGHT WATCH</div>
+  <table>
+    <thead>
+      <tr><th>Market/Event</th><th>Current</th><th>Signal</th><th>Risk Level</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Nikkei 225</strong></td>
+        <td>62,742 (+0.52%)</td>
+        <td class="green">Japan somewhat insulated, yen weakness helps exporters</td>
+        <td><span class="pill pill-green">LOW</span></td>
+      </tr>
+      <tr>
+        <td><strong>KOSPI (Korea)</strong></td>
+        <td>7,643 (⚠️ -2.29%)</td>
+        <td class="red">Sharp pullback from record high Monday — tech-heavy warning sign</td>
+        <td><span class="pill pill-red">HIGH — Watch</span></td>
+      </tr>
+      <tr>
+        <td><strong>S&P 500 Futures</strong></td>
+        <td>Marginally Higher</td>
+        <td class="muted">No strong overnight conviction</td>
+        <td><span class="pill pill-amber">MEDIUM</span></td>
+      </tr>
+      <tr>
+        <td><strong>Nasdaq 100 Futures</strong></td>
+        <td>+0.1%</td>
+        <td class="muted">Near flat — VIX elevation suggests fragility</td>
+        <td><span class="pill pill-amber">MEDIUM</span></td>
+      </tr>
+      <tr>
+        <td><strong>Iran Ceasefire</strong></td>
+        <td>"On Life Support"</td>
+        <td class="red">Any escalation = oil spike, risk-off. Any deal = oil crash</td>
+        <td><span class="pill pill-red">HIGHEST RISK</span></td>
+      </tr>
+      <tr>
+        <td><strong>WTI Oil Futures</strong></td>
+        <td>~$102+ likely</td>
+        <td class="orange">Structural bid from Hormuz supply disruption</td>
+        <td><span class="pill pill-green">LOW (long side)</span></td>
+      </tr>
+      <tr>
+        <td><strong>PPI (may release May 13)</strong></td>
+        <td>TBC</td>
+        <td class="amber">Verify pre-market — follows CPI by 1 day</td>
+        <td><span class="pill pill-amber">VERIFY</span></td>
+      </tr>
+      <tr>
+        <td><strong>Fed Speakers</strong></td>
+        <td>None confirmed</td>
+        <td class="amber">Post-hot-CPI any Fed statement = hawkish read</td>
+        <td><span class="pill pill-amber">MONITOR</span></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- STEP 8: GAME PLAN -->
+<div class="section">
+  <div class="section-header">🎯 STEP 8 — TOMORROW'S GAME PLAN</div>
+
+  <div class="game-plan-card" style="border-left:4px solid var(--green);">
+    <div class="game-plan-ticker"><span>#1</span> <span>XLE</span> <span class="direction-long">🟢 LONG BIAS</span></div>
+    <p style="font-size:12px;"><strong>Why:</strong> Oil at $102.18 with ceasefire on "life support." Energy was best sector today (+2.6%). Iran supply disruption has structural basis — Saudi Aramco CEO warns 100M barrels/week lost. Energy CPI at +17.9% YoY confirms this is a real supply shock.</p>
+    <p style="font-size:12px;margin-top:6px;"><strong>Entry Logic:</strong> Open above prior close = buy first 5-min consolidation. Gap up from here = buy the breakout. Stop below today's close.</p>
+    <p style="font-size:12px;margin-top:6px;color:var(--red);"><strong>Key Risk:</strong> Surprise ceasefire announcement overnight reverses oil sharply. Stay alert on news flow pre-market.</p>
+  </div>
+
+  <div class="game-plan-card" style="border-left:4px solid var(--cyan);">
+    <div class="game-plan-ticker"><span>#2</span> <span>CSCO</span> <span class="direction-long">🟢 LONG INTO AMC REPORT</span></div>
+    <p style="font-size:12px;"><strong>Why:</strong> AI infrastructure orders have been explosive ($5B+ FY guidance), Splunk integration tracking well, implied move ~9.87%. CSCO is the "cheap AI infrastructure" play vs. NVDA. A beat lifts SMH/XLK.</p>
+    <p style="font-size:12px;margin-top:6px;"><strong>Entry Logic:</strong> Watch pre-earnings drift. If SMH/XLK open positive and CSCO holds prior support, position going into the AMC report. Alternatively, trade the post-earnings gap reaction.</p>
+    <p style="font-size:12px;margin-top:6px;color:var(--red);"><strong>Key Risk:</strong> Miss on gross margin guidance or soft Splunk update = -10% gap-down.</p>
+  </div>
+
+  <div class="game-plan-card" style="border-left:4px solid var(--red);">
+    <div class="game-plan-ticker"><span>#3</span> <span>GTM</span> <span class="direction-short">🔴 SHORT / DEAD-CAT WATCH</span></div>
+    <p style="font-size:12px;"><strong>Why:</strong> -28.6% AH gap on guidance cut in a rising-rate environment. B2B SaaS with guidance cuts historically continue lower in sessions 1–3. Rising rates compress software multiples further.</p>
+    <p style="font-size:12px;margin-top:6px;"><strong>Entry Logic:</strong> If GTM gaps down at open and bounces to $4.80–5.00, consider short with stop above $5.25. Dead-cat bounces in -25%+ earners are common but short-lived.</p>
+    <p style="font-size:12px;margin-top:6px;color:var(--amber);"><strong>Key Risk:</strong> Short squeeze possible at very low absolute price ($4.32). Liquidity risk. Use small size.</p>
+  </div>
+
+  <hr>
+
+  <div class="macro-grid" style="margin:16px 0;">
+    <div class="macro-card" style="border-color:var(--orange);">
+      <div class="macro-label">Top Sector Theme</div>
+      <div class="macro-value orange" style="font-size:14px;">Energy (XLE/UCO)</div>
+      <div class="macro-change orange">Highest conviction setup</div>
+    </div>
+    <div class="macro-card">
+      <div class="macro-label">Sector Bias</div>
+      <div class="macro-value" style="font-size:13px;color:#fff;">⚡ Energy Risk-ON</div>
+      <div class="macro-change red">Tech Risk-OFF / Mixed</div>
+    </div>
+    <div class="macro-card">
+      <div class="macro-label">SPY Support</div>
+      <div class="macro-value cyan">$726 / $688</div>
+      <div class="macro-change muted">Resistance: $750–760</div>
+    </div>
+    <div class="macro-card">
+      <div class="macro-label">Flow Conviction</div>
+      <div class="macro-value red">SELL TECH RALLIES</div>
+      <div class="macro-change green">BUY ENERGY DIPS</div>
+    </div>
+  </div>
+
+  <!-- Briefing box -->
+  <div class="briefing-box">
+    <h4>⏱️ 30-SECOND OVERNIGHT BRIEFING</h4>
+    Hot April CPI (3.8% YoY) collided with a fresh Iran ceasefire breakdown today — oil hit $102/barrel, the 10-year yield touched a 1-year high at 4.459%, and VIX jumped 6.9% even as the S&P managed a +0.2% close. Energy was the only place to hide (+2.6%), while Communication Services got crushed (-2.3%) and bonds sold off hard. After hours, ZoomInfo (GTM) cratered -28.6% on a guidance cut, and MARA fell another 10%+ on a $1.3B Q1 loss from BTC headwinds. Tomorrow morning, Alibaba (BABA) reports pre-market — China tech in focus — and Cisco (CSCO) reports after close with ~10% implied move on AI order momentum. The #1 overnight risk is any Iran escalation or surprise ceasefire. Smart money is buying QQQ puts (P/C at 1.7). <strong>The only clean setup is energy long. Reduce tech exposure.</strong>
+  </div>
+</div>
+
+<!-- STEP 9: ASSUMPTION AUDIT -->
+<div class="section">
+  <div class="section-header">🔍 STEP 9 — ASSUMPTION AUDIT</div>
+  <table class="assumption-row">
+    <thead>
+      <tr><th>#</th><th>Assumption</th><th>If Wrong</th><th>Trade Change</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>1</td><td>Iran ceasefire stays broken; oil holds above $100</td><td class="red">Surprise ceasefire → oil -10%+</td><td>Exit XLE immediately; energy trade reverses</td></tr>
+      <tr><td>2</td><td>CPI fully priced by market; no emergency Fed response</td><td class="red">Hawkish Fed statement pre-market</td><td>Growth stocks fall harder; add TLT short</td></tr>
+      <tr><td>3</td><td>CSCO beats on AI order momentum</td><td class="red">Revenue miss / soft guidance</td><td>Do NOT pre-position; wait for actual print</td></tr>
+      <tr><td>4</td><td>GTM gap-down continues on guidance cut credibility</td><td class="amber">Short squeeze from value buyers at $4</td><td>Exit short quickly; $4 is a psychologically compelling buy level</td></tr>
+      <tr><td>5</td><td>QQQ P/C 1.7 = institutional hedging (not retail noise)</td><td class="amber">Retail-driven panic, not smart money</td><td>Bearish signal is weaker; reduce conviction on downside</td></tr>
+      <tr><td>6</td><td>BABA reports BMO May 13</td><td class="amber">Reports delayed or AMC</td><td>BABA gap risk changes entirely; verify pre-market</td></tr>
+      <tr><td>7</td><td>BTC stable overnight at ~$80K</td><td class="green">BTC spike above $90K</td><td>MARA/COIN dead-cat strengthens; flip to quick long</td></tr>
+      <tr><td>8</td><td>S&P 500 futures "marginally higher" implies calm open</td><td class="red">KOSPI -2.29% sells spread overnight to US</td><td>Risk-off open; reduce all longs, GTM short more attractive</td></tr>
+      <tr><td>9</td><td>VIX at 18.38 = moderate stress, not crisis</td><td class="red">VIX spikes above 25 overnight</td><td>Full risk-off regime; cut size across all positions</td></tr>
+      <tr><td>10</td><td>PSN CEO buy was open-market conviction buy</td><td class="amber">Routine 10b5-1 plan purchase</td><td>Insider signal is noise; do not trade on it alone</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- SOURCES -->
+<div class="sources">
+  <strong>SOURCES (verified URLs only):</strong><br><br>
+  <a href="https://247wallst.com/investing/2026/05/12/stock-market-live-may-12-2026-sp-500-spy-sinks-on-higher-inflation/" target="_blank">24/7 Wall St — Stock Market Live May 12, 2026</a> &nbsp;|&nbsp;
+  <a href="https://www.cnbc.com/2026/05/12/oil-prices-today-brent-wti-trump-iran-war-hormuz.html" target="_blank">CNBC — U.S. crude oil tops $100 again</a> &nbsp;|&nbsp;
+  <a href="https://www.bls.gov/news.release/archives/cpi_05122026.htm" target="_blank">BLS — CPI April 2026 Release</a> &nbsp;|&nbsp;
+  <a href="https://www.cnbc.com/2026/05/12/cpi-inflation-april-2026-.html" target="_blank">CNBC — CPI April 2026: Prices rose 3.8%</a> &nbsp;|&nbsp;
+  <a href="https://stockstory.org/us/stocks/nasdaq/gtm/news/earnings/zoominfo-nasdaqgtm-exceeds-q1-cy2026-expectations-but-stock-drops-286percent" target="_blank">StockStory — GTM drops 28.6%</a> &nbsp;|&nbsp;
+  <a href="https://www.cnbc.com/amp/2026/05/12/hims-hers-plummets-16percent-after-first-quarter-loss-weak-guidance-.html" target="_blank">CNBC — Hims & Hers plummets 13%</a> &nbsp;|&nbsp;
+  <a href="https://www.cryptotimes.io/2026/05/12/mara-reports-1-2b-q1-loss-dumps-15100-btc-doubles-down-on-ai/" target="_blank">CryptoTimes — MARA $1.2B Q1 Loss</a> &nbsp;|&nbsp;
+  <a href="https://www.cnbc.com/2026/05/12/ebay-rejects-gamestops-takeover-ryan-cohen.html" target="_blank">CNBC — eBay rejects GameStop $56B bid</a> &nbsp;|&nbsp;
+  <a href="https://www.cnbc.com/2026/05/12/treasury-yields-rise-as-investors-await-key-inflation-data.html" target="_blank">CNBC — Treasury yields hit 1-year high</a> &nbsp;|&nbsp;
+  <a href="https://www.tipranks.com/news/cisco-is-about-to-report-q3-earnings-options-traders-expect-a-major-move-in-csco-stock" target="_blank">TipRanks — CSCO 9.87% implied move</a> &nbsp;|&nbsp;
+  <a href="https://www.stocktitan.net/sec-filings/2026-05-12/" target="_blank">StockTitan — SEC Filings May 12, 2026</a> &nbsp;|&nbsp;
+  <a href="https://www.cnbc.com/2026/05/12/asia-markets-today-live-updates-kospi-hang-seng-index-nikkei-225-sensex-csi-300.html" target="_blank">CNBC — Asia markets May 12, 2026</a> &nbsp;|&nbsp;
+  <a href="https://www.barchart.com/etfs-funds/quotes/QQQ/put-call-ratios" target="_blank">Barchart — QQQ Put/Call Ratio</a> &nbsp;|&nbsp;
+  <a href="https://en.wikipedia.org/wiki/2026_Strait_of_Hormuz_crisis" target="_blank">Wikipedia — 2026 Strait of Hormuz Crisis</a>
+</div>
+
+</body>
+</html>
