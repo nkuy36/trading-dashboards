@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pre-Market Catalyst Scan — May 13, 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0e17;
+    --bg2: #0f1520;
+    --bg3: #141c2e;
+    --border: #1e2a40;
+    --text: #e2e8f0;
+    --muted: #8896b0;
+    --bullish: #22c55e;
+    --bearish: #ef4444;
+    --neutral: #f59e0b;
+    --accent: #3b82f6;
+    --highlight: #1e3a5f;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    line-height: 1.6;
+    padding: 24px;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+  header {
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 16px;
+    margin-bottom: 24px;
+  }
+  header h1 {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--accent);
+    letter-spacing: 1px;
+  }
+  header .subtitle {
+    color: var(--muted);
+    font-size: 12px;
+    margin-top: 4px;
+  }
+  .futures-bar {
+    display: flex;
+    gap: 20px;
+    margin: 16px 0;
+    flex-wrap: wrap;
+  }
+  .futures-item {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    padding: 8px 14px;
+    border-radius: 4px;
+    font-size: 12px;
+  }
+  .futures-item .label { color: var(--muted); }
+  .futures-item .val.up { color: var(--bullish); }
+  .futures-item .val.down { color: var(--bearish); }
+  .section {
+    margin-bottom: 32px;
+  }
+  .section-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 8px;
+    margin-bottom: 16px;
+  }
+  .briefing-box {
+    background: var(--highlight);
+    border: 1px solid var(--accent);
+    border-radius: 6px;
+    padding: 16px 20px;
+    margin-bottom: 24px;
+    font-size: 13px;
+    line-height: 1.8;
+    color: var(--text);
+  }
+  .briefing-box strong { color: #93c5fd; }
+  .card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 14px 18px;
+    margin-bottom: 12px;
+  }
+  .card.bullish { border-left: 3px solid var(--bullish); }
+  .card.bearish { border-left: 3px solid var(--bearish); }
+  .card.neutral { border-left: 3px solid var(--neutral); }
+  .card-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+  }
+  .ticker {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text);
+  }
+  .badge {
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 3px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .badge.bullish { background: rgba(34,197,94,0.2); color: var(--bullish); border: 1px solid var(--bullish); }
+  .badge.bearish { background: rgba(239,68,68,0.2); color: var(--bearish); border: 1px solid var(--bearish); }
+  .badge.neutral { background: rgba(245,158,11,0.2); color: var(--neutral); border: 1px solid var(--neutral); }
+  .badge.urgent { background: rgba(239,68,68,0.3); color: #fca5a5; border: 1px solid var(--bearish); animation: pulse 1.5s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.6} }
+  .card-headline {
+    font-size: 12px;
+    font-weight: 600;
+    color: #cbd5e1;
+    margin-bottom: 4px;
+  }
+  .card-meta {
+    font-size: 11px;
+    color: var(--muted);
+    margin-bottom: 6px;
+  }
+  .card-summary {
+    font-size: 12px;
+    color: #94a3b8;
+    line-height: 1.7;
+  }
+  .card-summary strong { color: var(--text); }
+  .action-tag {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 600;
+    padding: 1px 7px;
+    border-radius: 2px;
+    margin-top: 6px;
+  }
+  .action-tag.yes { background: rgba(34,197,94,0.15); color: var(--bullish); }
+  .action-tag.watch { background: rgba(245,158,11,0.15); color: var(--neutral); }
+  .action-tag.no { background: rgba(239,68,68,0.15); color: var(--bearish); }
+  .event-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  .event-table th {
+    background: var(--bg3);
+    color: var(--muted);
+    font-size: 11px;
+    text-transform: uppercase;
+    padding: 8px 12px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+  }
+  .event-table td {
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--border);
+    font-size: 12px;
+    vertical-align: top;
+  }
+  .event-table tr:hover td { background: var(--bg3); }
+  .event-table .time { color: var(--neutral); font-weight: 600; white-space: nowrap; }
+  .event-table .event-name { color: var(--text); font-weight: 500; }
+  .event-table .imp-high { color: var(--bearish); font-weight: 700; }
+  .event-table .imp-med { color: var(--neutral); font-weight: 600; }
+  .event-table .imp-low { color: var(--muted); }
+  .trade-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 14px;
+    margin-bottom: 16px;
+  }
+  @media (max-width: 768px) { .trade-grid { grid-template-columns: 1fr; } }
+  .trade-card {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 14px;
+  }
+  .trade-card h3 {
+    font-size: 15px;
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+  .trade-card.bull h3 { color: var(--bullish); }
+  .trade-card.watch h3 { color: var(--neutral); }
+  .trade-card p { font-size: 11px; color: var(--muted); line-height: 1.6; }
+  .trade-card .entry { font-size: 11px; color: #93c5fd; margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--border); }
+  .avoid-list { display: flex; gap: 12px; flex-wrap: wrap; }
+  .avoid-chip {
+    background: rgba(239,68,68,0.1);
+    border: 1px solid var(--bearish);
+    color: var(--bearish);
+    padding: 4px 12px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 600;
+  }
+  .macro-chips { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 16px; }
+  .macro-chip {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-size: 11px;
+  }
+  .macro-chip .label { color: var(--muted); }
+  .macro-chip .val { font-weight: 600; }
+  .no-data {
+    color: var(--muted);
+    font-size: 12px;
+    font-style: italic;
+    padding: 10px 0;
+  }
+  footer {
+    margin-top: 40px;
+    border-top: 1px solid var(--border);
+    padding-top: 14px;
+    color: var(--muted);
+    font-size: 11px;
+  }
+  footer a { color: var(--accent); text-decoration: none; }
+  .divider { border: none; border-top: 1px solid var(--border); margin: 24px 0; }
+  .urgent-flag {
+    background: rgba(239,68,68,0.1);
+    border: 1px solid var(--bearish);
+    border-radius: 6px;
+    padding: 12px 16px;
+    margin-bottom: 16px;
+    font-size: 12px;
+    color: #fca5a5;
+  }
+  .urgent-flag strong { color: var(--bearish); }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>☀️ PRE-MARKET CATALYST SCAN</h1>
+  <div class="subtitle">Wednesday, May 13, 2026 &nbsp;|&nbsp; Generated at pre-market open &nbsp;|&nbsp; Sources: CNBC · Yahoo Finance · Benzinga · StockTitan</div>
+</header>
+
+<!-- FUTURES BAR -->
+<div class="futures-bar">
+  <div class="futures-item"><span class="label">S&P 500 FUT </span><span class="val up">+0.21%</span></div>
+  <div class="futures-item"><span class="label">NASDAQ FUT </span><span class="val up">+0.69%</span></div>
+  <div class="futures-item"><span class="label">DOW FUT </span><span class="val down">-0.29%</span></div>
+  <div class="futures-item"><span class="label">GOLD </span><span class="val down">-1.0% · $4,685/oz</span></div>
+  <div class="futures-item"><span class="label">SILVER </span><span class="val up">+0.7% · $80.88/oz</span></div>
+  <div class="futures-item"><span class="label">OIL (WTI) </span><span class="val down">ELEVATED · ~$80-90 floor</span></div>
+  <div class="futures-item"><span class="label">BTC </span><span class="val up">~$86K range</span></div>
+</div>
+
+<!-- 30-SECOND BRIEFING -->
+<div class="section">
+  <div class="section-title">📋 30-SECOND MORNING BRIEFING</div>
+  <div class="briefing-box">
+    The macro tape is <strong>bullish-leaning but treacherous</strong>. The dominant catalyst is <strong>Trump's Beijing summit (May 13–15)</strong>, which opened today with <strong>Jensen Huang (NVDA)</strong> making a dramatic last-minute boarding of Air Force One and <strong>Elon Musk (TSLA)</strong> joining alongside Tim Cook and Larry Fink. H200 chip deal hopes are now alive — not a single H200 has shipped to China despite authorization. <strong>Cerebras AI chip IPO prices today at $150–160</strong>, 20x oversubscribed. Nasdaq futures +0.69%, led by chips. BUT: <strong>April CPI printed 3.8% (hottest in ~3 years)</strong> yesterday, <strong>PPI prints at 8:30am ET today</strong>, and rate hike odds surged to 30%. Iran peace talks are faltering — oil elevated, gas $4.50/gal. <strong>Alibaba's earnings this morning were a disaster</strong> (84% profit plunge, revenue miss). Trade logic: Be flat or hedged into the 8:30 PPI print. <strong>If PPI is cold → rip long NVDA/SMH. If hot → fade the gap and wait for re-entry.</strong>
+  </div>
+</div>
+
+<!-- URGENT FLAGS -->
+<div class="urgent-flag">
+  🔴 <strong>URGENT — 8:30am ET TODAY: April PPI</strong> — Expected +0.5% MoM. A second consecutive hot print after yesterday's 3.8% CPI could spike yields and violently unwind the pre-market chip rally. <strong>DO NOT chase the gap before this data.</strong>
+</div>
+<div class="urgent-flag">
+  🔴 <strong>URGENT — BABA Earnings Miss This Morning</strong> — Alibaba EBITA -84% YoY, revenue miss. Stock -3% pre-market. Watch for Chinese ADR contagion (BABA, JD, PDD, KWEB).
+</div>
+
+<hr class="divider">
+
+<!-- STEP 1: WATCHLIST -->
+<div class="section">
+  <div class="section-title">Step 1 — Watchlist Overnight Catalysts</div>
+
+  <div class="card bullish">
+    <div class="card-header">
+      <span class="ticker">NVDA</span>
+      <span class="badge bullish">BULLISH</span>
+      <span class="action-tag yes">ACTIONABLE AT OPEN</span>
+    </div>
+    <div class="card-headline">Jensen Huang boards Air Force One; joins Trump's Beijing trip to meet Xi — H200 chip deal hopes surge</div>
+    <div class="card-meta">Confirmed May 13, 2026 · CNBC / Yahoo Finance · Pre-market: Nasdaq +0.69% led by chips</div>
+    <div class="card-summary">
+      Huang was not on the original delegation list — Trump called him personally after media coverage. He boarded in Alaska. The H200 chip deal has been federally authorized but <strong>zero chips have shipped</strong> to China due to bilateral disagreements. Huang's physical presence in Beijing is the first real catalyst to break the impasse. Simultaneously, <strong>Cerebras IPO prices today at $150–160/share</strong> (20x oversubscribed) — AI chip sector is on fire. <strong>Highest conviction long today.</strong>
+    </div>
+  </div>
+
+  <div class="card neutral">
+    <div class="card-header">
+      <span class="ticker">TSLA</span>
+      <span class="badge neutral">WATCH · BINARY</span>
+      <span class="action-tag watch">WATCH</span>
+    </div>
+    <div class="card-headline">Elon Musk joins Trump's China delegation; FSD approval discussions with Xi expected</div>
+    <div class="card-meta">Confirmed May 11–13, 2026 · CNBC / Yahoo Finance · Stock slipped Tuesday pre-trip</div>
+    <div class="card-summary">
+      China sales: 25,956 vehicles in April (down ~10% YoY). FSD regulatory approval in China would be a major positive catalyst for TSLA's competitive position. However, this is a <strong>pure binary on a Beijing headline</strong>. Do NOT enter pre-market — wait for a confirmed FSD or trade news from Beijing before sizing in. If no headline, stock likely drifts with the macro.
+    </div>
+  </div>
+
+  <div class="card bullish">
+    <div class="card-header">
+      <span class="ticker">PLTR</span>
+      <span class="badge bullish">BULLISH · MOMENTUM</span>
+      <span class="action-tag watch">WATCH / SWING</span>
+    </div>
+    <div class="card-headline">Q1 2026: Revenue +85% YoY, U.S. rev +104%; FY26 guidance raised to +71% growth; Argus Buy $190 PT (May 7)</div>
+    <div class="card-meta">Earnings: May 4, 2026 · Upgrade: May 7, 2026 · Benzinga / Yahoo Finance</div>
+    <div class="card-summary">
+      No new overnight catalyst, but Trump-Xi discussions on AI are <strong>directly favorable for Palantir's defense AI platform</strong>. Earnings momentum is still fresh. Argus PT $190 vs. current price = significant upside. Swing setup — look for pullback to entry.
+    </div>
+  </div>
+
+  <div class="card bullish">
+    <div class="card-header">
+      <span class="ticker">AMD</span>
+      <span class="badge bullish">BULLISH · SECTOR</span>
+      <span class="action-tag watch">WATCH</span>
+    </div>
+    <div class="card-headline">EPYC 4005 Series processor launch; chip sector broadly surging on NVDA/China optimism</div>
+    <div class="card-meta">Recent product launch · Pre-market: chip sector positive</div>
+    <div class="card-summary">
+      Rides the SMH wave. No standalone catalyst but benefits from the same chip sector surge. EPYC 4005 targets small business and cloud — adjacent to the AI infrastructure buildout theme.
+    </div>
+  </div>
+
+  <div class="card bearish">
+    <div class="card-header">
+      <span class="ticker">MARA</span>
+      <span class="badge bearish">BEARISH</span>
+      <span class="action-tag no">AVOID</span>
+    </div>
+    <div class="card-headline">Q1 2026: Revenue -18% YoY ($174.6M), Net Loss -$1.3B (Bitcoin markdowns), pivoting to AI/HPC</div>
+    <div class="card-meta">Q1 2026 results · Stock ~$13.39 (-16% past 12 months)</div>
+    <div class="card-summary">
+      Disastrous quarter. Bitcoin markdown crushed the balance sheet. AI/HPC pivot is unproven. No edge here — avoid.
+    </div>
+  </div>
+
+  <div class="card neutral">
+    <div class="card-header">
+      <span class="ticker">SOFI · COIN · SNDK · META · AMZN</span>
+      <span class="badge neutral">NO CATALYST</span>
+    </div>
+    <div class="card-summary">No verified overnight catalysts found for these names. META and AMZN benefit broadly from US-China trade détente (Mag7 tailwind) but no stock-specific news this morning to act on.</div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- STEP 2: SECTOR ETFs -->
+<div class="section">
+  <div class="section-title">Step 2 — Sector & Theme ETF Overnight Scan</div>
+
+  <div class="card bullish">
+    <div class="card-header">
+      <span class="ticker">TECH & AI</span>
+      <span class="badge bullish">BULLISH</span>
+    </div>
+    <div class="card-headline">SMH · XLK · BOTZ · FNGU — Jensen on China trip + Cerebras IPO pricing today ($150–160, 20x oversubscribed)</div>
+    <div class="card-meta">Sources: CNBC (Huang/Air Force One) · CNBC (Cerebras IPO range raised)</div>
+    <div class="card-summary">
+      <strong>Key tickers at open</strong>: NVDA, AMD, SMH, FNGU. SMH is up 30% over the past month on AI capex cycle. Cerebras pricing today adds sector hype momentum. Highest-conviction theme.
+    </div>
+  </div>
+
+  <div class="card bearish">
+    <div class="card-header">
+      <span class="ticker">OIL — UCO · USO · BNO</span>
+      <span class="badge bearish">BEARISH for consumers · BULLISH for oil ETFs</span>
+    </div>
+    <div class="card-headline">Iran peace talks faltered; Trump says ceasefire "on life support"; oil +3%, gas $4.50/gal (+28.4% YoY)</div>
+    <div class="card-meta">Source: CNBC (Iran war oil timeline) · CNBC (recession risk)</div>
+    <div class="card-summary">
+      Oil elevated with $80–90/bbl as new floor. Headwind for airlines (JETS), consumer discretionary. If Iran headlines worsen, UCO/BNO spike. If peace deal surprises — oil crashes, transports rally.
+    </div>
+  </div>
+
+  <div class="card bearish">
+    <div class="card-header">
+      <span class="ticker">GOLD — GLD</span>
+      <span class="badge bearish">BEARISH near-term</span>
+    </div>
+    <div class="card-headline">Gold -1% to $4,685/oz — oil-driven inflation concerns + rate hike fears suppress safe-haven bid</div>
+    <div class="card-meta">Source: CNBC (Gold falls on inflation worries, May 12, 2026)</div>
+    <div class="card-summary">Silver +0.7% at $80.88 showing relative strength vs. gold. Avoid GLD long until PPI clears.</div>
+  </div>
+
+  <div class="card bearish">
+    <div class="card-header">
+      <span class="ticker">BONDS — TLT</span>
+      <span class="badge bearish">BEARISH</span>
+    </div>
+    <div class="card-headline">CPI 3.8% (released yesterday) + PPI today = rate hike odds at 30%; Kevin Warsh Senate confirmation ongoing</div>
+    <div class="card-meta">Source: CNBC (CPI April 2026) · Yahoo Finance (Hot CPI shakes Fed cut bets)</div>
+    <div class="card-summary">
+      Avoid TLT longs. Hot PPI this morning = yields spike, TLT drops hard. This is the macro risk to the entire bull case.
+    </div>
+  </div>
+
+  <div class="card bearish">
+    <div class="card-header">
+      <span class="ticker">AIRLINES — JETS</span>
+      <span class="badge bearish">BEARISH</span>
+    </div>
+    <div class="card-headline">Jefferies (May 5): airlines cutting H2 2026 capacity; elevated oil = margin pressure</div>
+    <div class="card-meta">Source: Yahoo Finance (Air travel 2026 outlook)</div>
+    <div class="card-summary">Structural headwind. Avoid JETS longs.</div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- STEP 3: EARNINGS -->
+<div class="section">
+  <div class="section-title">Step 3 — Overnight Earnings Results</div>
+
+  <div class="card bearish">
+    <div class="card-header">
+      <span class="ticker">BABA</span>
+      <span class="badge urgent">🔴 URGENT MISS</span>
+    </div>
+    <div class="card-headline">Alibaba Q4 FY2026: EBITA -84% YoY, Revenue MISS ($35B vs $35.4B exp), EPS $0.09 vs $1.12 expected</div>
+    <div class="card-meta">Reported BMO May 13, 2026 · CNBC · Stock: -3% pre-market</div>
+    <div class="card-summary">
+      Heavy AI investment spending crushed profits. Cloud Intelligence revenue +40% YoY (positive AI read-through). <strong>Sector read-through</strong>: Bearish for Chinese ADRs (KWEB, FXI). Bullish read for U.S. cloud/AI names (AMZN, MSFT, GOOGL) — Alibaba's massive AI capex validates the global AI infrastructure supercycle.
+    </div>
+  </div>
+
+  <div class="card bullish">
+    <div class="card-header">
+      <span class="ticker">PLUG</span>
+      <span class="badge bullish">BULLISH</span>
+    </div>
+    <div class="card-headline">Plug Power Q results: Progress toward profitability by end of 2026; +4% AH</div>
+    <div class="card-meta">Reported AH May 12, 2026 · Clean energy / hydrogen sector</div>
+    <div class="card-summary">Mild positive for ICLN, TAN clean energy ETFs. Not a major market mover.</div>
+  </div>
+
+  <div class="card bearish">
+    <div class="card-header">
+      <span class="ticker">HIMS</span>
+      <span class="badge bearish">BEARISH</span>
+    </div>
+    <div class="card-headline">Hims & Hers: Swung to surprise loss — stock -8% AH (not on watchlist)</div>
+    <div class="card-meta">Reported AH May 12, 2026</div>
+    <div class="card-summary">Not on watchlist. No direct watchlist impact.</div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- STEP 4: OPTIONS FLOW -->
+<div class="section">
+  <div class="section-title">Step 4 — Pre-Market Options Flow</div>
+  <p class="no-data">No verified pre-market options flow data found from @unusual_whales, @FlowAlgo, @CheddarFlow, or Benzinga for this morning's session. Check <a href="https://barchart.com/options/unusual-activity" target="_blank">Barchart.com</a> and @unusual_whales at 8:00am ET directly for sweep data.</p>
+</div>
+
+<hr class="divider">
+
+<!-- STEP 5: ANALYST ACTIONS -->
+<div class="section">
+  <div class="section-title">Step 5 — Analyst Actions Today</div>
+
+  <div class="card bullish">
+    <div class="card-header">
+      <span class="ticker">PLTR</span>
+      <span class="badge bullish">UPGRADE</span>
+    </div>
+    <div class="card-headline">Argus: Upgraded to Buy from Hold | PT: $190 (May 7, 2026)</div>
+    <div class="card-meta">Argus Research · Benzinga / Yahoo Finance</div>
+    <div class="card-summary">Accelerating revenue growth, improving operating margins. Gap-and-go momentum play setup if broader market is supportive.</div>
+  </div>
+
+  <div class="card neutral">
+    <div class="card-header">
+      <span class="ticker">TSLA</span>
+      <span class="badge neutral">EXISTING RATINGS</span>
+    </div>
+    <div class="card-headline">Wedbush: $600 PT (Apr 23) · UBS: $352 PT (Apr 14) · Consensus: $403.59 (32 analysts)</div>
+    <div class="card-meta">No new action today confirmed</div>
+    <div class="card-summary">Wide dispersion in analyst targets ($352–$600) reflects China/FSD binary uncertainty — exactly the trade setup today.</div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- STEP 6: EVENTS CALENDAR -->
+<div class="section">
+  <div class="section-title">Step 6 — Today's Scheduled Events</div>
+  <table class="event-table">
+    <thead>
+      <tr>
+        <th>Time (ET)</th>
+        <th>Event</th>
+        <th>Importance</th>
+        <th>Notes</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="time">8:30am</td>
+        <td class="event-name">April PPI Data</td>
+        <td class="imp-high">🔴 HIGH</td>
+        <td>Expected +0.5% MoM. Hot print = yields spike, tech sells off. TRADE AROUND THIS.</td>
+      </tr>
+      <tr>
+        <td class="time">All day</td>
+        <td class="event-name">Trump–Xi Summit — Beijing (Day 1 of 3)</td>
+        <td class="imp-high">🔴 MEGA</td>
+        <td>Trade, AI, H200 chips, FSD, Taiwan, Iran/Hormuz. Bilateral meeting tomorrow. Headline risk ALL session.</td>
+      </tr>
+      <tr>
+        <td class="time">Today</td>
+        <td class="event-name">Cerebras (CBRS) IPO Pricing</td>
+        <td class="imp-high">🟢 BULLISH</td>
+        <td>$150–160/share target (raised from $115–125). 20x oversubscribed. Nasdaq listing May 14. AI chip hype catalyst.</td>
+      </tr>
+      <tr>
+        <td class="time">TBD</td>
+        <td class="event-name">CSCO (Cisco) Earnings</td>
+        <td class="imp-med">🟡 MEDIUM</td>
+        <td>Network/infrastructure tech. Read-through for enterprise AI spending.</td>
+      </tr>
+      <tr>
+        <td class="time">TBD</td>
+        <td class="event-name">OKLO Earnings</td>
+        <td class="imp-med">🟡 MEDIUM</td>
+        <td>Nuclear energy. Read-through for URA, ICLN clean energy ETFs.</td>
+      </tr>
+      <tr>
+        <td class="time">TBD</td>
+        <td class="event-name">Senate: Kevin Warsh Fed Chair Confirmation</td>
+        <td class="imp-med">🟡 MEDIUM</td>
+        <td>New Fed leadership under inflation/war pressure. Watch for hawkish signals.</td>
+      </tr>
+      <tr>
+        <td class="time">All day</td>
+        <td class="event-name">Iran War / Strait of Hormuz</td>
+        <td class="imp-high">🔴 HIGH</td>
+        <td>Peace talks faltered. Trump: ceasefire "on life support." Oil spikes on any escalation.</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<hr class="divider">
+
+<!-- STEP 7: TRADE IDEAS -->
+<div class="section">
+  <div class="section-title">Step 7 — Morning Trade Ideas</div>
+
+  <div class="trade-grid">
+    <div class="trade-card bull">
+      <h3>🟢 #1 · NVDA</h3>
+      <p>Jensen Huang in Beijing for H200 chip talks + Cerebras IPO pricing today = highest-conviction AI chip catalyst. Nasdaq futures led by chips.</p>
+      <div class="entry">Entry: Buy dip to VWAP post-8:30am PPI. Stop below yesterday's low. Target: new HOD/HOW.</div>
+    </div>
+    <div class="trade-card watch">
+      <h3>🟡 #2 · TSLA</h3>
+      <p>Binary on FSD approval in China. Musk physically at Xi summit. China sales -10% limits baseline bull case. DO NOT enter before Beijing headline.</p>
+      <div class="entry">Entry: Only on confirmed FSD or trade news from Beijing. Otherwise: sit out. Do not chase pre-market.</div>
+    </div>
+    <div class="trade-card bull">
+      <h3>🟢 #3 · SMH</h3>
+      <p>Sector ETF play on chip/China theme with less single-stock risk. SMH +30% past month. NVDA, AMD, TSM are top holdings. Absorbs all China chip headline upside.</p>
+      <div class="entry">Entry: Buy early morning consolidation after PPI. Stop below yesterday's close. Swing or intraday.</div>
+    </div>
+  </div>
+
+  <div class="card bullish" style="margin-bottom:12px;">
+    <div class="card-header"><span style="font-weight:700;font-size:13px;">🔑 Top Theme Today</span></div>
+    <div class="card-summary"><strong>AI Chip / Semiconductor</strong> — Jensen Huang in Beijing, Cerebras IPO pricing, Nasdaq futures +0.69%. All arrows pointing the same direction. SMH is the cleanest expression of this theme.</div>
+  </div>
+
+  <div class="section-title" style="font-size:12px;margin-top:20px;">❌ Tickers to AVOID Today</div>
+  <div class="avoid-list" style="margin-bottom:16px;">
+    <span class="avoid-chip">MARA</span>
+    <span class="avoid-chip">JETS</span>
+    <span class="avoid-chip">BABA</span>
+    <span class="avoid-chip">TLT</span>
+    <span class="avoid-chip">GLD</span>
+  </div>
+
+  <div class="card bearish">
+    <div class="card-header"><span style="font-weight:700;font-size:13px;">⚠️ Key Risks Today</span></div>
+    <div class="card-summary">
+      <strong>8:30am PPI</strong>: If +0.5%+, yields spike, dollar strengthens, tech dips hard — fade the gap and wait for re-entry.<br><br>
+      <strong>Trump-Xi summit surprise</strong>: Negative outcome (new tariffs, Taiwan escalation, AI decoupling) = market risk-off across the board.<br><br>
+      <strong>Iran headlines</strong>: Trump said ceasefire is "on life support." Any new attack or escalation = oil spikes violently intraday.
+    </div>
+  </div>
+</div>
+
+<footer>
+  <p>Pre-Market Catalyst Scan · May 13, 2026 · Automated report</p>
+  <p style="margin-top:6px;">Sources: 
+    <a href="https://www.cnbc.com/2026/05/13/nvidia-says-ceo-jensen-huang-is-joining-trumps-china-trip.html" target="_blank">CNBC – Jensen Huang joins China trip</a> ·
+    <a href="https://finance.yahoo.com/news/nvidia39s-jensen-huang-joins-trump39s-china-visit-013448882.html" target="_blank">Yahoo Finance – H200 deal hopes</a> ·
+    <a href="https://www.cnbc.com/2026/05/12/cpi-inflation-april-2026-.html" target="_blank">CNBC – CPI April 2026</a> ·
+    <a href="https://www.cnbc.com/2026/05/13/alibaba-earnings-march-quarter-ai-cloud-growth.html" target="_blank">CNBC – Alibaba earnings</a> ·
+    <a href="https://www.cnbc.com/2026/05/11/cerebras-raises-ipo-range.html" target="_blank">CNBC – Cerebras IPO range raised</a> ·
+    <a href="https://www.cnbc.com/2026/05/12/trump-xi-china-trade-iran-taiwan.html" target="_blank">CNBC – Trump-Xi summit stakes</a>
+  </p>
+</footer>
+
+</body>
+</html>
