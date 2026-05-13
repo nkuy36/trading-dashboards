@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🌙 After-Hours Scan — May 13, 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0e17;
+    --bg2: #0f1520;
+    --bg3: #141c2e;
+    --border: #1e2d48;
+    --text: #e2e8f0;
+    --text-dim: #94a3b8;
+    --text-muted: #64748b;
+    --green: #22c55e;
+    --green-bg: rgba(34,197,94,0.08);
+    --green-border: rgba(34,197,94,0.25);
+    --red: #ef4444;
+    --red-bg: rgba(239,68,68,0.08);
+    --red-border: rgba(239,68,68,0.25);
+    --amber: #f59e0b;
+    --amber-bg: rgba(245,158,11,0.08);
+    --amber-border: rgba(245,158,11,0.25);
+    --blue: #3b82f6;
+    --blue-bg: rgba(59,130,246,0.08);
+    --blue-border: rgba(59,130,246,0.25);
+    --purple: #a855f7;
+    --cyan: #06b6d4;
+    --accent: #3b82f6;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    line-height: 1.6;
+    padding: 24px;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+  /* HEADER */
+  .header {
+    background: linear-gradient(135deg, #0f1520 0%, #141c2e 100%);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 28px 32px;
+    margin-bottom: 24px;
+    position: relative;
+    overflow: hidden;
+  }
+  .header::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--blue), var(--purple), var(--cyan));
+  }
+  .header h1 {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 6px;
+    letter-spacing: -0.5px;
+  }
+  .header .meta {
+    color: var(--text-muted);
+    font-size: 11px;
+  }
+  .header .meta span { color: var(--text-dim); }
+  /* MARKET SUMMARY BAR */
+  .market-bar {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+  .market-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px;
+    text-align: center;
+  }
+  .market-card .label { font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; }
+  .market-card .value { font-size: 20px; font-weight: 700; }
+  .market-card .change { font-size: 12px; margin-top: 2px; }
+  .pos { color: var(--green); }
+  .neg { color: var(--red); }
+  .flat { color: var(--amber); }
+  /* SECTION */
+  .section {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    margin-bottom: 20px;
+    overflow: hidden;
+  }
+  .section-header {
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg3);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .section-header h2 {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  .step-badge {
+    background: var(--accent);
+    color: white;
+    font-size: 9px;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: 4px;
+    letter-spacing: 0.5px;
+  }
+  .section-body { padding: 20px; }
+  /* EARNINGS CARD */
+  .earnings-card {
+    border-radius: 8px;
+    padding: 18px;
+    margin-bottom: 14px;
+    border: 1px solid;
+  }
+  .earnings-card.beat { background: var(--green-bg); border-color: var(--green-border); }
+  .earnings-card.miss { background: var(--red-bg); border-color: var(--red-border); }
+  .earnings-card.mixed { background: var(--amber-bg); border-color: var(--amber-border); }
+  .earnings-card .ticker { font-size: 18px; font-weight: 700; margin-bottom: 6px; }
+  .earnings-card .ticker .badge {
+    font-size: 10px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 4px;
+    margin-left: 8px;
+    vertical-align: middle;
+  }
+  .badge-beat { background: var(--green); color: #000; }
+  .badge-miss { background: var(--red); color: #fff; }
+  .badge-mixed { background: var(--amber); color: #000; }
+  .badge-watch { background: var(--blue); color: #fff; }
+  .metrics {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    margin: 12px 0;
+  }
+  .metric { background: rgba(255,255,255,0.03); border-radius: 6px; padding: 10px; }
+  .metric .m-label { font-size: 9px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; }
+  .metric .m-value { font-size: 13px; font-weight: 600; }
+  .card-detail { font-size: 12px; color: var(--text-dim); margin-top: 8px; }
+  .card-detail strong { color: var(--text); }
+  /* MOVERS TABLE */
+  .mover-row {
+    display: grid;
+    grid-template-columns: 80px 100px 90px 1fr 140px;
+    gap: 12px;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid rgba(30,45,72,0.5);
+  }
+  .mover-row:last-child { border-bottom: none; }
+  .mover-row .ticker-col { font-weight: 700; font-size: 14px; }
+  .mover-row .price-col { font-size: 13px; }
+  .mover-row .pct-col { font-size: 15px; font-weight: 700; }
+  .mover-row .catalyst-col { color: var(--text-dim); font-size: 12px; }
+  .mover-row .etf-col { color: var(--text-muted); font-size: 11px; }
+  .mover-header {
+    display: grid;
+    grid-template-columns: 80px 100px 90px 1fr 140px;
+    gap: 12px;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 10px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  /* THEME BOXES */
+  .theme-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+  }
+  .theme-box {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px;
+  }
+  .theme-box h3 {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+  }
+  .theme-box .direction {
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 6px;
+  }
+  .theme-box p { font-size: 12px; color: var(--text-dim); line-height: 1.5; }
+  .theme-box .setup { margin-top: 8px; padding: 6px 10px; background: rgba(59,130,246,0.08); border-radius: 4px; font-size: 11px; color: var(--cyan); }
+  /* OPTIONS */
+  .options-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  .options-table th {
+    text-align: left;
+    padding: 8px 12px;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--text-muted);
+    border-bottom: 1px solid var(--border);
+  }
+  .options-table td {
+    padding: 10px 12px;
+    font-size: 12px;
+    border-bottom: 1px solid rgba(30,45,72,0.4);
+  }
+  .options-table tr:last-child td { border-bottom: none; }
+  /* GAME PLAN */
+  .trade-card {
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 14px;
+    background: var(--bg3);
+  }
+  .trade-card .t-header { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+  .trade-card .t-ticker { font-size: 18px; font-weight: 700; }
+  .trade-card .t-bias { font-size: 11px; font-weight: 600; padding: 3px 8px; border-radius: 4px; }
+  .trade-card .t-body { font-size: 12px; color: var(--text-dim); line-height: 1.6; }
+  .trade-card .t-entry { margin-top: 10px; padding: 8px 12px; background: rgba(255,255,255,0.03); border-radius: 6px; font-size: 12px; }
+  .trade-card .t-entry strong { color: var(--text); }
+  /* ASSUMPTION TABLE */
+  .assumption-row { display: grid; grid-template-columns: 32px 1fr 1fr; gap: 12px; padding: 10px 0; border-bottom: 1px solid rgba(30,45,72,0.4); font-size: 12px; }
+  .assumption-row:last-child { border-bottom: none; }
+  .assumption-row .num { color: var(--text-muted); font-weight: 600; }
+  .assumption-row .assume { color: var(--text); }
+  .assumption-row .impact { color: var(--amber); }
+  /* BRIEFING */
+  .briefing {
+    background: linear-gradient(135deg, rgba(59,130,246,0.08) 0%, rgba(168,85,247,0.05) 100%);
+    border: 1px solid var(--blue-border);
+    border-radius: 10px;
+    padding: 20px;
+    font-size: 13px;
+    line-height: 1.8;
+    color: var(--text);
+  }
+  /* WARNING BOX */
+  .warn-box {
+    background: var(--amber-bg);
+    border: 1px solid var(--amber-border);
+    border-radius: 6px;
+    padding: 10px 14px;
+    font-size: 11px;
+    color: var(--amber);
+    margin: 10px 0;
+  }
+  /* MACRO CARD */
+  .macro-card {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px;
+    margin-bottom: 12px;
+  }
+  .macro-card .m-title { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--text-dim); margin-bottom: 6px; }
+  .macro-card .m-number { font-size: 22px; font-weight: 700; margin-bottom: 4px; }
+  .macro-card p { font-size: 12px; color: var(--text-dim); }
+  .macro-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  /* LEVELS */
+  .level-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid rgba(30,45,72,0.4); font-size: 12px; }
+  .level-row:last-child { border-bottom: none; }
+  .level-label { color: var(--text-muted); }
+  .level-value { font-weight: 600; }
+  /* SOURCES */
+  .sources-list { font-size: 11px; columns: 2; gap: 20px; }
+  .sources-list a { color: var(--blue); text-decoration: none; display: block; margin-bottom: 4px; }
+  .sources-list a:hover { color: var(--cyan); }
+  /* MISC */
+  .tag { display: inline-block; font-size: 10px; padding: 2px 7px; border-radius: 3px; font-weight: 600; margin-right: 4px; }
+  .tag-green { background: var(--green-bg); color: var(--green); border: 1px solid var(--green-border); }
+  .tag-red { background: var(--red-bg); color: var(--red); border: 1px solid var(--red-border); }
+  .tag-amber { background: var(--amber-bg); color: var(--amber); border: 1px solid var(--amber-border); }
+  .tag-blue { background: var(--blue-bg); color: var(--blue); border: 1px solid var(--blue-border); }
+  hr.divider { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
+  .quote-block { border-left: 3px solid var(--blue); padding: 8px 14px; background: var(--bg3); border-radius: 0 6px 6px 0; font-size: 12px; color: var(--text-dim); margin: 10px 0; font-style: italic; }
+  .verify { color: var(--amber); font-size: 11px; }
+  .footer { text-align: center; color: var(--text-muted); font-size: 10px; padding: 20px 0; margin-top: 24px; border-top: 1px solid var(--border); }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <h1>🌙 AFTER-HOURS CATALYST SCAN</h1>
+  <div class="meta">Generated: <span>Wednesday, May 13, 2026 — After Market Close</span> &nbsp;|&nbsp; Watchlist: <span>TSLA, NVDA, SOFI, AMD, PLTR, MARA, COIN, SNDK, META, AMZN</span></div>
+</div>
+
+<!-- MARKET BAR -->
+<div class="market-bar">
+  <div class="market-card">
+    <div class="label">S&amp;P 500</div>
+    <div class="value pos">7,444.25</div>
+    <div class="change pos">+0.58% ▲ NEW RECORD</div>
+  </div>
+  <div class="market-card">
+    <div class="label">Nasdaq</div>
+    <div class="value pos">26,402.34</div>
+    <div class="change pos">+1.20% ▲ NEW RECORD</div>
+  </div>
+  <div class="market-card">
+    <div class="label">Dow Jones</div>
+    <div class="value neg">49,693.20</div>
+    <div class="change neg">-0.14% ▼ lagging</div>
+  </div>
+</div>
+
+<!-- STEP 1: EARNINGS -->
+<div class="section">
+  <div class="section-header">
+    <span class="step-badge">STEP 1</span>
+    <h2>Earnings Released Today — After Close</h2>
+  </div>
+  <div class="section-body">
+
+    <!-- CSCO -->
+    <div class="earnings-card beat">
+      <div class="ticker">
+        CSCO — Cisco Systems
+        <span class="badge badge-beat">BEAT EPS</span>
+        <span class="badge badge-beat">BEAT REV</span>
+        <span class="badge badge-beat">GUIDANCE RAISED</span>
+      </div>
+      <div class="metrics">
+        <div class="metric">
+          <div class="m-label">EPS Actual</div>
+          <div class="m-value pos">$1.06</div>
+        </div>
+        <div class="metric">
+          <div class="m-label">EPS Est.</div>
+          <div class="m-value">$1.04</div>
+        </div>
+        <div class="metric">
+          <div class="m-label">Revenue Actual</div>
+          <div class="m-value pos">$15.84B</div>
+        </div>
+        <div class="metric">
+          <div class="m-label">Revenue Est.</div>
+          <div class="m-value">$15.56B</div>
+        </div>
+      </div>
+      <div class="metrics">
+        <div class="metric">
+          <div class="m-label">AH Move</div>
+          <div class="m-value pos">+15% 🔥</div>
+        </div>
+        <div class="metric">
+          <div class="m-label">AH Price</div>
+          <div class="m-value pos">~$114</div>
+        </div>
+        <div class="metric">
+          <div class="m-label">Guidance</div>
+          <div class="m-value pos">RAISED</div>
+        </div>
+        <div class="metric">
+          <div class="m-label">AI Orders FY</div>
+          <div class="m-value pos">$9B ↑</div>
+        </div>
+      </div>
+      <div class="quote-block">"Cisco received $5.3B in AI infrastructure orders YTD and raised full-year AI order forecast to $9B from $5B — confirming hyperscaler spending acceleration."</div>
+      <div class="card-detail">
+        <strong>Q4 Guidance:</strong> $16.7–$16.9B rev (est. $15.82B) | EPS $1.16–$1.18 (est. $1.07)<br>
+        <strong>FY26 Guidance:</strong> $62.8–$63.0B (est. $61.6B)<br>
+        <strong>AH Reaction:</strong> Biggest single-session rally since 2011<br>
+        <strong>Read-Through:</strong> Confirms AI capex cycle. Positive for ANET, JNPR, CIEN, SMH, XLK, BOTZ<br>
+        <strong>Watchlist Hit:</strong> ❌ — But positive read-through for NVDA, AMD AI infrastructure thesis
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- STEP 2: AH MOVERS -->
+<div class="section">
+  <div class="section-header">
+    <span class="step-badge">STEP 2</span>
+    <h2>After-Hours Movers (&gt;5%)</h2>
+  </div>
+  <div class="section-body">
+    <div class="mover-header">
+      <div>TICKER</div>
+      <div>PRICE</div>
+      <div>AH CHANGE</div>
+      <div>CATALYST</div>
+      <div>THEME ETF</div>
+    </div>
+
+    <div class="mover-row">
+      <div class="ticker-col pos">CSCO</div>
+      <div class="price-col">~$114</div>
+      <div class="pct-col pos">+15.0%</div>
+      <div class="catalyst-col">Q3 earnings beat + AI orders doubled to $9B. Biggest rally since 2011.</div>
+      <div class="etf-col">XLK, IGV, BOTZ</div>
+    </div>
+
+    <div class="mover-row">
+      <div class="ticker-col pos">BIDU</div>
+      <div class="price-col">$150.94</div>
+      <div class="pct-col pos">+7.86%</div>
+      <div class="catalyst-col">Catalyst unconfirmed. <span class="verify">⚠️ Verify at open</span></div>
+      <div class="etf-col">BOTZ, KWEB</div>
+    </div>
+
+    <div class="mover-row">
+      <div class="ticker-col neg">PDFS</div>
+      <div class="price-col">$48</div>
+      <div class="pct-col neg">-6.9%</div>
+      <div class="catalyst-col">Likely earnings miss. <span class="verify">⚠️ Verify catalyst — thin liquidity</span></div>
+      <div class="etf-col">SMH adjacent (minor)</div>
+    </div>
+
+    <div class="mover-row">
+      <div class="ticker-col pos">F</div>
+      <div class="price-col">~$13.56</div>
+      <div class="pct-col pos">+13.5% (reg. session)</div>
+      <div class="catalyst-col">Ford Energy launch (BESS for utilities/data centers) + MS upgrade + Q1 earnings beat</div>
+      <div class="etf-col">GRID, ICLN, PAVE</div>
+    </div>
+
+  </div>
+</div>
+
+<!-- STEP 3: THEMES -->
+<div class="section">
+  <div class="section-header">
+    <span class="step-badge">STEP 3</span>
+    <h2>Sector &amp; Theme ETF Recap</h2>
+  </div>
+  <div class="section-body">
+    <div class="theme-grid">
+
+      <div class="theme-box">
+        <h3>⚡ TECH &amp; AI — SMH, XLK, BOTZ, FNGU, IBIT</h3>
+        <div class="direction pos">▲ LEADING — Strong</div>
+        <p>SMH +60% YTD, trading ~$572. Nasdaq +1.20% to new record. Apple hit $300 intraday for first time. CSCO +15% AH will lift XLK/IGV tomorrow. AMAT reports after close tomorrow — next AI capex read.</p>
+        <div class="setup">🎯 Tomorrow: Continuation. XLK/SMH on any pre-market dip. AMAT into print.</div>
+      </div>
+
+      <div class="theme-box">
+        <h3>🪙 BITCOIN / IBIT vs GOLD / GLD</h3>
+        <div class="direction pos">▲ IBIT outpacing GLD by +33pts YTD</div>
+        <p>$13B capital rotation: GLD lost $9B in outflows; IBIT attracted $4.2B. Bitcoin ETFs in 6th consecutive week of positive flows. Gold at ~$4,700 (13% off ATH). Hot PPI supports gold narratively but institutional flows favor BTC.</p>
+        <div class="setup">🎯 Tomorrow: IBIT/BTC momentum continues. Gold may bounce on PPI narrative. Divergence: watch if gold gets put buying despite price drop.</div>
+      </div>
+
+      <div class="theme-box">
+        <h3>🏗️ CLEAN ENERGY &amp; INFRA — GRID, ICLN, PAVE</h3>
+        <div class="direction pos">▲ CATALYST: Ford Energy</div>
+        <p>Ford launched "Ford Energy" — wholly-owned subsidiary for grid-scale battery storage. Targeting utilities, data centers, hyperscalers. Morgan Stanley projects $500–600M EBIT run-rate at 20 GWh scale. Potential customer/hyperscaler deals in coming months.</p>
+        <div class="setup">🎯 Tomorrow: GRID/PAVE possible follow-through from Ford Energy launch news.</div>
+      </div>
+
+      <div class="theme-box">
+        <h3>📊 MACRO — UUP (Dollar), TLT (Bonds)</h3>
+        <div class="direction neg">▼ RISK: PPI Shock + Fed Chair Transition</div>
+        <p>PPI: +1.4% MoM (biggest since Mar 2022), +6% YoY vs. 0.5% est. Core PPI: +1.0% vs. 0.4% est. Rate HIKE odds: ~39%. Zero cuts priced through year-end. Powell's term expires May 15 — new Chair creates major uncertainty.</p>
+        <div class="setup">🎯 Tomorrow: TLT under pressure. Dollar potentially stronger. New Fed Chair announcement = biggest binary risk of the week.</div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- STEP 4: OPTIONS -->
+<div class="section">
+  <div class="section-header">
+    <span class="step-badge">STEP 4</span>
+    <h2>Options Flow Summary</h2>
+  </div>
+  <div class="section-body">
+    <div class="warn-box">⚠️ DISCLAIMER: Real-time options flow data was not accessible from public sources today. No confirmed flow data from Unusual Whales, FlowAlgo, or Barchart premium feeds. Verify all options data at open before trading.</div>
+
+    <h3 style="font-size:12px; color:var(--text-dim); text-transform:uppercase; letter-spacing:1px; margin: 14px 0 10px;">A) Index Positioning (Unconfirmed — Verify at Open)</h3>
+    <div class="macro-grid">
+      <div class="macro-card">
+        <div class="m-title">SPY Put/Call</div>
+        <div class="m-value amber">~0.85–1.0?</div>
+        <p>Expected elevated given new record + hot PPI. <span class="verify">⚠️ Verify</span></p>
+      </div>
+      <div class="macro-card">
+        <div class="m-title">QQQ Put/Call</div>
+        <div class="m-value pos">~0.75–0.80?</div>
+        <p>Tech momentum may keep it lower. <span class="verify">⚠️ Verify</span></p>
+      </div>
+      <div class="macro-card">
+        <div class="m-title">VIX Call Activity</div>
+        <div class="m-value amber">Likely Elevated</div>
+        <p>Fed Chair transition + PPI = institutional hedging. <span class="verify">⚠️ Verify</span></p>
+      </div>
+    </div>
+
+    <h3 style="font-size:12px; color:var(--text-dim); text-transform:uppercase; letter-spacing:1px; margin: 14px 0 10px;">B) Watchlist Options Flow</h3>
+    <table class="options-table">
+      <thead>
+        <tr>
+          <th>TICKER</th>
+          <th>DIRECTION</th>
+          <th>STATUS</th>
+          <th>NOTE</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>NVDA</strong></td>
+          <td><span class="tag tag-green">CALLS likely</span></td>
+          <td><span class="verify">⚠️ Unconfirmed</span></td>
+          <td>Reports May 20 — elevated IV expected. Verify sweep activity.</td>
+        </tr>
+        <tr>
+          <td><strong>AMD</strong></td>
+          <td><span class="tag tag-green">CALLS likely</span></td>
+          <td><span class="verify">⚠️ Unconfirmed</span></td>
+          <td>+115% YTD momentum. Possible positioning ahead of AMAT read-through.</td>
+        </tr>
+        <tr>
+          <td><strong>PLTR</strong></td>
+          <td><span class="tag tag-amber">Mixed</span></td>
+          <td><span class="verify">⚠️ Unconfirmed</span></td>
+          <td>Down 24% YTD despite good Q1 — could be directional flow either way.</td>
+        </tr>
+        <tr>
+          <td><strong>MARA / COIN</strong></td>
+          <td><span class="tag tag-green">CALLS likely</span></td>
+          <td><span class="verify">⚠️ Unconfirmed</span></td>
+          <td>Bitcoin ETF inflow momentum — correlated call buying probable.</td>
+        </tr>
+        <tr>
+          <td>TSLA, SOFI, SNDK, META, AMZN</td>
+          <td>Unknown</td>
+          <td><span class="verify">⚠️ Unconfirmed</span></td>
+          <td>No unusual flow identified. Check at open.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3 style="font-size:12px; color:var(--text-dim); text-transform:uppercase; letter-spacing:1px; margin: 14px 0 10px;">D) Flow vs. Price Divergence — Watch For</h3>
+    <div style="font-size:12px; color:var(--text-dim);">
+      <div style="padding: 8px; background: var(--amber-bg); border-radius:6px; border:1px solid var(--amber-border); margin-bottom:8px;">
+        <strong style="color:var(--amber);">AMBER ALERT:</strong> If TLT is selling off (hot PPI) BUT call buying emerges on TLT → signals dip-buyers expecting dovish new Fed Chair. High-conviction reversal signal.
+      </div>
+      <div style="padding: 8px; background: var(--blue-bg); border-radius:6px; border:1px solid var(--blue-border);">
+        <strong style="color:var(--blue);">WATCH:</strong> SMH up 60% YTD — if AMAT beats but SMH put buying spikes on open, institutional hedging is telling you the move is getting overextended.
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- STEP 5: SEC FILINGS -->
+<div class="section">
+  <div class="section-header">
+    <span class="step-badge">STEP 5</span>
+    <h2>SEC Filings &amp; Insider Activity</h2>
+  </div>
+  <div class="section-body">
+    <div class="macro-card">
+      <div class="m-title">CSPI — CSP Inc. | Form 4 Cluster Buy (Minor)</div>
+      <p><strong>Who:</strong> Joseph R. Nerges (10% owner) &nbsp;|&nbsp; <strong>Shares:</strong> 4,248 bought May 11–13 at $9.15–$9.30<br>
+      <strong>Total Holdings:</strong> 1,415,530 shares &nbsp;|&nbsp; <strong>Signal:</strong> Cluster buy — low conviction for trading (small cap, thin liquidity)<br>
+      <span class="verify">⚠️ No notable watchlist insider activity confirmed. Check SEC EDGAR at open for any 8-K filings on NVDA, AMZN, META, TSLA.</span></p>
+    </div>
+  </div>
+</div>
+
+<!-- STEP 6: TOMORROW'S EARNINGS -->
+<div class="section">
+  <div class="section-header">
+    <span class="step-badge">STEP 6</span>
+    <h2>Tomorrow's Earnings Preview — May 14, 2026</h2>
+  </div>
+  <div class="section-body">
+
+    <div class="earnings-card mixed">
+      <div class="ticker">
+        AMAT — Applied Materials (AMC — After Close)
+        <span class="badge badge-watch">241 TOTAL REPORTERS</span>
+      </div>
+      <div class="metrics">
+        <div class="metric">
+          <div class="m-label">EPS Est.</div>
+          <div class="m-value">$2.68</div>
+        </div>
+        <div class="metric">
+          <div class="m-label">EPS Growth</div>
+          <div class="m-value pos">+8.1% YoY</div>
+        </div>
+        <div class="metric">
+          <div class="m-label">Revenue Est.</div>
+          <div class="m-value">$7.69B</div>
+        </div>
+        <div class="metric">
+          <div class="m-label">Rev Growth</div>
+          <div class="m-value pos">+5.3% YoY</div>
+        </div>
+      </div>
+      <div class="card-detail">
+        <strong>Company Guidance:</strong> $7.65B ± $500M &nbsp;|&nbsp; <strong>Call Time:</strong> 4:30 PM ET<br>
+        <strong>Key Metrics to Watch:</strong> DRAM/HBM equipment demand, GAA transition orders, China export restriction impact, Q3 guidance<br>
+        <strong>Historical Gap:</strong> Typically gaps 5–8% on beats/misses; options imply similar move<br>
+        <strong>Watchlist Read-Through:</strong> NVDA, AMD (AI capex proxy) &nbsp;|&nbsp; <strong>ETF Impact:</strong> SMH (primary), XLK (secondary)<br>
+        <strong>Risk:</strong> SMH +60% YTD — expectations are HIGH. Any guidance cut = sharp SMH pullback
+      </div>
+    </div>
+
+    <p style="font-size:12px; color:var(--text-muted);">Note: Walmart (WMT) and Deere (DE) both report on May 21, not tomorrow.</p>
+
+  </div>
+</div>
+
+<!-- STEP 7: MACRO OVERNIGHT -->
+<div class="section">
+  <div class="section-header">
+    <span class="step-badge">STEP 7</span>
+    <h2>Macro Overnight Watch</h2>
+  </div>
+  <div class="section-body">
+    <div class="macro-grid">
+      <div class="macro-card">
+        <div class="m-title">Nikkei 225</div>
+        <div class="m-value pos">+0.84%</div>
+        <p>Closed at 63,272. Kioxia +9.5%, Olympus +20%, Sony +5.1%, Fujikura +3%. AI/tech led gains.</p>
+      </div>
+      <div class="macro-card">
+        <div class="m-title">US Futures (Overnight)</div>
+        <div class="m-value pos">Flat/+0.1%</div>
+        <p>S&amp;P +0.1%, Nasdaq +0.1%, Dow +24pts. CSCO +15% AH will lift Nasdaq futures overnight.</p>
+      </div>
+      <div class="macro-card">
+        <div class="m-title">⚠️ Fed Chair (May 15)</div>
+        <div class="m-value amber">BINARY RISK</div>
+        <p>Powell's term expires Thursday. New chair announcement = biggest macro wildcard of the week.</p>
+      </div>
+    </div>
+
+    <hr class="divider">
+
+    <div class="macro-card" style="border-color:var(--red-border); background:var(--red-bg);">
+      <div class="m-title" style="color:var(--red);">🔥 PPI SHOCK — April 2026</div>
+      <div style="display:grid; grid-template-columns: repeat(4,1fr); gap:10px; margin:10px 0;">
+        <div class="metric"><div class="m-label">PPI MoM</div><div class="m-value neg">+1.4%</div></div>
+        <div class="metric"><div class="m-label">Est.</div><div class="m-value">+0.5%</div></div>
+        <div class="metric"><div class="m-label">PPI YoY</div><div class="m-value neg">+6.0%</div></div>
+        <div class="metric"><div class="m-label">Rate Hike Odds</div><div class="m-value neg">~39%</div></div>
+      </div>
+      <p>Biggest monthly PPI since March 2022. Core PPI: +1.0% vs. 0.4% est. (+5.2% annual). Iran war + tariffs driving energy and services inflation. Zero rate cuts priced through year-end.</p>
+    </div>
+  </div>
+</div>
+
+<!-- STEP 8: GAME PLAN -->
+<div class="section">
+  <div class="section-header">
+    <span class="step-badge">STEP 8</span>
+    <h2>Tomorrow's Game Plan</h2>
+  </div>
+  <div class="section-body">
+
+    <h3 style="font-size:12px; color:var(--text-dim); text-transform:uppercase; letter-spacing:1px; margin-bottom:14px;">🎯 Top 3 Tickers to Watch at Open</h3>
+
+    <div class="trade-card" style="border-color: var(--green-border); background: linear-gradient(135deg, var(--bg3) 0%, rgba(34,197,94,0.04) 100%);">
+      <div class="t-header">
+        <div class="t-ticker pos">CSCO</div>
+        <div class="t-bias" style="background:var(--green-bg); color:var(--green); border:1px solid var(--green-border);">🟢 LONG BIAS</div>
+        <div style="font-size:11px; color:var(--text-muted);">Cisco Systems</div>
+      </div>
+      <div class="t-body">Massive Q3 beat. AI order guidance doubled to $9B. Raised Q4 and FY guidance across the board. Largest AH rally since 2011. Strong fundamental backing — this is not a rumor move.</div>
+      <div class="t-entry">
+        <strong>Entry:</strong> Watch $112 on open for gap-and-go confirmation | 
+        <strong>Add Zone:</strong> $108–$110 if fades to support | 
+        <strong>Stop:</strong> Below $106 | 
+        <strong>Target:</strong> $118–$120<br>
+        <strong>Risk:</strong> Profit-taking after +15% gap; PPI fear broad selloff
+      </div>
+    </div>
+
+    <div class="trade-card" style="border-color: var(--blue-border); background: linear-gradient(135deg, var(--bg3) 0%, rgba(59,130,246,0.04) 100%);">
+      <div class="t-header">
+        <div class="t-ticker" style="color:var(--blue);">AMAT</div>
+        <div class="t-bias" style="background:var(--blue-bg); color:var(--blue); border:1px solid var(--blue-border);">🟢 LONG INTO PRINT (DEFINED RISK)</div>
+        <div style="font-size:11px; color:var(--text-muted);">Applied Materials — Reports AMC Today</div>
+      </div>
+      <div class="t-body">Q2 2026 reports after close. CSCO confirms AI capex cycle acceleration. If AMAT beats + raises, SMH gets fresh momentum. High-expectations stock in a high-expectations sector.</div>
+      <div class="t-entry">
+        <strong>Entry:</strong> Defined-risk call spread into print if SMH opens strong | 
+        <strong>Key Level:</strong> $200 support | 
+        <strong>DO NOT hold naked through earnings</strong><br>
+        <strong>Risk:</strong> SMH +60% YTD = any miss punished severely
+      </div>
+    </div>
+
+    <div class="trade-card" style="border-color: var(--amber-border); background: linear-gradient(135deg, var(--bg3) 0%, rgba(245,158,11,0.04) 100%);">
+      <div class="t-header">
+        <div class="t-ticker flat">F</div>
+        <div class="t-bias" style="background:var(--amber-bg); color:var(--amber); border:1px solid var(--amber-border);">🟡 MONITOR — REDUCED CONVICTION</div>
+        <div style="font-size:11px; color:var(--text-muted);">Ford Motor — Already +13% Today</div>
+      </div>
+      <div class="t-body">Ford Energy subsidiary launch for grid-scale BESS is a real structural story. Hyperscaler supply deals potentially coming in months. BUT: stock already moved 13% today — catching a falling knife risk if fades.</div>
+      <div class="t-entry">
+        <strong>Entry:</strong> Only if consolidates above $13.50 (no further gap) — flag setup | 
+        <strong>Target:</strong> $15 (MS analyst target) | 
+        <strong>DO NOT chase if gaps another 5%+</strong><br>
+        <strong>Risk:</strong> Single-day narrative stocks often retrace 50% next day
+      </div>
+    </div>
+
+    <hr class="divider">
+
+    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:16px; margin-bottom:16px;">
+      <div>
+        <h3 style="font-size:11px; color:var(--text-muted); text-transform:uppercase; letter-spacing:1px; margin-bottom:10px;">SPY Key Levels</h3>
+        <div class="level-row"><div class="level-label">Resistance (Today's Record)</div><div class="level-value">7,444</div></div>
+        <div class="level-row"><div class="level-label">Psychological Target</div><div class="level-value">7,500</div></div>
+        <div class="level-row"><div class="level-label">Support (Prior Resistance)</div><div class="level-value pos">7,400</div></div>
+        <div class="level-row"><div class="level-label">Warning Level</div><div class="level-value neg">&lt;7,420</div></div>
+      </div>
+      <div>
+        <h3 style="font-size:11px; color:var(--text-muted); text-transform:uppercase; letter-spacing:1px; margin-bottom:10px;">Sector Bias</h3>
+        <div class="level-row"><div class="level-label">Overall Bias</div><div class="level-value pos">RISK-ON / TECH BULLISH</div></div>
+        <div class="level-row"><div class="level-label">Caveat</div><div class="level-value amber">Thin breadth (Dow lagging)</div></div>
+        <div class="level-row"><div class="level-label">Theme Best Play</div><div class="level-value">SMH / XLK</div></div>
+        <div class="level-row"><div class="level-label">Options Conviction</div><div class="level-value pos">LONG AI/SEMI</div></div>
+      </div>
+    </div>
+
+    <h3 style="font-size:11px; color:var(--text-muted); text-transform:uppercase; letter-spacing:1px; margin-bottom:10px;">📰 30-Second Overnight Briefing</h3>
+    <div class="briefing">
+      Markets closed at new all-time highs — S&amp;P 7,444 / Nasdaq 26,402 — as tech overwhelmed a PPI shock that sent wholesale inflation to +6% YoY, the hottest since 2022. <strong>Cisco exploded +15% after hours</strong> after raising its AI infrastructure order forecast to $9B (from $5B), confirming the AI capex cycle is accelerating and setting up a strong pre-market for XLK and SMH. Ford surged 13% in regular trading on its Ford Energy subsidiary launch for grid-scale battery storage, backed by a Morgan Stanley upgrade targeting $15. Bitcoin ETFs extended their 6-week inflow streak, outpacing gold by 33 points YTD. <strong>Tomorrow's primary event:</strong> Applied Materials (AMAT) reports after close — a beat confirms the semiconductor equipment cycle; a miss could shake the 60% YTD SMH rally. <strong>Biggest macro wildcard: Jerome Powell's term as Fed Chair ends Thursday May 15</strong> — his successor's identity and stance on rates could reprice equities and bonds overnight. With rate hike odds at 39% on today's PPI print, the new chair's first signal is the most important macro event of the week.
+    </div>
+  </div>
+</div>
+
+<!-- STEP 9: ASSUMPTION AUDIT -->
+<div class="section">
+  <div class="section-header">
+    <span class="step-badge">STEP 9</span>
+    <h2>Assumption Audit — Verify at Open</h2>
+  </div>
+  <div class="section-body">
+    <div style="display:grid; grid-template-columns: 32px 1fr 1fr; gap:12px; padding:8px 0; border-bottom:1px solid var(--border); font-size:10px; text-transform:uppercase; letter-spacing:1px; color:var(--text-muted);">
+      <div>#</div><div>ASSUMPTION</div><div>IF WRONG — IMPACT</div>
+    </div>
+    <div class="assumption-row"><div class="num">1</div><div class="assume">CSCO +15% AH holds into tomorrow's open</div><div class="impact">If fades to +8%, reduce size. Long thesis weakens significantly.</div></div>
+    <div class="assumption-row"><div class="num">2</div><div class="assume">BIDU +7.86% is earnings-driven</div><div class="impact">If catalyst is rumor, fade risk is very high. Skip unless confirmed.</div></div>
+    <div class="assumption-row"><div class="num">3</div><div class="assume">PDFS -6.9% is earnings-related</div><div class="impact">Do not short without verified catalyst. Skip if unconfirmed.</div></div>
+    <div class="assumption-row"><div class="num">4</div><div class="assume">PPI +6% is priced in after today's rally</div><div class="impact">If Fed speakers tonight signal hike bias, tech gaps down despite CSCO. Monitor pre-market.</div></div>
+    <div class="assumption-row"><div class="num">5</div><div class="assume">AMAT consensus EPS $2.68 / Rev $7.69B unchanged</div><div class="impact">If estimates revised in past 24hrs, beat/miss bar changes. Check FactSet at open.</div></div>
+    <div class="assumption-row"><div class="num">6</div><div class="assume">No major pre-market economic data on May 14</div><div class="impact">Surprise data (retail sales, jobless claims) = macro dominates. Verify economic calendar.</div></div>
+    <div class="assumption-row"><div class="num">7</div><div class="assume">New Fed Chair not yet announced</div><div class="impact">Overnight announcement = dramatic market reaction either way. Check 4 AM ET news.</div></div>
+    <div class="assumption-row"><div class="num">8</div><div class="assume">Iran war has not escalated overnight</div><div class="impact">Oil spike + risk-off = entire game plan inverted. Check geopolitical headlines pre-market.</div></div>
+    <div class="assumption-row"><div class="num">9</div><div class="assume">Ford Energy narrative sustains into tomorrow</div><div class="impact">If competitor announcement or MS retraction appears, $15 target fails. Reduce size.</div></div>
+    <div class="assumption-row"><div class="num">10</div><div class="assume">Options flow analysis is incomplete</div><div class="impact">Actual SPY/QQQ put-call, NVDA/AMD sweep data could change flow conviction. Check unusualwhales.com FIRST before trading.</div></div>
+  </div>
+</div>
+
+<!-- SOURCES -->
+<div class="section">
+  <div class="section-header">
+    <h2>Sources</h2>
+  </div>
+  <div class="section-body">
+    <div class="sources-list">
+      <a href="https://www.cnbc.com/2026/05/13/cisco-csco-q3-earnings-report-2026.html" target="_blank">CSCO Q3 2026 Earnings — CNBC</a>
+      <a href="https://newsroom.cisco.com/c/r/newsroom/en/us/a/y2026/m05/cisco-reports-third-quarter-earnings.html" target="_blank">Cisco Newsroom — Q3 Earnings Release</a>
+      <a href="https://247wallst.com/investing/2026/05/13/live-cisco-reports-q3-earnings-tonight-will-this-years-rally-continue/" target="_blank">Cisco Live Coverage — 24/7 Wall St.</a>
+      <a href="https://www.thestreet.com/latest-news/stock-market-today-may-13-2026-updates" target="_blank">Stock Market Today May 13 — TheStreet</a>
+      <a href="https://finance.yahoo.com/news/live/stock-market-today-dow-slides-sp-500-and-nasdaq-rise-as-ppi-inflation-data-comes-in-hot-223045547.html" target="_blank">S&P 500 / PPI Recap — Yahoo Finance</a>
+      <a href="https://www.cnbc.com/2026/05/13/ppi-inflation-report-april-2026-.html" target="_blank">PPI April 2026 — CNBC</a>
+      <a href="https://www.benzinga.com/markets/macro-economic-events/26/05/52520372/us-producer-inflation-april-2026-fed-rates" target="_blank">Producer Inflation Shock — Benzinga</a>
+      <a href="https://www.fool.com/investing/2026/05/13/wholesale-prices-in-april-just-increased-at-the-fa/" target="_blank">Wholesale Prices Surge — Motley Fool</a>
+      <a href="https://www.fool.com/investing/2026/05/13/why-ford-stock-soared-today/" target="_blank">Why Ford Soared — Motley Fool</a>
+      <a href="https://www.bloomberg.com/news/articles/2026-05-13/ford-shares-soar-after-morgan-stanley-s-bullish-call-on-energy" target="_blank">Ford MS Call — Bloomberg</a>
+      <a href="https://coinspectator.com/cryptonews/2026/05/13/bitcoin-etf-ibit-outpaces-gold-gld-by-33-points-as-13b-capital-rotation-accelerates/" target="_blank">IBIT vs GLD Capital Rotation — CoinSpectator</a>
+      <a href="https://www.barchart.com/story/news/1496043/what-to-expect-from-applied-materials-q2-2026-earnings-report" target="_blank">AMAT Q2 Preview — Barchart</a>
+      <a href="https://seekingalpha.com/news/4592182-applied-materials-q2-earnings-on-deck-what-to-expect" target="_blank">AMAT Q2 Preview — Seeking Alpha</a>
+      <a href="https://247wallst.com/investing/2026/05/03/smh-has-crushed-the-sp-500-by-2041-over-a-decade-but-recent-42-rally-signals-dangerous-valuations/" target="_blank">SMH Valuation — 24/7 Wall St.</a>
+      <a href="https://www.cnbc.com/2026/05/12/asia-markets-today-live-updates-kospi-hang-seng-index-nikkei-225-sensex-csi-300.html" target="_blank">Asia Markets May 13 — CNBC</a>
+      <a href="https://www.mexc.com/news/1070030" target="_blank">AMD +115% YTD — MEXC News</a>
+      <a href="https://ir.appliedmaterials.com/news-releases/news-release-details/applied-materials-report-fiscal-second-quarter-2026-results-may" target="_blank">AMAT Q2 Report Date — Applied Materials IR</a>
+    </div>
+  </div>
+</div>
+
+<div class="footer">
+  After-Hours Catalyst Scanner — May 13, 2026 &nbsp;|&nbsp; For informational purposes only. Not investment advice.
+</div>
+
+</body>
+</html>
