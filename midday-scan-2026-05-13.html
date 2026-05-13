@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Midday Catalyst Scan — May 13, 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0e17;
+    --bg2: #0f1520;
+    --bg3: #161d2e;
+    --border: #1e2d45;
+    --text: #e2e8f0;
+    --text-dim: #8899aa;
+    --red: #ff4757;
+    --red-bg: rgba(255,71,87,0.08);
+    --yellow: #ffd32a;
+    --yellow-bg: rgba(255,211,42,0.07);
+    --green: #2ed573;
+    --green-bg: rgba(46,213,115,0.07);
+    --gray: #8899aa;
+    --gray-bg: rgba(136,153,170,0.07);
+    --blue: #4a9eff;
+    --purple: #9b59b6;
+    --accent: #4a9eff;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'JetBrains Mono', 'Courier New', monospace;
+    font-size: 13px;
+    line-height: 1.6;
+    padding: 20px;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+  .header {
+    border-bottom: 2px solid var(--accent);
+    padding-bottom: 16px;
+    margin-bottom: 24px;
+  }
+  .header h1 {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--text);
+    letter-spacing: 1px;
+  }
+  .header .subtitle {
+    color: var(--text-dim);
+    font-size: 11px;
+    margin-top: 4px;
+    letter-spacing: 0.5px;
+  }
+  .market-bar {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    margin-bottom: 24px;
+  }
+  .market-card {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 12px 14px;
+  }
+  .market-card .label { color: var(--text-dim); font-size: 10px; letter-spacing: 1px; }
+  .market-card .value { font-size: 16px; font-weight: 700; margin-top: 2px; }
+  .up { color: var(--green); }
+  .down { color: var(--red); }
+  .neutral { color: var(--yellow); }
+  section { margin-bottom: 28px; }
+  .section-title {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: var(--accent);
+    border-left: 3px solid var(--accent);
+    padding-left: 10px;
+    margin-bottom: 14px;
+    text-transform: uppercase;
+  }
+  .alert {
+    border-radius: 6px;
+    padding: 14px 16px;
+    margin-bottom: 10px;
+    border-left: 4px solid;
+    position: relative;
+  }
+  .alert-urgent { border-color: var(--red); background: var(--red-bg); }
+  .alert-watch { border-color: var(--yellow); background: var(--yellow-bg); }
+  .alert-confirm { border-color: var(--green); background: var(--green-bg); }
+  .alert-noise { border-color: var(--gray); background: var(--gray-bg); }
+  .alert-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 6px;
+    flex-wrap: wrap;
+  }
+  .ticker {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text);
+    letter-spacing: 1px;
+  }
+  .badge {
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    padding: 2px 8px;
+    border-radius: 3px;
+    text-transform: uppercase;
+  }
+  .badge-bullish { background: rgba(46,213,115,0.2); color: var(--green); }
+  .badge-bearish { background: rgba(255,71,87,0.2); color: var(--red); }
+  .badge-neutral { background: rgba(136,153,170,0.2); color: var(--gray); }
+  .badge-action-yes { background: rgba(255,71,87,0.3); color: #ff6b7a; }
+  .badge-action-watch { background: rgba(255,211,42,0.25); color: var(--yellow); }
+  .badge-action-no { background: rgba(136,153,170,0.15); color: var(--gray); }
+  .alert-body { color: var(--text-dim); font-size: 12px; }
+  .alert-body strong { color: var(--text); }
+  .alert-body a { color: var(--accent); text-decoration: none; }
+  .alert-body a:hover { text-decoration: underline; }
+  .priority-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1px;
+  }
+  .priority-urgent { color: var(--red); }
+  .priority-watch { color: var(--yellow); }
+  .priority-confirm { color: var(--green); }
+  .priority-noise { color: var(--gray); }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 8px;
+    font-size: 12px;
+  }
+  th {
+    text-align: left;
+    color: var(--text-dim);
+    font-weight: 600;
+    font-size: 10px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 8px 10px;
+    border-bottom: 1px solid var(--border);
+  }
+  td {
+    padding: 9px 10px;
+    border-bottom: 1px solid rgba(30,45,69,0.5);
+    color: var(--text);
+  }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: rgba(74,158,255,0.04); }
+  .summary-table { background: var(--bg3); border: 1px solid var(--border); border-radius: 6px; overflow: hidden; }
+  .risk-box {
+    background: rgba(255,71,87,0.06);
+    border: 1px solid rgba(255,71,87,0.25);
+    border-radius: 6px;
+    padding: 14px 16px;
+    margin-bottom: 10px;
+  }
+  .risk-box .risk-title {
+    color: var(--red);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    margin-bottom: 6px;
+  }
+  .risk-box .risk-body { color: var(--text-dim); font-size: 12px; }
+  .macro-alert {
+    background: linear-gradient(135deg, rgba(255,71,87,0.07), rgba(74,158,255,0.05));
+    border: 1px solid var(--border);
+    border-top: 2px solid var(--yellow);
+    border-radius: 6px;
+    padding: 14px 16px;
+    margin-bottom: 12px;
+  }
+  .macro-title { color: var(--yellow); font-size: 11px; font-weight: 700; letter-spacing: 1px; margin-bottom: 5px; }
+  .flow-row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px; }
+  .flow-card {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 12px 14px;
+    flex: 1;
+    min-width: 200px;
+  }
+  .flow-card .fc-ticker { font-size: 15px; font-weight: 700; margin-bottom: 4px; }
+  .flow-card .fc-detail { color: var(--text-dim); font-size: 11px; }
+  .footer {
+    border-top: 1px solid var(--border);
+    padding-top: 14px;
+    margin-top: 30px;
+    color: var(--text-dim);
+    font-size: 10px;
+    letter-spacing: 0.5px;
+  }
+  .divider { height: 1px; background: var(--border); margin: 20px 0; }
+  @media (max-width: 700px) {
+    .market-bar { grid-template-columns: repeat(2, 1fr); }
+    body { padding: 12px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>🕐 MIDDAY CATALYST SCAN</h1>
+  <div class="subtitle">Wednesday, May 13, 2026 &nbsp;|&nbsp; Active Session &nbsp;|&nbsp; Auto-Generated</div>
+</div>
+
+<!-- MARKET SNAPSHOT -->
+<div class="market-bar">
+  <div class="market-card">
+    <div class="label">S&P 500</div>
+    <div class="value up">+0.4%</div>
+    <div style="color:var(--text-dim);font-size:10px;margin-top:3px;">New intraday ATH</div>
+  </div>
+  <div class="market-card">
+    <div class="label">NASDAQ</div>
+    <div class="value up">+0.9%</div>
+    <div style="color:var(--text-dim);font-size:10px;margin-top:3px;">Tech-led rally</div>
+  </div>
+  <div class="market-card">
+    <div class="label">DJIA</div>
+    <div class="value down">-0.48%</div>
+    <div style="color:var(--text-dim);font-size:10px;margin-top:3px;">Cyclicals lagging</div>
+  </div>
+  <div class="market-card">
+    <div class="label">RUSSELL 2000</div>
+    <div class="value down">-0.97%</div>
+    <div style="color:var(--red);font-size:10px;margin-top:3px;">⚠ Risk-off breadth signal</div>
+  </div>
+</div>
+
+<!-- MACRO CONTEXT -->
+<section>
+  <div class="section-title">Macro Context</div>
+
+  <div class="macro-alert">
+    <div class="macro-title">🔴 PPI APRIL +1.4% vs +0.5% EXP | YoY +6.0% (highest since Dec 2022)</div>
+    <div style="color:var(--text-dim);font-size:12px;">Wholesale inflation blew past estimates. Rate cuts effectively off the table for 2026. Cyclicals, rate-sensitive names, small caps all under pressure. Tech is ignoring — <strong style="color:var(--yellow);">watch for delayed selloff.</strong></div>
+  </div>
+
+  <div class="macro-alert" style="border-top-color:var(--green);">
+    <div class="macro-title" style="color:var(--green);">🟢 TRUMP-XI BEIJING SUMMIT — ACTIVE NOW</div>
+    <div style="color:var(--text-dim);font-size:12px;">17 US CEOs including <strong>Musk (TSLA)</strong>, <strong>Cook (AAPL)</strong>, <strong>Huang (NVDA)</strong>, <strong>Fink (BLK)</strong> in Beijing. Agenda: AI export controls, tariffs, Taiwan, Iran. Oct 2025 trade truce expected to hold or extend. <strong style="color:var(--green);">Upside surprise possible on chip export relief.</strong> Markets up globally on diplomacy.</div>
+  </div>
+</section>
+
+<!-- WATCHLIST -->
+<section>
+  <div class="section-title">Step 1 — Watchlist Alerts</div>
+
+  <div class="alert alert-confirm">
+    <div class="alert-header">
+      <span class="ticker">NVDA</span>
+      <span class="badge badge-bullish">BULLISH</span>
+      <span class="badge badge-action-watch">WATCH</span>
+      <span class="priority-confirm">🟢 CONFIRM</span>
+    </div>
+    <div class="alert-body">
+      <strong>Jensen Huang personally invited by Trump; joined Beijing summit last-minute</strong> — NVDA +2.1% to ~$227. AI chip export controls directly on agenda. Earnings May 20 priced for ±6.74% ($14.88) move. Bulls targeting $260–$269. Smart money positioning via $220 call sweeps today.
+      <br><span style="color:var(--accent);">Source: <a href="https://www.cnbc.com/2026/05/13/nvidia-says-ceo-jensen-huang-is-joining-trumps-china-trip.html" target="_blank">CNBC</a></span>
+    </div>
+  </div>
+
+  <div class="alert alert-watch">
+    <div class="alert-header">
+      <span class="ticker">TSLA</span>
+      <span class="badge badge-bullish">BULLISH</span>
+      <span class="badge badge-action-watch">WATCH</span>
+      <span class="priority-watch">🟡 WATCH</span>
+    </div>
+    <div class="alert-body">
+      <strong>Elon Musk joins Trump's Beijing delegation</strong> — potential China market access / tariff relief catalyst. Bearish $430 call sweep on May 13 expiry = expiry pin play, NOT directional signal (ignore). Real catalyst is summit outcome.
+      <br><span style="color:var(--accent);">Source: <a href="https://www.euronews.com/business/2026/05/13/trump-china-visit-us-ceos-musk-cook-and-nvidias-huang-join-trade-talks" target="_blank">Euronews</a></span>
+    </div>
+  </div>
+
+  <div class="alert alert-urgent">
+    <div class="alert-header">
+      <span class="ticker">MARA</span>
+      <span class="badge badge-bearish">BEARISH</span>
+      <span class="badge badge-action-yes">ACT NOW</span>
+      <span class="priority-urgent">🔴 URGENT</span>
+    </div>
+    <div class="alert-body">
+      <strong>MARA sold $1.5B in Bitcoin — stock -5% — pivoting to AI infrastructure</strong> — Q1 revenue -18% to $174.6M. Dropped from #2 to #4 public BTC holder. Pure-play crypto thesis is broken. AI pivot narrative does not justify valuation without BTC treasury thesis. Still holds 35,303 BTC (~$2.84B).
+      <br><span style="color:var(--red);">⚠ EXIT or reduce longs. Do not add.</span>
+      <br><span style="color:var(--accent);">Source: <a href="https://www.coindesk.com/markets/2026/05/12/bitcoin-miner-mara-sold-usd1-5-billion-of-bitcoin-as-it-shifts-toward-ai-infrastructure" target="_blank">CoinDesk</a></span>
+    </div>
+  </div>
+
+  <div class="alert alert-watch">
+    <div class="alert-header">
+      <span class="ticker">META</span>
+      <span class="badge badge-bullish">BULLISH</span>
+      <span class="badge badge-action-watch">WATCH</span>
+      <span class="priority-watch">🟡 WATCH</span>
+    </div>
+    <div class="alert-body">
+      <strong>Meta CEO on Trump's China delegation</strong> — potential China market reentry, AI/social media policy dialogue. Optionality upside on summit agreement.
+      <br><span style="color:var(--accent);">Source: <a href="https://fortune.com/2026/05/13/trump-china-trip-ceos-ai-trade/" target="_blank">Fortune</a></span>
+    </div>
+  </div>
+
+  <div class="alert alert-confirm">
+    <div class="alert-header">
+      <span class="ticker">AMD</span>
+      <span class="badge badge-bullish">BULLISH</span>
+      <span class="badge badge-action-watch">WATCH</span>
+      <span class="priority-confirm">🟢 CONFIRM</span>
+    </div>
+    <div class="alert-body">
+      <strong>AMD higher on session</strong> — post-earnings momentum + semiconductor tailwind from China summit. Export controls on chips are on summit agenda — could benefit AMD alongside NVDA. Thesis intact.
+    </div>
+  </div>
+
+  <div class="alert alert-noise">
+    <div class="alert-header">
+      <span class="ticker">COIN</span>
+      <span class="badge badge-neutral">NEUTRAL</span>
+      <span class="badge badge-action-no">NO ACTION</span>
+      <span class="priority-noise">⚪ NOISE</span>
+    </div>
+    <div class="alert-body">No verified COIN-specific catalyst found today. BTC holding steady pre-summit. Monitor for crypto policy headline from Beijing.</div>
+  </div>
+
+  <div class="alert alert-noise">
+    <div class="alert-header">
+      <span class="ticker">PLTR</span>
+      <span class="badge badge-neutral">NEUTRAL</span>
+      <span class="badge badge-action-no">NO ACTION</span>
+      <span class="priority-noise">⚪ NOISE</span>
+    </div>
+    <div class="alert-body">Trading $129–$137 range today. Recent strong Q1 guidance raise, government AI thesis intact. No fresh catalyst today. Hold.</div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- SECTOR ROTATION -->
+<section>
+  <div class="section-title">Step 2 — Sector & Theme ETF Check</div>
+
+  <table class="summary-table">
+    <thead>
+      <tr>
+        <th>ETF / Theme</th>
+        <th>Move</th>
+        <th>Status</th>
+        <th>Note</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>XLK / SMH</strong> (Tech/Semis)</td>
+        <td class="up">LEADING ↑↑</td>
+        <td><span class="priority-confirm">🟢 CONFIRM</span></td>
+        <td>SMH ~$561, +17%+ YTD. AI thesis + China summit. OUTPERFORMING.</td>
+      </tr>
+      <tr>
+        <td><strong>XLF</strong> (Financials)</td>
+        <td class="neutral">+0.78%</td>
+        <td><span class="priority-noise">⚪ NOISE</span></td>
+        <td>Positive but JPMorgan lower. Hot PPI = mixed for banks.</td>
+      </tr>
+      <tr>
+        <td><strong>XLE</strong> (Energy)</td>
+        <td class="neutral">+0.70%</td>
+        <td><span class="priority-noise">⚪ NOISE</span></td>
+        <td>Oil prices edged lower. No major OPEC catalyst today.</td>
+      </tr>
+      <tr>
+        <td><strong>XLV</strong> (Healthcare)</td>
+        <td class="up">+0.16%</td>
+        <td><span class="priority-noise">⚪ NOISE</span></td>
+        <td>UnitedHealth +3.1% notable outlier. Defensive bid.</td>
+      </tr>
+      <tr>
+        <td><strong>XLY</strong> (Cons. Disc.)</td>
+        <td class="up">+0.27%</td>
+        <td><span class="priority-noise">⚪ NOISE</span></td>
+        <td>Mild positive. China consumer optionality if summit positive.</td>
+      </tr>
+      <tr>
+        <td><strong>XLI / IWM</strong> (Industrials/SC)</td>
+        <td class="down">-0.26% / -0.97%</td>
+        <td><span class="priority-urgent">🔴 URGENT</span></td>
+        <td>Small caps -1%. Rate sensitivity. Hot PPI kills cyclical thesis.</td>
+      </tr>
+      <tr>
+        <td><strong>GLD</strong> (Gold)</td>
+        <td class="down">$430.27 ↓</td>
+        <td><span class="priority-watch">🟡 WATCH</span></td>
+        <td>Mild pullback. Risk-on + fading rate cut hopes = gold headwind.</td>
+      </tr>
+      <tr>
+        <td><strong>IBIT / MARA / COIN</strong> (Crypto)</td>
+        <td class="neutral">MIXED</td>
+        <td><span class="priority-watch">🟡 WATCH</span></td>
+        <td>BTC steady. MARA company-specific -5% bearish divergence.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div style="margin-top:12px;padding:10px 14px;background:var(--bg3);border:1px solid var(--border);border-radius:6px;font-size:12px;color:var(--text-dim);">
+    ⚠️ <strong style="color:var(--yellow);">BREADTH WARNING:</strong> Nasdaq +0.9% but ~2/3 of S&P 500 lower. This is a narrow, AI/mega-cap driven rally. Cyclicals, small caps, financials lagging = stealth internal weakness. If China summit disappoints, expect broader selloff.
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- OPTIONS FLOW -->
+<section>
+  <div class="section-title">Step 4 — Options Flow Alerts</div>
+
+  <div class="flow-row">
+    <div class="flow-card" style="border-color:rgba(46,213,115,0.3);">
+      <div class="fc-ticker" style="color:var(--green);">NVDA — BULLISH CALLS</div>
+      <div class="fc-detail">
+        <strong>Type:</strong> SWEEP<br>
+        <strong>Strike:</strong> $220 / May 13 expiry<br>
+        <strong>Signal:</strong> Locking in ITM gains at expiry. Confirms bullish positioning into earnings May 20.<br>
+        <strong>Source:</strong> Benzinga Whale Alerts
+      </div>
+    </div>
+    <div class="flow-card" style="border-color:rgba(255,71,87,0.2);">
+      <div class="fc-ticker" style="color:var(--text-dim);">NVDA — BEARISH HEDGE</div>
+      <div class="fc-detail">
+        <strong>Type:</strong> BLOCK (Institutional)<br>
+        <strong>Strike:</strong> $250 / Jan 15, 2027<br>
+        <strong>Signal:</strong> Institutional upside cap hedge through Jan 2027. NOT a conviction short — smart money capping $250+ while long.<br>
+        <strong>Source:</strong> Benzinga Whale Alerts
+      </div>
+    </div>
+    <div class="flow-card" style="border-color:rgba(136,153,170,0.2);">
+      <div class="fc-ticker" style="color:var(--gray);">TSLA — IGNORE</div>
+      <div class="fc-detail">
+        <strong>Type:</strong> SWEEP (Expiry Play)<br>
+        <strong>Strike:</strong> $430 / May 13 expiry (bearish calls)<br>
+        <strong>Signal:</strong> Expiry-day pin play. NOT directional. Ignore for swing trades.<br>
+        <strong>Source:</strong> Benzinga Whale Alerts
+      </div>
+    </div>
+  </div>
+
+  <div style="margin-top:12px;padding:10px 14px;background:var(--bg3);border:1px solid var(--border);border-radius:6px;font-size:12px;color:var(--text-dim);">
+    <strong style="color:var(--text);">Net Options Sentiment: BULLISH on NVDA into May 20 earnings.</strong> Smart money using $220 calls (bullish) and $250 Jan 2027 block (hedged upside cap). Confirms controlled pre-earnings bull positioning.
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- POSITION SIGNALS -->
+<section>
+  <div class="section-title">Step 5 — Position Check Signals</div>
+
+  <div class="alert alert-urgent">
+    <div class="alert-header"><span class="priority-urgent">🔴 URGENT — EXIT</span></div>
+    <div class="alert-body">
+      <strong>MARA longs:</strong> Thesis broken. Bitcoin treasury sold ($1.5B), Q1 miss, AI pivot narrative not priced for premium. Exit or reduce now.<br>
+      <strong>Cyclicals / Small Caps:</strong> Hot PPI = rate cuts dead. Russell 2000 -1% confirms. Trim exposure to rate-sensitive longs.
+    </div>
+  </div>
+
+  <div class="alert alert-watch">
+    <div class="alert-header"><span class="priority-watch">🟡 WATCH — MONITOR</span></div>
+    <div class="alert-body">
+      <strong>NVDA:</strong> Hold into May 20 earnings. China summit = additional tailwind. Size appropriately for ±6.74% binary event.<br>
+      <strong>TSLA:</strong> Watch for China headline. Musk at summit = market access / tariff catalyst optionality. Hold with stop.<br>
+      <strong>META/AMZN:</strong> China delegation = optionality. No action today, monitor summit headlines.
+    </div>
+  </div>
+
+  <div class="alert alert-confirm">
+    <div class="alert-header"><span class="priority-confirm">🟢 CONFIRM — ADD ON DIPS</span></div>
+    <div class="alert-body">
+      <strong>SMH / XLK / AMD:</strong> Semiconductor AI thesis confirmed by market action + China summit. Add on dips if position sizing allows.<br>
+      <strong>NVDA options (bullish):</strong> Confirms pre-earnings bull thesis. Smart money aligned.
+    </div>
+  </div>
+
+  <div class="alert alert-noise">
+    <div class="alert-header"><span class="priority-noise">⚪ NEW SETUPS — WATCHING</span></div>
+    <div class="alert-body">
+      Any China summit headline on AI chip export controls = immediate catalyst for NVDA, AMD, QCOM, MU. Watch live news feeds.<br>
+      <strong>GLD:</strong> Mild pullback on risk-on. Re-entry if summit disappoints or delayed PPI selloff develops.
+    </div>
+  </div>
+</section>
+
+<!-- RISK EVENTS -->
+<section>
+  <div class="section-title">⚠ Risk Events — Next 2 Hours</div>
+
+  <div class="risk-box">
+    <div class="risk-title">1. TRUMP-XI SUMMIT — LIVE (ONGOING)</div>
+    <div class="risk-body">Any surprise on AI chip exports, tariffs, or Taiwan = ±1–2% fast market move. Stay nimble. Both upside and downside risk is elevated.</div>
+  </div>
+  <div class="risk-box" style="border-color:rgba(255,211,42,0.3);background:rgba(255,211,42,0.04);">
+    <div class="risk-title" style="color:var(--yellow);">2. BREADTH DETERIORATION WATCH</div>
+    <div class="risk-body">2/3 of S&P 500 lower despite Nasdaq +0.9%. If large-caps stall, broader selloff risk elevated. Watch SPY 5-min for distribution signals afternoon.</div>
+  </div>
+  <div class="risk-box" style="border-color:rgba(136,153,170,0.25);background:rgba(136,153,170,0.04);">
+    <div class="risk-title" style="color:var(--gray);">3. NVDA EARNINGS — MAY 20 (FORWARD RISK)</div>
+    <div class="risk-body">Not today, but size NVDA positions appropriately. Options pricing ±6.74% move. Start managing position risk this week.</div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- SUMMARY TABLE -->
+<section>
+  <div class="section-title">Summary Dashboard</div>
+  <table class="summary-table">
+    <thead>
+      <tr>
+        <th>Priority</th>
+        <th>Ticker / Theme</th>
+        <th>Signal</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="priority-urgent">🔴 URGENT</span></td>
+        <td><strong>MARA</strong></td>
+        <td>AI pivot + BTC sell = thesis broken</td>
+        <td style="color:var(--red);">EXIT longs</td>
+      </tr>
+      <tr>
+        <td><span class="priority-urgent">🔴 URGENT</span></td>
+        <td><strong>Russell 2000 / Cyclicals</strong></td>
+        <td>Hot PPI, rate cuts off table, -0.97%</td>
+        <td style="color:var(--red);">Reduce exposure</td>
+      </tr>
+      <tr>
+        <td><span class="priority-watch">🟡 WATCH</span></td>
+        <td><strong>NVDA</strong></td>
+        <td>China summit + earnings May 20 setup</td>
+        <td style="color:var(--yellow);">Hold, size for earnings</td>
+      </tr>
+      <tr>
+        <td><span class="priority-watch">🟡 WATCH</span></td>
+        <td><strong>TSLA</strong></td>
+        <td>Musk at Beijing — China catalyst pending</td>
+        <td style="color:var(--yellow);">Watch summit headlines</td>
+      </tr>
+      <tr>
+        <td><span class="priority-watch">🟡 WATCH</span></td>
+        <td><strong>Trump-Xi Summit</strong></td>
+        <td>Live macro risk event</td>
+        <td style="color:var(--yellow);">Stay nimble</td>
+      </tr>
+      <tr>
+        <td><span class="priority-confirm">🟢 CONFIRM</span></td>
+        <td><strong>SMH / XLK / AMD</strong></td>
+        <td>Semis leading, AI thesis intact</td>
+        <td style="color:var(--green);">Hold / add dips</td>
+      </tr>
+      <tr>
+        <td><span class="priority-confirm">🟢 CONFIRM</span></td>
+        <td><strong>NVDA options flow</strong></td>
+        <td>Smart money bullish into earnings</td>
+        <td style="color:var(--green);">Confirms thesis</td>
+      </tr>
+      <tr>
+        <td><span class="priority-noise">⚪ NOISE</span></td>
+        <td><strong>TSLA $430 call sweep</strong></td>
+        <td>Expiry-day pin play</td>
+        <td style="color:var(--gray);">Ignore</td>
+      </tr>
+      <tr>
+        <td><span class="priority-noise">⚪ NOISE</span></td>
+        <td><strong>COIN, PLTR</strong></td>
+        <td>No new catalysts today</td>
+        <td style="color:var(--gray);">Hold, no action</td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<div class="footer">
+  Sources: <a href="https://www.thestreet.com/latest-news/stock-market-today-may-13-2026-updates" target="_blank" style="color:var(--accent);">TheStreet</a> &nbsp;|&nbsp;
+  <a href="https://www.cnbc.com/2026/05/13/trump-china-xi-beijing-meeting-ceos.html" target="_blank" style="color:var(--accent);">CNBC</a> &nbsp;|&nbsp;
+  <a href="https://www.coindesk.com/markets/2026/05/12/bitcoin-miner-mara-sold-usd1-5-billion-of-bitcoin-as-it-shifts-toward-ai-infrastructure" target="_blank" style="color:var(--accent);">CoinDesk</a> &nbsp;|&nbsp;
+  <a href="https://www.benzinga.com/insights/options/26/05/52499407/10-information-technology-stocks-whale-activity-in-todays-session" target="_blank" style="color:var(--accent);">Benzinga</a> &nbsp;|&nbsp;
+  <a href="https://finance.yahoo.com/news/stock-market-news-may-13-090700682.html" target="_blank" style="color:var(--accent);">Yahoo Finance</a> &nbsp;|&nbsp;
+  <a href="https://fortune.com/2026/05/13/trump-china-trip-ceos-ai-trade/" target="_blank" style="color:var(--accent);">Fortune</a> &nbsp;|&nbsp;
+  <a href="https://247wallst.com/investing/2026/05/13/stock-market-live-may-13-2026-sp-500-down-on-jump-in-inflation/" target="_blank" style="color:var(--accent);">247WallSt</a>
+  <br><br>
+  ⚠ This report is for informational purposes only. Not financial advice. Always verify before trading.
+</div>
+
+</body>
+</html>
