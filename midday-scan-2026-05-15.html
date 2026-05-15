@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Midday Catalyst Scan — May 15, 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0e17;
+    --bg2: #0f1520;
+    --bg3: #161d2e;
+    --border: #1e2a3a;
+    --text: #e2e8f0;
+    --muted: #64748b;
+    --red: #ef4444;
+    --red-bg: rgba(239,68,68,0.08);
+    --red-border: rgba(239,68,68,0.25);
+    --yellow: #f59e0b;
+    --yellow-bg: rgba(245,158,11,0.08);
+    --yellow-border: rgba(245,158,11,0.25);
+    --green: #22c55e;
+    --green-bg: rgba(34,197,94,0.08);
+    --green-border: rgba(34,197,94,0.25);
+    --gray: #64748b;
+    --gray-bg: rgba(100,116,139,0.08);
+    --gray-border: rgba(100,116,139,0.25);
+    --accent: #3b82f6;
+    --accent2: #8b5cf6;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+  .header {
+    background: linear-gradient(135deg, #0f1520 0%, #0a1628 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 24px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .header-left h1 {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text);
+    letter-spacing: -0.3px;
+  }
+  .header-left .subtitle {
+    color: var(--muted);
+    font-size: 11px;
+    margin-top: 3px;
+  }
+  .header-right {
+    text-align: right;
+  }
+  .market-status {
+    display: inline-block;
+    background: var(--red-bg);
+    border: 1px solid var(--red-border);
+    color: var(--red);
+    padding: 4px 12px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+  }
+  .scan-time {
+    color: var(--muted);
+    font-size: 10px;
+    margin-top: 4px;
+  }
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 24px 32px;
+  }
+  .section {
+    margin-bottom: 32px;
+  }
+  .section-title {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--muted);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+  }
+  .macro-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 10px;
+    margin-bottom: 8px;
+  }
+  .macro-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 12px 14px;
+  }
+  .macro-card .label {
+    font-size: 10px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    margin-bottom: 4px;
+  }
+  .macro-card .value {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--red);
+  }
+  .macro-card .detail {
+    font-size: 10px;
+    color: var(--muted);
+    margin-top: 2px;
+  }
+  .macro-card.warn .value { color: var(--yellow); }
+  .macro-card.neutral .value { color: var(--text); }
+  .card {
+    background: var(--bg2);
+    border-radius: 6px;
+    margin-bottom: 10px;
+    overflow: hidden;
+  }
+  .card-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--border);
+  }
+  .ticker {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text);
+    min-width: 50px;
+  }
+  .badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 3px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+  }
+  .badge.red { background: var(--red-bg); color: var(--red); border: 1px solid var(--red-border); }
+  .badge.yellow { background: var(--yellow-bg); color: var(--yellow); border: 1px solid var(--yellow-border); }
+  .badge.green { background: var(--green-bg); color: var(--green); border: 1px solid var(--green-border); }
+  .badge.gray { background: var(--gray-bg); color: var(--gray); border: 1px solid var(--gray-border); }
+  .headline {
+    font-size: 12px;
+    color: var(--text);
+    margin-left: auto;
+    max-width: 60%;
+    text-align: right;
+    opacity: 0.8;
+  }
+  .card-body {
+    padding: 10px 14px;
+  }
+  .card-body .summary {
+    color: var(--muted);
+    font-size: 12px;
+    line-height: 1.5;
+  }
+  .card-body .action {
+    margin-top: 6px;
+    font-size: 11px;
+    color: var(--accent);
+  }
+  .card.urgent { border-left: 3px solid var(--red); }
+  .card.watch { border-left: 3px solid var(--yellow); }
+  .card.confirm { border-left: 3px solid var(--green); }
+  .card.noise { border-left: 3px solid var(--gray); }
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .three-col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+  @media (max-width: 900px) {
+    .two-col, .three-col { grid-template-columns: 1fr; }
+    .macro-grid { grid-template-columns: 1fr 1fr; }
+    .headline { display: none; }
+  }
+  .mini-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 14px;
+  }
+  .mini-card .mc-title {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 6px;
+  }
+  .mini-card .mc-body {
+    font-size: 11px;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+  .mini-card.red-card { border-left: 3px solid var(--red); }
+  .mini-card.yellow-card { border-left: 3px solid var(--yellow); }
+  .mini-card.green-card { border-left: 3px solid var(--green); }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+  }
+  th {
+    text-align: left;
+    color: var(--muted);
+    font-size: 10px;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg3);
+  }
+  td {
+    padding: 9px 12px;
+    border-bottom: 1px solid var(--border);
+    color: var(--text);
+    vertical-align: top;
+  }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: rgba(255,255,255,0.02); }
+  .label-red { color: var(--red); font-weight: 700; }
+  .label-yellow { color: var(--yellow); font-weight: 700; }
+  .label-green { color: var(--green); font-weight: 700; }
+  .label-gray { color: var(--gray); }
+  .no-setup {
+    background: var(--bg2);
+    border: 1px solid var(--red-border);
+    border-radius: 6px;
+    padding: 16px 20px;
+    color: var(--red);
+    font-weight: 700;
+    font-size: 14px;
+    text-align: center;
+    letter-spacing: 1px;
+    margin-bottom: 16px;
+  }
+  .risk-events {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 12px;
+  }
+  .risk-event {
+    background: var(--yellow-bg);
+    border: 1px solid var(--yellow-border);
+    border-radius: 4px;
+    padding: 6px 12px;
+    font-size: 11px;
+    color: var(--yellow);
+  }
+  .footer {
+    border-top: 1px solid var(--border);
+    padding: 16px 32px;
+    color: var(--muted);
+    font-size: 10px;
+    text-align: center;
+  }
+  .options-note {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 12px 16px;
+    font-size: 11px;
+    color: var(--muted);
+    font-style: italic;
+  }
+  .divider {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 12px 0;
+  }
+  em { color: var(--yellow); font-style: normal; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-left">
+    <h1>🕐 MIDDAY CATALYST CHECK</h1>
+    <div class="subtitle">May 15, 2026 &nbsp;|&nbsp; Active Day Trader Scan</div>
+  </div>
+  <div class="header-right">
+    <div class="market-status">🔴 RISK-OFF — TECH WEAKNESS EXTENDING</div>
+    <div class="scan-time">S&P 500 −1.14% &nbsp;|&nbsp; Nasdaq −1.62% &nbsp;|&nbsp; Russell 2000 +0.67%</div>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- MACRO CONTEXT -->
+  <div class="section">
+    <div class="section-title">⚡ Macro Context</div>
+    <div class="macro-grid">
+      <div class="macro-card">
+        <div class="label">April CPI (YoY)</div>
+        <div class="value">3.8%</div>
+        <div class="detail">Highest since May 2023 · Est: 3.7% · Core: +2.8%</div>
+      </div>
+      <div class="macro-card">
+        <div class="label">10-Year Yield</div>
+        <div class="value">4.56%</div>
+        <div class="detail">Highest in nearly a year · +10.1bps today</div>
+      </div>
+      <div class="macro-card warn">
+        <div class="label">Fed Leadership</div>
+        <div class="value">WARSH DAY 1</div>
+        <div class="detail">Powell's last day · Warsh confirmed 54-45 · FOMC June 16-17</div>
+      </div>
+      <div class="macro-card warn">
+        <div class="label">Rate Cut Odds</div>
+        <div class="value">Dec/2027</div>
+        <div class="detail">~30% chance of HIKE by year-end · CME data</div>
+      </div>
+      <div class="macro-card warn">
+        <div class="label">Trump China Summit</div>
+        <div class="value">LIVE NOW</div>
+        <div class="detail">Trump + Musk + CEOs in China · Binary trade risk event</div>
+      </div>
+      <div class="macro-card neutral">
+        <div class="label">Crypto Catalyst</div>
+        <div class="value">CLARITY ACT</div>
+        <div class="detail">Senate Banking 15-9 (May 14) · COIN +10%, MARA +7%</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- WATCHLIST -->
+  <div class="section">
+    <div class="section-title">Step 1 — Watchlist Alerts</div>
+
+    <div class="card urgent">
+      <div class="card-header">
+        <span class="ticker">NVDA</span>
+        <span class="badge red">🔴 URGENT</span>
+        <span class="badge red">BEARISH</span>
+        <span class="badge yellow">WATCH</span>
+        <span class="headline">Down 3.6% to ~$227 · China trade tensions + profit-taking</span>
+      </div>
+      <div class="card-body">
+        <div class="summary">Largest intraday decliner on watchlist. US-China trade tensions + yield spike + profit-taking after recent AI-driven rally. IV Rank at 73.6 — elevated options hedging. Note: SMH diverging +1.9% which may indicate NVDA-specific weakness vs sector-wide selloff.</div>
+        <div class="action">▸ Reduce longs. No floor catalyst yet. Wait for China summit clarity before re-entry.</div>
+      </div>
+    </div>
+
+    <div class="card urgent">
+      <div class="card-header">
+        <span class="ticker">SOFI</span>
+        <span class="badge red">🔴 URGENT</span>
+        <span class="badge red">BEARISH</span>
+        <span class="badge yellow">WATCH</span>
+        <span class="headline">$15.53 · Muddy Waters note + Goldman cut + securities fraud investigation</span>
+      </div>
+      <div class="card-body">
+        <div class="summary">Triple headwind: (1) Muddy Waters short note accusing aggressive/improper financial reporting, (2) Goldman cut target $20→$17 / Neutral, warns weaker outlook + capital-intensive lending growth, (3) Block & Leviton securities fraud investigation recruiting shareholders. Stock dropped 13%+ after Q1 report.</div>
+        <div class="action">▸ EXIT longs. Multiple overlapping headwinds with no near-term positive catalyst.</div>
+      </div>
+    </div>
+
+    <div class="card watch">
+      <div class="card-header">
+        <span class="ticker">COIN</span>
+        <span class="badge yellow">🟡 WATCH</span>
+        <span class="badge green">BULLISH</span>
+        <span class="badge yellow">WATCH</span>
+        <span class="headline">$216 after +10% surge · CLARITY Act Senate Banking Committee 15-9</span>
+      </div>
+      <div class="card-body">
+        <div class="summary">CLARITY Act cleared Senate Banking 15-9 with bipartisan support (May 14). Creates regulatory framework classifying digital assets as securities or commodities. Next: full Senate 60-vote fight + House reconciliation. Crypto names got big pop — COIN +10%, MARA +7%, MSTR +6.6%.</div>
+        <div class="action">▸ WATCH: $216 as support level. Holds = add on dip. Breaks below $210 = fade/exit.</div>
+      </div>
+    </div>
+
+    <div class="card watch">
+      <div class="card-header">
+        <span class="ticker">MARA</span>
+        <span class="badge yellow">🟡 WATCH</span>
+        <span class="badge green">BULLISH</span>
+        <span class="badge yellow">WATCH</span>
+        <span class="headline">$13.40 at 13.6–13.8 resistance · AI pivot + CLARITY Act tailwind</span>
+      </div>
+      <div class="card-body">
+        <div class="summary">Sold $1.5B BTC (20,880 BTC) to pivot toward AI/HPC infrastructure. Carries two tailwinds: crypto regulatory clarity + AI infrastructure pivot story. KEY LEVEL: 13.6–13.8 is resistance. Needs volume to break through.</div>
+        <div class="action">▸ WATCH breakout: Break above $13.8 with volume = new long entry. Below $13.00 = failed move.</div>
+      </div>
+    </div>
+
+    <div class="card watch">
+      <div class="card-header">
+        <span class="ticker">TSLA</span>
+        <span class="badge red">🔴</span>
+        <span class="badge red">BEARISH</span>
+        <span class="badge yellow">WATCH</span>
+        <span class="headline">−2% to ~$434 · Musk in China with Trump delegation · FSD approval push</span>
+      </div>
+      <div class="card-body">
+        <div class="summary">Binary risk event: Musk in China with Trump. Positive: FSD full regulatory approval potential + trade deal goodwill. Negative: weak China domestic sales. Any trade deal headline = aggressive TSLA upside spike.</div>
+        <div class="action">▸ Hold existing positions with tight stops. DO NOT add longs ahead of binary China summit outcome.</div>
+      </div>
+    </div>
+
+    <div class="card watch">
+      <div class="card-header">
+        <span class="ticker">PLTR</span>
+        <span class="badge yellow">🟡 WATCH</span>
+        <span class="badge gray">NEUTRAL</span>
+        <span class="badge yellow">WATCH</span>
+        <span class="headline">$134.06 (range $131.57–$134.99) · Strong Q1 but insider selling</span>
+      </div>
+      <div class="card-body">
+        <div class="summary">+85% revenue YoY in Q1 but retail reducing exposure on heavy insider selling + high valuation concerns. Range-bound intraday with no fresh catalyst. Not a add or exit signal — monitor.</div>
+        <div class="action">▸ NO ACTION. Watch for support at $131.57. Break below = reduce.</div>
+      </div>
+    </div>
+
+    <div class="card watch">
+      <div class="card-header">
+        <span class="ticker">AMD</span>
+        <span class="badge red">🔴</span>
+        <span class="badge red">BEARISH</span>
+        <span class="badge yellow">WATCH</span>
+        <span class="headline">$431.71 (range $426–$450) · Post-rally chip pullback, no specific catalyst</span>
+      </div>
+      <div class="card-body">
+        <div class="summary">Post-rally profit-taking across chip names. No AMD-specific negative catalyst — following sector. AMD is +320% over past year. Follow SMH for sector signal.</div>
+        <div class="action">▸ WATCH SMH for sector direction. AMD longs: use SMH as guide ETF.</div>
+      </div>
+    </div>
+
+    <div class="card noise">
+      <div class="card-header">
+        <span class="ticker">AMZN</span>
+        <span class="badge gray">⚪ NOISE</span>
+        <span class="badge red">BEARISH</span>
+        <span class="badge gray">NOISE</span>
+        <span class="headline">−1.41% to $263.47 · Macro-driven, no stock-specific catalyst</span>
+      </div>
+      <div class="card-body">
+        <div class="summary">Broad tech selloff driving weakness. MGM/James Bond announcement is noise. No actionable AMZN-specific signal.</div>
+        <div class="action">▸ IGNORE for today. Follow broader market.</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- SECTOR ETFs -->
+  <div class="section">
+    <div class="section-title">Step 2 — Sector & Theme ETF Midday Check</div>
+    <div class="three-col">
+      <div class="mini-card yellow-card">
+        <div class="mc-title">🔬 SMH (Semis) — DIVERGING ⚠️</div>
+        <div class="mc-body">$571.89 · <em>+1.9%</em> — OUTPERFORMING while Nasdaq −1.62%. Semis not leading selloff. AI infrastructure capex story holding. Watch for rotation INTO semis vs. broad bounce.</div>
+      </div>
+      <div class="mini-card red-card">
+        <div class="mc-title">💻 XLK (Tech) — LAGGING</div>
+        <div class="mc-body">Weak with Nasdaq. Rising yields + hot CPI = growth de-rating. No sign of reversal yet. Reduce exposure.</div>
+      </div>
+      <div class="mini-card green-card">
+        <div class="mc-title">⚡ XLE (Energy) — LEADING</div>
+        <div class="mc-body">Oil prices climbing today. Iran conflict keeping energy prices elevated (drove 40%+ of April CPI). Inflation hedge thesis confirmed. Long energy.</div>
+      </div>
+      <div class="mini-card green-card">
+        <div class="mc-title">🥇 GLD (Gold) — INTACT</div>
+        <div class="mc-body">$416.01 (high $419.50, low $414.12). Slight intraday pullback from high. Inflation hedge demand supported by Iran conflict + hot CPI. Thesis intact.</div>
+      </div>
+      <div class="mini-card yellow-card">
+        <div class="mc-title">₿ IBIT / Crypto — WATCH</div>
+        <div class="mc-body">CLARITY Act tailwind from yesterday (COIN +10%, MARA +7%). Bitcoin-adjacent plays remain elevated. Watch for continuation or fading into strength.</div>
+      </div>
+      <div class="mini-card red-card">
+        <div class="mc-title">🏦 XLF / XLU / Rotation</div>
+        <div class="mc-body">Rising yields (4.56%) = pressure on rate-sensitive plays. Warsh hawkish risk adds uncertainty. Watch XLU/XLP for risk-off confirmation signals.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BREAKING CATALYSTS -->
+  <div class="section">
+    <div class="section-title">Step 3 — Breaking Catalysts (Last 4 Hours)</div>
+    <div class="two-col">
+      <div class="card urgent">
+        <div class="card-header">
+          <span class="badge red">🔴 URGENT</span>
+          <span style="font-weight:700; color:var(--text); margin-left:8px;">WARSH TAKES OVER — DAY 1</span>
+        </div>
+        <div class="card-body">
+          <div class="summary">Kevin Warsh confirmed 54-45, officially takes over as Fed Chair TODAY. Chosen by Trump to lower rates but market uncertainty: Warsh is hawkish-leaning. Any Warsh statement today is a potential market mover. First FOMC meeting under Warsh: June 16-17.</div>
+          <div class="action">▸ WATCH for any Warsh public comments — could spike yields further or provide relief.</div>
+        </div>
+      </div>
+      <div class="card urgent">
+        <div class="card-header">
+          <span class="badge red">🔴 URGENT</span>
+          <span style="font-weight:700; color:var(--text); margin-left:8px;">APRIL CPI: 3.8% — RATE HIKE RISK</span>
+        </div>
+        <div class="card-body">
+          <div class="summary">CPI 3.8% highest since May 2023. Core +2.8%. Energy (Iran conflict) = 40%+ of gain. Rate cut pushed to Dec/2027. ~30% chance of HIKE by year-end. This is the primary driver of today's selloff.</div>
+          <div class="action">▸ Risk-off posture justified. Reduce growth/tech exposure. Favor energy + gold.</div>
+        </div>
+      </div>
+      <div class="card watch">
+        <div class="card-header">
+          <span class="badge yellow">🟡 WATCH</span>
+          <span style="font-weight:700; color:var(--text); margin-left:8px;">TRUMP CHINA SUMMIT — BINARY TRADE RISK</span>
+        </div>
+        <div class="card-body">
+          <div class="summary">POTUS + Musk + top executives in China. Trade deal = sharp TSLA/tech/semi rally catalyst. Breakdown = additional NVDA/AMD export restriction pressure. Market currently pricing in no deal (tech weak).</div>
+          <div class="action">▸ WATCH. Set alerts for any China trade headlines.</div>
+        </div>
+      </div>
+      <div class="card watch">
+        <div class="card-header">
+          <span class="badge yellow">🟡 WATCH</span>
+          <span style="font-weight:700; color:var(--text); margin-left:8px;">CLARITY ACT — CRYPTO REGULATORY TAILWIND</span>
+        </div>
+        <div class="card-body">
+          <div class="summary">Senate Banking approved 15-9 (May 14). Bipartisan win. Still needs: full Senate 60-vote floor fight + House reconciliation. Legislative risk remains but directional tailwind is real for crypto names.</div>
+          <div class="action">▸ COIN, MARA, MSTR remain in play on any Senate floor vote update headlines.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- OPTIONS FLOW -->
+  <div class="section">
+    <div class="section-title">Step 4 — Options Flow Alerts</div>
+    <div class="options-note">
+      ⚠️ Real-time options flow data for May 15, 2026 not available via public web search. Signals derived from available market data. For live flow: unusualwhales.com · Benzinga Unusual Options · Barchart Unusual Activity.
+    </div>
+    <div style="margin-top: 12px;">
+    <div class="two-col">
+      <div class="mini-card red-card">
+        <div class="mc-title">NVDA — Elevated IV (Rank 73.6)</div>
+        <div class="mc-body">Options market pricing significant move. IV Rank at 73.6 is HIGH — suggests institutional hedging or positioned for volatility. Consistent with 3.6% drop today. Watch for large put sweeps confirming bearish posture.</div>
+      </div>
+      <div class="mini-card yellow-card">
+        <div class="mc-title">COIN / MARA — Call Volume Spike (Yesterday)</div>
+        <div class="mc-body">CLARITY Act drove aggressive call buying in COIN (+10%), MARA (+7%), MSTR (+6.6%) yesterday. Expect elevated call OI today. Watch for profit-taking vs. roll forward to capture any Senate floor vote.</div>
+      </div>
+      <div class="mini-card red-card">
+        <div class="mc-title">SPY / QQQ — Elevated Hedging Expected</div>
+        <div class="mc-body">Hot CPI + rising yields + Warsh uncertainty = elevated put/call ratio expected. VIX moving higher consistent with institutional hedging. Monitor put/call ratio vs. open — if ratio spikes further → more downside.</div>
+      </div>
+      <div class="mini-card yellow-card">
+        <div class="mc-title">TSLA — Binary Event Setup</div>
+        <div class="mc-body">China summit = straddle/strangle opportunity. Musk physically present in China trade talks. Expect elevated premiums both sides. DO NOT sell premium here — IV likely to stay elevated until summit resolves.</div>
+      </div>
+    </div>
+    </div>
+  </div>
+
+  <!-- POSITION CHECK -->
+  <div class="section">
+    <div class="section-title">Step 5 — Position Check Signals</div>
+
+    <div class="no-setup">⚠️ NO NEW SPECULATIVE LONGS — ELEVATED MACRO RISK DAY ⚠️</div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Priority</th>
+          <th>Ticker / Theme</th>
+          <th>Signal</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="label-red">🔴 URGENT</td>
+          <td><strong>SOFI</strong></td>
+          <td>EXIT longs — multiple overlapping headwinds</td>
+          <td>Muddy Waters + Goldman cut + legal risk = sell</td>
+        </tr>
+        <tr>
+          <td class="label-red">🔴 URGENT</td>
+          <td><strong>NVDA</strong></td>
+          <td>REDUCE — China trade + yield pressure</td>
+          <td>No floor catalyst. Reduce size, tighten stops</td>
+        </tr>
+        <tr>
+          <td class="label-red">🔴 URGENT</td>
+          <td><strong>XLK / QQQ</strong></td>
+          <td>TRIM tech — rising yields + Warsh hawkish risk</td>
+          <td>10yr at 4.56% = growth de-rating ongoing</td>
+        </tr>
+        <tr>
+          <td class="label-yellow">🟡 WATCH</td>
+          <td><strong>COIN</strong></td>
+          <td>$216 support = add on dip; below $210 = exit</td>
+          <td>CLARITY Act tailwind intact; check level</td>
+        </tr>
+        <tr>
+          <td class="label-yellow">🟡 WATCH</td>
+          <td><strong>MARA</strong></td>
+          <td>$13.6–13.8 breakout or fade signal</td>
+          <td>Break with volume = long; below $13 = exit</td>
+        </tr>
+        <tr>
+          <td class="label-yellow">🟡 WATCH</td>
+          <td><strong>TSLA</strong></td>
+          <td>Binary China summit risk — hold, tight stops</td>
+          <td>Trade deal headline = aggressive upside spike</td>
+        </tr>
+        <tr>
+          <td class="label-yellow">🟡 WATCH</td>
+          <td><strong>SMH</strong></td>
+          <td>Semis diverging +1.9% vs Nasdaq −1.62%</td>
+          <td>Rotation signal — potential sector opportunity</td>
+        </tr>
+        <tr>
+          <td class="label-yellow">🟡 WATCH</td>
+          <td><strong>WARSH</strong></td>
+          <td>Any Warsh statement = market mover</td>
+          <td>Set news alerts — hawkish = sell; dovish = buy</td>
+        </tr>
+        <tr>
+          <td class="label-green">🟢 CONFIRM</td>
+          <td><strong>GLD / XLE</strong></td>
+          <td>Inflation hedge thesis confirmed</td>
+          <td>Hold — Iran conflict + hot CPI = both supported</td>
+        </tr>
+        <tr>
+          <td class="label-gray">⚪ NOISE</td>
+          <td><strong>AMZN</strong></td>
+          <td>Macro-driven, no stock catalyst</td>
+          <td>Ignore for today's session</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div style="margin-top: 14px;">
+      <div class="section-title" style="margin-top:0">⏰ Risk Events — Next 2 Hours</div>
+      <div class="risk-events">
+        <div class="risk-event">🏛️ Warsh First Statements as Fed Chair</div>
+        <div class="risk-event">🇨🇳 Trump / China Summit Update</div>
+        <div class="risk-event">📅 Friday Close — Position Squaring Vol</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="footer">
+  Generated by Midday Catalyst Scanner · May 15, 2026 &nbsp;|&nbsp;
+  Sources: TheStreet · CNBC · CryptoTimes · CoinDesk · Yahoo Finance · Fox Business · CBS News · U.S. News · Motley Fool
+</div>
+
+</body>
+</html>
