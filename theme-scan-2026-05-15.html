@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Daily Theme Scanner — 2026-05-15</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0a0e17;
+    --bg2: #111827;
+    --bg3: #1a2235;
+    --border: #1e2d45;
+    --text: #e2e8f0;
+    --text-muted: #64748b;
+    --text-dim: #94a3b8;
+    --high: #10b981;
+    --medium: #f59e0b;
+    --low: #ef4444;
+    --accent: #3b82f6;
+    --accent2: #8b5cf6;
+    --strong: #10b981;
+    --moderate: #f59e0b;
+    --weak: #ef4444;
+    --early: #3b82f6;
+    --developing: #f59e0b;
+    --maturing: #ef4444;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    line-height: 1.7;
+    padding: 0;
+  }
+
+  .header {
+    background: var(--bg2);
+    border-bottom: 1px solid var(--border);
+    padding: 28px 40px 22px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .header-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .header h1 {
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    color: var(--text);
+  }
+
+  .header h1 span {
+    color: var(--accent);
+  }
+
+  .header-meta {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-top: 10px;
+  }
+
+  .badge {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    padding: 3px 10px;
+    border-radius: 3px;
+    text-transform: uppercase;
+  }
+
+  .badge-neutral { background: var(--bg3); color: var(--text-dim); border: 1px solid var(--border); }
+  .badge-high { background: rgba(16,185,129,0.12); color: var(--high); border: 1px solid rgba(16,185,129,0.3); }
+  .badge-medium { background: rgba(245,158,11,0.12); color: var(--medium); border: 1px solid rgba(245,158,11,0.3); }
+  .badge-low { background: rgba(239,68,68,0.12); color: var(--low); border: 1px solid rgba(239,68,68,0.3); }
+  .badge-early { background: rgba(59,130,246,0.12); color: var(--early); border: 1px solid rgba(59,130,246,0.3); }
+  .badge-developing { background: rgba(245,158,11,0.12); color: var(--developing); border: 1px solid rgba(245,158,11,0.3); }
+  .badge-maturing { background: rgba(239,68,68,0.12); color: var(--maturing); border: 1px solid rgba(239,68,68,0.3); }
+  .badge-strong { background: rgba(16,185,129,0.12); color: var(--strong); border: 1px solid rgba(16,185,129,0.3); }
+  .badge-moderate { background: rgba(245,158,11,0.12); color: var(--moderate); border: 1px solid rgba(245,158,11,0.3); }
+
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 32px 40px 60px;
+  }
+
+  .section-title {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 20px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .section-title::before {
+    content: '';
+    display: inline-block;
+    width: 3px;
+    height: 14px;
+    background: var(--accent);
+    border-radius: 2px;
+  }
+
+  .section { margin-bottom: 48px; }
+
+  .card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 22px 26px;
+    margin-bottom: 16px;
+    transition: border-color 0.2s;
+  }
+
+  .card:hover { border-color: var(--accent); }
+
+  .card-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+  }
+
+  .card-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text);
+  }
+
+  .card-title .num {
+    color: var(--text-muted);
+    font-size: 12px;
+    margin-right: 6px;
+  }
+
+  .badge-row {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  .meta-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 12px;
+    margin: 14px 0;
+    padding: 14px;
+    background: var(--bg3);
+    border-radius: 4px;
+    border: 1px solid var(--border);
+  }
+
+  .meta-item label {
+    display: block;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 4px;
+  }
+
+  .meta-item value {
+    display: block;
+    font-size: 12px;
+    color: var(--text-dim);
+  }
+
+  .tickers {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 4px;
+  }
+
+  .ticker {
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 3px;
+    letter-spacing: 0.05em;
+  }
+
+  .ticker-primary { background: rgba(59,130,246,0.15); color: #60a5fa; border: 1px solid rgba(59,130,246,0.3); }
+  .ticker-secondary { background: rgba(139,92,246,0.12); color: #a78bfa; border: 1px solid rgba(139,92,246,0.25); }
+  .ticker-loser { background: rgba(239,68,68,0.12); color: #f87171; border: 1px solid rgba(239,68,68,0.25); }
+
+  .evidence-list {
+    margin: 12px 0;
+  }
+
+  .evidence-item {
+    padding: 8px 12px;
+    border-left: 2px solid var(--border);
+    margin-bottom: 8px;
+    font-size: 12px;
+    color: var(--text-dim);
+  }
+
+  .evidence-item:last-child { margin-bottom: 0; }
+
+  .evidence-item a {
+    color: var(--accent);
+    text-decoration: none;
+  }
+  .evidence-item a:hover { text-decoration: underline; }
+
+  .summary {
+    font-size: 12px;
+    color: var(--text-dim);
+    line-height: 1.8;
+    margin-top: 12px;
+    padding: 12px 14px;
+    background: rgba(59,130,246,0.04);
+    border-radius: 4px;
+    border-left: 3px solid rgba(59,130,246,0.4);
+  }
+
+  .trade-idea {
+    font-size: 11px;
+    margin-top: 10px;
+    padding: 8px 12px;
+    background: rgba(16,185,129,0.06);
+    border: 1px solid rgba(16,185,129,0.2);
+    border-radius: 4px;
+    color: var(--high);
+  }
+
+  .trade-idea strong { color: var(--high); }
+
+  .action-box {
+    background: var(--bg2);
+    border: 1px solid var(--accent);
+    border-radius: 6px;
+    padding: 24px 28px;
+  }
+
+  .action-section { margin-bottom: 20px; }
+  .action-section:last-child { margin-bottom: 0; }
+
+  .action-section h3 {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 10px;
+  }
+
+  .action-item {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 8px;
+    font-size: 12px;
+    color: var(--text-dim);
+    line-height: 1.6;
+  }
+
+  .action-item .bullet { color: var(--accent); flex-shrink: 0; }
+
+  .ticker-highlight {
+    color: #60a5fa;
+    font-weight: 700;
+  }
+
+  .footer {
+    text-align: center;
+    padding: 20px;
+    font-size: 10px;
+    color: var(--text-muted);
+    border-top: 1px solid var(--border);
+    margin-top: 40px;
+  }
+
+  @media (max-width: 700px) {
+    .container { padding: 20px 16px 40px; }
+    .header { padding: 18px 16px 14px; }
+    .meta-grid { grid-template-columns: 1fr 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-top">
+    <h1>📊 Daily Theme Scanner — <span>2026-05-15</span></h1>
+    <div class="badge badge-neutral">Pre-Market | Automated Scan</div>
+  </div>
+  <div class="header-meta">
+    <span class="badge badge-high">5 Narratives</span>
+    <span class="badge badge-medium">5 Earnings Signals</span>
+    <span class="badge badge-neutral">5 Catalysts</span>
+    <span class="badge badge-neutral">S&amp;P 500 +3.3% WTD</span>
+    <span class="badge badge-low">Moody's Downgraded US to Aa1</span>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- EMERGING NARRATIVES -->
+  <div class="section">
+    <div class="section-title">Emerging Narratives</div>
+
+    <!-- Narrative 1 -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title"><span class="num">01</span> US-China Trade Détente — More Than a Truce</div>
+        <div class="badge-row">
+          <span class="badge badge-high">HIGH Conviction</span>
+          <span class="badge badge-developing">DEVELOPING</span>
+        </div>
+      </div>
+      <div class="meta-grid">
+        <div class="meta-item">
+          <label>Timeline</label>
+          <value>Immediate to 2 quarters</value>
+        </div>
+        <div class="meta-item">
+          <label>Primary Beneficiaries</label>
+          <div class="tickers">
+            <span class="ticker ticker-primary">BA</span>
+            <span class="ticker ticker-primary">AAPL</span>
+            <span class="ticker ticker-primary">NKE</span>
+            <span class="ticker ticker-primary">NVDA</span>
+            <span class="ticker ticker-primary">QCOM</span>
+          </div>
+        </div>
+        <div class="meta-item">
+          <label>Secondary</label>
+          <div class="tickers">
+            <span class="ticker ticker-secondary">FDX</span>
+            <span class="ticker ticker-secondary">UPS</span>
+            <span class="ticker ticker-secondary">CAT</span>
+            <span class="ticker ticker-secondary">ADM</span>
+          </div>
+        </div>
+        <div class="meta-item">
+          <label>Losers</label>
+          <div class="tickers">
+            <span class="ticker ticker-loser">VFC</span>
+            <span class="ticker ticker-loser">HII</span>
+            <span class="ticker ticker-loser">DRS</span>
+          </div>
+        </div>
+      </div>
+      <div class="evidence-list">
+        <div class="evidence-item">May 12 Geneva Framework: US tariffs cut from 145% → 30%, China from 125% → 10%. S&amp;P +3.3%, Nasdaq +4.3%, Dow +1,100 pts. <a href="https://www.nbcnews.com/world/asia/tariffs-china-trump-agree-slash-levies-duties-business-markets-bessent-rcna206193" target="_blank">[NBC News]</a></div>
+        <div class="evidence-item">Trump Beijing summit (May 13-14): China agrees to 200 Boeing jets, soybeans, energy. Joint trade board established. Polymarket 81%+ odds on truce extension. <a href="https://www.cnbc.com/2026/05/14/trump-xi-summit-us-china-trade-taiwan-iran-nvidia.html" target="_blank">[CNBC]</a></div>
+        <div class="evidence-item">Nvidia H20/H200 export controls eased case-by-case as part of trade diplomacy — $10B+ potential China AI chip revenue stream unlocked. <a href="https://builtin.com/articles/trump-lifts-ai-chip-ban-china-nvidia" target="_blank">[Built In]</a></div>
+      </div>
+      <div class="summary">The Geneva Framework and Trump's Beijing summit mark a structural shift in US-China trade posture, not merely tactical de-escalation. The 200 Boeing jet order signals China is using economic concessions to reset geopolitical relations ahead of the November 2026 truce deadline. The most underpriced aspect: China's conditional easing of AI chip import restrictions could unlock a multi-billion-dollar revenue tailwind for Nvidia and AMD that consensus has not fully modeled. Market has priced the macro relief rally but NOT the sector-specific China re-engagement stories.</div>
+    </div>
+
+    <!-- Narrative 2 -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title"><span class="num">02</span> AI Infrastructure Super-Cycle — Power Becomes the Bottleneck</div>
+        <div class="badge-row">
+          <span class="badge badge-high">HIGH Conviction</span>
+          <span class="badge badge-developing">DEVELOPING</span>
+        </div>
+      </div>
+      <div class="meta-grid">
+        <div class="meta-item">
+          <label>Timeline</label>
+          <value>1–4 quarters (power/grid)</value>
+        </div>
+        <div class="meta-item">
+          <label>Primary Beneficiaries</label>
+          <div class="tickers">
+            <span class="ticker ticker-primary">GEV</span>
+            <span class="ticker ticker-primary">CEG</span>
+            <span class="ticker ticker-primary">VST</span>
+            <span class="ticker ticker-primary">NEE</span>
+            <span class="ticker ticker-primary">NRG</span>
+          </div>
+        </div>
+        <div class="meta-item">
+          <label>Secondary</label>
+          <div class="tickers">
+            <span class="ticker ticker-secondary">ETN</span>
+            <span class="ticker ticker-secondary">PWR</span>
+            <span class="ticker ticker-secondary">AMSC</span>
+          </div>
+        </div>
+        <div class="meta-item">
+          <label>Losers</label>
+          <div class="tickers">
+            <span class="ticker ticker-loser">Coal utilities</span>
+            <span class="ticker ticker-loser">Legacy grid</span>
+          </div>
+        </div>
+      </div>
+      <div class="evidence-list">
+        <div class="evidence-item">Hyperscaler combined 2026 capex tracking toward $700–725B: Microsoft $190B, Google $180B, Amazon $200B, Meta $125–145B — all raised guidance in Q1 2026 calls. <a href="https://finance.yahoo.com/markets/article/magnificent-7-earnings-rush-reveals-ai-spending-surge-with-hyperscaler-capex-set-to-reach-725-billion-in-2026-224901707.html" target="_blank">[Yahoo Finance]</a></div>
+        <div class="evidence-item">GE Vernova Q1 2026: $2.4B data center equipment orders in ONE quarter, exceeding all of CY2025's total. Microsoft disclosed $80B Azure backlog unfulfillable due to power constraints. <a href="https://www.networkworld.com/article/4154532/hyperscaler-backlogs-show-growing-demand-for-ai-infrastructure.html" target="_blank">[NetworkWorld]</a></div>
+        <div class="evidence-item">Constellation Energy Q1 2026 EPS $4.49 vs $0.38 year ago (+1,081% YoY), revenue +64% YoY. Nuclear power purchase agreements with hyperscalers becoming the AI infrastructure edge. <a href="https://ts2.tech/en/constellation-energy-earnings-loom-ceg-stock-faces-monday-test-as-ai-power-demand-trade-wobbles/" target="_blank">[ts2.tech]</a></div>
+      </div>
+      <div class="summary">The AI capex super-cycle has shifted from "who wins the GPU race" to "who can deliver electrons." Microsoft's $80B unfulfillable Azure backlog is the clearest signal that power availability — not chip availability — is the current bottleneck. GE Vernova's Q1 data center order surge and Constellation's explosive earnings confirm the power infrastructure trade is REAL. Yet most power/utility names remain under-owned relative to the magnitude of the demand tailwind. Key risk: regulatory delays in nuclear relicensing and grid interconnection queues could push out revenue timelines.</div>
+    </div>
+
+    <!-- Narrative 3 -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title"><span class="num">03</span> Sovereign Debt Stress — Moody's Downgrade Aftershocks</div>
+        <div class="badge-row">
+          <span class="badge badge-medium">MEDIUM Conviction</span>
+          <span class="badge badge-developing">DEVELOPING</span>
+        </div>
+      </div>
+      <div class="meta-grid">
+        <div class="meta-item">
+          <label>Timeline</label>
+          <value>2–6 quarters</value>
+        </div>
+        <div class="meta-item">
+          <label>Primary Beneficiaries</label>
+          <div class="tickers">
+            <span class="ticker ticker-primary">GLD</span>
+            <span class="ticker ticker-primary">BTC</span>
+            <span class="ticker ticker-primary">TBT</span>
+            <span class="ticker ticker-primary">TIPS</span>
+          </div>
+        </div>
+        <div class="meta-item">
+          <label>Secondary</label>
+          <div class="tickers">
+            <span class="ticker ticker-secondary">Short-dur bonds</span>
+            <span class="ticker ticker-secondary">Value equities</span>
+          </div>
+        </div>
+        <div class="meta-item">
+          <label>Losers</label>
+          <div class="tickers">
+            <span class="ticker ticker-loser">TLT</span>
+            <span class="ticker ticker-loser">REITs</span>
+            <span class="ticker ticker-loser">LBO portfolios</span>
+          </div>
+        </div>
+      </div>
+      <div class="evidence-list">
+        <div class="evidence-item">Moody's downgraded US from Aaa → Aa1 on May 16. First time ALL THREE major agencies have downgraded US below top tier. 30Y yields spiked above Liberation Day April levels. <a href="https://www.pgpf.org/article/moodys-downgraded-its-us-credit-rating-and-warns-that-recent-policy-decisions-will-worsen-fiscal-outlook/" target="_blank">[PGPF]</a></div>
+        <div class="evidence-item">OBBBA adds $4.1T to federal borrowing over a decade. CBO projects $500B deficit addition in 2026, $635B in 2027. Federal debt-to-GDP headed to 134% by 2035. <a href="https://www.crfb.org/blogs/breaking-down-one-big-beautiful-bill" target="_blank">[CRFB]</a></div>
+        <div class="evidence-item">April 2026 CPI 3.8% YoY (vs 3.3% March). Fed holds at 3.50–3.75%. Market prices 97.5% probability of June hold. No cuts in 2026 increasingly likely. <a href="https://www.coindesk.com/markets/2026/05/12/hot-inflation-data-pours-cold-water-on-federal-reserve-rate-cut-hopes" target="_blank">[CoinDesk]</a></div>
+      </div>
+      <div class="summary">Moody's downgrade is a slow-moving but significant signal. The combination of the OBBBA's fiscal expansion, April's hotter-than-expected CPI, and rising long-term Treasury yields creates a "fiscal dominance" scenario where the Fed is trapped between its inflation mandate and bond market fragility. The most underpriced risk: if 30-year yields breach 5.5%, it could trigger forced selling in pension portfolios and increase the cost of capital across the economy. Not an imminent crash narrative — a multi-quarter headwind that equity markets have not fully absorbed.</div>
+    </div>
+
+    <!-- Narrative 4 -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title"><span class="num">04</span> Agentic AI — Revenue Monetization Finally Breaking Through</div>
+        <div class="badge-row">
+          <span class="badge badge-medium">MEDIUM Conviction</span>
+          <span class="badge badge-developing">DEVELOPING</span>
+        </div>
+      </div>
+      <div class="meta-grid">
+        <div class="meta-item">
+          <label>Timeline</label>
+          <value>1–3 quarters</value>
+        </div>
+        <div class="meta-item">
+          <label>Primary Beneficiaries</label>
+          <div class="tickers">
+            <span class="ticker ticker-primary">GOOGL</span>
+            <span class="ticker ticker-primary">MSFT</span>
+            <span class="ticker ticker-primary">CSCO</span>
+            <span class="ticker ticker-primary">TEAM</span>
+            <span class="ticker ticker-primary">NOW</span>
+          </div>
+        </div>
+        <div class="meta-item">
+          <label>Secondary</label>
+          <div class="tickers">
+            <span class="ticker ticker-secondary">CRM</span>
+            <span class="ticker ticker-secondary">PLTR</span>
+            <span class="ticker ticker-secondary">SNOW</span>
+          </div>
+        </div>
+        <div class="meta-item">
+          <label>Losers</label>
+          <div class="tickers">
+            <span class="ticker ticker-loser">Legacy SaaS</span>
+            <span class="ticker ticker-loser">BPO firms</span>
+          </div>
+        </div>
+      </div>
+      <div class="evidence-list">
+        <div class="evidence-item">Alphabet Q1 2026: Google Cloud +63% YoY to ~$20B. CEO Pichai introduced "truly agentic workflows" language — first shift from "AI investments" to autonomous orchestration. <a href="https://blog.google/company-news/inside-google/message-ceo/alphabet-earnings-q1-2026/" target="_blank">[Google Blog]</a></div>
+        <div class="evidence-item">Atlassian Q1 2026: Revenue $1.79B (+31.7% YoY), EPS $1.75. Smashed estimates; AI-native features and enterprise deals cited as primary driver. <a href="https://www.indexbox.io/blog/atlassian-q1-2026-results-revenue-surges-317-to-179b-beats-estimates/" target="_blank">[IndexBox]</a></div>
+        <div class="evidence-item">Cisco Q3 2026: AI hyperscaler orders $1.9B vs $600M YoY (+217%). FY26 AI orders guidance raised to $9B, FY27 AI revenue floor set at $6B+. Stock +20%. <a href="https://investor.cisco.com/news/news-details/2026/CISCO-REPORTS-THIRD-QUARTER-EARNINGS/default.aspx" target="_blank">[Cisco IR]</a></div>
+      </div>
+      <div class="summary">Q1 2026 earnings have produced the first clean evidence that AI capex is converting into customer revenue — Google Cloud's 63% growth is the benchmark. The language shift to "agentic workflows" is meaningful: companies are no longer describing AI as a feature but as an autonomous workforce. The divergent market reaction (Meta -6% on capex, Alphabet up on cloud revenue) signals investors are now separating spenders from earners. The next leg of this trade: identify who has monetization architecture, not just model capability.</div>
+    </div>
+
+  </div>
+
+  <!-- EARNINGS SIGNALS -->
+  <div class="section">
+    <div class="section-title">Earnings Signals</div>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title"><span class="num">01</span> Cisco (CSCO) — AI Networking Is a Structural Beat Machine</div>
+        <div class="badge-row">
+          <span class="badge badge-strong">STRONG</span>
+          <span class="badge badge-neutral">Guidance Raise + Order Surge</span>
+        </div>
+      </div>
+      <div class="meta-grid">
+        <div class="meta-item"><label>Companies</label><div class="tickers"><span class="ticker ticker-primary">CSCO</span><span class="ticker ticker-secondary">ANET</span><span class="ticker ticker-secondary">HPE</span></div></div>
+        <div class="meta-item"><label>Type</label><value>Guidance raise + order surge</value></div>
+      </div>
+      <div class="summary">Record Q3 revenue $15.8B (+12% YoY). AI hyperscaler orders $1.9B in Q3 alone (vs $600M YoY). YTD AI orders $5.3B, surpassing full-year expectations. FY26 AI order guidance raised to $9B; FY27 AI revenue floor set at $6B+. Q4 guided $16.7–16.9B. Shares +20% post-print. Read-through: AI is now a structural driver of networking demand, not a one-time burst.</div>
+      <div class="trade-idea">💡 <strong>Trade Idea:</strong> CSCO on any post-earnings pullback; ANET as read-through beneficiary. <a href="https://www.gurufocus.com/news/8857459/cisco-systems-inc-csco-q3-2026-earnings-call-highlights-record-revenue-and-strategic-growth-in-ai-infrastructure" target="_blank">[GuruFocus]</a></div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title"><span class="num">02</span> Applied Materials (AMAT) — Semicon Equipment Cycle Upgrading to 30%+</div>
+        <div class="badge-row">
+          <span class="badge badge-strong">STRONG</span>
+          <span class="badge badge-neutral">Industry Projection Upgrade</span>
+        </div>
+      </div>
+      <div class="meta-grid">
+        <div class="meta-item"><label>Companies</label><div class="tickers"><span class="ticker ticker-primary">AMAT</span><span class="ticker ticker-secondary">LRCX</span><span class="ticker ticker-secondary">KLAC</span><span class="ticker ticker-secondary">ASML</span></div></div>
+        <div class="meta-item"><label>Type</label><value>Guidance raise + industry upgrade</value></div>
+      </div>
+      <div class="summary">Q2 FY2026 record revenue $7.91B (+11% YoY). Raised semiconductor equipment industry growth forecast to 30%+ in CY2026, up from 20%+ in February. Gross margins hit 25-year high. Q3 guided at $8.95B (+13% QoQ). The AI chip buildout is pulling forward capital equipment demand far faster than consensus models assumed.</div>
+      <div class="trade-idea">💡 <strong>Trade Idea:</strong> AMAT, LRCX on any semicon sector weakness. ASML EUV backlog likely also exceeds estimates. <a href="https://seekingalpha.com/news/4593566-applied-materials-expects-q3-revenue-of-8_95b-and-non-gaap-eps-of-3_36-as-it-forecasts" target="_blank">[Seeking Alpha]</a></div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title"><span class="num">03</span> Big Tech Q1 2026 — The Great Capex Divergence</div>
+        <div class="badge-row">
+          <span class="badge badge-moderate">MODERATE</span>
+          <span class="badge badge-neutral">Language Shift + Market Anomaly</span>
+        </div>
+      </div>
+      <div class="meta-grid">
+        <div class="meta-item"><label>Companies</label><div class="tickers"><span class="ticker ticker-primary">GOOGL</span><span class="ticker ticker-secondary">META</span><span class="ticker ticker-primary">MSFT</span><span class="ticker ticker-primary">AMZN</span></div></div>
+        <div class="meta-item"><label>Type</label><value>Language shift + reaction anomaly</value></div>
+      </div>
+      <div class="summary">All four hyperscalers raised 2026 AI capex in late April. Market reacted asymmetrically: Meta -6% on $115–135B capex raise; Alphabet UP because Google Cloud revenue (+63% YoY) validated the spending. Key insight: market is now demanding revenue proof alongside capex commitment. "Agentic workflows" (Alphabet) and "autonomous orchestration" (Microsoft) are the leading language indicators.</div>
+      <div class="trade-idea">💡 <strong>Trade Idea:</strong> Long GOOGL vs short META as relative value within hyperscalers. <a href="https://www.kucoin.com/blog/q1-2026-big-tech-earnings-how-ai-investments-paid-off-for-microsoft-alphabet-meta-amazon" target="_blank">[KuCoin]</a></div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title"><span class="num">04</span> Walmart (WMT) — Consumer Trading Down Accelerates</div>
+        <div class="badge-row">
+          <span class="badge badge-moderate">MODERATE</span>
+          <span class="badge badge-neutral">Behavioral Shift</span>
+        </div>
+      </div>
+      <div class="meta-grid">
+        <div class="meta-item"><label>Companies</label><div class="tickers"><span class="ticker ticker-primary">WMT</span><span class="ticker ticker-loser">TGT</span><span class="ticker ticker-secondary">COST</span></div></div>
+        <div class="meta-item"><label>Earnings Date</label><value>May 21, 2026 (pre-market)</value></div>
+      </div>
+      <div class="summary">Walmart's fastest-growing customer segment: households earning $100K+, trading down for value. Target, Home Depot, Lowe's all lowered full-year outlooks citing consumer hesitancy on big-ticket purchases. WMT cutting ~1,000 corporate jobs while AI advertising revenue hits $6.4B in FY26. May 21 report is key read on tariff pass-through rates into consumer prices.</div>
+      <div class="trade-idea">💡 <strong>Trade Idea:</strong> Long WMT / short TGT as bifurcation within retail accelerates. Watch tariff cost commentary. <a href="https://www.fxleaders.com/news/2026/05/13/walmart-stock-climbs-2-1-as-ai-transformation-and-ad-growth-offset-layoff-concerns/" target="_blank">[FX Leaders]</a></div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title"><span class="num">05</span> GE Vernova (GEV) — Data Center Power Orders Exploding</div>
+        <div class="badge-row">
+          <span class="badge badge-strong">STRONG</span>
+          <span class="badge badge-neutral">Order Surge</span>
+        </div>
+      </div>
+      <div class="meta-grid">
+        <div class="meta-item"><label>Companies</label><div class="tickers"><span class="ticker ticker-primary">GEV</span><span class="ticker ticker-secondary">CEG</span><span class="ticker ticker-secondary">VST</span><span class="ticker ticker-secondary">ETN</span><span class="ticker ticker-secondary">PWR</span></div></div>
+        <div class="meta-item"><label>Type</label><value>Order surge exceeding prior full-year</value></div>
+      </div>
+      <div class="summary">GE Vernova Q1 2026: $2.4B data center-related equipment orders in Electrification segment — exceeding entire CY2025 data center total in a single quarter. Total orders +71% organically. Stock +3.83% on May 11 alone. Build-out is 12–18 months from revenue recognition, meaning the earnings impact is still front-running current analyst models.</div>
+      <div class="trade-idea">💡 <strong>Trade Idea:</strong> GEV, ETN, PWR as "picks and shovels" of AI power infrastructure. <a href="https://www.tradingkey.com/news/market-movers/261880960-market-movers-gev-20260511" target="_blank">[TradingKey]</a></div>
+    </div>
+
+  </div>
+
+  <!-- UPCOMING CATALYSTS -->
+  <div class="section">
+    <div class="section-title">Upcoming Catalysts</div>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title"><span class="num">01</span> Nvidia Q1 FY2027 Earnings</div>
+        <div class="badge-row">
+          <span class="badge badge-neutral">📅 May 20, 2026 (After Close)</span>
+        </div>
+      </div>
+      <div class="meta-grid">
+        <div class="meta-item"><label>Consensus</label><value>~$78B revenue (+77% YoY), Blackwell ramp confirmed</value></div>
+        <div class="meta-item"><label>Surprise Scenario</label><value>Vera Rubin pull-forward or China revenue unlock = major upside; power/yield issues = -10–15%</value></div>
+        <div class="meta-item"><label>Exposed Tickers</label><div class="tickers"><span class="ticker ticker-primary">NVDA</span><span class="ticker ticker-secondary">AMD</span><span class="ticker ticker-secondary">AVGO</span><span class="ticker ticker-secondary">TSM</span><span class="ticker ticker-secondary">SMCI</span></div></div>
+        <div class="meta-item"><label>Positioning</label><value>Market broadly long; options IV elevated</value></div>
+      </div>
+      <div class="summary">The single most important market-moving event of the month. Guidance at $78B ±2% represents ~77% YoY growth. Analyst range on Blackwell revenue spans $21B–$141B — genuine uncertainty about ramp pace. Watch: (1) Vera Rubin timeline signals, (2) China H20/H200 revenue post-Trump-Xi summit, (3) Any "power constraint" language that validates the GEV/CEG infrastructure trade. <a href="https://www.fool.com/investing/2026/05/05/prediction-nvidia-stock-going-to-soar-after-may-20/" target="_blank">[Motley Fool]</a></div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title"><span class="num">02</span> Walmart Q1 FY2027 Earnings</div>
+        <div class="badge-row">
+          <span class="badge badge-neutral">📅 May 21, 2026 (Pre-Market)</span>
+        </div>
+      </div>
+      <div class="meta-grid">
+        <div class="meta-item"><label>Consensus</label><value>Net sales +3.5–4.5%; cautious consumer commentary; tariff costs acknowledged</value></div>
+        <div class="meta-item"><label>Surprise Scenario</label><value>Upside: tariff truce breathing room, raised guidance. Downside: tariff pass-through accelerating, demand destruction signal.</value></div>
+        <div class="meta-item"><label>Exposed Tickers</label><div class="tickers"><span class="ticker ticker-primary">WMT</span><span class="ticker ticker-loser">TGT</span><span class="ticker ticker-secondary">COST</span><span class="ticker ticker-secondary">AMZN</span></div></div>
+        <div class="meta-item"><label>Positioning</label><value>WMT widely held as defensive; guidance cut = negative read for all retail</value></div>
+      </div>
+      <div class="summary">The most important consumer health check of the month. Key question: Have the 30% China tariffs (down from 145%) provided enough breathing room to protect margins? Higher-income consumers are trading down to Walmart while middle/lower income cut discretionary. The AI advertising business ($6.4B FY26) provides structural margin offset. Watch for explicit tariff cost pass-through rate vs. absorption commentary.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title"><span class="num">03</span> FOMC Meeting — Rate Decision + New Dot Plot</div>
+        <div class="badge-row">
+          <span class="badge badge-neutral">📅 June 17, 2026</span>
+        </div>
+      </div>
+      <div class="meta-grid">
+        <div class="meta-item"><label>Consensus</label><value>No change; rates held at 3.50–3.75%. 97.5% probability of hold (Polymarket)</value></div>
+        <div class="meta-item"><label>Surprise Scenario</label><value>Dovish: dot plot shows 2 H2 cuts — violent long-bond rally. Hawkish: dot plot shows 0 cuts — yields spike, equities reprice.</value></div>
+        <div class="meta-item"><label>Exposed Tickers</label><div class="tickers"><span class="ticker ticker-primary">TLT</span><span class="ticker ticker-secondary">IEF</span><span class="ticker ticker-secondary">JPM</span><span class="ticker ticker-secondary">AMT</span></div></div>
+        <div class="meta-item"><label>Positioning</label><value>Market prices 0 cuts in 2026; any dovish surprise = violent long-bond rally</value></div>
+      </div>
+      <div class="summary">The June 17 FOMC is an SEP meeting including updated dot plot. With April CPI at 3.8% (hotter than March's 3.3%), and the Moody's downgrade adding fiscal risk, new Fed Chair's first major policy communication will be closely watched for any tone deviation from Powell's era. The surprise scenario of 0 cuts in 2026 is underpriced given fiscal deterioration signals. <a href="https://polymarket.com/event/fed-decision-in-june-825" target="_blank">[Polymarket]</a></div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title"><span class="num">04</span> US-China Tariff Truce — November 2026 Expiration Clock</div>
+        <div class="badge-row">
+          <span class="badge badge-neutral">📅 Mid-August 90-Day Cliff / Nov 2026 Framework</span>
+        </div>
+      </div>
+      <div class="meta-grid">
+        <div class="meta-item"><label>Consensus</label><value>81%+ Polymarket odds favor extension; framework formalized into permanent deal</value></div>
+        <div class="meta-item"><label>Surprise Scenario</label><value>Collapse: Taiwan/tech dispute derails talks; tariffs snap to 100%+. Upside: MFN status, full normalization.</value></div>
+        <div class="meta-item"><label>Snap-back Risk</label><div class="tickers"><span class="ticker ticker-loser">AAPL</span><span class="ticker ticker-loser">NKE</span><span class="ticker ticker-loser">LULU</span></div></div>
+        <div class="meta-item"><label>Extension Beneficiaries</label><div class="tickers"><span class="ticker ticker-primary">NVDA</span><span class="ticker ticker-primary">ADM</span><span class="ticker ticker-primary">BG</span></div></div>
+      </div>
+      <div class="summary">The 90-day truce established May 12 runs to mid-August, but the November 2026 framework deadline is the real cliff. The Trump-Xi summit established a joint trade board with tangible deliverables. Structural risk: truce is contingent on continued diplomatic progress, facing headwinds from Taiwan tensions and chip export disputes. The semiconductor angle — China pressing for eased Blackwell restrictions in exchange for trade concessions — is the highest-stakes sub-negotiation. <a href="https://www.cnbc.com/2026/05/13/traders-predict-trump-will-make-major-announcements-during-china-trip.html" target="_blank">[CNBC]</a></div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title"><span class="num">05</span> Treasury Auctions — Post-Moody's Demand Test</div>
+        <div class="badge-row">
+          <span class="badge badge-neutral">📅 Ongoing — May 15+ </span>
+        </div>
+      </div>
+      <div class="meta-grid">
+        <div class="meta-item"><label>Consensus</label><value>Demand holds; yields elevated but not disorderly</value></div>
+        <div class="meta-item"><label>Surprise Scenario</label><value>Weak auction demand sends 30Y toward 5.5%; equities reprice sharply on cost-of-capital shock.</value></div>
+        <div class="meta-item"><label>Exposed Tickers</label><div class="tickers"><span class="ticker ticker-loser">TLT</span><span class="ticker ticker-loser">TMF</span><span class="ticker ticker-loser">REITs</span></div></div>
+        <div class="meta-item"><label>Positioning</label><value>Consensus long equities on trade relief; fiscal tail unhedged</value></div>
+      </div>
+      <div class="summary">Post-Moody's downgrade Treasury market is the most important risk monitor right now. The downgrade arrived on top of hot April CPI, and long-duration yields have risen above April's Liberation Day volatility levels. The OBBBA's $500B fiscal impulse in 2026 means massive new Treasury issuance into a skeptical market. If 30-year yields breach 5.5%, cost-of-capital re-pricing could overwhelm the equity boost from the trade deal. Watch every Treasury auction result this week as an early warning system. <a href="https://bipartisanpolicy.org/article/moodys-downgrade-the-warning-signs-are-flashing/" target="_blank">[Bipartisan Policy Center]</a></div>
+    </div>
+
+  </div>
+
+  <!-- ACTION ITEMS -->
+  <div class="section">
+    <div class="section-title">Action Items</div>
+    <div class="action-box">
+
+      <div class="action-section">
+        <h3>🎯 Top 3 Tickers to Research Today</h3>
+        <div class="action-item">
+          <span class="bullet">01</span>
+          <span><span class="ticker-highlight">NVDA</span> — Earnings May 20 (after close). Blackwell demand + China revenue update could be the single biggest market-moving event of the month. Position sizing into the print is the key decision. Analyst range on Blackwell revenue spans $21B–$141B — watch for the convergence signal.</span>
+        </div>
+        <div class="action-item">
+          <span class="bullet">02</span>
+          <span><span class="ticker-highlight">GEV</span> — Data center power orders exceeded full-year 2025 totals in a single Q1 2026 quarter. Still under-owned by most generalist funds despite the AI infrastructure thesis being confirmed by multiple data points. Power constraint = new chip constraint.</span>
+        </div>
+        <div class="action-item">
+          <span class="bullet">03</span>
+          <span><span class="ticker-highlight">CSCO</span> — 20% post-earnings surge on AI networking order tripling. FY27 AI revenue floor of $6B+ and Splunk integration synergy not fully modeled. Risk/reward on any pullback remains compelling.</span>
+        </div>
+      </div>
+
+      <div class="action-section">
+        <h3>⚡ Position Adjustments Suggested</h3>
+        <div class="action-item">
+          <span class="bullet">→</span>
+          <span>Reduce long-duration Treasury exposure (<span class="ticker-highlight">TLT</span>) given Moody's downgrade + hot CPI + FOMC hold consensus; fiscal dominance scenario building.</span>
+        </div>
+        <div class="action-item">
+          <span class="bullet">→</span>
+          <span>Rotate within tech: favor AI monetizers (<span class="ticker-highlight">GOOGL</span>, <span class="ticker-highlight">CSCO</span>, <span class="ticker-highlight">TEAM</span>) over pure capex spenders (<span class="ticker-highlight">META</span>) following Q1 earnings divergence.</span>
+        </div>
+        <div class="action-item">
+          <span class="bullet">→</span>
+          <span>Add energy infrastructure exposure (<span class="ticker-highlight">GEV</span>, <span class="ticker-highlight">CEG</span>, <span class="ticker-highlight">ETN</span>) on any sector rotation dip — power constraint is the new chip constraint.</span>
+        </div>
+        <div class="action-item">
+          <span class="bullet">→</span>
+          <span>Consider <span class="ticker-highlight">BA</span> as trade deal read-through; China's 200-jet order is the first major China order in a decade — supply chain and production ramp implications not yet priced.</span>
+        </div>
+      </div>
+
+      <div class="action-section">
+        <h3>📅 Key Dates to Watch This Week</h3>
+        <div class="action-item">
+          <span class="bullet">→</span>
+          <span><strong>May 20 (After Close):</strong> <span class="ticker-highlight">NVDA</span> earnings — market-defining event for the AI infrastructure thesis.</span>
+        </div>
+        <div class="action-item">
+          <span class="bullet">→</span>
+          <span><strong>May 21 (Pre-Market):</strong> <span class="ticker-highlight">WMT</span> earnings — consumer health bellwether and tariff pass-through read.</span>
+        </div>
+        <div class="action-item">
+          <span class="bullet">→</span>
+          <span><strong>Ongoing:</strong> Treasury auction results — post-Moody's fiscal stress barometer. Watch 10Y and 30Y bid-to-cover ratios.</span>
+        </div>
+        <div class="action-item">
+          <span class="bullet">→</span>
+          <span><strong>Ongoing:</strong> US-China trade board communiqués — watch for semiconductor export concession language as signal of deeper deal.</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+<div class="footer">
+  Daily Theme Scanner • 2026-05-15 • Automated Pre-Market Analysis • For informational purposes only. Not financial advice.
+</div>
+
+</body>
+</html>
