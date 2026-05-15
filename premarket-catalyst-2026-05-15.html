@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pre-Market Catalyst Scan — May 15, 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0e17;
+    --bg2: #111827;
+    --bg3: #1a2235;
+    --border: #1e2d45;
+    --text: #e2e8f0;
+    --muted: #64748b;
+    --green: #22c55e;
+    --green-dim: #14532d;
+    --red: #ef4444;
+    --red-dim: #450a0a;
+    --amber: #f59e0b;
+    --amber-dim: #451a03;
+    --blue: #3b82f6;
+    --blue-dim: #1e3a5f;
+    --purple: #a855f7;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    line-height: 1.6;
+    padding: 0;
+  }
+
+  /* HEADER */
+  .header {
+    background: linear-gradient(135deg, #0a0e17 0%, #111827 50%, #0f1f38 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 24px 32px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+  .header-title { font-size: 20px; font-weight: 700; color: var(--text); letter-spacing: 0.05em; }
+  .header-sub { font-size: 11px; color: var(--muted); margin-top: 4px; }
+  .header-badge {
+    background: var(--red-dim);
+    border: 1px solid var(--red);
+    color: var(--red);
+    padding: 4px 12px;
+    font-size: 11px;
+    font-weight: 600;
+    border-radius: 4px;
+    letter-spacing: 0.1em;
+  }
+
+  /* MACRO STRIP */
+  .macro-strip {
+    background: var(--bg3);
+    border-bottom: 1px solid var(--border);
+    padding: 12px 32px;
+    display: flex;
+    gap: 32px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  .macro-item { display: flex; flex-direction: column; }
+  .macro-label { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; }
+  .macro-val { font-size: 14px; font-weight: 600; }
+  .red { color: var(--red); }
+  .green { color: var(--green); }
+  .amber { color: var(--amber); }
+  .blue { color: var(--blue); }
+
+  /* MAIN LAYOUT */
+  .container { max-width: 1400px; margin: 0 auto; padding: 24px 32px; }
+
+  /* SECTION */
+  .section { margin-bottom: 32px; }
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+  }
+  .section-number {
+    background: var(--blue-dim);
+    border: 1px solid var(--blue);
+    color: var(--blue);
+    width: 28px; height: 28px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 700; border-radius: 4px;
+    flex-shrink: 0;
+  }
+  .section-title { font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text); }
+
+  /* BRIEFING BOX */
+  .briefing-box {
+    background: var(--bg3);
+    border: 1px solid var(--amber);
+    border-left: 4px solid var(--amber);
+    padding: 16px 20px;
+    margin-bottom: 32px;
+    border-radius: 4px;
+  }
+  .briefing-label { font-size: 10px; color: var(--amber); text-transform: uppercase; letter-spacing: 0.15em; font-weight: 700; margin-bottom: 8px; }
+  .briefing-text { font-size: 13px; color: var(--text); line-height: 1.8; }
+
+  /* TABLE */
+  .data-table { width: 100%; border-collapse: collapse; }
+  .data-table th {
+    background: var(--bg3);
+    color: var(--muted);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    padding: 8px 12px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+  }
+  .data-table td {
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+    font-size: 12px;
+  }
+  .data-table tr:hover td { background: rgba(255,255,255,0.02); }
+  .ticker-cell { font-weight: 700; font-size: 14px; color: var(--blue); }
+  .badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 3px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    white-space: nowrap;
+  }
+  .badge-bull { background: var(--green-dim); color: var(--green); border: 1px solid var(--green); }
+  .badge-bear { background: var(--red-dim); color: var(--red); border: 1px solid var(--red); }
+  .badge-neut { background: #1a1a00; color: var(--amber); border: 1px solid var(--amber); }
+  .badge-watch { background: var(--blue-dim); color: var(--blue); border: 1px solid var(--blue); }
+  .action-yes { color: var(--green); font-weight: 700; }
+  .action-watch { color: var(--amber); font-weight: 700; }
+  .action-no { color: var(--muted); }
+
+  /* CARDS */
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; }
+  .card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 16px;
+  }
+  .card.bull { border-left: 3px solid var(--green); }
+  .card.bear { border-left: 3px solid var(--red); }
+  .card.neut { border-left: 3px solid var(--amber); }
+  .card-ticker { font-size: 18px; font-weight: 700; color: var(--text); }
+  .card-move { font-size: 24px; font-weight: 700; margin: 4px 0; }
+  .card-move.up { color: var(--green); }
+  .card-move.down { color: var(--red); }
+  .card-headline { font-size: 11px; color: var(--muted); margin: 8px 0 4px; line-height: 1.4; }
+  .card-summary { font-size: 11px; color: var(--text); line-height: 1.5; }
+
+  /* EVENT LIST */
+  .event-list { list-style: none; }
+  .event-item {
+    display: flex;
+    gap: 16px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+    align-items: flex-start;
+  }
+  .event-time { color: var(--blue); font-weight: 600; min-width: 80px; font-size: 11px; }
+  .event-desc { font-size: 12px; color: var(--text); }
+  .event-impact { font-size: 10px; color: var(--muted); margin-top: 2px; }
+
+  /* TRADE IDEAS */
+  .trade-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 20px;
+    margin-bottom: 12px;
+  }
+  .trade-rank { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; }
+  .trade-ticker { font-size: 22px; font-weight: 700; margin: 4px 0; }
+  .trade-title { font-size: 13px; color: var(--muted); margin-bottom: 12px; }
+  .trade-row { display: flex; gap: 8px; margin: 4px 0; font-size: 11px; }
+  .trade-label { color: var(--muted); min-width: 60px; }
+  .trade-val { color: var(--text); }
+
+  /* AVOID STRIP */
+  .avoid-strip {
+    background: var(--red-dim);
+    border: 1px solid var(--red);
+    border-radius: 4px;
+    padding: 12px 16px;
+    margin-bottom: 16px;
+  }
+  .avoid-title { color: var(--red); font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 6px; }
+  .avoid-items { display: flex; gap: 12px; flex-wrap: wrap; }
+  .avoid-item {
+    background: rgba(239,68,68,0.15);
+    border: 1px solid var(--red);
+    color: var(--red);
+    padding: 4px 10px;
+    border-radius: 3px;
+    font-size: 12px;
+    font-weight: 700;
+  }
+
+  /* FOOTER */
+  .footer {
+    background: var(--bg3);
+    border-top: 1px solid var(--border);
+    padding: 16px 32px;
+    font-size: 10px;
+    color: var(--muted);
+    text-align: center;
+  }
+
+  .divider { border: none; border-top: 1px solid var(--border); margin: 8px 0; }
+  .text-muted { color: var(--muted); }
+  .text-green { color: var(--green); }
+  .text-red { color: var(--red); }
+  .text-amber { color: var(--amber); }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div>
+    <div class="header-title">☀️ PRE-MARKET CATALYST SCAN</div>
+    <div class="header-sub">Friday, May 15, 2026 &nbsp;|&nbsp; Generated ~7:30 AM ET &nbsp;|&nbsp; Automated Scan</div>
+  </div>
+  <div class="header-badge">⚠️ INFLATION SELLOFF</div>
+</div>
+
+<!-- MACRO STRIP -->
+<div class="macro-strip">
+  <div class="macro-item">
+    <span class="macro-label">NQ Futures</span>
+    <span class="macro-val red">-1.3%</span>
+  </div>
+  <div class="macro-item">
+    <span class="macro-label">S&P Futures</span>
+    <span class="macro-val red">-0.9%</span>
+  </div>
+  <div class="macro-item">
+    <span class="macro-label">Dow Futures</span>
+    <span class="macro-val red">-0.6%</span>
+  </div>
+  <div class="macro-item">
+    <span class="macro-label">Bitcoin (BTC)</span>
+    <span class="macro-val amber">~$80,596 ↓</span>
+  </div>
+  <div class="macro-item">
+    <span class="macro-label">Gold Spot</span>
+    <span class="macro-val green">$4,750 +1.2%</span>
+  </div>
+  <div class="macro-item">
+    <span class="macro-label">April CPI</span>
+    <span class="macro-val red">3.8% (hot)</span>
+  </div>
+  <div class="macro-item">
+    <span class="macro-label">Fed Chair</span>
+    <span class="macro-val amber">Warsh confirmed</span>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- MORNING BRIEFING -->
+  <div class="briefing-box">
+    <div class="briefing-label">⚡ 30-Second Morning Briefing</div>
+    <div class="briefing-text">
+      Futures are red Friday as hot April CPI (3.8%) and Iran-war inflation fears drive profit-taking in tech and chips — <strong>NVDA leads the selloff at -2.64% premarket</strong> as China AI crown concerns add narrative pressure ahead of its May 20 earnings. The bright spots are <strong>Applied Materials (+5% on record Q2 earnings)</strong> and <strong>Figma (+12% on biggest beat as a public company)</strong>, while <strong>gold runs to $4,750 on the Iran trade</strong>. Bitcoin slips back from $81K, weighing on COIN and MARA. The macro backdrop is chaotic: Powell's tenure ends, Warsh takes the Fed reins, and the Trump-Xi China summit wraps up today — any chip export language is an immediate market mover. <strong>Best edges: AMAT gap-and-go and GLD/gold theme. Avoid NVDA until after May 20. Chip sector is in profit-taking mode — don't chase.</strong>
+    </div>
+  </div>
+
+  <!-- STEP 1 — WATCHLIST -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-number">1</div>
+      <div class="section-title">Watchlist Overnight Catalysts</div>
+    </div>
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Ticker</th>
+          <th>PM Move</th>
+          <th>Impact</th>
+          <th>Actionable</th>
+          <th>Catalyst Summary</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="ticker-cell">NVDA</td>
+          <td class="red" style="font-weight:700">-2.64% &nbsp;<span style="color:var(--muted);font-size:11px">($229.51)</span></td>
+          <td><span class="badge badge-bear">BEARISH</span></td>
+          <td><span class="action-watch">WATCH</span></td>
+          <td>China AI crown concerns (Culper Research short report); chip sector inflation selloff; RSI 76.93 overbought; May 15 OpEx pinning near $230 strike; <strong>earnings May 20</strong></td>
+        </tr>
+        <tr>
+          <td class="ticker-cell">SNDK</td>
+          <td class="red" style="font-weight:700">-1.49% &nbsp;<span style="color:var(--muted);font-size:11px">($1,362)</span></td>
+          <td><span class="badge badge-neut">NEUTRAL</span></td>
+          <td><span class="action-watch">WATCH</span></td>
+          <td>Record Q3 revenue $5.95B + $6B buyback — but "sell the news" risk after 550%+ YTD run. Gap-and-fade setup possible.</td>
+        </tr>
+        <tr>
+          <td class="ticker-cell">TSLA</td>
+          <td class="text-muted">Flat ~$442</td>
+          <td><span class="badge badge-neut">NEUTRAL</span></td>
+          <td><span class="action-watch">WATCH</span></td>
+          <td>No fresh overnight catalyst verified. UBS upgrade and AI5 chip are stale news. Clean tape — watch macro tape.</td>
+        </tr>
+        <tr>
+          <td class="ticker-cell">MARA</td>
+          <td class="text-muted">No data</td>
+          <td><span class="badge badge-bear">BEARISH</span></td>
+          <td><span class="action-no">NO</span></td>
+          <td>Q1 net loss $1.26B; sold 20,880 BTC for $1.5B. Pivot to AI/HPC unproven. BTC weakness adds pressure.</td>
+        </tr>
+        <tr>
+          <td class="ticker-cell">COIN</td>
+          <td class="text-muted">Likely negative</td>
+          <td><span class="badge badge-bear">BEARISH</span></td>
+          <td><span class="action-no">NO</span></td>
+          <td>BTC fading from $81,069 to $80,596 by 7:10 AM. Circle (CRCL) revenue miss is sector overhang.</td>
+        </tr>
+        <tr>
+          <td class="ticker-cell">AMD</td>
+          <td class="red" style="font-weight:700">~-2%</td>
+          <td><span class="badge badge-bear">BEARISH</span></td>
+          <td><span class="action-no">NO</span></td>
+          <td>No stock-specific catalyst today; dragged lower by sector-wide chip selloff. Alibaba GPU order thesis unconfirmed for today.</td>
+        </tr>
+        <tr>
+          <td class="ticker-cell">PLTR</td>
+          <td class="text-muted">No data</td>
+          <td><span class="badge badge-neut">NEUTRAL</span></td>
+          <td><span class="action-no">NO EDGE</span></td>
+          <td>No verified overnight catalyst found. Sit out.</td>
+        </tr>
+        <tr>
+          <td class="ticker-cell">SOFI</td>
+          <td class="text-muted">No data</td>
+          <td><span class="badge badge-neut">NEUTRAL</span></td>
+          <td><span class="action-no">NO EDGE</span></td>
+          <td>No verified overnight catalyst. Klarna's beat is a slight positive read-through for fintech. Recent PrimaryBid acquisition known.</td>
+        </tr>
+        <tr>
+          <td class="ticker-cell">META</td>
+          <td class="text-muted">$266 close</td>
+          <td><span class="badge badge-neut">NEUTRAL</span></td>
+          <td><span class="action-no">NO</span></td>
+          <td>No verified overnight catalyst found. Clean tape.</td>
+        </tr>
+        <tr>
+          <td class="ticker-cell">AMZN</td>
+          <td class="text-muted">$266 close</td>
+          <td><span class="badge badge-neut">NEUTRAL</span></td>
+          <td><span class="action-no">NO</span></td>
+          <td>No verified overnight catalyst found.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- STEP 2 — ETF THEMES -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-number">2</div>
+      <div class="section-title">Sector & Theme ETF Overnight Scan</div>
+    </div>
+    <div class="card-grid">
+      <div class="card bear">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start">
+          <div>
+            <div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:0.1em">Tech &amp; AI</div>
+            <div style="font-size:16px;font-weight:700;margin:4px 0">SMH · XLK · NVDA · FNGU</div>
+          </div>
+          <span class="badge badge-bear">BEARISH</span>
+        </div>
+        <hr class="divider">
+        <div class="card-summary">NVDA -2.64%, AMD -2%, Intel -4%, Micron -2% PM. Chip stocks selling off on hot CPI + inflation fears. <strong>AMAT +5% AH</strong> is a partial offset for SMH but won't overcome the selloff. May 15 OpEx adds volatility near NVDA $230 strike.<br><br><strong>Watch:</strong> SMH gap-down at open; AMAT for gap-and-go divergence.</div>
+      </div>
+      <div class="card bull">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start">
+          <div>
+            <div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:0.1em">Commodities — Gold/Silver</div>
+            <div style="font-size:16px;font-weight:700;margin:4px 0">GLD · SLV</div>
+          </div>
+          <span class="badge badge-bull">BULLISH</span>
+        </div>
+        <hr class="divider">
+        <div class="card-summary">Gold surged +1.2% to ~$4,750/oz. Iran war tensions + inflation = safe-haven / inflation-hedge bid. Silver moving in sympathy.<br><br><strong>Watch:</strong> GLD for gap-up continuation. SLV for more leverage. Key risk: any peace-deal headline = sudden reversal.</div>
+      </div>
+      <div class="card bear">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start">
+          <div>
+            <div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:0.1em">Macro — Bonds</div>
+            <div style="font-size:16px;font-weight:700;margin:4px 0">TLT · UUP</div>
+          </div>
+          <span class="badge badge-bear" style="background:var(--red-dim);color:var(--red)">BEAR bonds</span>
+        </div>
+        <hr class="divider">
+        <div class="card-summary">Yields surging on inflation fears. TLT under pressure (inverse bonds). Dollar bid on rate-hike expectations = UUP potentially bullish.<br><br><strong>Watch:</strong> TLT for continued selling; UUP for long USD momentum play.</div>
+      </div>
+      <div class="card bear">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start">
+          <div>
+            <div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:0.1em">Crypto</div>
+            <div style="font-size:16px;font-weight:700;margin:4px 0">IBIT · MARA · COIN</div>
+          </div>
+          <span class="badge badge-bear">BEARISH</span>
+        </div>
+        <hr class="divider">
+        <div class="card-summary">Bitcoin opened at $81,069 and slipped to $80,596 by 7:10 AM ET. CRCL revenue miss adds sector pressure. IBIT mildly lower. Crypto equity proxies (COIN, MARA) likely to underperform.<br><br><strong>Skip crypto today.</strong></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 3 — EARNINGS -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-number">3</div>
+      <div class="section-title">Overnight Earnings Results</div>
+    </div>
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Ticker</th>
+          <th>Company</th>
+          <th>EPS</th>
+          <th>Revenue</th>
+          <th>Guidance</th>
+          <th>PM Move</th>
+          <th>Sector Read-Through</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="ticker-cell">AMAT</td>
+          <td>Applied Materials</td>
+          <td class="green">$3.51 GAAP ✓</td>
+          <td class="green">$7.91B record ✓</td>
+          <td class="green">Q3 $8.95B ↑</td>
+          <td class="green" style="font-weight:700">+5% AH</td>
+          <td><span class="badge badge-bull">BULLISH SMH</span> AI semicond capex intact. Read-through: LRCX, KLAC</td>
+        </tr>
+        <tr>
+          <td class="ticker-cell">FIG</td>
+          <td>Figma</td>
+          <td class="green">$0.10 vs $0.06 ✓</td>
+          <td class="green">$333M vs $313M ✓</td>
+          <td class="green">2026 raised ↑</td>
+          <td class="green" style="font-weight:700">+12% AH</td>
+          <td><span class="badge badge-bull">BULLISH SaaS</span> AI tools monetization working. Read-through: IGV</td>
+        </tr>
+        <tr>
+          <td class="ticker-cell">KLAR</td>
+          <td>Klarna</td>
+          <td class="green">Beat ✓</td>
+          <td class="green">Beat ✓</td>
+          <td>—</td>
+          <td class="green" style="font-weight:700">+14%</td>
+          <td><span class="badge badge-bull">BULLISH fintech</span> Slight positive for SOFI read-through</td>
+        </tr>
+        <tr>
+          <td class="ticker-cell">HIMS</td>
+          <td>Hims &amp; Hers</td>
+          <td class="red">-$0.40 vs +$0.03 ✗</td>
+          <td class="red">$608M vs $616M ✗</td>
+          <td>—</td>
+          <td class="red" style="font-weight:700">-8% AH</td>
+          <td><span class="badge badge-bear">BEARISH telehealth</span> Major miss — avoid all day</td>
+        </tr>
+        <tr>
+          <td class="ticker-cell">BABA</td>
+          <td>Alibaba</td>
+          <td>—</td>
+          <td class="red">243B yuan vs 247B ✗</td>
+          <td class="red">EBITA -84% YoY</td>
+          <td class="red" style="font-weight:700">-3% PM</td>
+          <td><span class="badge badge-bear">BEARISH China tech</span> Reinforces China caution on AMD/NVDA China narratives</td>
+        </tr>
+        <tr>
+          <td class="ticker-cell">CRCL</td>
+          <td>Circle Internet</td>
+          <td class="green">Beat ✓</td>
+          <td class="red">Miss ✗</td>
+          <td>—</td>
+          <td class="amber">Slipping</td>
+          <td><span class="badge badge-neut">NEUTRAL</span> Mixed crypto fintech signal</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- STEP 4 — OPTIONS FLOW -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-number">4</div>
+      <div class="section-title">Pre-Market Options Flow</div>
+    </div>
+    <div style="background:var(--bg2);border:1px solid var(--border);border-radius:6px;padding:16px;">
+      <div style="color:var(--muted);font-size:12px;margin-bottom:12px;">No specific verified pre-market options sweeps sourced in real-time at scan time. Context from earlier this week:</div>
+      <div style="display:flex;gap:12px;flex-wrap:wrap;">
+        <div style="background:var(--bg3);border:1px solid var(--amber);border-radius:4px;padding:12px;max-width:340px;">
+          <div style="color:var(--amber);font-size:10px;font-weight:700;text-transform:uppercase;margin-bottom:6px;">⚠️ NVDA OpEx Watch</div>
+          <div style="font-size:12px;color:var(--text);">Large May 15 $230-strike calls purchased earlier this week (7,500 contracts ~$413K + 2,168 contracts $2.2M). With NVDA at $229.51 PM, these are near-the-money at expiration TODAY. Expect significant gamma-driven volatility and potential pinning near $230 at open.</div>
+        </div>
+        <div style="background:var(--bg3);border:1px solid var(--blue);border-radius:4px;padding:12px;max-width:340px;">
+          <div style="color:var(--blue);font-size:10px;font-weight:700;text-transform:uppercase;margin-bottom:6px;">📋 Action</div>
+          <div style="font-size:12px;color:var(--text);">Check Barchart.com unusual ETF options and unusualwhales.com at open for live SMH, QQQ, GLD flow. Real-time data not available in automated scan.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 5 — ANALYST ACTIONS -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-number">5</div>
+      <div class="section-title">Analyst Actions</div>
+    </div>
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Ticker</th>
+          <th>Firm</th>
+          <th>Action</th>
+          <th>Price Target</th>
+          <th>Notes</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="ticker-cell">NVDA</td>
+          <td>Wells Fargo</td>
+          <td><span class="badge badge-bull">MAINTAINED BUY</span></td>
+          <td class="green">$315 (May 12)</td>
+          <td>~36% upside from current $229. Earnings May 20 looming.</td>
+        </tr>
+        <tr>
+          <td class="ticker-cell">AMD</td>
+          <td>Bernstein</td>
+          <td><span class="badge badge-bull">UPGRADE</span></td>
+          <td class="green">$525 (May 6)</td>
+          <td>Raised on AI infrastructure tailwinds. Still valid, but today is risk-off.</td>
+        </tr>
+        <tr>
+          <td class="ticker-cell">NVDA</td>
+          <td>Benzinga Research</td>
+          <td><span class="badge badge-neut">NOTED</span></td>
+          <td>—</td>
+          <td>"Lost China's AI crown but story is far from over" — narrative risk flagged.</td>
+        </tr>
+      </tbody>
+    </table>
+    <div style="color:var(--muted);font-size:11px;margin-top:8px;">No major new initiations or large PT changes specifically on May 15 morning confirmed at scan time.</div>
+  </div>
+
+  <!-- STEP 6 — SCHEDULED EVENTS -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-number">6</div>
+      <div class="section-title">Today's Scheduled Events</div>
+    </div>
+    <ul class="event-list">
+      <li class="event-item">
+        <div class="event-time">ALL DAY</div>
+        <div>
+          <div class="event-desc">🏛️ <strong>Powell Final Days as Fed Chair</strong> — Kevin Warsh confirmed May 13 (54-45 vote)</div>
+          <div class="event-impact text-amber">Macro uncertainty; market watching for Warsh rate signals. First FOMC meeting June 16-17.</div>
+        </div>
+      </li>
+      <li class="event-item">
+        <div class="event-time">ALL DAY</div>
+        <div>
+          <div class="event-desc">🇨🇳 <strong>Trump-Xi China Summit Concluding</strong> — Any AI chip / trade language is immediate market mover</div>
+          <div class="event-impact text-red">HIGH IMPACT — semiconductor names (NVDA, AMD, SMH) move violently on headline risk</div>
+        </div>
+      </li>
+      <li class="event-item">
+        <div class="event-time">9:30 AM</div>
+        <div>
+          <div class="event-desc">📅 <strong>Weekly Options Expiration (OpEx)</strong> — NVDA May 15 $230 calls in play</div>
+          <div class="event-impact text-amber">Gamma pinning / volatility expected in NVDA and chip ETFs at open</div>
+        </div>
+      </li>
+      <li class="event-item">
+        <div class="event-time">No Data</div>
+        <div>
+          <div class="event-desc">📊 No major US economic data releases confirmed today</div>
+          <div class="event-impact text-muted">CPI (3.8%) already released earlier this week. PPI due this week — check if today.</div>
+        </div>
+      </li>
+      <li class="event-item">
+        <div class="event-time">MAY 20</div>
+        <div>
+          <div class="event-desc">🟢 <strong>NVDA Earnings</strong> — Next major catalyst for chip sector</div>
+          <div class="event-impact text-green">Buy rating consensus, $284.40 avg PT. Do NOT trade NVDA directionally until after May 20.</div>
+        </div>
+      </li>
+    </ul>
+  </div>
+
+  <!-- STEP 7 — TRADE IDEAS -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-number">7</div>
+      <div class="section-title">Morning Trade Ideas</div>
+    </div>
+
+    <!-- AVOID -->
+    <div class="avoid-strip">
+      <div class="avoid-title">❌ Tickers to AVOID Today</div>
+      <div class="avoid-items">
+        <div class="avoid-item">NVDA</div>
+        <div class="avoid-item">COIN</div>
+        <div class="avoid-item">MARA</div>
+        <div class="avoid-item">HIMS</div>
+        <div class="avoid-item">AMD</div>
+        <div class="avoid-item">BABA</div>
+      </div>
+    </div>
+
+    <!-- TOP 3 -->
+    <div class="trade-card" style="border-left:4px solid var(--green)">
+      <div class="trade-rank">🥇 Trade Idea #1</div>
+      <div class="trade-ticker text-green">AMAT</div>
+      <div class="trade-title">Applied Materials — Gap-and-Go on Record Q2 Earnings</div>
+      <div class="trade-row"><span class="trade-label">Bias:</span><span class="trade-val text-green">BULLISH</span></div>
+      <div class="trade-row"><span class="trade-label">Catalyst:</span><span class="trade-val">Q2 revenue record $7.91B (beat), Q3 guided to $8.95B (beat expectations)</span></div>
+      <div class="trade-row"><span class="trade-label">Entry:</span><span class="trade-val">On confirmed gap-up open; watch for volume confirmation above prior highs</span></div>
+      <div class="trade-row"><span class="trade-label">Risk:</span><span class="trade-val">Broad chip sector selling could cap gains; set stop below opening price</span></div>
+      <div class="trade-row"><span class="trade-label">Read-through:</span><span class="trade-val">LRCX, KLAC also may benefit from semiconductor equipment AI cycle</span></div>
+    </div>
+
+    <div class="trade-card" style="border-left:4px solid var(--green)">
+      <div class="trade-rank">🥈 Trade Idea #2</div>
+      <div class="trade-ticker text-green">GLD / SLV</div>
+      <div class="trade-title">Gold Inflation/War Theme — Continuation Play</div>
+      <div class="trade-row"><span class="trade-label">Bias:</span><span class="trade-val text-green">BULLISH</span></div>
+      <div class="trade-row"><span class="trade-label">Catalyst:</span><span class="trade-val">Gold +1.2% to $4,750/oz. Iran war + 3.8% CPI = inflation hedge + safe-haven bid</span></div>
+      <div class="trade-row"><span class="trade-label">Entry:</span><span class="trade-val">GLD gap-up on open. SLV for more leverage to the move.</span></div>
+      <div class="trade-row"><span class="trade-label">Risk:</span><span class="trade-val">Any Middle East peace deal headline = sudden reversal. Watch news feed.</span></div>
+    </div>
+
+    <div class="trade-card" style="border-left:4px solid var(--amber)">
+      <div class="trade-rank">🥉 Trade Idea #3</div>
+      <div class="trade-ticker text-amber">SNDK</div>
+      <div class="trade-title">Sandisk — Gap-and-Fade Watch (Potential Short-Side)</div>
+      <div class="trade-row"><span class="trade-label">Bias:</span><span class="trade-val text-amber">WATCH — potential short-side setup</span></div>
+      <div class="trade-row"><span class="trade-label">Catalyst:</span><span class="trade-val">Down 1.49% PM despite strong Q3 results. "Sell the news" risk after 550%+ YTD run.</span></div>
+      <div class="trade-row"><span class="trade-label">Entry:</span><span class="trade-val">If opens weak and fails VWAP at open, consider short or put spread for gap-fade</span></div>
+      <div class="trade-row"><span class="trade-label">Risk:</span><span class="trade-val">New buyback announcements or AI storage demand upgrade could floor the stock</span></div>
+    </div>
+
+    <!-- TOP THEME -->
+    <div style="background:var(--bg2);border:1px solid var(--green);border-radius:6px;padding:16px;margin-bottom:16px;">
+      <div style="color:var(--green);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:8px;">🏆 Top Theme / Sector Today</div>
+      <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:6px;">Semiconductor Equipment (AMAT, LRCX, KLAC)</div>
+      <div style="font-size:12px;color:var(--muted);">AMAT's record results and raised guidance validate the AI capex spending cycle even with today's macro headwinds. Equipment names may decouple positively from the broader chip selloff. Secondary theme: Gold (GLD/SLV) on inflation + Iran war bid.</div>
+    </div>
+
+    <!-- KEY RISKS -->
+    <div style="background:var(--bg2);border:1px solid var(--red);border-radius:6px;padding:16px;">
+      <div style="color:var(--red);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:8px;">⚠️ Key Risk Events & Timing</div>
+      <div style="font-size:12px;color:var(--text);display:flex;flex-direction:column;gap:6px;">
+        <div>🔴 <strong>Trump-Xi summit wrap-up (ALL DAY)</strong> — negative chip/trade language = immediate NQ/SMH dump</div>
+        <div>🔴 <strong>NVDA $230 OpEx pinning (9:30 AM)</strong> — gamma exposure creates volatility at open</div>
+        <div>🔴 <strong>Yields & inflation</strong> — if 10Y continues rising, tech multiple compression accelerates</div>
+        <div>🟡 <strong>Warsh/Fed transition</strong> — low risk today but narrative-sensitive market</div>
+        <div>🟢 <strong>NVDA earnings May 20</strong> — do not position directionally until after this</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- FOOTER -->
+<div class="footer">
+  Sources: Benzinga · Yahoo Finance · CNBC · Barchart · StockTitan · CoinDesk &nbsp;|&nbsp;
+  Generated automatically May 15, 2026 ~7:30 AM ET &nbsp;|&nbsp;
+  <strong>Not financial advice. Verify all prices at open.</strong>
+</div>
+
+</body>
+</html>
