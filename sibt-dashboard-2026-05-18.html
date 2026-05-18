@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>SIBT Dashboard — 2026-05-18</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0a0e17;
+  --bg2: #111826;
+  --bg3: #1a2332;
+  --line: #243044;
+  --text: #d1d9e6;
+  --muted: #6b7a90;
+  --green: #10b981;
+  --red: #ef4444;
+  --amber: #f59e0b;
+  --blue: #3b82f6;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { background: var(--bg); color: var(--text); font-family: 'JetBrains Mono', monospace; font-size: 13px; line-height: 1.5; min-height: 100vh; }
+body { padding-bottom: 40px; }
+
+.ticker-bar { background: #000; border-bottom: 1px solid var(--line); overflow: hidden; position: relative; height: 32px; display: flex; align-items: center; }
+.ticker-inner { display: inline-block; white-space: nowrap; animation: scroll 60s linear infinite; font-size: 12px; }
+.ticker-item { display: inline-block; padding: 0 18px; }
+.ticker-sym { color: var(--text); font-weight: 700; }
+.ticker-price { color: var(--text); margin-left: 6px; }
+.ticker-chg { margin-left: 6px; font-weight: 500; }
+.up { color: var(--green); }
+.down { color: var(--red); }
+.flat { color: var(--muted); }
+@keyframes scroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+
+.header { padding: 16px 24px; border-bottom: 1px solid var(--line); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; }
+.header-left h1 { font-size: 18px; font-weight: 700; letter-spacing: 1px; }
+.header-left .sub { color: var(--muted); font-size: 11px; margin-top: 2px; }
+.header-right { display: flex; gap: 8px; }
+
+.mode-toggle button { background: var(--bg2); color: var(--muted); border: 1px solid var(--line); padding: 8px 18px; font-family: inherit; font-size: 12px; font-weight: 500; cursor: pointer; letter-spacing: 1px; transition: all 0.15s; }
+.mode-toggle button.active { background: var(--blue); color: #fff; border-color: var(--blue); }
+
+.container { max-width: 1600px; margin: 0 auto; padding: 24px; }
+
+.hero { background: var(--bg2); border: 1px solid var(--line); padding: 28px 32px; margin-bottom: 24px; display: flex; justify-content: space-between; align-items: center; gap: 24px; flex-wrap: wrap; }
+.hero-left { flex: 1; min-width: 280px; }
+.hero-label { color: var(--muted); font-size: 11px; letter-spacing: 2px; margin-bottom: 8px; }
+.hero-decision { font-size: 56px; font-weight: 700; letter-spacing: 4px; line-height: 1; }
+.hero-sub { color: var(--muted); font-size: 13px; margin-top: 12px; max-width: 600px; }
+
+.gauge { width: 200px; height: 110px; position: relative; }
+.gauge-bg, .gauge-fg { fill: none; stroke-width: 16; stroke-linecap: round; }
+.gauge-bg { stroke: var(--bg3); }
+.gauge-text { position: absolute; bottom: 4px; width: 100%; text-align: center; font-size: 32px; font-weight: 700; }
+.gauge-label { position: absolute; bottom: -16px; width: 100%; text-align: center; font-size: 10px; color: var(--muted); letter-spacing: 1px; }
+
+.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 16px; margin-bottom: 24px; }
+.panel { background: var(--bg2); border: 1px solid var(--line); padding: 16px 18px; }
+.panel-title { font-size: 10px; letter-spacing: 2px; color: var(--muted); border-bottom: 1px solid var(--line); padding-bottom: 8px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; }
+.row { display: flex; justify-content: space-between; padding: 4px 0; }
+.row-k { color: var(--muted); font-size: 12px; }
+.row-v { color: var(--text); font-size: 12px; font-weight: 500; }
+.row-v.up { color: var(--green); }
+.row-v.down { color: var(--red); }
+.row-v.amber { color: var(--amber); }
+.tag { display: inline-block; padding: 1px 7px; font-size: 10px; border-radius: 2px; letter-spacing: 1px; }
+.tag.up { background: rgba(16,185,129,0.18); color: var(--green); }
+.tag.down { background: rgba(239,68,68,0.18); color: var(--red); }
+.tag.amber { background: rgba(245,158,11,0.18); color: var(--amber); }
+.tag.muted { background: var(--bg3); color: var(--muted); }
+
+.heatmap { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 6px; margin-bottom: 24px; }
+.heat-cell { background: var(--bg2); border: 1px solid var(--line); padding: 12px; text-align: center; }
+.heat-cell.up-strong { background: rgba(16,185,129,0.25); border-color: var(--green); }
+.heat-cell.up-mild { background: rgba(16,185,129,0.10); border-color: rgba(16,185,129,0.4); }
+.heat-cell.down-mild { background: rgba(239,68,68,0.10); border-color: rgba(239,68,68,0.4); }
+.heat-cell.down-strong { background: rgba(239,68,68,0.25); border-color: var(--red); }
+.heat-cell.flat-cell { background: var(--bg2); }
+.heat-sym { font-size: 13px; font-weight: 700; }
+.heat-pct { font-size: 16px; font-weight: 500; margin-top: 4px; }
+.heat-price { font-size: 10px; color: var(--muted); margin-top: 2px; }
+
+table.tbl { width: 100%; border-collapse: collapse; font-size: 12px; }
+.tbl th, .tbl td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--line); }
+.tbl th { font-size: 10px; color: var(--muted); letter-spacing: 1px; text-transform: uppercase; font-weight: 500; }
+.tbl td.right, .tbl th.right { text-align: right; }
+.tbl tr.top3 td { background: rgba(245,158,11,0.08); }
+.tbl tr.top3 td:first-child { border-left: 3px solid var(--amber); }
+.tbl td .score { display: inline-block; min-width: 32px; text-align: right; font-weight: 700; }
+
+.analysis { background: var(--bg2); border: 1px solid var(--line); padding: 18px 22px; margin-bottom: 24px; }
+.analysis-title { font-size: 10px; letter-spacing: 2px; color: var(--muted); margin-bottom: 10px; }
+.analysis-body { font-size: 13px; line-height: 1.65; color: var(--text); }
+.analysis-body p { margin-bottom: 10px; }
+.analysis-body strong { color: var(--amber); font-weight: 500; }
+
+.section-title { font-size: 12px; letter-spacing: 3px; color: var(--muted); margin: 20px 0 12px; padding-bottom: 6px; border-bottom: 1px solid var(--line); }
+
+.standout { background: var(--bg2); border: 1px solid var(--amber); padding: 16px 18px; margin-bottom: 16px; }
+.standout-item { padding: 10px 0; border-bottom: 1px dashed var(--line); }
+.standout-item:last-child { border-bottom: none; }
+.standout-h { font-size: 13px; font-weight: 700; color: var(--amber); margin-bottom: 4px; }
+.standout-b { font-size: 12px; color: var(--text); line-height: 1.5; }
+
+.hidden { display: none !important; }
+
+.footer { padding: 16px 24px; text-align: center; color: var(--muted); font-size: 10px; border-top: 1px solid var(--line); margin-top: 24px; }
+
+.decision-yes { color: var(--green); }
+.decision-caution { color: var(--amber); }
+.decision-no { color: var(--red); }
+</style>
+</head>
+<body>
+
+<div class="ticker-bar">
+  <div class="ticker-inner" id="ticker"></div>
+</div>
+
+<div class="header">
+  <div class="header-left">
+    <h1>🖥️ SIBT DASHBOARD</h1>
+    <div class="sub">Should I Be Trading? — 2026-05-18 | Generated <span id="gen-time"></span></div>
+  </div>
+  <div class="header-right mode-toggle">
+    <button id="btn-swing" class="active" onclick="setMode('swing')">SWING</button>
+    <button id="btn-day" onclick="setMode('day')">DAY TRADE</button>
+  </div>
+</div>
+
+<div class="container">
+
+<!-- ============== SWING MODE ============== -->
+<div id="mode-swing">
+
+  <div class="hero">
+    <div class="hero-left">
+      <div class="hero-label">SWING DECISION</div>
+      <div class="hero-decision decision-caution">CAUTION</div>
+      <div class="hero-sub">Composite 60.10 (-7.10 day-over-day) hugging the NO/CAUTION boundary. Risk State flipped RISK ON → <strong style="color:var(--red)">RISK OFF</strong>. Leading regime flipped to DEFLATION. Breadth crashed to 36.10 (-6.10), MMFI -7.10, liquidity TIGHT. Power Trend / HTF still bullish but every other signal is deteriorating. NEW ENTRIES: sit out.</div>
+    </div>
+    <div style="position: relative;">
+      <svg class="gauge" viewBox="0 0 200 110">
+        <path class="gauge-bg" d="M 16 100 A 84 84 0 0 1 184 100"/>
+        <path class="gauge-fg" d="M 16 100 A 84 84 0 0 1 184 100" stroke="#f59e0b"
+              stroke-dasharray="263.89" stroke-dashoffset="105.32"
+              fill="none" stroke-width="16" stroke-linecap="round"/>
+      </svg>
+      <div class="gauge-text" style="color: #f59e0b;">60.10</div>
+      <div class="gauge-label">COMPOSITE SCORE</div>
+    </div>
+  </div>
+
+  <div class="grid">
+    <div class="panel">
+      <div class="panel-title">VOLATILITY (VIX) <span class="tag amber">COMPLACENT</span></div>
+      <div class="row"><span class="row-k">VIX (MACRO)</span><span class="row-v">17.20 (-1.20)</span></div>
+      <div class="row"><span class="row-k">VIX (Live)</span><span class="row-v">18.41 (flat)</span></div>
+      <div class="row"><span class="row-k">vs SMA10</span><span class="row-v up">BELOW (improving)</span></div>
+      <div class="row"><span class="row-k">Hedge Signal</span><span class="row-v amber">TAKE PROFITS</span></div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-title">INDEX TREND <span class="tag up">POWER</span></div>
+      <div class="row"><span class="row-k">SPY Trend</span><span class="row-v up">POWER TREND</span></div>
+      <div class="row"><span class="row-k">Chop Index</span><span class="row-v">SUPER TREND (34.10)</span></div>
+      <div class="row"><span class="row-k">HTF Weekly</span><span class="row-v up">BULLISH</span></div>
+      <div class="row"><span class="row-k">SPY</span><span class="row-v down">739.17 (-1.20%)</span></div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-title">SECTOR BREADTH <span class="tag down">CRASHED</span></div>
+      <div class="row"><span class="row-k">Breadth Score</span><span class="row-v down">36.10 (-6.10)</span></div>
+      <div class="row"><span class="row-k">Phases</span><span class="row-v">Rp:8 Tu:3 Tp:5 Cr:15</span></div>
+      <div class="row"><span class="row-k">Breadth Thrust</span><span class="row-v down">NO (23 ago)</span></div>
+      <div class="row"><span class="row-k">Liquidity (TNX)</span><span class="row-v down">TIGHT</span></div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-title">FACTOR REGIME <span class="tag down">RISK OFF</span></div>
+      <div class="row"><span class="row-k">Risk State</span><span class="row-v down">RISK OFF</span></div>
+      <div class="row"><span class="row-k">Leading Regime</span><span class="row-v down">DEFLATION</span></div>
+      <div class="row"><span class="row-k">Regime %</span><span class="row-v">G:22 R:26 I:26 D:26</span></div>
+      <div class="row"><span class="row-k">Composite Shift</span><span class="row-v down">GOLDILOCKS→DEFLATION</span></div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-title">IMPLIED CORRELATION <span class="tag up">EASING</span></div>
+      <div class="row"><span class="row-k">ImplCorr Avg</span><span class="row-v">1.20 (-0.20)</span></div>
+      <div class="row"><span class="row-k">First Green</span><span class="row-v">30 ago</span></div>
+      <div class="row"><span class="row-k">Trend</span><span class="row-v up">EASING (stress↓)</span></div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-title">MMFI <span class="tag amber">FALLING</span></div>
+      <div class="row"><span class="row-k">MMFI Value</span><span class="row-v down">50.10 (-7.10)</span></div>
+      <div class="row"><span class="row-k">Zone</span><span class="row-v">NEUTRAL</span></div>
+      <div class="row"><span class="row-k">Trend</span><span class="row-v down">FALLING</span></div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-title">52W POSITION <span class="tag amber">EUPHORIC</span></div>
+      <div class="row"><span class="row-k">52W % of Range</span><span class="row-v amber">94.10%</span></div>
+      <div class="row"><span class="row-k">Distance ATH</span><span class="row-v down">-1.20%</span></div>
+      <div class="row"><span class="row-k">Action Zone</span><span class="row-v amber">HALF SIZE | ATH</span></div>
+      <div class="row"><span class="row-k">Open Bias</span><span class="row-v down">GAP DOWN -1.20% — buy open</span></div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-title">VOLUME ROTATION <span class="tag down">DEFENSIVE</span></div>
+      <div class="row"><span class="row-k">Daily Leader</span><span class="row-v up">XLE +2.36%</span></div>
+      <div class="row"><span class="row-k">Daily Laggard</span><span class="row-v down">XLB -2.65%</span></div>
+      <div class="row"><span class="row-k">Down Sectors</span><span class="row-v down">10 of 11 RED</span></div>
+      <div class="row"><span class="row-k">Only Up</span><span class="row-v up">XLE +2.36%</span></div>
+    </div>
+  </div>
+
+  <div class="section-title">SECTOR HEATMAP — DAILY % CHANGE</div>
+  <div class="heatmap" id="heatmap-swing"></div>
+
+  <div class="analysis">
+    <div class="analysis-title">TERMINAL ANALYSIS — SWING</div>
+    <div class="analysis-body">
+      <p>Composite cratered <strong>-7.10 points</strong> to 60.10 — sitting right on the NO/CAUTION threshold. Risk State flipped <strong>RISK ON → RISK OFF</strong>, Leading Regime flipped <strong>GOLDILOCKS → DEFLATION</strong>, breadth crashed to 36.10 (-6.10), MMFI dropped -7.10 to 50.10 FALLING, liquidity flipped to <strong>TIGHT</strong>. That's a regime-level shift in one session.</p>
+      <p>SPY -1.20%, QQQ -1.51%, retail watchlist red across the board: COIN -7.82%, MARA -6.40%, AMD -5.69%, TSLA -4.75%, NVDA -4.42%. Sector damage is wholesale — <strong>10 of 11 sectors red</strong>, only XLE +2.36% green (energy idiosyncratic). XLB -2.65%, XLU -2.29%, XLK -1.81%, XLY -1.80%, XLI -1.78% all hammered. This is not rotation — this is selling.</p>
+      <p>Power Trend / Bullish HTF still intact, but those are slow-moving. Every fast signal (breadth, MMFI, Risk State, Regime) is screaming defense. Hedge signal remains TAKE PROFITS. <strong>NO EDGE for new swing entries today.</strong> If you're long from lower, the trim signal is loud and clear. If you're flat, sitting out and watching for either (a) a clean reversal day with breadth thrust, or (b) the composite breaking below 60 to confirm a NO is the patient trade. <strong>Better to miss the bounce than buy this dump.</strong></p>
+    </div>
+  </div>
+</div>
+
+<!-- ============== DAY TRADE MODE ============== -->
+<div id="mode-day" class="hidden">
+
+  <div class="hero">
+    <div class="hero-left">
+      <div class="hero-label">DAY TRADE DECISION</div>
+      <div class="hero-decision decision-caution">CAUTION</div>
+      <div class="hero-sub">VIX 18.41 in sweet spot. EP tape is thinner than Friday — best setups cap at 77 (GCTS), <strong style="color:var(--amber)">no 80+ today</strong>. Market direction is DOWN. Cleanest plays: M&A arb longs (RAMP +27, D +15) and short-side mean reversion on Friday's winners (HCWB giving back). Active but selective.</div>
+    </div>
+    <div style="position: relative;">
+      <svg class="gauge" viewBox="0 0 200 110">
+        <path class="gauge-bg" d="M 16 100 A 84 84 0 0 1 184 100"/>
+        <path class="gauge-fg" d="M 16 100 A 84 84 0 0 1 184 100" stroke="#f59e0b"
+              stroke-dasharray="263.89" stroke-dashoffset="71.25"
+              fill="none" stroke-width="16" stroke-linecap="round"/>
+      </svg>
+      <div class="gauge-text" style="color: #f59e0b;">73.00</div>
+      <div class="gauge-label">EP TAPE SCORE</div>
+    </div>
+  </div>
+
+  <div class="section-title">RETAIL WATCHLIST</div>
+  <table class="tbl">
+    <thead>
+      <tr><th>SYMBOL</th><th class="right">PRICE</th><th class="right">CHANGE</th><th class="right">GAP</th><th class="right">OPEN</th><th class="right">HIGH</th><th class="right">LOW</th><th class="right">PREV CLOSE</th></tr>
+    </thead>
+    <tbody id="retail-body"></tbody>
+  </table>
+
+  <div class="section-title">EP MOVERS — TOP GAINERS (LONG)</div>
+  <table class="tbl">
+    <thead>
+      <tr><th>SYMBOL</th><th>COMPANY</th><th class="right">GAP %</th><th class="right">PRICE</th><th class="right">VOLUME</th><th>CATALYST</th><th class="right">EP SCORE</th><th class="right">BIAS</th></tr>
+    </thead>
+    <tbody id="ep-gainers"></tbody>
+  </table>
+
+  <div class="section-title">EP MOVERS — TOP LOSERS (SHORT)</div>
+  <table class="tbl">
+    <thead>
+      <tr><th>SYMBOL</th><th>COMPANY</th><th class="right">GAP %</th><th class="right">PRICE</th><th class="right">VOLUME</th><th>CATALYST</th><th class="right">EP SCORE</th><th class="right">BIAS</th></tr>
+    </thead>
+    <tbody id="ep-losers"></tbody>
+  </table>
+
+  <div class="section-title">STANDOUT SETUPS</div>
+  <div class="standout">
+    <div class="standout-item">
+      <div class="standout-h">1. GCTS — LONG | EP 77 | Gap +17.21% | $2.15 | 15.74M vol</div>
+      <div class="standout-b">GCT Semiconductor — specific contract catalyst (5G shipments + major satellite deal). Highest-scoring setup on tape today. Real institutional volume on a low-priced name. Trade plan: pullback to opening range / VWAP reclaim long, stop below the gap fill. M&A-like clarity on the why.</div>
+    </div>
+    <div class="standout-item">
+      <div class="standout-h">2. RAMP — LONG | EP 73 | Gap +27.14% | $37.71 | 1.15M vol</div>
+      <div class="standout-b">LiveRamp $2.5B all-cash buyout by Publicis. M&A arb at a clean $37.71 vs deal value — pins typically defend. Limited downside if deal terms hold. Trade plan: small long, scale at deal-pin level, no chasing. Risk = deal break (low probability for confirmed buyouts).</div>
+    </div>
+    <div class="standout-item">
+      <div class="standout-h">3. D (DOMINION ENERGY) — LONG | EP 73 | Gap +14.64% | $70.77 | 1.27M vol</div>
+      <div class="standout-b">NextEra Energy + Dominion confirm merger — "world's largest regulated electric utility." Large-cap utility M&A = clean directional trade. Trade plan: long on first dip, scale to deal-spread close. Slow-moving but high-conviction relative to small-caps today.</div>
+    </div>
+    <div class="standout-item">
+      <div class="standout-h">4. HCWB — SHORT | EP 65 | Gap -18.03% | $1.00 | 5.75M vol</div>
+      <div class="standout-b">Friday's #1 long (gap +223%) giving back today. Classic post-parabolic mean reversion — catalyst (EPS beat) is fully baked, retail buyers exhausted. Pennies at $1.00 = high volatility risk. Trade plan: short rallies into VWAP, cover into round numbers. SIZE SMALL — penny stock dynamics.</div>
+    </div>
+  </div>
+
+  <div class="analysis">
+    <div class="analysis-title">TERMINAL ANALYSIS — DAY TRADE</div>
+    <div class="analysis-body">
+      <p>VIX at <strong>18.41 in the 15-25 sweet spot</strong> — vol is fine for day trading. But the EP tape is <strong>weaker than Friday</strong>: best score is GCTS at 77, no setups crack 80. Five names score 70+ (GCTS 77, HIVE 75, QUCY 75, RAMP 73, D 73) — that's actionable but you need to be picky.</p>
+      <p>Retail watchlist is <strong>broadly red and bleeding</strong>: COIN -7.82%, MARA -6.40%, AMD -5.69%, TSLA -4.75%, NVDA -4.42%. Crypto-adjacent and AI infra getting hammered. SPY -1.20%, QQQ -1.51%, sectors 10/11 red. <strong>Counter-trend longs on Friday's leaders are dangerous</strong> — don't dip-buy NVDA / AMD here without volume confirmation.</p>
+      <p>Best edge today: <strong>M&A pin trades</strong> (RAMP, D — confirmed buyouts with limited downside), and <strong>short-side mean reversion</strong> on Friday's parabolic gainers (HCWB, SLE both giving back 18-20%). GCTS has clean fundamentals (real contracts) — only small-cap long I'd touch. <strong>SKIP the broader EP gainer list</strong> — most have weak catalysts and the macro tape will hurt longs that aren't underpinned by news. Active but cautious — not a chase day.</p>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<div class="footer">
+  Data captured: 2026-05-18 (TradingView MCP + Stock Catalyst NYSE Pre-Market) | No API calls / no auto-refresh | Generated <span id="gen-time2"></span>
+</div>
+
+<script>
+const DATA = {
+  generated: new Date().toLocaleString('en-US', {timeZone: 'America/New_York', dateStyle: 'medium', timeStyle: 'medium'}),
+  quotes: [
+    {sym:'SPY',  price:739.17, chg:-1.20, open:741.79, high:743.46, low:737.96, prev:748.17, type:'idx'},
+    {sym:'QQQ',  price:708.93, chg:-1.51, open:710.14, high:715.13, low:705.55, prev:719.79, type:'idx'},
+    {sym:'VIX',  price:18.41,  chg:-0.05, open:19.25,  high:19.44,  low:18.41,  prev:18.42,  type:'idx'},
+    {sym:'UUP',  price:27.77,  chg:0.54,  open:27.72,  high:27.77,  low:27.71,  prev:27.62,  type:'idx'},
+    {sym:'TSLA', price:422.24, chg:-4.75, open:433.98, high:434.66, low:422.00, prev:443.30, type:'retail'},
+    {sym:'NVDA', price:225.32, chg:-4.42, open:229.76, high:231.50, low:224.24, prev:235.74, type:'retail'},
+    {sym:'SOFI', price:15.61,  chg:-2.56, open:15.70,  high:15.84,  low:15.38,  prev:16.02,  type:'retail'},
+    {sym:'AMD',  price:424.10, chg:-5.69, open:433.34, high:439.00, low:423.36, prev:449.70, type:'retail'},
+    {sym:'PLTR', price:133.99, chg:0.19,  open:132.80, high:135.64, low:132.29, prev:133.73, type:'retail'},
+    {sym:'MARA', price:12.44,  chg:-6.40, open:12.85,  high:12.89,  low:12.13,  prev:13.29,  type:'retail'},
+    {sym:'COIN', price:195.43, chg:-7.82, open:205.64, high:206.00, low:192.30, prev:212.01, type:'retail'},
+    {sym:'SNDK', price:1407.61,chg:1.80,  open:1321.00,high:1426.38,low:1315.75,prev:1382.72,type:'retail'},
+    {sym:'META', price:614.23, chg:-0.68, open:613.99, high:621.20, low:609.31, prev:618.43, type:'retail'},
+    {sym:'AMZN', price:264.14, chg:-1.15, open:262.50, high:264.36, low:260.89, prev:267.22, type:'retail'}
+  ],
+  sectors: [
+    {sym:'XLE', price:59.44,  chg:2.36},
+    {sym:'XLF', price:51.10,  chg:-0.37},
+    {sym:'XLP', price:84.64,  chg:-0.40},
+    {sym:'XLC', price:116.08, chg:-0.88},
+    {sym:'XLV', price:145.10, chg:-1.04},
+    {sym:'XLRE',price:43.23,  chg:-1.55},
+    {sym:'XLI', price:171.40, chg:-1.78},
+    {sym:'XLY', price:116.53, chg:-1.80},
+    {sym:'XLK', price:176.26, chg:-1.81},
+    {sym:'XLU', price:43.87,  chg:-2.29},
+    {sym:'XLB', price:50.30,  chg:-2.65}
+  ],
+  epGainers: [
+    {sym:'GCTS', co:'GCT Semiconductor',     gap:17.21,  px:2.15,  vol:15742743,  cat:'5G Shipments + Major Satellite Deal [5/18/2026 11:35 AM]',          score:77, bias:'LONG'},
+    {sym:'HIVE', co:'HIVE Digital Tech',     gap:32.99,  px:3.58,  vol:15378423,  cat:"Bitcoin Miner's AI Pivot Just Got Much Bigger [5/18/2026 12:39 PM]", score:75, bias:'LONG'},
+    {sym:'QUCY', co:'Quantum Cyber',         gap:20.23,  px:4.16,  vol:4048422,   cat:'Ex-Trump VA chief to lead new AI drone subsidiary [5/18/2026 12:30 PM]',score:75, bias:'LONG'},
+    {sym:'RAMP', co:'LiveRamp Holdings',     gap:27.14,  px:37.71, vol:1149580,   cat:'$2.5B all-cash buyout by Publicis [5/18/2026 4:12 AM]',              score:73, bias:'LONG'},
+    {sym:'D',    co:'Dominion Energy',       gap:14.64,  px:70.77, vol:1267266,   cat:'NextEra + Dominion confirm merger deal [5/18/2026 7:39 AM]',         score:73, bias:'LONG'},
+    {sym:'GOVX', co:'Geovax Labs',           gap:156.91, px:3.16,  vol:82980405,  cat:'Morning Market Movers list (general news) [5/18/2026 12:24 PM]',     score:65, bias:'LONG'},
+    {sym:'HCAI', co:'Huachen AI Parking',    gap:66.97,  px:9.25,  vol:4806105,   cat:'Surges 82% premarket on Nasdaq rule change buzz [5/18/2026 12:06 PM]', score:65, bias:'LONG'},
+    {sym:'LABT', co:'Lakewood-Amedex',       gap:36.00,  px:2.04,  vol:23927106,  cat:'Rocket Lab vs SpaceX article (unrelated) [5/18/2026 9:44 AM]',        score:65, bias:'LONG'},
+    {sym:'AIIO', co:'Robo.ai',               gap:16.16,  px:4.67,  vol:3426365,   cat:'Rally pauses after 6x surge, retail keeps faith [5/18/2026 4:15 AM]', score:65, bias:'LONG'},
+    {sym:'TE',   co:'T1 Energy Inc.',        gap:14.11,  px:6.47,  vol:8952255,   cat:'Hedge Fund Bought 10M Shares Of T1 Energy in Q1 [5/18/2026 12:29 PM]',score:65, bias:'LONG'},
+    {sym:'QNCX', co:'Quince Therapeutics',   gap:13.96,  px:1.31,  vol:5125164,   cat:'QNCX up 60% pre-market after near-total wipeout [5/18/2026 5:55 AM]',score:65, bias:'LONG'},
+    {sym:'RDW',  co:'Redwire Corporation',   gap:10.10,  px:15.48, vol:4548418,   cat:"'SOF' week extends Redwire's recent rally [5/18/2026 9:32 AM]",       score:65, bias:'LONG'},
+    {sym:'CMPS', co:'COMPASS Pathways',      gap:14.85,  px:11.91, vol:509343,    cat:'Rallies Pre-Market on FDA Trade Speculation [5/18/2026 10:25 AM]',   score:63, bias:'LONG'},
+    {sym:'SHAZ', co:'SharonAI Holdings',     gap:10.42,  px:59.55, vol:172795,    cat:'AI cloud firm wins $1.25B + $950M AI infra contracts [5/15/2026 8:37 PM]',score:47, bias:'LONG'},
+    {sym:'DXYZ', co:'Destiny Tech100',       gap:11.85,  px:53.26, vol:752533,    cat:'20X SpaceX IPO Demand Amid BlackRock Bet [5/18/2026 3:15 AM]',       score:45, bias:'LONG'},
+    {sym:'POEL', co:'Defiance 2X Long POET ETF', gap:18.43, px:86.99, vol:225936, cat:'Defiance Daily Target 2X Long POET ETF (Moomoo) [5/18/2026 2:20 AM]',score:35, bias:'LONG'}
+  ],
+  epLosers: [
+    {sym:'HCWB', co:'HCW Biologics',         gap:-18.03, px:1.00,   vol:5746680, cat:"What's Going On With HCW Biologics (Friday +223 unwinding) [5/18/2026 11:14 AM]", score:65, bias:'SHORT'},
+    {sym:'SLE',  co:'Super League Enterprise',gap:-19.54, px:4.86,   vol:236473,  cat:'EPS beats by $0.94, rev beats (giving back Friday gain) [5/15/2026 7:35 AM]', score:55, bias:'SHORT'},
+    {sym:'REGN', co:'Regeneron Pharma',      gap:-12.36, px:611.92, vol:63697,   cat:'Pursues up to $2.2B in Helicon milestones [5/18/2026 11:03 AM]',     score:45, bias:'SHORT'},
+    {sym:'LI',   co:'Li Auto Inc.',          gap:-9.18,  px:16.81,  vol:564452,  cat:'Chinese EV slump in HK, Li Auto -14% after price cut [5/18/2026 9:21 AM]', score:40, bias:'SHORT'},
+    {sym:'PIII', co:'P3 Health Partners',    gap:-20.46, px:8.98,   vol:235886,  cat:"What's Going On With P3 Health Partners (vague) [5/18/2026 12:09 PM]", score:35, bias:'SHORT'},
+    {sym:'ARTL', co:'Artelo Biosciences',    gap:-15.76, px:1.55,   vol:314095,  cat:'ARTL skyrocketed 141% pre-market (profit-take) [5/14/2026 10:39 PM]', score:35, bias:'SHORT'},
+    {sym:'YOOV', co:'Concorde Intl Group',   gap:-15.62, px:1.08,   vol:107310,  cat:'YOOV Whipsaws traders Key Levels [5/14/2026 2:04 PM]',                score:35, bias:'SHORT'},
+    {sym:'SKK',  co:'SKK Holdings',          gap:-13.84, px:4.11,   vol:127893,  cat:'[EFFECT] SEC Filing [5/18/2026 10:51 AM]',                             score:35, bias:'SHORT'},
+    {sym:'SUNE', co:'SUNation Energy',       gap:-12.12, px:1.45,   vol:7146,    cat:'Secures Financing, Scaling Questions Remain [5/17/2026 7:18 PM]',     score:35, bias:'SHORT'}
+  ]
+};
+
+function fmtPct(v) { const s = v >= 0 ? '+' : ''; return s + v.toFixed(2) + '%'; }
+function fmtPrice(v) { return v.toFixed(2); }
+function fmtVol(v) { if (v >= 1e6) return (v/1e6).toFixed(2) + 'M'; if (v >= 1e3) return (v/1e3).toFixed(1) + 'K'; return v.toString(); }
+function pctClass(v) { if (v > 0.05) return 'up'; if (v < -0.05) return 'down'; return 'flat'; }
+function heatClass(v) { if (v >= 1.0) return 'up-strong'; if (v >= 0.2) return 'up-mild'; if (v > -0.2) return 'flat-cell'; if (v > -1.0) return 'down-mild'; return 'down-strong'; }
+
+function buildTicker() {
+  const all = [...DATA.quotes, ...DATA.sectors];
+  const items = all.map(q => `<span class="ticker-item"><span class="ticker-sym">${q.sym}</span> <span class="ticker-price">${fmtPrice(q.price)}</span> <span class="ticker-chg ${pctClass(q.chg)}">${fmtPct(q.chg)}</span></span>`).join('');
+  document.getElementById('ticker').innerHTML = items + items;
+}
+
+function buildHeatmap() {
+  const html = DATA.sectors.map(s =>
+    `<div class="heat-cell ${heatClass(s.chg)}">
+      <div class="heat-sym">${s.sym}</div>
+      <div class="heat-pct ${pctClass(s.chg)}">${fmtPct(s.chg)}</div>
+      <div class="heat-price">${fmtPrice(s.price)}</div>
+    </div>`
+  ).join('');
+  document.getElementById('heatmap-swing').innerHTML = html;
+}
+
+function buildRetail() {
+  const retail = DATA.quotes.filter(q => q.type === 'retail').sort((a,b) => Math.abs(b.chg) - Math.abs(a.chg));
+  const html = retail.map(q => {
+    const gap = ((q.open - q.prev) / q.prev) * 100;
+    return `<tr>
+      <td><strong>${q.sym}</strong></td>
+      <td class="right">${fmtPrice(q.price)}</td>
+      <td class="right ${pctClass(q.chg)}">${fmtPct(q.chg)}</td>
+      <td class="right ${pctClass(gap)}">${fmtPct(gap)}</td>
+      <td class="right">${fmtPrice(q.open)}</td>
+      <td class="right">${fmtPrice(q.high)}</td>
+      <td class="right">${fmtPrice(q.low)}</td>
+      <td class="right">${fmtPrice(q.prev)}</td>
+    </tr>`;
+  }).join('');
+  document.getElementById('retail-body').innerHTML = html;
+}
+
+function buildEpTable(rows, targetId) {
+  const html = rows.map((r,i) => {
+    const cls = i < 3 ? 'top3' : '';
+    const biasClass = r.bias === 'LONG' ? 'up' : 'down';
+    return `<tr class="${cls}">
+      <td><strong>${r.sym}</strong></td>
+      <td style="color: var(--muted); font-size: 11px;">${r.co}</td>
+      <td class="right ${pctClass(r.gap)}">${fmtPct(r.gap)}</td>
+      <td class="right">$${fmtPrice(r.px)}</td>
+      <td class="right">${fmtVol(r.vol)}</td>
+      <td style="font-size: 11px; color: var(--muted); max-width: 480px;">${r.cat}</td>
+      <td class="right"><span class="score">${r.score}</span></td>
+      <td class="right"><span class="tag ${biasClass}">${r.bias}</span></td>
+    </tr>`;
+  }).join('');
+  document.getElementById(targetId).innerHTML = html;
+}
+
+function setMode(m) {
+  document.getElementById('mode-swing').classList.toggle('hidden', m !== 'swing');
+  document.getElementById('mode-day').classList.toggle('hidden', m !== 'day');
+  document.getElementById('btn-swing').classList.toggle('active', m === 'swing');
+  document.getElementById('btn-day').classList.toggle('active', m === 'day');
+}
+
+document.getElementById('gen-time').textContent = DATA.generated;
+document.getElementById('gen-time2').textContent = DATA.generated;
+buildTicker();
+buildHeatmap();
+buildRetail();
+buildEpTable(DATA.epGainers, 'ep-gainers');
+buildEpTable(DATA.epLosers, 'ep-losers');
+</script>
+
+</body>
+</html>
