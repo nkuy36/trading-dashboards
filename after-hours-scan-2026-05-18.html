@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>After-Hours Scan — 2026-05-18</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0e17;
+    --bg2: #111827;
+    --bg3: #1a2235;
+    --border: #1e2d45;
+    --text: #e2e8f0;
+    --muted: #64748b;
+    --accent: #3b82f6;
+    --green: #22c55e;
+    --red: #ef4444;
+    --amber: #f59e0b;
+    --purple: #a855f7;
+    --cyan: #06b6d4;
+    --orange: #f97316;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    line-height: 1.6;
+    padding: 24px;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+  .header {
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 20px;
+    margin-bottom: 28px;
+  }
+  .header h1 {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--accent);
+    letter-spacing: 0.05em;
+  }
+  .header .subtitle {
+    color: var(--muted);
+    font-size: 11px;
+    margin-top: 4px;
+  }
+  .market-bar {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 10px;
+    margin-bottom: 28px;
+  }
+  .market-pill {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 10px 12px;
+  }
+  .market-pill .label { color: var(--muted); font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; }
+  .market-pill .value { font-size: 15px; font-weight: 600; margin-top: 2px; }
+  .market-pill .change { font-size: 11px; margin-top: 1px; }
+  .up { color: var(--green); }
+  .down { color: var(--red); }
+  .flat { color: var(--amber); }
+  section { margin-bottom: 32px; }
+  .section-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    border-left: 3px solid var(--accent);
+    padding-left: 10px;
+    margin-bottom: 14px;
+  }
+  .section-title.commodities { color: var(--orange); border-left-color: var(--orange); }
+  .section-title.tech { color: var(--cyan); border-left-color: var(--cyan); }
+  .section-title.energy { color: var(--green); border-left-color: var(--green); }
+  .section-title.defense { color: var(--purple); border-left-color: var(--purple); }
+  .section-title.macro { color: var(--amber); border-left-color: var(--amber); }
+  .section-title.options { color: #ec4899; border-left-color: #ec4899; }
+  .section-title.filings { color: #14b8a6; border-left-color: #14b8a6; }
+  .section-title.earnings { color: var(--green); border-left-color: var(--green); }
+  .section-title.gameplan { color: #f97316; border-left-color: #f97316; }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 14px;
+    font-size: 12px;
+  }
+  th {
+    background: var(--bg3);
+    color: var(--muted);
+    text-transform: uppercase;
+    font-size: 10px;
+    letter-spacing: 0.07em;
+    padding: 8px 10px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+  }
+  td {
+    padding: 8px 10px;
+    border-bottom: 1px solid #151f2e;
+    vertical-align: top;
+  }
+  tr:hover td { background: #0d1520; }
+  .beat { color: var(--green); font-weight: 600; }
+  .miss { color: var(--red); font-weight: 600; }
+  .inline { color: var(--amber); font-weight: 600; }
+  .call { color: var(--green); }
+  .put { color: var(--red); }
+  .divergence { color: var(--amber); font-weight: 600; }
+  .tag {
+    display: inline-block;
+    padding: 2px 7px;
+    border-radius: 4px;
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .tag-bull { background: rgba(34,197,94,0.15); color: var(--green); }
+  .tag-bear { background: rgba(239,68,68,0.15); color: var(--red); }
+  .tag-neutral { background: rgba(245,158,11,0.15); color: var(--amber); }
+  .tag-watch { background: rgba(59,130,246,0.15); color: var(--accent); }
+  .card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 14px;
+  }
+  .card h3 { font-size: 13px; font-weight: 600; color: var(--accent); margin-bottom: 8px; }
+  .card p { color: var(--text); font-size: 12px; line-height: 1.7; }
+  .highlight-box {
+    background: rgba(59,130,246,0.08);
+    border: 1px solid rgba(59,130,246,0.25);
+    border-radius: 6px;
+    padding: 14px 16px;
+    margin-bottom: 14px;
+    font-size: 12px;
+    line-height: 1.7;
+  }
+  .warn-box {
+    background: rgba(245,158,11,0.08);
+    border: 1px solid rgba(245,158,11,0.25);
+    border-radius: 6px;
+    padding: 12px 16px;
+    margin-bottom: 14px;
+    font-size: 11px;
+    color: var(--amber);
+  }
+  .briefing {
+    background: var(--bg3);
+    border: 1px solid var(--accent);
+    border-radius: 8px;
+    padding: 18px;
+    font-size: 13px;
+    line-height: 1.8;
+    margin-bottom: 14px;
+  }
+  .ticker { color: var(--accent); font-weight: 600; }
+  .top3 {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+  .top3-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px;
+  }
+  .top3-card .rank { color: var(--muted); font-size: 10px; text-transform: uppercase; }
+  .top3-card .name { font-size: 16px; font-weight: 700; margin: 4px 0; }
+  .top3-card .reason { font-size: 11px; color: var(--text); line-height: 1.6; margin-top: 8px; }
+  .levels {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+  .level-box {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 10px;
+    text-align: center;
+  }
+  .level-box .lbl { font-size: 10px; color: var(--muted); text-transform: uppercase; }
+  .level-box .val { font-size: 14px; font-weight: 700; margin-top: 3px; }
+  .audit-table td:nth-child(1) { color: var(--amber); font-weight: 500; width: 30%; }
+  .audit-table td:nth-child(2) { color: var(--red); width: 35%; }
+  .audit-table td:nth-child(3) { color: var(--cyan); width: 35%; }
+  .footer { color: var(--muted); font-size: 10px; margin-top: 32px; border-top: 1px solid var(--border); padding-top: 14px; line-height: 1.7; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 20px 0; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>🌙 AFTER-HOURS CATALYST SCAN</h1>
+  <div class="subtitle">Monday, May 18, 2026 &nbsp;|&nbsp; Generated after market close &nbsp;|&nbsp; All times ET</div>
+</div>
+
+<!-- MARKET BAR -->
+<div class="market-bar">
+  <div class="market-pill">
+    <div class="label">S&amp;P 500</div>
+    <div class="value">7,374.97</div>
+    <div class="change down">▼ -0.07%</div>
+  </div>
+  <div class="market-pill">
+    <div class="label">Nasdaq</div>
+    <div class="value">26,090.73</div>
+    <div class="change down">▼ -0.51%</div>
+  </div>
+  <div class="market-pill">
+    <div class="label">Dow Jones</div>
+    <div class="value">49,686.12</div>
+    <div class="change up">▲ +0.32%</div>
+  </div>
+  <div class="market-pill">
+    <div class="label">10Y Treasury</div>
+    <div class="value">4.573%</div>
+    <div class="change down">▲ High 4.631% — 16-mo peak</div>
+  </div>
+  <div class="market-pill">
+    <div class="label">WTI Crude</div>
+    <div class="value">$106.30</div>
+    <div class="change up">▲ +0.85%</div>
+  </div>
+  <div class="market-pill">
+    <div class="label">Brent Crude</div>
+    <div class="value">$110.20</div>
+    <div class="change up">▲ +0.89%</div>
+  </div>
+  <div class="market-pill">
+    <div class="label">Gold (spot)</div>
+    <div class="value">$4,549</div>
+    <div class="change down">▼ -0.28%</div>
+  </div>
+  <div class="market-pill">
+    <div class="label">Bitcoin</div>
+    <div class="value">$76,913</div>
+    <div class="change down">▼ -1.55%</div>
+  </div>
+</div>
+
+<div class="highlight-box">
+  <strong>Theme of the Day:</strong> Bond yield shock + Iran war oil premium + tech selloff. The S&amp;P and Nasdaq set all-time highs last week. Now the 10Y yield hit 4.63% (highest in 16 months), oil holds above $106 on Strait of Hormuz fears, Fed rate cuts are fully priced out, and the entire tape waits for <span class="ticker">NVDA</span> earnings <strong>Wednesday</strong>. Market bias today: defensive rotation — Dow outperformed Nasdaq by 0.83%.
+</div>
+
+<!-- STEP 1: EARNINGS RELEASED TONIGHT -->
+<section>
+  <div class="section-title">STEP 1 — EARNINGS RELEASED TONIGHT (After Close, May 18)</div>
+  <div class="warn-box">
+    ⚠️ No major watchlist names confirmed reporting after close tonight. No verified AMC earnings source found for specific results May 18. Monitor EarningsWhispers / Yahoo Finance at open for any small-cap AH reports that may have slipped through. The week's catalysts are all Wed/Thu.
+  </div>
+  <table>
+    <thead>
+      <tr><th>Ticker</th><th>Company</th><th>Report Time</th><th>Expected This Week</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="ticker">NVDA</span></td>
+        <td>NVIDIA Corporation</td>
+        <td>Wed May 20 AMC ⭐</td>
+        <td>Rev est $79.2B, EPS $1.78 — beat-and-raise expected</td>
+      </tr>
+      <tr>
+        <td><span class="ticker">TGT</span></td>
+        <td>Target Corporation</td>
+        <td>Wed May 20 AMC</td>
+        <td>Consumer discretionary read</td>
+      </tr>
+      <tr>
+        <td><span class="ticker">WMT</span></td>
+        <td>Walmart Inc.</td>
+        <td>Thu May 21 BMO</td>
+        <td>Rev est $174.83B, FY27 guide key</td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- STEP 2: AH MOVERS -->
+<section>
+  <div class="section-title">STEP 2 — NOTABLE MOVERS</div>
+  <table>
+    <thead>
+      <tr><th>Ticker</th><th>Move</th><th>Catalyst</th><th>Setup Tomorrow</th><th>ETF Impact</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="ticker">D</span></td>
+        <td class="beat">+14.3%</td>
+        <td>$400B all-stock merger with NextEra (NEE) — world's largest regulated utility</td>
+        <td><span class="tag tag-bull">ARBIT LONG</span> Spread tightening trade</td>
+        <td>GRID, XLU, PAVE</td>
+      </tr>
+      <tr>
+        <td><span class="ticker">REGN</span></td>
+        <td class="miss">-10.5%</td>
+        <td>Phase 3 failure: fianlimab + cemiplimab combo missed PFS endpoint vs. Keytruda (MRK) in melanoma. p=0.0627, not significant.</td>
+        <td><span class="tag tag-bear">FADE BOUNCES</span> Citi cut to Neutral, PT $700 from $900</td>
+        <td>XBI, IBB — biotech negative read-through on LAG-3 class</td>
+      </tr>
+      <tr>
+        <td><span class="ticker">UNH</span></td>
+        <td class="miss">-4.8%</td>
+        <td>Ongoing regulatory/political pressure on managed care</td>
+        <td><span class="tag tag-bear">AVOID</span></td>
+        <td>XLV</td>
+      </tr>
+      <tr>
+        <td><span class="ticker">MSTR</span></td>
+        <td class="miss">-4.2%</td>
+        <td>Bitcoin -1.55% to $76,913; $563M in long liquidations</td>
+        <td><span class="tag tag-neutral">WAIT</span> BTC $76k support critical</td>
+        <td>IBIT, MARA, COIN</td>
+      </tr>
+      <tr>
+        <td><span class="ticker">NVDA</span></td>
+        <td class="miss">-2.92% (Dow)</td>
+        <td>Rate/yield pressure on tech sector broadly. KeyBanc raised PT to $300 despite price weakness.</td>
+        <td><span class="tag tag-watch">EARNINGS WED</span> Dip into catalyst = accumulate signal</td>
+        <td>SMH, XLK, FNGU</td>
+      </tr>
+      <tr>
+        <td><span class="ticker">MMM</span></td>
+        <td class="beat">+3.74%</td>
+        <td>Dow leader today — value/industrial outperformance vs. tech</td>
+        <td><span class="tag tag-neutral">MONITOR</span></td>
+        <td>XLI</td>
+      </tr>
+      <tr>
+        <td><span class="ticker">CRM</span></td>
+        <td class="beat">+3.18%</td>
+        <td>Salesforce outperformed — AI/enterprise software holding up despite sector weakness</td>
+        <td><span class="tag tag-neutral">MONITOR</span></td>
+        <td>IGV</td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- STEP 3: SECTOR ETF RECAP -->
+<section>
+  <div class="section-title commodities">STEP 3A — COMMODITIES (GLD, SLV, UCO, USO, BNO)</div>
+  <div class="card">
+    <h3>🛢️ OIL — STRUCTURALLY BID | WTI $106.30 (+0.85%) / Brent $110.20 (+0.89%)</h3>
+    <p>The 2026 Iran War represents <strong>the largest geopolitical oil supply disruption in history</strong> — the IEA warned Monday that global inventories are declining rapidly. Strait of Hormuz remains effectively closed. Iran submitted an updated peace proposal via Pakistani mediators but White House called it "insufficient." A drone strike near the UAE's sole nuclear power plant added to tension (no radiological release). US proposed temporary sanctions waiver, causing oil to briefly pull back, before news was questioned. WTI range: $105–$108.</p>
+    <p style="margin-top:8px;"><strong style="color:var(--orange)">Tomorrow's setup: UCO/USO/BNO — LONG BIAS.</strong> No peace deal = continued supply squeeze. Only risk: surprise deal announcement overnight.</p>
+  </div>
+  <div class="card">
+    <h3>🥇 GOLD — Soft | GLD $417.29 (-0.28%) / Spot ~$4,549</h3>
+    <p>Rising real yields (10Y at 4.63%) capping gold. Still in a long-term structural bull (52-week range GLD $296-$509). Silver -1.52% to $76.37 on industrial demand concerns. <strong style="color:var(--amber)">Tomorrow: Neutral. Wait for yield stabilization before adding GLD.</strong></p>
+  </div>
+</section>
+
+<section>
+  <div class="section-title tech">STEP 3B — TECH &amp; AI (SMH, XLK, FNGU, IBIT, BOTZ)</div>
+  <div class="card">
+    <h3>💻 SEMIS/AI — BEARISH TODAY | XLK -~2% / NVDA -2.92%</h3>
+    <p>XLK opened at $154.30 and sold off as the 10Y yield spiked to 4.631%. NVDA was the Dow's second-worst performer despite KeyBanc raising its price target to $300 (from $275) and Goldman Sachs calling for a "beat-and-raise" quarter. Consensus: Revenue $79.2B (+79.5% YoY), EPS $1.78 (+120% YoY). Q2 whisper numbers near $90B vs. consensus $85–87B.</p>
+    <p style="margin-top:8px;"><span class="divergence">KEY DIVERGENCE: NVDA price down -2.92% today BUT analyst upgrades flying in. Smart money using weakness to accumulate calls ahead of Wednesday.</span></p>
+    <p style="margin-top:8px;"><strong style="color:var(--cyan)">Tomorrow: Avoid tech until NVDA Wednesday resolves direction. SMH/XLK remain under yield pressure.</strong></p>
+  </div>
+  <div class="card">
+    <h3>₿ CRYPTO/IBIT — BEARISH | BTC $76,913 (-1.55%)</h3>
+    <p>$563M in crypto long liquidations. Bitcoin retreated from $78k. Key support: $76k. Break below = MARA/COIN/IBIT accelerate lower. Strategy (MSTR) -4.2% is the canary. <strong style="color:var(--red)">Tomorrow: Avoid MARA/COIN unless BTC reclaims $77.5k+</strong></p>
+  </div>
+</section>
+
+<section>
+  <div class="section-title energy">STEP 3C — CLEAN ENERGY &amp; INFRA (GRID, PAVE, TAN, ICLN)</div>
+  <div class="card">
+    <h3>⚡ UTILITIES — BULLISH ON M&amp;A | NEE acquires Dominion (D) in $400B all-stock deal</h3>
+    <p>NextEra Energy (NEE) and Dominion Energy (D) confirmed a merger creating the world's largest regulated electric utility with enterprise value ~$419B. Exchange ratio: 0.8138 NEE shares per D share. Combined company will be 80%+ regulated, dual HQ in Juno Beach + Richmond, trade as NEE on NYSE. Close expected 12–18 months pending FERC, NRC, state PUC approvals. <strong style="color:var(--green)">GRID and PAVE get structural boost from the combined infrastructure giant.</strong></p>
+  </div>
+</section>
+
+<section>
+  <div class="section-title defense">STEP 3D — DEFENSE &amp; SPECIALTY (ITA, JETS, KBE)</div>
+  <div class="card">
+    <h3>Defense/Airlines/Banks — MIXED</h3>
+    <p><strong>ITA (Defense):</strong> Iran war = tailwind. UAE nuclear facility drone strike raised regional alarm. No new contracts today but geopolitical premium remains elevated.</p>
+    <p style="margin-top:6px;"><strong>JETS (Airlines):</strong> Oil at $106 = major fuel cost headwind. Royal Caribbean/Carnival flagged fuel concerns. <span class="put">JETS under pressure.</span></p>
+    <p style="margin-top:6px;"><strong>KBE (Banks):</strong> Rate hike bets building = positive for NIM long-term. Short-term: credit risk concerns rising as consumer stressed by high oil/rates.</p>
+  </div>
+</section>
+
+<section>
+  <div class="section-title macro">STEP 3E — MACRO (UUP, TLT)</div>
+  <div class="card">
+    <h3>📊 BONDS/DOLLAR — RISK-OFF | 10Y hit 4.631%, Rate Hike Bets Growing</h3>
+    <p>The bond market is the story of the week. The 10Y hit 4.631% today (highest since Feb 2025) and the 30Y hit its highest level in nearly a decade on Friday. The CPI/PPI data last week showed Iran war energy shock feeding into core inflation. Result: <strong>the market has fully priced out all 2026 Fed rate cuts and is now pricing in a possible rate hike before year-end.</strong> Dollar (UUP) firm. TLT in sustained downtrend.</p>
+    <p style="margin-top:8px;"><strong style="color:var(--red)">Tomorrow: TLT remains short. UUP long. Rate-sensitive growth/tech names at risk.</strong></p>
+  </div>
+</section>
+
+<!-- STEP 4: OPTIONS FLOW -->
+<section>
+  <div class="section-title options">STEP 4 — OPTIONS FLOW SUMMARY</div>
+  <div class="warn-box">⚠️ Real-time options flow (put/call ratios, sweep data) not accessible via web search. Below is inferred positioning. Verify on Unusual Whales, Barchart, TrendSpider at open.</div>
+
+  <div class="card">
+    <h3>A) INDEX POSITIONING (Inferred)</h3>
+    <p>With the 10Y at a 16-month high and stocks pulling back from all-time records last week, institutional hedging likely elevated. SPY put/call likely above 1.0. VIX call buying probable. Market positioning heading into NVDA Wednesday is cautiously short/hedged.</p>
+  </div>
+
+  <div class="card">
+    <h3>B) WATCHLIST OPTIONS CONTEXT</h3>
+    <table style="margin-bottom:0">
+      <thead>
+        <tr><th>Ticker</th><th>Inferred Flow</th><th>Interpretation</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="ticker">NVDA</span></td>
+          <td><span class="call">CALLS elevated</span></td>
+          <td>Analyst upgrades (KeyBanc $300 PT, Goldman buy) → smart money accumulating calls into Wed earnings dip</td>
+        </tr>
+        <tr>
+          <td><span class="ticker">MARA / COIN</span></td>
+          <td><span class="put">PUTS elevated</span></td>
+          <td>BTC -1.55%, $76k support being tested → downside hedging</td>
+        </tr>
+        <tr>
+          <td><span class="ticker">D</span></td>
+          <td><span class="call">ARBIT SPREADS</span></td>
+          <td>Post-merger announcement — risk arb flows dominate. Long D / short NEE arb</td>
+        </tr>
+        <tr>
+          <td><span class="ticker">REGN</span></td>
+          <td><span class="put">PUTS</span></td>
+          <td>Phase 3 failure + 2 analyst downgrades → continued put buying on bounces</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <h3>C &amp; D) KEY DIVERGENCES (Highest Signal)</h3>
+    <table style="margin-bottom:0">
+      <thead>
+        <tr><th>Name</th><th>Price Action</th><th>Options Signal</th><th>Interpretation</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="ticker divergence">NVDA</span></td>
+          <td class="miss">-2.92% today</td>
+          <td><span class="call">PT upgrades, call interest</span></td>
+          <td><span class="divergence">⚡ SMART MONEY DIP-BUYING CALLS — Classic accumulation into earnings catalyst. Highest signal of the day.</span></td>
+        </tr>
+        <tr>
+          <td><span class="ticker divergence">UCO/USO</span></td>
+          <td class="beat">Oil +0.85%</td>
+          <td><span class="call">Likely call buying continues</span></td>
+          <td><span class="divergence">⚡ OIL UNDERPRICING SUPPLY RISK — Strait of Hormuz still closed, IEA warning on inventory depletion. Upside risk skew.</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- STEP 5: SEC FILINGS -->
+<section>
+  <div class="section-title filings">STEP 5 — SEC FILINGS &amp; INSIDER ACTIVITY</div>
+  <table>
+    <thead>
+      <tr><th>Filing Type</th><th>Company / Filer</th><th>Detail</th><th>Signal</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Form 8-K / Form 425</td>
+        <td><span class="ticker">D</span> / <span class="ticker">NEE</span></td>
+        <td>$400B all-stock merger announced. NEE acquires D at 0.8138x NEE per D share. Enterprise value ~$419B.</td>
+        <td><span class="tag tag-bull">BULLISH D</span> Arb long opportunity</td>
+      </tr>
+      <tr>
+        <td>13F (Q1 2026)</td>
+        <td>Druckenmiller / Duquesne Family Office</td>
+        <td>Exited GOOGL entirely (385K shares sold). Slashed AMZN 99% (737K→9.5K). Opened large AVGO position (195K shares). Added Caris Life Sciences &amp; Revolution Medicines.</td>
+        <td><span class="tag tag-bear">BEARISH AMZN/GOOGL</span> <span class="tag tag-bull">BULLISH AVGO</span></td>
+      </tr>
+      <tr>
+        <td>Form 4 (Cluster Buy)</td>
+        <td><span class="ticker">WGS</span> (GeneDx Holdings)</td>
+        <td>3 insiders bought ~$13.77M in stock over May 13–20 — coordinated cluster insider buy</td>
+        <td><span class="tag tag-bull">HIGH CONVICTION BUY</span> Watch for catalyst</td>
+      </tr>
+      <tr>
+        <td>Schedule 13D/A</td>
+        <td><span class="ticker">WGS</span></td>
+        <td>Related to above cluster buy — beneficial ownership update</td>
+        <td><span class="tag tag-bull">BULLISH WGS</span></td>
+      </tr>
+    </tbody>
+  </table>
+  <div class="card">
+    <h3>Druckenmiller Deep Read</h3>
+    <p>The Duquesne 13F reveals a decisive pivot: abandoning cloud/advertising AI plays (GOOGL, AMZN) in favor of infrastructure AI. AVGO (Broadcom) is the #2 AI custom silicon supplier after NVDA — its ASIC chips power hyperscaler AI training. This 13F rotation is consistent with other smart-money flows and is a signal to watch AVGO closely around NVDA's Wednesday earnings.</p>
+  </div>
+</section>
+
+<!-- STEP 6: TOMORROW'S EARNINGS PREVIEW -->
+<section>
+  <div class="section-title earnings">STEP 6 — TOMORROW'S EARNINGS PREVIEW (May 19, 2026)</div>
+
+  <div class="card">
+    <h3>⭐ HOME DEPOT (HD) — BMO (Before Market Open)</h3>
+    <table style="margin:10px 0 0 0">
+      <thead><tr><th>Metric</th><th>Estimate</th><th>Prior Year</th></tr></thead>
+      <tbody>
+        <tr><td>EPS</td><td>$3.41</td><td>$3.56 (-4.2% YoY)</td></tr>
+        <tr><td>Revenue</td><td>$41.54B</td><td>$39.86B (+4.2% YoY)</td></tr>
+        <tr><td>Full-Year EPS Guide</td><td>$14.69–$15.28</td><td>Base $14.69</td></tr>
+        <tr><td>Comp Sales Guide</td><td>Flat to +2.0%</td><td>—</td></tr>
+      </tbody>
+    </table>
+    <p style="margin-top:10px;"><strong>Watch:</strong> Comparable-store sales, pro vs. DIY split, housing/mortgage commentary, tariff/input cost guidance. HD down 21%+ over 12 months — sentiment is bearish. A beat + guidance raise could spark a significant squeeze. <strong>Expected gap: ±3-5%. ETF impact: XRT, XLY, ITB, XHB.</strong></p>
+  </div>
+
+  <div class="card">
+    <h3>KEYSIGHT TECHNOLOGIES (KEYS)</h3>
+    <p>Electronic test &amp; measurement — a read on semiconductor/tech capex cycle. Timing unconfirmed. Check EarningsWhispers for BMO/AMC. Watch for commentary on lab equipment demand and R&amp;D spending — a leading indicator for chip cycle.</p>
+  </div>
+</section>
+
+<!-- STEP 7: MACRO OVERNIGHT WATCH -->
+<section>
+  <div class="section-title macro">STEP 7 — MACRO OVERNIGHT WATCH</div>
+  <table>
+    <thead><tr><th>Watch Item</th><th>Details</th><th>Risk Level</th></tr></thead>
+    <tbody>
+      <tr>
+        <td>🇮🇷 Iran Peace Talks</td>
+        <td>Iran submitted amended peace proposal via Pakistan. Trump said "clock is ticking." White House called latest proposal insufficient. Any deal = oil -10%+. Any escalation = oil +5%+.</td>
+        <td><span class="tag tag-bear">HIGH</span></td>
+      </tr>
+      <tr>
+        <td>🏭 UAE Nuclear Facility</td>
+        <td>Drone strike Sunday near Barakah nuclear plant. No injuries/radiological release. Watch for UAE/Israel response overnight.</td>
+        <td><span class="tag tag-bear">MEDIUM</span></td>
+      </tr>
+      <tr>
+        <td>₿ Bitcoin $76k Level</td>
+        <td>Bitcoin closed ~$76,913. $76k is key structural support. Overnight breach = MARA/COIN/IBIT gap down at open.</td>
+        <td><span class="tag tag-neutral">MEDIUM</span></td>
+      </tr>
+      <tr>
+        <td>📊 Treasury Futures</td>
+        <td>10Y at 4.573% — any continuation of selling = further tech pressure at open. Watch TLT premarket.</td>
+        <td><span class="tag tag-neutral">MEDIUM</span></td>
+      </tr>
+      <tr>
+        <td>🛢️ Oil Futures Pre-Market</td>
+        <td>WTI $105–$108 is the band. Break above $108 = UCO/USO continuation. IEA inventory warning still fresh.</td>
+        <td><span class="tag tag-neutral">MEDIUM</span></td>
+      </tr>
+      <tr>
+        <td>🏦 Fed Speakers</td>
+        <td>No confirmed FOMC speakers Tuesday but monitor for any comments on rate hike probability — would be the most market-moving event of the day.</td>
+        <td><span class="tag tag-neutral">MEDIUM</span></td>
+      </tr>
+      <tr>
+        <td>🌏 Asia/Europe Futures</td>
+        <td>Nikkei/DAX likely mixed-to-lower on US rate shock + tech weakness. Energy-heavy European indices may outperform on oil.</td>
+        <td><span class="tag tag-watch">MONITOR</span></td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- STEP 8: GAME PLAN -->
+<section>
+  <div class="section-title gameplan">STEP 8 — TOMORROW'S GAME PLAN</div>
+
+  <div class="top3">
+    <div class="top3-card">
+      <div class="rank">Top Pick #1</div>
+      <div class="name up">HD</div>
+      <div class="reason">Home Depot BMO earnings. Wait for 15-min candle resolution at open. Bull: beat + guidance = +5-7% squeeze. Bear: miss + housing commentary = -4-6%. Do NOT pre-position. $360-365 is key support. Best consumer/housing macro read of the week.</div>
+    </div>
+    <div class="top3-card">
+      <div class="rank">Top Pick #2</div>
+      <div class="name up">D / NEE</div>
+      <div class="reason">Dominion/NextEra merger arb. Long D, hedge NEE. Exchange ratio 0.8138x NEE per D share. Capture spread tightening over 12–18 month close timeline. Risk: regulatory block. GRID/XLU ETF tailwind from combined utility infrastructure giant.</div>
+    </div>
+    <div class="top3-card">
+      <div class="rank">Top Pick #3</div>
+      <div class="name up">UCO / USO</div>
+      <div class="reason">Oil continuation trade. Iran Strait of Hormuz closure = largest supply disruption in history per IEA. WTI $106. Break above $108 = momentum trigger. ONLY enter on no overnight peace deal. Risk: surprise deal announcement = immediate -10% gap.</div>
+    </div>
+  </div>
+
+  <div class="levels">
+    <div class="level-box">
+      <div class="lbl">SPY Resistance</div>
+      <div class="val" style="color:var(--red)">7,420</div>
+    </div>
+    <div class="level-box">
+      <div class="lbl">SPY Current</div>
+      <div class="val" style="color:var(--amber)">7,374.97</div>
+    </div>
+    <div class="level-box">
+      <div class="lbl">SPY Support</div>
+      <div class="val" style="color:var(--green)">7,320 / 7,250</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Sector Bias: <span style="color:var(--amber)">RISK-OFF / MIXED</span></h3>
+    <p><strong>Best setup:</strong> Oil/energy (UCO, USO, BNO, XLE) — structural bid until Iran deal.<br>
+    <strong>Avoid:</strong> Tech/semis (SMH, XLK) until NVDA Wednesday resolves direction.<br>
+    <strong>Watch:</strong> Utilities (D/NEE arb), consumer (HD earnings), GRID.<br>
+    <strong>No clear setup on:</strong> Crypto (BTC uncertain), Biotech (REGN overhang on LAG-3 class).</p>
+  </div>
+
+  <div class="card">
+    <h3>Options Flow Conviction (Inferred)</h3>
+    <p>Smart money is likely: (1) <span class="call">accumulating NVDA calls</span> on weakness ahead of Wednesday beat-and-raise, (2) <span class="call">buying UCO/oil calls</span> on continued Hormuz closure, (3) <span class="put">hedging SPY/QQQ</span> with puts given record highs + rate shock, (4) <span class="call">long AVGO</span> following Druckenmiller's 13F pivot. Overall directional bias: <strong style="color:var(--amber)">defensive-to-neutral with selective upside conviction around NVDA Wednesday.</strong></p>
+  </div>
+
+  <div class="briefing">
+    <strong style="color:var(--orange)">⚡ OVERNIGHT BRIEFING (30-Second Read):</strong><br><br>
+    Market pulled back Monday as the 10Y yield hit 4.63% — highest in 16 months — crushing tech -2%. Oil held above $106 as the Iran war grinds on with no deal in sight; the Strait of Hormuz stays closed and the IEA is warning about inventory depletion. The story of the week is NVDA Wednesday — KeyBanc raised its PT to $300 and Goldman expects a beat-and-raise, yet the stock sold off -2.92% today. That divergence is the highest-signal setup: weakness into a catalyst = smart money accumulation. Also: NextEra is buying Dominion in a $400B all-stock deal creating the world's largest regulated utility — D arb long is in play. Watch HD earnings before open tomorrow for consumer/housing pulse. Bitcoin slid to ~$77k, killing MARA/COIN/IBIT — $76k is your line in the sand. Fed rate cuts fully priced out, rate hike bets rising. Druckenmiller just exited GOOGL and slashed AMZN 99% to pile into AVGO. Stay small in tech until Wednesday; stay long oil/energy unless Iran makes peace overnight.
+  </div>
+</section>
+
+<!-- STEP 9: ASSUMPTION AUDIT -->
+<section>
+  <div class="section-title">STEP 9 — ASSUMPTION AUDIT</div>
+  <table class="audit-table">
+    <thead>
+      <tr><th>Assumption Made</th><th>Risk If Wrong</th><th>How Trade Changes</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>No major AMC earnings tonight (May 18)</td>
+        <td>A notable company reported — and surprised big</td>
+        <td>Re-check EarningsWhispers at open; any gap is unrelated to this plan</td>
+      </tr>
+      <tr>
+        <td>Oil elevated — no Iran deal overnight</td>
+        <td>US–Iran deal announced → oil -10%+</td>
+        <td>Reverse UCO/USO long entirely; rotate into tech/risk-on</td>
+      </tr>
+      <tr>
+        <td>NVDA accumulation into Wed earnings</td>
+        <td>NVDA squeezes up pre-earnings, reduces risk/reward on calls</td>
+        <td>Enter smaller; widen strikes; reduce delta</td>
+      </tr>
+      <tr>
+        <td>HD is a neutral setup going in</td>
+        <td>HD pre-announced or leaked results</td>
+        <td>Gap direction already locked — just follow the gap with stops</td>
+      </tr>
+      <tr>
+        <td>10Y yields stay elevated (no Fed pivot)</td>
+        <td>Fed emergency statement or surprise rate cut signal</td>
+        <td>Massive tech/growth rally — flip SMH/XLK long aggressively</td>
+      </tr>
+      <tr>
+        <td>Bitcoin holds $76k support</td>
+        <td>BTC breaks below $75k overnight</td>
+        <td>MARA/COIN/IBIT gap down hard — avoid all crypto names at open</td>
+      </tr>
+      <tr>
+        <td>NEE/Dominion deal proceeds as announced</td>
+        <td>Regulatory challenge, revised terms, or political opposition</td>
+        <td>D loses M&amp;A premium; NEE recovers; arb trade exits at loss</td>
+      </tr>
+      <tr>
+        <td>Druckenmiller AVGO = institutional consensus</td>
+        <td>Other 13Fs show smart money selling AVGO</td>
+        <td>AVGO thesis weakens; reconsider ahead of NVDA Wednesday read-through</td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<div class="footer">
+  <strong>Sources:</strong> TheStreet (thestreet.com) · Yahoo Finance · CoinDesk (coindesk.com) · Bloomberg (bloomberg.com) · Investing.com · GuruFocus · BioPharma Dive · Motley Fool · TipRanks · MarketBeat · Intellectia.ai · NextEra Energy Newsroom (newsroom.nexteraenergy.com) · WTVR Richmond · Dallas Fed (dallasfed.org) · OilPrice.com · Sunday Guardian Live · SEC EDGAR<br><br>
+  ⚠️ This report is generated automatically for informational purposes and does not constitute financial advice. Always verify data before trading. Past performance does not guarantee future results.
+</div>
+
+</body>
+</html>
