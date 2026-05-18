@@ -1,0 +1,992 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Daily Theme Scanner — 2026-05-18</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg-primary: #0a0e17;
+    --bg-secondary: #0f1523;
+    --bg-card: #131c2e;
+    --bg-card-hover: #172034;
+    --border: #1e2d47;
+    --border-accent: #2a3f60;
+    --text-primary: #e2e8f0;
+    --text-secondary: #94a3b8;
+    --text-muted: #64748b;
+    --high: #10b981;
+    --high-bg: rgba(16, 185, 129, 0.08);
+    --high-border: rgba(16, 185, 129, 0.25);
+    --medium: #f59e0b;
+    --medium-bg: rgba(245, 158, 11, 0.08);
+    --medium-border: rgba(245, 158, 11, 0.25);
+    --low: #ef4444;
+    --low-bg: rgba(239, 68, 68, 0.08);
+    --low-border: rgba(239, 68, 68, 0.25);
+    --accent-blue: #3b82f6;
+    --accent-blue-bg: rgba(59, 130, 246, 0.08);
+    --accent-purple: #8b5cf6;
+    --strong: #10b981;
+    --moderate: #f59e0b;
+    --weak: #ef4444;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    font-family: 'JetBrains Mono', 'Courier New', monospace;
+    font-size: 13px;
+    line-height: 1.7;
+    min-height: 100vh;
+  }
+
+  .header {
+    background: var(--bg-secondary);
+    border-bottom: 1px solid var(--border);
+    padding: 24px 40px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    backdrop-filter: blur(10px);
+  }
+
+  .header-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .header h1 {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text-primary);
+    letter-spacing: 0.05em;
+  }
+
+  .header h1 span { color: var(--accent-blue); }
+
+  .header-meta {
+    font-size: 11px;
+    color: var(--text-muted);
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+
+  .header-meta span { display: flex; align-items: center; gap: 6px; }
+  .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--high); display: inline-block; animation: pulse 2s infinite; }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 32px 40px;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 40px 0 20px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .section-header:first-child { margin-top: 0; }
+
+  .section-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+
+  .section-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text-primary);
+  }
+
+  .section-count {
+    background: var(--border);
+    color: var(--text-muted);
+    font-size: 10px;
+    padding: 2px 8px;
+    border-radius: 10px;
+  }
+
+  .card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 24px;
+    margin-bottom: 16px;
+    transition: border-color 0.2s, background 0.2s;
+  }
+
+  .card:hover {
+    border-color: var(--border-accent);
+    background: var(--bg-card-hover);
+  }
+
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+  }
+
+  .card-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text-primary);
+  }
+
+  .badges {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  .badge {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    padding: 3px 10px;
+    border-radius: 4px;
+    text-transform: uppercase;
+  }
+
+  .badge-high { background: var(--high-bg); color: var(--high); border: 1px solid var(--high-border); }
+  .badge-medium { background: var(--medium-bg); color: var(--medium); border: 1px solid var(--medium-border); }
+  .badge-low { background: var(--low-bg); color: var(--low); border: 1px solid var(--low-border); }
+
+  .badge-stage {
+    background: var(--accent-blue-bg);
+    color: var(--accent-blue);
+    border: 1px solid rgba(59, 130, 246, 0.25);
+  }
+
+  .badge-strong { background: var(--high-bg); color: var(--high); border: 1px solid var(--high-border); }
+  .badge-moderate { background: var(--medium-bg); color: var(--medium); border: 1px solid var(--medium-border); }
+  .badge-weak { background: var(--low-bg); color: var(--low); border: 1px solid var(--low-border); }
+
+  .meta-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+
+  .meta-item {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 10px 14px;
+  }
+
+  .meta-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 4px;
+  }
+
+  .meta-value {
+    font-size: 12px;
+    color: var(--text-secondary);
+    line-height: 1.5;
+  }
+
+  .meta-value .ticker {
+    color: var(--accent-blue);
+    font-weight: 600;
+  }
+
+  .meta-value .ticker-red { color: var(--low); font-weight: 600; }
+  .meta-value .ticker-green { color: var(--high); font-weight: 600; }
+
+  .evidence-list {
+    margin-bottom: 16px;
+  }
+
+  .evidence-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+  }
+
+  .evidence-item {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    margin-bottom: 6px;
+    padding: 8px 12px;
+    background: var(--bg-secondary);
+    border-left: 2px solid var(--border-accent);
+    border-radius: 0 4px 4px 0;
+    font-size: 12px;
+    color: var(--text-secondary);
+  }
+
+  .evidence-item::before {
+    content: '▸';
+    color: var(--accent-blue);
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  .evidence-item a {
+    color: var(--accent-blue);
+    text-decoration: none;
+    font-size: 10px;
+    opacity: 0.8;
+  }
+
+  .evidence-item a:hover { opacity: 1; text-decoration: underline; }
+
+  .summary-text {
+    font-size: 12px;
+    color: var(--text-secondary);
+    line-height: 1.8;
+    padding: 12px 14px;
+    background: var(--bg-secondary);
+    border-radius: 6px;
+    border-left: 3px solid var(--border-accent);
+  }
+
+  .trade-idea {
+    margin-top: 12px;
+    padding: 10px 14px;
+    background: rgba(139, 92, 246, 0.06);
+    border: 1px solid rgba(139, 92, 246, 0.2);
+    border-radius: 6px;
+    font-size: 12px;
+    color: var(--text-secondary);
+  }
+
+  .trade-idea-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent-purple);
+    margin-bottom: 4px;
+  }
+
+  .timeline-note {
+    margin-top: 10px;
+    padding: 8px 12px;
+    background: rgba(59, 130, 246, 0.05);
+    border: 1px solid rgba(59, 130, 246, 0.15);
+    border-radius: 4px;
+    font-size: 11px;
+    color: var(--text-muted);
+  }
+
+  .timeline-note strong { color: var(--accent-blue); }
+
+  /* Action Items Section */
+  .action-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 16px;
+    margin-bottom: 16px;
+  }
+
+  .action-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 20px;
+  }
+
+  .action-card-title {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text-muted);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .ticker-highlight {
+    display: inline-block;
+    background: var(--accent-blue-bg);
+    color: var(--accent-blue);
+    border: 1px solid rgba(59, 130, 246, 0.3);
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-weight: 700;
+    font-size: 12px;
+  }
+
+  .action-item {
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 12px;
+    color: var(--text-secondary);
+    line-height: 1.6;
+  }
+
+  .action-item:last-child { border-bottom: none; }
+
+  .date-tag {
+    display: inline-block;
+    background: var(--medium-bg);
+    color: var(--medium);
+    border: 1px solid var(--medium-border);
+    padding: 1px 8px;
+    border-radius: 3px;
+    font-size: 10px;
+    font-weight: 700;
+  }
+
+  .catalyst-date {
+    font-size: 11px;
+    color: var(--medium);
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+
+  .surprise-box {
+    margin-top: 10px;
+    display: grid;
+    gap: 8px;
+  }
+
+  .surprise-bullish {
+    padding: 8px 12px;
+    background: var(--high-bg);
+    border: 1px solid var(--high-border);
+    border-radius: 4px;
+    font-size: 11px;
+    color: var(--text-secondary);
+  }
+
+  .surprise-bullish::before { content: '▲ BULL: '; color: var(--high); font-weight: 700; }
+
+  .surprise-bearish {
+    padding: 8px 12px;
+    background: var(--low-bg);
+    border: 1px solid var(--low-border);
+    border-radius: 4px;
+    font-size: 11px;
+    color: var(--text-secondary);
+  }
+
+  .surprise-bearish::before { content: '▼ BEAR: '; color: var(--low); font-weight: 700; }
+
+  .footer {
+    background: var(--bg-secondary);
+    border-top: 1px solid var(--border);
+    padding: 20px 40px;
+    text-align: center;
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-top: 48px;
+  }
+
+  .number-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    background: var(--border);
+    border-radius: 50%;
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--text-muted);
+    flex-shrink: 0;
+  }
+
+  .divider { border: none; border-top: 1px solid var(--border); margin: 8px 0; }
+
+  @media (max-width: 768px) {
+    .header { padding: 16px 20px; }
+    .container { padding: 20px; }
+    .meta-grid { grid-template-columns: 1fr; }
+    .action-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-inner">
+    <h1>📊 DAILY THEME SCANNER — <span>2026-05-18</span></h1>
+    <div class="header-meta">
+      <span><span class="dot"></span> PRE-MARKET</span>
+      <span>🕐 Monday, May 18, 2026</span>
+      <span>📍 5 Narratives · 5 Signals · 5 Catalysts</span>
+    </div>
+  </div>
+</header>
+
+<div class="container">
+
+  <!-- EMERGING NARRATIVES -->
+  <div class="section-header">
+    <span class="number-badge">I</span>
+    <div>
+      <div class="section-label">Section 1</div>
+      <div class="section-title">Emerging Narratives</div>
+    </div>
+    <span class="section-count">5 themes</span>
+  </div>
+
+  <!-- Narrative 1 -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">1. Iran War Energy-Stagflation Trap</div>
+      <div class="badges">
+        <span class="badge badge-high">HIGH conviction</span>
+        <span class="badge badge-stage">DEVELOPING</span>
+      </div>
+    </div>
+
+    <div class="evidence-list">
+      <div class="evidence-label">Evidence</div>
+      <div class="evidence-item">Brent crude above $111/bbl (up 50%+ since Feb 28 conflict onset); WTI at $104.16. <a href="https://www.aljazeera.com/economy/2026/5/12/us-faces-rising-costs-with-iran-war-driving-energy-prices-inflation-higher" target="_blank">[Al Jazeera, May 12]</a></div>
+      <div class="evidence-item">CPI rose 3.8% YoY in April — highest since May 2023 — gasoline +15.6%. <a href="https://www.washingtonpost.com/business/2026/05/12/iran-inflation-trump-oil-gas-prices/" target="_blank">[WaPo, May 12]</a></div>
+      <div class="evidence-item">Fed funds held 3.50–3.75%; rate HIKE probability climbing to 45% on CME FedWatch. <a href="https://moneybase.com/blog/news/global-markets-ai-stocks-inflation-update-may-2026" target="_blank">[Moneybase]</a></div>
+    </div>
+
+    <div class="meta-grid">
+      <div class="meta-item">
+        <div class="meta-label">Primary Beneficiaries</div>
+        <div class="meta-value"><span class="ticker-green">XOM · CVX · PSX · MPC · VLO · SLB · HAL</span></div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">Secondary Beneficiaries</div>
+        <div class="meta-value"><span class="ticker">GLD · TIP · BX · KMI · ET</span></div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">Losers / Disrupted</div>
+        <div class="meta-value"><span class="ticker-red">AAL · DAL · UAL · AMZN · TGT · TSCO · REITs</span></div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">Earnings Impact Timeline</div>
+        <div class="meta-value">Immediate — Q2 2026 (Jul–Aug) fully absorbs energy cost shock</div>
+      </div>
+    </div>
+
+    <div class="summary-text">The US-Iran conflict (began Feb 28) has created a classic stagflation setup: energy prices running hot, consumer inflation accelerating past the Fed's comfort zone, and growth risks rising simultaneously. The Strait of Hormuz remains partially disrupted despite a fragile ceasefire, keeping ~200 tankers stranded and removing 20% of global oil supply from frictionless flow. The Fed is boxed in — raising rates into an energy shock risks recession; cutting into 3.8% CPI is politically untenable. This dominant macro narrative is NOT yet fully priced into consumer cyclical earnings guidance.</div>
+  </div>
+
+  <!-- Narrative 2 -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">2. AI Infrastructure vs. ROI Reckoning</div>
+      <div class="badges">
+        <span class="badge badge-high">HIGH conviction</span>
+        <span class="badge badge-stage">DEVELOPING</span>
+      </div>
+    </div>
+
+    <div class="evidence-list">
+      <div class="evidence-label">Evidence</div>
+      <div class="evidence-item">Big-4 hyperscalers set to spend $710B on AI capex in 2026; META raised by $15B → stock fell 9% intraday — market now penalizing spend without return. <a href="https://247wallst.com/investing/2026/05/01/the-big-4-hyperscalers-are-spending-710-billion-on-ai-heres-the-stock-that-profits-most/" target="_blank">[247 Wall St, May 1]</a></div>
+      <div class="evidence-item">NVDA Q1 FY2027 earnings due May 20 post-market; consensus $78B revenue; forward Q2 guide expected ~$87B. <a href="https://www.fool.com/investing/2026/05/16/nvidia-reports-earnings-may-20-metric-matters/" target="_blank">[Motley Fool, May 16]</a></div>
+      <div class="evidence-item">Broadcom AI semiconductor revenue hit $10.7B in Q2 FY2026, up ~140% YoY. <a href="https://www.thestreet.com/investing/stocks/broadcom-guidance-reveals-one-signal-getting-unusual-attention" target="_blank">[TheStreet]</a></div>
+    </div>
+
+    <div class="meta-grid">
+      <div class="meta-item">
+        <div class="meta-label">Primary Beneficiaries</div>
+        <div class="meta-value"><span class="ticker-green">NVDA · AVGO · MRVL · AMD · ANET</span></div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">Secondary Beneficiaries</div>
+        <div class="meta-value"><span class="ticker">EQIX · DLR · VST · NRG · CEG</span></div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">Losers / Disrupted</div>
+        <div class="meta-value"><span class="ticker-red">Legacy SaaS · mid-tier GPU startups</span></div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">Earnings Impact Timeline</div>
+        <div class="meta-value">Immediate — NVDA May 20 is the fulcrum event</div>
+      </div>
+    </div>
+
+    <div class="summary-text">Markets have shifted from rewarding the <em>size</em> of AI commitment to demanding <em>evidence of return</em>. META's stock fell 9% intraday on a capex raise not paired with monetization data — a regime change from 2024. Nvidia's May 20 report is the most important single print of the quarter: a beat-and-raise validates the AI thesis; a miss or soft guide accelerates the sector rotation already underway in software.</div>
+  </div>
+
+  <!-- Narrative 3 -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">3. SaaS / Software AI Substitution Shock</div>
+      <div class="badges">
+        <span class="badge badge-high">HIGH conviction</span>
+        <span class="badge badge-stage">DEVELOPING</span>
+      </div>
+    </div>
+
+    <div class="evidence-list">
+      <div class="evidence-label">Evidence</div>
+      <div class="evidence-item">Broad software indices down ~25% from 12-month highs; sector off 20%+ YTD on fears agentic AI replaces per-seat licenses. <a href="https://www.cnbc.com/2026/02/06/ai-anthropic-tools-saas-software-stocks-selloff.html" target="_blank">[CNBC, Feb 6]</a></div>
+      <div class="evidence-item">Industry commentary shifting to "AI is eating the software budget" — structural substitution mirroring on-prem-to-cloud at a faster pace. <a href="https://www.bain.com/insights/why-saas-stocks-have-dropped-and-what-it-signals-for-softwares-next-chapter/" target="_blank">[Bain & Co]</a></div>
+      <div class="evidence-item">Michael Burry warning SaaS firms are downplaying AI revenue risk; JP Morgan says market pricing "worst-case" scenario. <a href="https://stocktwits.com/news-articles/markets/equity/michael-burry-warns-saas-downplaying-ai-risks/cZXl6DORejt" target="_blank">[StockTwits]</a></div>
+    </div>
+
+    <div class="meta-grid">
+      <div class="meta-item">
+        <div class="meta-label">Beneficiaries of Disruption</div>
+        <div class="meta-value"><span class="ticker-green">MSFT · GOOGL · AMZN · SNOW · DDOG · MDB</span></div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">Losers / Disrupted</div>
+        <div class="meta-value"><span class="ticker-red">CRM · WDAY · NOW · ADSK · TEAM · ZM</span></div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">Pricing Shift</div>
+        <div class="meta-value">Per-seat → outcome/usage-based; $500B+ revenue pool at risk over 3–5 years</div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">Earnings Impact Timeline</div>
+        <div class="meta-value">Q2–Q3 2026: first real churn data; pricing model transitions in guidance language</div>
+      </div>
+    </div>
+
+    <div class="summary-text">Software stocks have undergone a violent de-rating as markets wake up to the possibility that AI agents can replicate core enterprise SaaS functions at a fraction of the cost. The key near-term signal: any SaaS company reporting materially weaker net revenue retention or explicitly flagging AI competition in Q2 earnings calls will validate the bear case and likely drag the whole cohort. The debate is whether this is a slow multi-year transition (consensus) or an acute revenue cliff (bear case).</div>
+  </div>
+
+  <!-- Narrative 4 -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">4. Defense Sector Paradox — Buy the Dip on Rearming</div>
+      <div class="badges">
+        <span class="badge badge-medium">MEDIUM conviction</span>
+        <span class="badge badge-stage">EARLY</span>
+      </div>
+    </div>
+
+    <div class="evidence-list">
+      <div class="evidence-label">Evidence</div>
+      <div class="evidence-item">ITA ETF down ~12% since March despite Iran war; LMT missed Q1 estimates (EPS $6.44 vs $6.74 consensus). <a href="https://www.cnbc.com/2026/04/28/defense-stocks-have-floundered-since-the-iran-war-began-heres-why.html" target="_blank">[CNBC, Apr 28]</a></div>
+      <div class="evidence-item">US ammunition stocks severely depleted; will take "1–4 years to rebuild"; proposed 2027 defense budget $1.5T (vs $901B in 2026). <a href="https://time.com/article/2026/05/12/US-ammunition-shortage-iran-war/" target="_blank">[Time, May 12]</a></div>
+      <div class="evidence-item">US Q1 2026 Foreign Military Sales hit $45B+, 81% to Middle East allies. <a href="https://dsm.forecastinternational.com/2026/04/23/us-foreign-military-sales-q1-2026-middle-east-iran-war/" target="_blank">[Defense Security Monitor, Apr 23]</a></div>
+    </div>
+
+    <div class="meta-grid">
+      <div class="meta-item">
+        <div class="meta-label">Primary Beneficiaries</div>
+        <div class="meta-value"><span class="ticker-green">RTX · NOC · GD · LDOS</span></div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">Secondary Beneficiaries</div>
+        <div class="meta-value"><span class="ticker">KTOS · CACI · SAIC · AXON</span></div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">Avoid / Underweight</div>
+        <div class="meta-value"><span class="ticker-red">LMT (F-35 execution risk) · BA (commercial stretched)</span></div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">Earnings Impact Timeline</div>
+        <div class="meta-value">Multiyear — restocking contracts are 2–5 year programs</div>
+      </div>
+    </div>
+
+    <div class="summary-text">The defense sector is behaving counterintuitively: despite the largest US military engagement since Iraq, defense stocks are down ~12% since the conflict began. Short-term reasons: Q1 earnings disappointed on production capacity constraints; budget uncertainty. But the fundamental case — depleted munitions, ally rearming, multi-year restocking cycle, $45B+ Q1 FMS — is NOT being priced. RTX (beat and raised) is the standout; LMT represents stock-specific execution risk, not a sector problem. This divergence is an opportunity.</div>
+  </div>
+
+  <!-- Narrative 5 -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">5. China Quiet Resilience / EM Rotation</div>
+      <div class="badges">
+        <span class="badge badge-medium">MEDIUM conviction</span>
+        <span class="badge badge-stage">EARLY</span>
+      </div>
+    </div>
+
+    <div class="evidence-list">
+      <div class="evidence-label">Evidence</div>
+      <div class="evidence-item">China kept LPR unchanged (1-yr: 3.0%, 5-yr: 3.5%) for 11th straight month; GDP holding despite Iran oil shock. <a href="https://www.cnbc.com/2026/04/20/china-keeps-benchmark-lending-rates-unchanged-as-economic-growth-revs-up-amid-mounting-middle-east-risk-mount-." target="_blank">[CNBC, Apr 20]</a></div>
+      <div class="evidence-item">Hong Kong equity markets and IPO applications surging; hedge fund sentiment in region at multi-year highs. <a href="https://www.wellington.com/en-sg/intermediary/insights/hedge-funds-outlook" target="_blank">[Wellington]</a></div>
+      <div class="evidence-item">EM enter 2026 with strong capital inflows; investors rotating from US equities amid Iran war volatility. <a href="https://www.lseg.com/en/insights/data-analytics/emerging-markets-a-key-investment-theme-for-2026" target="_blank">[LSEG]</a></div>
+    </div>
+
+    <div class="meta-grid">
+      <div class="meta-item">
+        <div class="meta-label">Primary Beneficiaries</div>
+        <div class="meta-value"><span class="ticker-green">FXI · KWEB · EEM · MCHI · FLKR (Korea semis)</span></div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">Secondary Beneficiaries</div>
+        <div class="meta-value"><span class="ticker">EWZ · EIDO · India domestic demand plays</span></div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">Risks</div>
+        <div class="meta-value"><span class="ticker-red">Fed rate hike (USD strength) · EM debt at risk if rates rise</span></div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">Earnings Impact Timeline</div>
+        <div class="meta-value">Gradual — 2–4 quarter thesis; PBOC rate decision + MSCI rebalancing near-term</div>
+      </div>
+    </div>
+
+    <div class="summary-text">China's economy is showing quiet resilience while US growth faces Iran war headwinds. The PBOC holds dry powder ready to cut RRR and rates if growth falters. The narrative is still EARLY: most global allocators remain underweight EM, and the rotation trade hasn't been broadly publicized. Primary risk: a surprise Fed rate hike strengthens the USD and pressures EM assets — possible but not base case.</div>
+  </div>
+
+  <!-- EARNINGS SIGNALS -->
+  <div class="section-header">
+    <span class="number-badge">II</span>
+    <div>
+      <div class="section-label">Section 2</div>
+      <div class="section-title">Earnings Signals</div>
+    </div>
+    <span class="section-count">5 signals</span>
+  </div>
+
+  <!-- Signal 1 -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">Signal 1: Hyperscaler Capex — Market Now Demands ROI, Not Just Commitment</div>
+      <div class="badges">
+        <span class="badge badge-strong">STRONG</span>
+        <span class="badge badge-stage">Language Shift</span>
+      </div>
+    </div>
+    <div class="meta-grid">
+      <div class="meta-item">
+        <div class="meta-label">Companies</div>
+        <div class="meta-value"><span class="ticker">META · MSFT · AMZN · GOOGL</span></div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">Type</div>
+        <div class="meta-value">Language shift + unusual post-earnings reaction</div>
+      </div>
+    </div>
+    <div class="summary-text">Meta raised 2026 capex guidance by $15B; stock fell 9% intraday — the first major case of a hyperscaler being punished for AI spending. Management teams are increasingly being asked to quantify AI monetization timelines, not just cite aggregate spending plans. This is a regime change from 2024, when any AI capex announcement was bullish.</div>
+    <div class="trade-idea">
+      <div class="trade-idea-label">💡 Trade Idea</div>
+      Long GOOGL (AI revenue better-articulated via Search) and MSFT (Copilot seat data). Short META into next earnings unless monetization metrics clearly articulated. Watch for "AI payback period" as the new standard analyst question.
+    </div>
+  </div>
+
+  <!-- Signal 2 -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">Signal 2: NVDA Pre-Earnings — Highest-Stakes Single Print of the Quarter</div>
+      <div class="badges">
+        <span class="badge badge-strong">STRONG</span>
+        <span class="badge badge-stage">Upcoming Earnings</span>
+      </div>
+    </div>
+    <div class="meta-grid">
+      <div class="meta-item">
+        <div class="meta-label">Primary</div>
+        <div class="meta-value"><span class="ticker-green">NVDA</span> — Reports May 20 post-close</div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">Read-Through</div>
+        <div class="meta-value"><span class="ticker">AMD · AVGO · MRVL · ANET</span></div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">Consensus Estimate</div>
+        <div class="meta-value">Q1 Revenue: $78B | Q2 Guide: ~$87B</div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">Options Pricing</div>
+        <div class="meta-value">~8–10% implied move; institutional positioning trimmed</div>
+      </div>
+    </div>
+    <div class="summary-text">Nvidia reports Q1 FY2027 on May 20. The company has beaten estimates for 8+ consecutive quarters. Key metric: data center revenue vs. the $78B consensus. Q2 guidance above $85B is likely bullish for the entire sector; below $80B triggers meaningful de-risking. The post-earnings reaction in AMD, AVGO, and ANET will reveal whether strength is NVDA-specific or sector-wide.</div>
+    <div class="trade-idea">
+      <div class="trade-idea-label">💡 Trade Idea</div>
+      Reduce position sizing into NVDA earnings given binary risk. Post-earnings, if beat: buy the dip in AVGO/ANET as secondary beneficiaries. If miss: avoid all semiconductor names for at least 3 sessions.
+    </div>
+  </div>
+
+  <!-- Signal 3 -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">Signal 3: LMT Miss vs. RTX Beat — Defense Sector Bifurcation</div>
+      <div class="badges">
+        <span class="badge badge-moderate">MODERATE</span>
+        <span class="badge badge-stage">Sector Read-Through</span>
+      </div>
+    </div>
+    <div class="meta-grid">
+      <div class="meta-item">
+        <div class="meta-label">LMT Q1 Result</div>
+        <div class="meta-value"><span class="ticker-red">MISS</span> — EPS $6.44 vs $6.74 est; Rev $18.0B vs $18.26B; FCF negative</div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">RTX Q1 Result</div>
+        <div class="meta-value"><span class="ticker-green">BEAT</span> — EPS $1.78 vs $1.52 est; Rev +10% organic; FY guidance raised</div>
+      </div>
+    </div>
+    <div class="summary-text">Lockheed Martin Q1: EPS $6.44 (missed $6.74), revenue $18.0B (missed), negative FCF of ($291M). RTX: adjusted EPS $1.78 (beat by $0.26), revenue up 10% organically, raised full-year EPS guidance to $6.70–$6.90. This bifurcation signals execution risk at the program level (LMT F-35 constraints), NOT a sector problem. RTX's aftermarket/services mix is proving far more resilient.</div>
+    <div class="trade-idea">
+      <div class="trade-idea-label">💡 Trade Idea</div>
+      Pair trade: Long RTX / Short LMT into the next earnings cycle. Structural preference for defense companies with services/maintenance revenue over pure production plays.
+    </div>
+  </div>
+
+  <!-- Signal 4 -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">Signal 4: Retail "K-Shape" Deepening — Consumer Bifurcation</div>
+      <div class="badges">
+        <span class="badge badge-moderate">MODERATE</span>
+        <span class="badge badge-stage">Recurring Theme</span>
+      </div>
+    </div>
+    <div class="meta-grid">
+      <div class="meta-item">
+        <div class="meta-label">Companies</div>
+        <div class="meta-value"><span class="ticker">WMT · TGT · HD · LOW</span></div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">Pattern</div>
+        <div class="meta-value">Multiple retailers lowered FY guidance; cited consumer "hesitancy" on big purchases</div>
+      </div>
+    </div>
+    <div class="summary-text">Walmart (Q4 FY26) noted first-ever profitable e-commerce quarter but issued cautious FY27 guidance. Target, Home Depot, and Lowe's all lowered full-year profit outlooks. The K-shaped dynamic is deepening: lower-income cohorts are squeezed by the energy price shock; households earning $100K+ remain resilient and trading into value retailers like Walmart. WMT Q1 FY27 due May 21 is the next data point.</div>
+    <div class="trade-idea">
+      <div class="trade-idea-label">💡 Trade Idea</div>
+      Long WMT (trade-down beneficiary / stagflation hedge). Short TGT (more discretionary exposure, less pricing power). Avoid mid-tier retail ahead of Q2.
+    </div>
+  </div>
+
+  <!-- Signal 5 -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">Signal 5: SaaS Risk Factor Language Shift — "AI Competition" Now in Disclosures</div>
+      <div class="badges">
+        <span class="badge badge-moderate">MODERATE</span>
+        <span class="badge badge-stage">New Terminology</span>
+      </div>
+    </div>
+    <div class="meta-grid">
+      <div class="meta-item">
+        <div class="meta-label">Companies</div>
+        <div class="meta-value"><span class="ticker-red">CRM · WDAY · NOW · ADSK</span></div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">Implication</div>
+        <div class="meta-value">Companies don't add risk factors they don't believe are becoming real</div>
+      </div>
+    </div>
+    <div class="summary-text">Multiple enterprise software companies introduced "AI agent substitution risk" in their Q1 2026 risk factors for the first time. The sector is already down 20% YTD, but the actual revenue impact — churn, pricing pressure, NRR compression — hasn't shown up in reported numbers yet. Q2 2026 earnings (July–August) will be the first real test. Any major SaaS name reporting >200bps NRR compression attributed to AI competition = sector-wide sell signal.</div>
+    <div class="trade-idea">
+      <div class="trade-idea-label">💡 Trade Idea</div>
+      Wait for Q2 data before initiating large SaaS shorts. Avoid renewal-heavy SaaS positions heading into Q2 earnings season. Monitor NRR trends as leading indicator.
+    </div>
+  </div>
+
+  <!-- CATALYST MAP -->
+  <div class="section-header">
+    <span class="number-badge">III</span>
+    <div>
+      <div class="section-label">Section 3</div>
+      <div class="section-title">Upcoming Catalyst Map</div>
+    </div>
+    <span class="section-count">5 catalysts · next 4 weeks</span>
+  </div>
+
+  <!-- Catalyst 1 -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">Catalyst 1: Nvidia Q1 FY2027 Earnings</div>
+      <div class="badges">
+        <span class="badge badge-high">HIGH IMPACT</span>
+      </div>
+    </div>
+    <div class="catalyst-date">📅 May 20, 2026 — Post-Market Close</div>
+    <div class="meta-grid">
+      <div class="meta-item">
+        <div class="meta-label">Consensus</div>
+        <div class="meta-value">$78B revenue, Q2 guide ~$87B, EPS beat</div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">Exposed Tickers</div>
+        <div class="meta-value"><span class="ticker">NVDA · AMD · AVGO · MRVL · ANET · SMCI · MSFT · GOOGL · META</span></div>
+      </div>
+    </div>
+    <div class="surprise-box">
+      <div class="surprise-bullish">Revenue $82–85B + Q2 guide >$90B (Blackwell ramp accelerates) → broad AI sector rally +5–10% in semiconductor index</div>
+      <div class="surprise-bearish">Guide below $80B (export controls or demand softness) → 15–20% sector correction, broad risk-off</div>
+    </div>
+    <div class="summary-text" style="margin-top: 12px;">Nvidia's earnings have become the single most important macro event for equity markets, surpassing even Fed meetings in immediate impact. The "one number that matters most" is data center revenue vs. hyperscaler capex guidance — if they track, AI thesis confirmed. This report will set the tone for the entire next quarter.</div>
+  </div>
+
+  <!-- Catalyst 2 -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">Catalyst 2: Walmart + Target Q1 FY2027 Earnings</div>
+      <div class="badges">
+        <span class="badge badge-high">HIGH IMPACT</span>
+      </div>
+    </div>
+    <div class="catalyst-date">📅 May 21, 2026 — Pre-Market</div>
+    <div class="meta-grid">
+      <div class="meta-item">
+        <div class="meta-label">WMT Consensus</div>
+        <div class="meta-value">EPS $0.65, Revenue $172.5B (+5.5% YoY)</div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">Exposed Tickers</div>
+        <div class="meta-value"><span class="ticker">WMT · TGT · COST · DG · DLTR · KR · HD · LOW</span></div>
+      </div>
+    </div>
+    <div class="surprise-box">
+      <div class="surprise-bullish">WMT confirms trade-down acceleration, raises FY27 guidance → "value retail as stagflation hedge" validated</div>
+      <div class="surprise-bearish">Both miss on traffic + guidance cut citing energy squeeze → "consumer recession" thesis activated, defensive rotation</div>
+    </div>
+    <div class="summary-text" style="margin-top: 12px;">Walmart's earnings land the day after Nvidia, creating a potentially dramatic one-two punch. Same-store sales traffic data will be the most reliable real-time barometer of US consumer stress under the Iran energy shock. A WMT miss would be alarming and would likely pressure the broader market significantly.</div>
+  </div>
+
+  <!-- Catalyst 3 -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">Catalyst 3: Iran-US Ceasefire / Hormuz Resolution</div>
+      <div class="badges">
+        <span class="badge badge-high">EXTREME IMPACT</span>
+      </div>
+    </div>
+    <div class="catalyst-date">📅 Ongoing — Binary event; Trump "clock is ticking" warning issued May 17</div>
+    <div class="meta-grid">
+      <div class="meta-item">
+        <div class="meta-label">Consensus</div>
+        <div class="meta-value">Fragile status quo; partial Hormuz reopening over 4–8 weeks</div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">Source</div>
+        <div class="meta-value"><a href="https://www.aljazeera.com/news/liveblog/2026/5/17/iran-war-live-tehran-eyes-tolls-in-hormuz-trump-warns-of-very-bad-time" target="_blank" style="color: var(--accent-blue);">Al Jazeera Live Updates, May 17</a></div>
+      </div>
+    </div>
+    <div class="surprise-box">
+      <div class="surprise-bullish">Full ceasefire + Hormuz reopening → oil crashes $20–30/bbl, CPI expectations fall, Fed cut probability surges, consumer stocks rally hard</div>
+      <div class="surprise-bearish">Ceasefire collapses, full Hormuz blockade → oil to $130+, CPI shock, potential Fed rate hike, recession fears spike</div>
+    </div>
+    <div class="summary-text" style="margin-top: 12px;">The Iran ceasefire is the highest-impact binary event in the market right now and is being significantly underappreciated. A ceasefire deal — even partial — would likely trigger an immediate $15–25/barrel oil decline, resetting the entire inflation narrative and dramatically increasing Fed rate cut expectations. This would be the most impactful single-day macro event since the conflict began.</div>
+  </div>
+
+  <!-- Catalyst 4 -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">Catalyst 4: FOMC April Meeting Minutes Release</div>
+      <div class="badges">
+        <span class="badge badge-medium">MEDIUM IMPACT</span>
+      </div>
+    </div>
+    <div class="catalyst-date">📅 ~May 20, 2026 (3 weeks after April 28–29 meeting)</div>
+    <div class="meta-grid">
+      <div class="meta-item">
+        <div class="meta-label">Consensus</div>
+        <div class="meta-value">Cautious tone, rates on hold, watching Iran inflation impact</div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">Exposed Tickers</div>
+        <div class="meta-value"><span class="ticker-red">TLT · IEF · REITs · Growth tech</span> · <span class="ticker-green">XLF · short-duration</span></div>
+      </div>
+    </div>
+    <div class="surprise-box">
+      <div class="surprise-bearish">Minutes reveal active discussion of rate HIKE scenarios given CPI at 3.8% — market pricing <5% hike probability; any hawkish tilt reprices dramatically</div>
+    </div>
+    <div class="summary-text" style="margin-top: 12px;">The Dallas Fed paper on Iran war inflation implies the commodity shock is NOT transitory. If the minutes show meaningful discussion of hike optionality, it would force a painful repricing of the entire interest rate curve. Markets are currently assuming the Fed will "look through" the energy shock — a dangerous assumption given sustained CPI prints above 3.5%.</div>
+  </div>
+
+  <!-- Catalyst 5 -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">Catalyst 5: US Fiscal Trajectory / Debt Limit Concern</div>
+      <div class="badges">
+        <span class="badge badge-low">LOW (near-term)</span>
+        <span class="badge badge-stage">EARLY SIGNAL</span>
+      </div>
+    </div>
+    <div class="catalyst-date">📅 Projected ceiling breach: November 2026 — but bond market may price earlier</div>
+    <div class="meta-grid">
+      <div class="meta-item">
+        <div class="meta-label">Consensus</div>
+        <div class="meta-value">Fiscal concern is a "late 2026" problem; near-term managed</div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">Exposed Tickers</div>
+        <div class="meta-value"><span class="ticker-red">TLT · Growth stocks · Rate-sensitive assets</span></div>
+      </div>
+    </div>
+    <div class="surprise-box">
+      <div class="surprise-bearish">$1.5T defense budget + Iran war costs + tax cut extensions exhaust headroom faster than projected → 10-year Treasury toward 5%+, growth equity headwind</div>
+    </div>
+    <div class="summary-text" style="margin-top: 12px;">The debt ceiling was raised by $5T in July 2025, but the proposed 2027 defense budget of $1.5T (vs. $901B in 2026), combined with Iran war costs, could exhaust headroom faster than projected. 10-year already at 4.55% (+9bps recent spike). If bond market begins pricing fiscal concerns earlier, this compounds all other macro pressures. Monitor 10-year yield as the leading indicator.</div>
+  </div>
+
+  <!-- ACTION ITEMS -->
+  <div class="section-header">
+    <span class="number-badge">IV</span>
+    <div>
+      <div class="section-label">Section 4</div>
+      <div class="section-title">Action Items</div>
+    </div>
+  </div>
+
+  <div class="action-grid">
+    <div class="action-card">
+      <div class="action-card-title">🎯 Top 3 Tickers to Research Today</div>
+      <div class="action-item">
+        <div><span class="ticker-highlight">NVDA</span> — Reports May 20 post-close. Key metrics: data center rev vs $78B consensus; Q2 guide vs $87B. Reduce position sizing now — binary event with 8–10% priced move.</div>
+      </div>
+      <div class="action-item">
+        <div><span class="ticker-highlight">RTX</span> — Cleanest defense trade: beat Q1, raised full-year guidance, services/aftermarket mix protects from production risk. Entry point as defense sector sits paradoxically at lows vs. Iran war reality.</div>
+      </div>
+      <div class="action-item">
+        <div><span class="ticker-highlight">XOM / CVX</span> — Energy longs are crowded and asymmetric: ceasefire deal craters the trade. Iran ceasefire positive signal = immediate trigger to trim/short energy longs.</div>
+      </div>
+    </div>
+
+    <div class="action-card">
+      <div class="action-card-title">⚙️ Position Adjustments</div>
+      <div class="action-item">Reduce or hedge NVDA position into earnings (binary risk)</div>
+      <div class="action-item">Avoid or reduce legacy SaaS (CRM, WDAY, ADSK) ahead of Q2 earnings</div>
+      <div class="action-item">Consider RTX long / LMT short pair trade in defense sector</div>
+      <div class="action-item">WMT long as stagflation/trade-down hedge vs. TGT short</div>
+      <div class="action-item">Trim crowded energy longs if Iran ceasefire signals improve</div>
+    </div>
+
+    <div class="action-card">
+      <div class="action-card-title">📅 Key Dates This Week</div>
+      <div class="action-item"><span class="date-tag">MAY 20</span> · <strong>After close:</strong> NVDA Q1 FY2027 earnings — AI thesis validation or rejection</div>
+      <div class="action-item"><span class="date-tag">MAY 20</span> · <strong>~3pm ET:</strong> FOMC April meeting minutes — hawkish tail risk</div>
+      <div class="action-item"><span class="date-tag">MAY 21</span> · <strong>Pre-market:</strong> WMT + TGT Q1 FY2027 earnings — consumer health barometer</div>
+      <div class="action-item"><span class="date-tag">ONGOING</span> · Iran ceasefire/Hormuz negotiations — monitor Trump statements daily; highest-impact binary macro event</div>
+    </div>
+  </div>
+
+</div>
+
+<div class="footer">
+  Daily Theme Scanner · Generated May 18, 2026 · Pre-Market · All data sourced from public financial news and company filings as of market open. This report is for informational purposes only and does not constitute investment advice.
+</div>
+
+</body>
+</html>
