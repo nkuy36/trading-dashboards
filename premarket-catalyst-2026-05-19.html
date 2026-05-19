@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pre-Market Catalyst Scan — May 19, 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0e17;
+    --bg2: #0f1420;
+    --bg3: #151c2c;
+    --bg4: #1a2236;
+    --border: #1e2d45;
+    --text: #e2e8f0;
+    --muted: #7a8ba8;
+    --green: #22c55e;
+    --green-dim: #16a34a33;
+    --red: #ef4444;
+    --red-dim: #dc262633;
+    --amber: #f59e0b;
+    --amber-dim: #d9770633;
+    --blue: #3b82f6;
+    --blue-dim: #2563eb22;
+    --purple: #a78bfa;
+    --cyan: #22d3ee;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'JetBrains Mono', 'Courier New', monospace;
+    font-size: 13px;
+    line-height: 1.6;
+    padding: 0;
+  }
+
+  /* Header */
+  .header {
+    background: linear-gradient(135deg, #0a0e17 0%, #0f1e35 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 24px 32px 20px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .header-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .header h1 {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--cyan);
+    letter-spacing: 1px;
+  }
+  .header .date {
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 4px;
+  }
+  .header .badge {
+    background: var(--red-dim);
+    border: 1px solid var(--red);
+    color: var(--red);
+    padding: 4px 12px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.7} }
+
+  /* Nav */
+  .nav {
+    display: flex;
+    gap: 8px;
+    margin-top: 14px;
+    flex-wrap: wrap;
+  }
+  .nav a {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 11px;
+    padding: 3px 10px;
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    transition: all 0.2s;
+  }
+  .nav a:hover { color: var(--cyan); border-color: var(--cyan); }
+
+  /* Main layout */
+  .container { max-width: 1200px; margin: 0 auto; padding: 24px 32px; }
+
+  /* Urgent banner */
+  .urgent-banner {
+    background: var(--red-dim);
+    border: 1px solid var(--red);
+    border-radius: 6px;
+    padding: 14px 18px;
+    margin-bottom: 24px;
+  }
+  .urgent-banner h3 {
+    color: var(--red);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+  }
+  .urgent-banner ul { list-style: none; }
+  .urgent-banner li {
+    color: var(--text);
+    font-size: 12px;
+    padding: 2px 0;
+  }
+  .urgent-banner li::before { content: "⚠ "; color: var(--red); }
+
+  /* Briefing box */
+  .briefing-box {
+    background: var(--bg3);
+    border: 1px solid var(--blue);
+    border-radius: 6px;
+    padding: 16px 20px;
+    margin-bottom: 24px;
+  }
+  .briefing-box h3 {
+    color: var(--blue);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    margin-bottom: 10px;
+  }
+  .briefing-box p { color: var(--text); font-size: 12px; line-height: 1.7; }
+
+  /* Section headers */
+  .section {
+    margin-bottom: 32px;
+  }
+  .section-title {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: var(--muted);
+    text-transform: uppercase;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 8px;
+    margin-bottom: 16px;
+  }
+
+  /* Ticker card */
+  .ticker-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 14px 16px;
+    margin-bottom: 10px;
+    transition: border-color 0.2s;
+  }
+  .ticker-card:hover { border-color: var(--cyan); }
+  .ticker-card.bullish { border-left: 3px solid var(--green); }
+  .ticker-card.bearish { border-left: 3px solid var(--red); }
+  .ticker-card.neutral { border-left: 3px solid var(--muted); }
+  .ticker-card.watch { border-left: 3px solid var(--amber); }
+
+  .ticker-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+  .ticker-symbol {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--cyan);
+  }
+  .ticker-name {
+    font-size: 11px;
+    color: var(--muted);
+    margin-left: 6px;
+  }
+  .badge-row { display: flex; gap: 6px; flex-wrap: wrap; }
+  .badge {
+    font-size: 10px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 3px;
+    letter-spacing: 0.5px;
+  }
+  .badge-bull { background: var(--green-dim); color: var(--green); border: 1px solid var(--green); }
+  .badge-bear { background: var(--red-dim); color: var(--red); border: 1px solid var(--red); }
+  .badge-neutral { background: #334155; color: var(--muted); border: 1px solid #475569; }
+  .badge-watch { background: var(--amber-dim); color: var(--amber); border: 1px solid var(--amber); }
+  .badge-yes { background: var(--green-dim); color: var(--green); border: 1px solid var(--green); }
+  .badge-no { background: var(--red-dim); color: var(--red); border: 1px solid var(--red); }
+
+  .ticker-headline {
+    font-size: 12px;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+  .ticker-price {
+    font-size: 11px;
+    color: var(--muted);
+    margin-bottom: 4px;
+  }
+  .ticker-price .up { color: var(--green); }
+  .ticker-price .down { color: var(--red); }
+  .ticker-summary {
+    font-size: 11px;
+    color: var(--muted);
+    font-style: italic;
+    border-top: 1px solid var(--border);
+    padding-top: 6px;
+    margin-top: 6px;
+  }
+
+  /* Trade ideas */
+  .trade-card {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 16px;
+    margin-bottom: 12px;
+  }
+  .trade-card h4 {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--cyan);
+    margin-bottom: 8px;
+  }
+  .trade-card p { font-size: 12px; color: var(--text); margin-bottom: 4px; }
+  .trade-label { color: var(--muted); font-size: 11px; }
+
+  /* Earnings table */
+  .earnings-card {
+    background: var(--bg2);
+    border: 1px solid var(--green);
+    border-radius: 6px;
+    padding: 16px;
+    margin-bottom: 10px;
+  }
+  .earnings-card.miss { border-color: var(--red); }
+  .earnings-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+  .earnings-symbol { font-size: 16px; font-weight: 700; color: var(--cyan); }
+  .earnings-company { font-size: 11px; color: var(--muted); }
+
+  /* Table */
+  table { width: 100%; border-collapse: collapse; font-size: 11px; }
+  th {
+    background: var(--bg4);
+    color: var(--muted);
+    padding: 8px 12px;
+    text-align: left;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    border-bottom: 1px solid var(--border);
+  }
+  td {
+    padding: 7px 12px;
+    border-bottom: 1px solid var(--border);
+    color: var(--text);
+  }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: var(--bg3); }
+  .beat { color: var(--green); font-weight: 600; }
+  .miss { color: var(--red); font-weight: 600; }
+  .inline-up { color: var(--green); }
+  .inline-down { color: var(--red); }
+
+  /* Events */
+  .event-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .event-item:last-child { border-bottom: none; }
+  .event-time {
+    font-size: 11px;
+    color: var(--amber);
+    font-weight: 600;
+    min-width: 120px;
+    flex-shrink: 0;
+  }
+  .event-desc { font-size: 12px; color: var(--text); }
+  .event-desc .high { color: var(--red); font-weight: 600; }
+  .event-desc .med { color: var(--amber); }
+
+  /* ETF scan */
+  .etf-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 14px 16px;
+    margin-bottom: 10px;
+  }
+  .etf-card.bull-theme { border-left: 3px solid var(--green); }
+  .etf-card.bear-theme { border-left: 3px solid var(--red); }
+  .etf-card.neutral-theme { border-left: 3px solid var(--amber); }
+  .etf-theme-name { font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 6px; }
+  .etf-affected { font-size: 11px; color: var(--cyan); margin-bottom: 4px; }
+  .etf-catalyst { font-size: 11px; color: var(--text); margin-bottom: 4px; }
+  .etf-watch { font-size: 11px; color: var(--muted); }
+
+  /* Avoid list */
+  .avoid-list { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 16px; }
+  .avoid-item {
+    background: var(--red-dim);
+    border: 1px solid var(--red);
+    border-radius: 4px;
+    padding: 6px 14px;
+    color: var(--red);
+    font-size: 12px;
+    font-weight: 600;
+  }
+
+  /* Footer */
+  .footer {
+    border-top: 1px solid var(--border);
+    padding: 16px 32px;
+    font-size: 10px;
+    color: var(--muted);
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .footer a { color: var(--blue); text-decoration: none; }
+
+  /* Misc */
+  .star { color: var(--amber); }
+  .no-catalyst { color: var(--muted); font-style: italic; font-size: 11px; }
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media (max-width: 768px) { .two-col { grid-template-columns: 1fr; } .container { padding: 16px; } .header { padding: 16px; } }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-top">
+    <div>
+      <h1>☀️ PRE-MARKET CATALYST SCAN</h1>
+      <div class="date">Tuesday, May 19, 2026 &nbsp;|&nbsp; Generated pre-market &nbsp;|&nbsp; Claude Sonnet 4.6</div>
+    </div>
+    <div class="badge">🔴 CHIP SELL-OFF DAY 2 &nbsp;|&nbsp; NVDA EARNINGS TOMORROW</div>
+  </div>
+  <nav class="nav">
+    <a href="#briefing">Briefing</a>
+    <a href="#watchlist">Watchlist</a>
+    <a href="#etfs">Sectors/ETFs</a>
+    <a href="#earnings">Earnings</a>
+    <a href="#analysts">Analysts</a>
+    <a href="#events">Events</a>
+    <a href="#trades">Trade Ideas</a>
+  </nav>
+</div>
+
+<div class="container">
+
+  <!-- Urgent -->
+  <div class="urgent-banner">
+    <h3>🔴 URGENT FLAGS</h3>
+    <ul>
+      <li><strong>NVDA earnings Wednesday May 20 AMC</strong> — The week's binary event. Pre-earnings drift/positioning all day today.</li>
+      <li><strong>Chip sell-off Day 2</strong> — Nasdaq futures -0.7%, SMH under pressure. Micron down 4th straight session on AI-run-too-far concerns.</li>
+      <li><strong>Iran attack postponed</strong> — Trump called off a scheduled strike; oil falling 2%+ (WTI ~$107). Geopolitical dial turned down.</li>
+    </ul>
+  </div>
+
+  <!-- Morning Briefing -->
+  <div id="briefing" class="briefing-box">
+    <h3>☕ 30-SECOND MORNING BRIEFING</h3>
+    <p>Markets point to a weak open Tuesday with Nasdaq futures down 0.7% as the AI chip sell-off enters day two — Micron has declined four straight sessions and NVDA is drifting ahead of its critical Wednesday night earnings report. The macro backdrop is mixed: oil is falling 2%+ after Trump called off a planned Iran strike, easing geopolitical risk, but the 10-year yield holds at <strong style="color:var(--amber)">4.60%</strong>, maintaining pressure on high-multiple tech. <strong style="color:var(--green)">Home Depot</strong> provided a bright spot, beating Q1 estimates with comparable sales returning to growth and reaffirming full-year guidance (+1% premarket). The dominant story today is NVDA pre-earnings positioning — consensus is ~90% probability of a beat on $78B revenue / $1.77 EPS, but China market share collapse from 95% to 8% is the real bear case. <strong style="color:var(--amber)">SNDK</strong> is the wildcard: Melius just raised their PT by $850 yet the stock is down 3%, signaling supply overhead after a 16% run. <strong style="color:var(--red)">NO EDGE in the broad tape today — sit tight, wait for NVDA direction at open, and size small until Wednesday's print resolves the AI trade.</strong></p>
+  </div>
+
+  <!-- ─────── WATCHLIST ─────── -->
+  <div id="watchlist" class="section">
+    <div class="section-title">§ 1 — WATCHLIST OVERNIGHT CATALYSTS</div>
+
+    <!-- NVDA -->
+    <div class="ticker-card bearish">
+      <div class="ticker-header">
+        <div><span class="ticker-symbol">NVDA</span><span class="ticker-name">NVIDIA Corporation</span></div>
+        <div class="badge-row">
+          <span class="badge badge-bear">BEARISH SHORT-TERM</span>
+          <span class="badge badge-watch">WATCH</span>
+          <span class="star">★ TOP PICK</span>
+        </div>
+      </div>
+      <div class="ticker-headline">China AI chip market share collapsed 95% → 8%; H200 orders stalled; domestic chips >55% China share. Chip sector sell-off Day 2.</div>
+      <div class="ticker-price">Pre-market: ~$222.75 &nbsp;|&nbsp; Range: $218.37–$230.63 &nbsp;|&nbsp; <span class="down">Chip sell-off continuing</span></div>
+      <div class="ticker-price"><strong style="color:var(--red)">🔴 EARNINGS WEDNESDAY MAY 20 AMC</strong> — Consensus: $78B revenue / $1.77 EPS / ~90% beat probability</div>
+      <div class="ticker-summary">THE trade of the week. Every chip move today is a pre-NVDA bet. Wednesday night resolves the AI thesis. Do NOT hold through close Wednesday.</div>
+    </div>
+
+    <!-- SNDK -->
+    <div class="ticker-card watch">
+      <div class="ticker-header">
+        <div><span class="ticker-symbol">SNDK</span><span class="ticker-name">SanDisk Corporation</span></div>
+        <div class="badge-row">
+          <span class="badge badge-bull">BULLISH CATALYST</span>
+          <span class="badge badge-watch">WATCH</span>
+          <span class="star">★ WILDCARD</span>
+        </div>
+      </div>
+      <div class="ticker-headline">Melius Research raises PT $1,500 → <strong style="color:var(--green)">$2,350</strong> (+$850), keeps Buy — AI demand thesis. Largest absolute PT raise today.</div>
+      <div class="ticker-price">Pre-market: $1,292.37 &nbsp;|&nbsp; <span class="down">-3.05% (-$40.64)</span> &nbsp;|&nbsp; Despite massive upgrade = heavy supply overhead</div>
+      <div class="ticker-price">Stock ran +16% recently; profit-taking at open despite bull upgrade</div>
+      <div class="ticker-summary">Biggest analyst action today. Stock down despite upgrade = watch for flush to ~$1,200 or base-build. Two-sided setup — don't chase the open.</div>
+    </div>
+
+    <!-- TSLA -->
+    <div class="ticker-card neutral">
+      <div class="ticker-header">
+        <div><span class="ticker-symbol">TSLA</span><span class="ticker-name">Tesla, Inc.</span></div>
+        <div class="badge-row">
+          <span class="badge badge-neutral">NEUTRAL</span>
+          <span class="badge badge-watch">WATCH</span>
+        </div>
+      </div>
+      <div class="ticker-headline">Model Y Premium & Performance price increases (first U.S. hike since 2024). Musk vows appeal of OpenAI lawsuit federal jury ruling.</div>
+      <div class="ticker-price">Pre-market: ~$418.85 &nbsp;|&nbsp; <span class="down">-0.80%</span> &nbsp;|&nbsp; Weak with broader Nasdaq</div>
+      <div class="ticker-summary">Company-specific news mildly constructive (pricing power), but TSLA follows Nasdaq — broad market weakness is the driver today.</div>
+    </div>
+
+    <!-- AMD -->
+    <div class="ticker-card neutral">
+      <div class="ticker-header">
+        <div><span class="ticker-symbol">AMD</span><span class="ticker-name">Advanced Micro Devices</span></div>
+        <div class="badge-row">
+          <span class="badge badge-neutral">NEUTRAL-BULLISH</span>
+          <span class="badge badge-watch">WATCH</span>
+        </div>
+      </div>
+      <div class="ticker-headline">CEO Lisa Su met with Chinese Vice Premier He Lifeng. Q1 Data Center revenue record $5.8B (+57% YoY). OpenAI & Meta committed 6 GW each in multi-year deployments.</div>
+      <div class="ticker-price">Pre-market range: $413.60–$415.90 &nbsp;|&nbsp; Largely flat</div>
+      <div class="ticker-summary">Fundamentally strong but swept up in chip sell-off. Correlated to NVDA — sector sentiment governs the open.</div>
+    </div>
+
+    <!-- PLTR -->
+    <div class="ticker-card neutral">
+      <div class="ticker-header">
+        <div><span class="ticker-symbol">PLTR</span><span class="ticker-name">Palantir Technologies</span></div>
+        <div class="badge-row">
+          <span class="badge badge-neutral">NEUTRAL</span>
+          <span class="badge badge-watch">WATCH</span>
+        </div>
+      </div>
+      <div class="ticker-headline">Analyst raised PT to $230. Ukraine AI partnership deepened (CEO Karp met Zelenskyy in Kyiv). Q1 revenue +85% YoY, guidance raised.</div>
+      <div class="ticker-price">Pre-market: Slight dip with broader tech &nbsp;|&nbsp; Valuation: ~55× trailing revenue</div>
+      <div class="ticker-summary">Strong fundamentals, stretched valuation. No new catalyst today — follows macro risk sentiment.</div>
+    </div>
+
+    <!-- HD Watchlist mention -->
+    <div class="ticker-card bullish">
+      <div class="ticker-header">
+        <div><span class="ticker-symbol">HD</span><span class="ticker-name">Home Depot — EARNINGS TODAY ⭐</span></div>
+        <div class="badge-row">
+          <span class="badge badge-bull">BULLISH</span>
+          <span class="badge badge-yes">ACTIONABLE: YES</span>
+        </div>
+      </div>
+      <div class="ticker-headline">Q1 BEAT: EPS $3.43 vs $3.41 est. Revenue $41.77B vs $41.52B est. Comp sales returned to growth. Full-year guidance REAFFIRMED.</div>
+      <div class="ticker-price">Pre-market: <span class="up">+~1%</span> &nbsp;|&nbsp; Conference call 9:00 AM ET</div>
+      <div class="ticker-summary">Clean catalyst, muted reaction — room to extend toward $310–315 if broader market stabilizes. Stop below $300.</div>
+    </div>
+
+    <!-- No Catalyst names -->
+    <div class="ticker-card neutral">
+      <div class="ticker-header">
+        <div><span class="ticker-symbol">MARA &nbsp; COIN &nbsp; META &nbsp; AMZN &nbsp; SOFI</span></div>
+        <div class="badge-row"><span class="badge badge-no">NO CATALYST / AVOID</span></div>
+      </div>
+      <div class="no-catalyst">MARA: Bitcoin ~$79K, down 1%; no new catalyst. &nbsp;|&nbsp; COIN: CLARITY Act progress but 29% revenue drop, no new catalyst. &nbsp;|&nbsp; META: AI scrutiny, follows Nasdaq. &nbsp;|&nbsp; AMZN: Alexa+ podcast feature (not a trading catalyst). &nbsp;|&nbsp; SOFI: No catalyst.</div>
+    </div>
+  </div>
+
+  <!-- ─────── SECTORS ─────── -->
+  <div id="etfs" class="section">
+    <div class="section-title">§ 2 — SECTOR & THEME ETF OVERNIGHT SCAN</div>
+
+    <div class="etf-card bear-theme">
+      <div class="etf-theme-name">🔴 TECH / AI — BEARISH</div>
+      <div class="etf-affected">Affected ETFs: SMH, BOTZ, QTUM, FNGU, IBIT</div>
+      <div class="etf-catalyst">Semiconductor sell-off Day 2. Micron -2% premarket for 4th straight day on AI-run-too-far concerns. CoreWeave (CRWV) -7% Monday after DA Davidson downgrade (PT $175→$100). SMH premarket $560.31 (was hit -3.8% Friday on CPI). NVDA earnings Wednesday is the pivotal event.</div>
+      <div class="etf-watch">Key tickers: NVDA, SMH, AMD, CRWV, MU (Micron)</div>
+    </div>
+
+    <div class="etf-card bear-theme">
+      <div class="etf-theme-name">🔴 ENERGY/OIL — BEARISH (Iran de-escalation)</div>
+      <div class="etf-affected">Affected ETFs: UCO, USO, BNO</div>
+      <div class="etf-catalyst">Trump called off planned Tuesday Iran strike after Qatar/Saudi/UAE requests. WTI fell ~1.3% to $107.28/bbl; Brent fell ~2.7% to $109.09/bbl. "Serious negotiations underway toward peace deal." Supply disruption fears easing rapidly.</div>
+      <div class="etf-watch">Bearish for USO/UCO/BNO at open. Watch for any reversal if Iran talks collapse.</div>
+    </div>
+
+    <div class="etf-card neutral-theme">
+      <div class="etf-theme-name">🟡 GOLD — NEUTRAL-BEARISH</div>
+      <div class="etf-affected">Affected ETFs: GLD, SLV</div>
+      <div class="etf-catalyst">Gold above $4,560/oz, recovering from -4% weekly drop. Iran de-escalation reduces safe-haven demand. GLD premarket ~$417.29. High yields (4.60%) capping gold upside.</div>
+      <div class="etf-watch">GLD/SLV likely soft at open; watch $4,500 support in spot gold.</div>
+    </div>
+
+    <div class="etf-card neutral-theme">
+      <div class="etf-theme-name">🟡 BONDS / MACRO — NEUTRAL</div>
+      <div class="etf-affected">Affected ETFs: TLT, UUP</div>
+      <div class="etf-catalyst">10-year Treasury yield at 4.60% (+0.01 bps overnight). TLT premarket $83.71. Yield stability, but elevated level = headwind for tech multiples. FOMC minutes due Wednesday May 20 (first major data point under new Fed Chair Kevin Warsh).</div>
+      <div class="etf-watch">TLT range-bound; watch FOMC minutes Wednesday for rate path signals.</div>
+    </div>
+
+    <div class="etf-card bull-theme">
+      <div class="etf-theme-name">🟢 DEFENSE — SLIGHTLY BULLISH</div>
+      <div class="etf-affected">Affected ETFs: ITA</div>
+      <div class="etf-catalyst">Iran de-escalation reduces immediate war escalation risk but doesn't eliminate defense contracts. ITA premarket ~$222.35. Up 28% over past year. PALTR Ukraine AI partnership deepening adds AI-defense overlay.</div>
+      <div class="etf-watch">ITA likely holds flat to mildly positive.</div>
+    </div>
+  </div>
+
+  <!-- ─────── EARNINGS ─────── -->
+  <div id="earnings" class="section">
+    <div class="section-title">§ 3 — OVERNIGHT EARNINGS RESULTS</div>
+
+    <div class="earnings-card">
+      <div class="earnings-header">
+        <div>
+          <span class="earnings-symbol">HD</span>
+          <span class="earnings-company"> — The Home Depot, Inc. &nbsp;|&nbsp; BMO May 19, 2026 ⭐</span>
+        </div>
+        <div class="badge-row">
+          <span class="badge badge-bull">BEAT / BEAT</span>
+          <span class="badge badge-watch">Pre-mkt: +~1%</span>
+        </div>
+      </div>
+      <table>
+        <tr><th>Metric</th><th>Reported</th><th>Estimate</th><th>Result</th></tr>
+        <tr><td>Adj. EPS</td><td>$3.43</td><td>$3.41</td><td class="beat">✓ BEAT</td></tr>
+        <tr><td>Revenue</td><td>$41.77B</td><td>$41.52B</td><td class="beat">✓ BEAT (+4.9% YoY)</td></tr>
+        <tr><td>US Comp Sales</td><td>Returned to growth</td><td>Flat/+2%</td><td class="beat">✓ BEAT</td></tr>
+        <tr><td>Full-Year Guidance</td><td>REAFFIRMED (2.5–4.5% total sales growth)</td><td>—</td><td class="beat">✓ HELD</td></tr>
+      </table>
+      <div style="margin-top:10px; font-size:11px; color:var(--muted);">
+        <strong style="color:var(--text)">Sector read-through:</strong> Stable demand for small home improvement projects; big renovations still weak. Positive for LOW (reports this week), XHB (homebuilders), TJX. Conference call 9:00 AM ET — watch guidance tone for full-year update.
+      </div>
+    </div>
+
+    <div style="font-size:11px; color:var(--muted); padding:8px 0;">
+      Notable earnings this week: NVDA (Wed AMC — critical), Walmart (Thu BMO), Lowe's, Target, TJX. Today (May 19): 40 reports total — majority small/mid-cap, HD is the marquee BMO name.
+    </div>
+  </div>
+
+  <!-- ─────── OPTIONS ─────── -->
+  <div id="options" class="section">
+    <div class="section-title">§ 4 — PRE-MARKET OPTIONS FLOW</div>
+    <div style="background:var(--bg2); border:1px solid var(--border); border-radius:6px; padding:14px 16px;">
+      <div class="no-catalyst">No verified pre-market unusual options sweeps found via public sources for May 19, 2026.</div>
+      <div style="margin-top:8px; font-size:11px; color:var(--text);">
+        <strong style="color:var(--amber)">⚠ Forward-looking note:</strong> With NVDA reporting Wednesday AMC, expect extremely elevated options premium across SMH and NVDA today. Any unusual call buying in SMH or NVDA into the close should be watched carefully as directional pre-earnings positioning. Monitor @unusual_whales and Barchart unusual activity for real-time updates.
+      </div>
+    </div>
+  </div>
+
+  <!-- ─────── ANALYSTS ─────── -->
+  <div id="analysts" class="section">
+    <div class="section-title">§ 5 — ANALYST ACTIONS TODAY</div>
+    <table>
+      <thead>
+        <tr><th>Ticker</th><th>Firm</th><th>Action</th><th>Old PT</th><th>New PT</th><th>Rating</th><th>Notes</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong style="color:var(--cyan)">SNDK</strong></td>
+          <td>Melius Research</td>
+          <td class="beat">PT Raise</td>
+          <td>$1,500</td>
+          <td class="beat">$2,350 (+$850)</td>
+          <td>Buy (maintained)</td>
+          <td>AI demand thesis; stock -3% premarket despite it ⚠</td>
+        </tr>
+        <tr>
+          <td><strong style="color:var(--red)">CRWV</strong></td>
+          <td>DA Davidson</td>
+          <td class="miss">Downgrade</td>
+          <td>$175</td>
+          <td class="miss">$100 (-$75)</td>
+          <td>Neutral (from Buy)</td>
+          <td>Margin pressure, financing risk, insider selling; -7% Mon</td>
+        </tr>
+        <tr>
+          <td><strong style="color:var(--cyan)">PLTR</strong></td>
+          <td>Unnamed firm</td>
+          <td class="beat">PT Raise</td>
+          <td>—</td>
+          <td class="beat">$230</td>
+          <td>—</td>
+          <td>Post-Q1 earnings action</td>
+        </tr>
+        <tr>
+          <td>NVMI</td>
+          <td>BofA Securities</td>
+          <td class="beat">PT Raise</td>
+          <td>$510</td>
+          <td class="beat">$612</td>
+          <td>—</td>
+          <td>Semiconductor adjacent</td>
+        </tr>
+        <tr>
+          <td>F</td>
+          <td>RBC Capital</td>
+          <td class="beat">PT Raise</td>
+          <td>$11</td>
+          <td class="beat">$13</td>
+          <td>—</td>
+          <td>Moderate auto sector move</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ─────── EVENTS ─────── -->
+  <div id="events" class="section">
+    <div class="section-title">§ 6 — TODAY'S SCHEDULED EVENTS</div>
+    <div style="background:var(--bg2); border:1px solid var(--border); border-radius:6px; padding:0 16px;">
+
+      <div class="event-item">
+        <div class="event-time">9:00 AM ET</div>
+        <div class="event-desc">Home Depot (HD) Q1 2026 conference call — <span class="med">watch for guidance tone</span></div>
+      </div>
+      <div class="event-item">
+        <div class="event-time">10:00 AM ET</div>
+        <div class="event-desc">Pending Home Sales (April) — <span class="med">medium-impact housing read</span></div>
+      </div>
+      <div class="event-item">
+        <div class="event-time">All day</div>
+        <div class="event-desc">Iran geopolitical headlines — Trump postponed attack, "serious negotiations" underway. Any escalation = oil spike, any deal = oil -5%</div>
+      </div>
+      <div class="event-item">
+        <div class="event-time">TMW — Wed May 20</div>
+        <div class="event-desc"><span class="high">🔴 FOMC Minutes from April meeting</span> — First major signal under new Fed Chair Kevin Warsh (replaced Powell May 15)</div>
+      </div>
+      <div class="event-item">
+        <div class="event-time">Wed May 20 AMC</div>
+        <div class="event-desc"><span class="high">🔴 NVDA Q1 FY2027 Earnings</span> — Consensus: $78B revenue / $1.77 EPS. THE binary event of the week.</div>
+      </div>
+      <div class="event-item">
+        <div class="event-time">Thu May 21 BMO</div>
+        <div class="event-desc">Walmart (WMT) Q1 earnings — Consumer spending barometer. Consensus: +3.9% comp sales.</div>
+      </div>
+      <div class="event-item">
+        <div class="event-time">Thu May 21</div>
+        <div class="event-desc">Weekly Jobless Claims &nbsp;|&nbsp; Housing Starts &nbsp;|&nbsp; Building Permits &nbsp;|&nbsp; Philadelphia Fed PMI &nbsp;|&nbsp; S&P Flash PMI (Services + Manufacturing)</div>
+      </div>
+      <div class="event-item">
+        <div class="event-time">This week</div>
+        <div class="event-desc">Lowe's (LOW), Target (TGT), TJX earnings — retail sector read-through</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─────── TRADE IDEAS ─────── -->
+  <div id="trades" class="section">
+    <div class="section-title">§ 7 — MORNING TRADE IDEAS</div>
+
+    <div class="two-col">
+      <div class="trade-card">
+        <h4>🎯 #1 — NVDA (Pre-Earnings Positioning)</h4>
+        <p><span class="trade-label">Direction:</span> WATCH — both sides active, no directional edge before open</p>
+        <p><span class="trade-label">Entry logic:</span> Long if holds $220 area and SMH stabilizes. Short if breaks $218 with volume. Do NOT hold through Wednesday close — gamma risk extreme into earnings.</p>
+        <p><span class="trade-label">Why:</span> Every chip trade today is a pre-NVDA setup. Wednesday's $78B revenue consensus is priced in; a China revenue miss is the bear case that could -10%+.</p>
+        <p><span class="trade-label">Risk:</span> 🔴 HIGH — earnings binary on Wednesday</p>
+      </div>
+
+      <div class="trade-card">
+        <h4>🎯 #2 — SNDK (Analyst PT Raise vs. Supply)</h4>
+        <p><span class="trade-label">Direction:</span> WATCH — two-sided setup</p>
+        <p><span class="trade-label">Entry logic:</span> (A) If flush continues → $1,200 support → bounce trade. (B) If stabilizes at open → gap-fill attempt to ~$1,333. Watch first 15 minutes before committing.</p>
+        <p><span class="trade-label">Why:</span> +$850 PT raise from Melius yet stock -3% premarket = supply overhead from 16% recent run. Upgrade is priced in.</p>
+        <p><span class="trade-label">Risk:</span> 🟡 MEDIUM — trend unclear until open</p>
+      </div>
+
+      <div class="trade-card">
+        <h4>🎯 #3 — HD (Earnings Beat + Guidance)</h4>
+        <p><span class="trade-label">Direction:</span> 🟢 BULLISH</p>
+        <p><span class="trade-label">Entry logic:</span> Beat top and bottom line, guidance held. +1% premarket is modest — room toward $310–315. Stop below $300. Enter on open if market doesn't gap down hard.</p>
+        <p><span class="trade-label">Why:</span> Clean catalyst with muted reaction = potential further upside if broad market cooperates. Comp sales returning to growth = key bull signal.</p>
+        <p><span class="trade-label">Risk:</span> 🟡 MEDIUM — market-dependent; HD conf call tone at 9am</p>
+      </div>
+
+      <div class="trade-card">
+        <h4>🏆 Top Sector to Watch: AI / Semiconductors</h4>
+        <p>SMH, NVDA, AMD — NVDA earnings eve means every chip move today is a setup for Wednesday. Watch SMH for direction: <strong style="color:var(--green)">Reclaim $565+ = bulls positioning</strong>. <strong style="color:var(--red)">Break below $537 = sellers still in control</strong>.</p>
+        <p style="margin-top:8px;"><span class="trade-label">Key signal:</span> SMH direction at 10:30 AM will define the tone for Wednesday's positioning.</p>
+      </div>
+    </div>
+
+    <div class="section-title" style="margin-top:24px;">❌ NAMES TO AVOID TODAY</div>
+    <div class="avoid-list">
+      <div class="avoid-item">COIN — No catalyst, weak revenue</div>
+      <div class="avoid-item">SOFI — No catalyst</div>
+      <div class="avoid-item">MARA — Bitcoin soft, no catalyst</div>
+      <div class="avoid-item">META — No catalyst, Nasdaq-dependent</div>
+      <div class="avoid-item">CRWV — Post-downgrade overhang</div>
+    </div>
+
+    <div class="section-title">⚠️ KEY RISKS & TIMING</div>
+    <div style="background:var(--bg2); border:1px solid var(--border); border-radius:6px; padding:0 16px;">
+      <div class="event-item">
+        <div class="event-time" style="color:var(--red)">9:00 AM</div>
+        <div class="event-desc">HD conference call — any cautious language reverses +1% premarket pop</div>
+      </div>
+      <div class="event-item">
+        <div class="event-time" style="color:var(--amber)">10:00 AM</div>
+        <div class="event-desc">Pending Home Sales miss → XHB/HD reversal risk</div>
+      </div>
+      <div class="event-item">
+        <div class="event-time" style="color:var(--red)">All day</div>
+        <div class="event-desc">Iran headlines — ceasefire breakthrough = oil -5%, gold -2%. Escalation = oil +3%, gold +2%</div>
+      </div>
+      <div class="event-item">
+        <div class="event-time" style="color:var(--red)">Wed AMC</div>
+        <div class="event-desc">🔴 NVDA earnings — the week's binary. China revenue miss vs. Blackwell demand beat. Entire AI sector pivots on this print.</div>
+      </div>
+      <div class="event-item">
+        <div class="event-time" style="color:var(--red)">Wed daytime</div>
+        <div class="event-desc">🔴 FOMC minutes under new Chair Warsh — first policy signal of new Fed era</div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /container -->
+
+<div class="footer">
+  <div>☀️ Pre-Market Catalyst Scan — May 19, 2026 &nbsp;|&nbsp; Generated by Claude Sonnet 4.6</div>
+  <div>Sources: <a href="https://www.thestreet.com" target="_blank">TheStreet</a> &nbsp;|&nbsp; <a href="https://www.cnbc.com" target="_blank">CNBC</a> &nbsp;|&nbsp; <a href="https://finance.yahoo.com" target="_blank">Yahoo Finance</a> &nbsp;|&nbsp; <a href="https://www.benzinga.com" target="_blank">Benzinga</a> &nbsp;|&nbsp; <a href="https://www.kiplinger.com" target="_blank">Kiplinger</a> &nbsp;|&nbsp; <a href="https://www.tipranks.com" target="_blank">TipRanks</a> &nbsp;|&nbsp; <a href="https://news.alphastreet.com" target="_blank">Alphastreet</a></div>
+</div>
+
+</body>
+</html>
