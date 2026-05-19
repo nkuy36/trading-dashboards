@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Midday Catalyst Scan — May 19, 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0a0e17;
+    --bg2: #0f1624;
+    --bg3: #141d2e;
+    --border: #1e2d45;
+    --text: #e2e8f0;
+    --text-muted: #8899aa;
+    --urgent: #ff4d4d;
+    --urgent-bg: rgba(255,77,77,0.08);
+    --urgent-border: rgba(255,77,77,0.35);
+    --watch: #f5c518;
+    --watch-bg: rgba(245,197,24,0.07);
+    --watch-border: rgba(245,197,24,0.3);
+    --confirm: #3ddc84;
+    --confirm-bg: rgba(61,220,132,0.07);
+    --confirm-border: rgba(61,220,132,0.3);
+    --noise: #607080;
+    --noise-bg: rgba(96,112,128,0.06);
+    --noise-border: rgba(96,112,128,0.25);
+    --accent: #4a9eff;
+    --accent2: #a78bfa;
+    --bullish: #3ddc84;
+    --bearish: #ff4d4d;
+    --neutral: #f5c518;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    line-height: 1.65;
+    padding: 0 0 60px;
+  }
+
+  /* HEADER */
+  .header {
+    background: linear-gradient(135deg, #0f1624 0%, #0d1b2e 100%);
+    border-bottom: 2px solid var(--accent);
+    padding: 28px 40px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .header-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--accent);
+    letter-spacing: 0.05em;
+  }
+  .header-sub {
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-top: 4px;
+  }
+  .header-date {
+    font-size: 12px;
+    color: var(--text-muted);
+    text-align: right;
+  }
+
+  /* MAIN CONTAINER */
+  .container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 30px 30px 0;
+  }
+
+  /* RISK EVENTS BAR */
+  .risk-bar {
+    background: rgba(255, 77, 77, 0.1);
+    border: 1px solid var(--urgent-border);
+    border-radius: 8px;
+    padding: 14px 20px;
+    margin-bottom: 28px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .risk-bar-label {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--urgent);
+    letter-spacing: 0.1em;
+    white-space: nowrap;
+  }
+  .risk-pill {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 3px 10px;
+    font-size: 11px;
+    color: var(--text);
+  }
+  .risk-pill.hot {
+    border-color: var(--urgent-border);
+    color: var(--urgent);
+  }
+  .risk-pill.warm {
+    border-color: var(--watch-border);
+    color: var(--watch);
+  }
+
+  /* SECTION HEADER */
+  .section-header {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    color: var(--accent);
+    text-transform: uppercase;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 8px;
+    margin-bottom: 16px;
+    margin-top: 34px;
+  }
+
+  /* TICKER CARDS */
+  .cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 14px;
+    margin-bottom: 12px;
+  }
+
+  .card {
+    border-radius: 8px;
+    border: 1px solid;
+    padding: 16px 18px;
+    position: relative;
+  }
+  .card.urgent  { background: var(--urgent-bg);  border-color: var(--urgent-border); }
+  .card.watch   { background: var(--watch-bg);   border-color: var(--watch-border); }
+  .card.confirm { background: var(--confirm-bg); border-color: var(--confirm-border); }
+  .card.noise   { background: var(--noise-bg);   border-color: var(--noise-border); }
+
+  .card-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 10px;
+  }
+  .card-ticker {
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+  }
+  .card.urgent  .card-ticker { color: var(--urgent); }
+  .card.watch   .card-ticker { color: var(--watch); }
+  .card.confirm .card-ticker { color: var(--confirm); }
+  .card.noise   .card-ticker { color: var(--noise); }
+
+  .badge {
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    padding: 2px 8px;
+    border-radius: 3px;
+    text-transform: uppercase;
+  }
+  .badge-bullish  { background: rgba(61,220,132,0.15); color: var(--bullish); border: 1px solid rgba(61,220,132,0.3); }
+  .badge-bearish  { background: rgba(255,77,77,0.15);  color: var(--bearish); border: 1px solid rgba(255,77,77,0.3); }
+  .badge-neutral  { background: rgba(245,197,24,0.15); color: var(--watch);   border: 1px solid rgba(245,197,24,0.3); }
+
+  .card-price {
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-bottom: 6px;
+  }
+  .card-headline {
+    font-size: 11.5px;
+    color: var(--text);
+    margin-bottom: 6px;
+    font-weight: 500;
+  }
+  .card-summary {
+    font-size: 11px;
+    color: var(--text-muted);
+    line-height: 1.6;
+  }
+  .card-action {
+    margin-top: 10px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 3px;
+  }
+  .card.urgent  .card-action { background: rgba(255,77,77,0.2);  color: var(--urgent); }
+  .card.watch   .card-action { background: rgba(245,197,24,0.2); color: var(--watch); }
+  .card.confirm .card-action { background: rgba(61,220,132,0.2); color: var(--confirm); }
+  .card.noise   .card-action { background: rgba(96,112,128,0.2); color: var(--noise); }
+
+  /* MACRO PANEL */
+  .macro-panel {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 18px 22px;
+    margin-bottom: 14px;
+  }
+  .macro-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .macro-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 6px;
+  }
+  .macro-body {
+    font-size: 11px;
+    color: var(--text-muted);
+    line-height: 1.65;
+  }
+  .macro-body strong { color: var(--text); }
+
+  /* OPTIONS FLOW TABLE */
+  .flow-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 11px;
+  }
+  .flow-table th {
+    text-align: left;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    border-bottom: 1px solid var(--border);
+    padding: 6px 12px;
+  }
+  .flow-table td {
+    padding: 9px 12px;
+    border-bottom: 1px solid rgba(30,45,69,0.5);
+    vertical-align: top;
+  }
+  .flow-table tr:last-child td { border-bottom: none; }
+  .tag-calls { color: var(--bullish); font-weight: 700; }
+  .tag-puts  { color: var(--bearish); font-weight: 700; }
+  .tag-elevated { color: var(--urgent); font-weight: 700; }
+
+  /* SECTOR ROTATION TABLE */
+  .sector-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 11.5px;
+  }
+  .sector-table th {
+    text-align: left;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    border-bottom: 1px solid var(--border);
+    padding: 6px 14px;
+  }
+  .sector-table td {
+    padding: 9px 14px;
+    border-bottom: 1px solid rgba(30,45,69,0.5);
+  }
+  .sector-table tr:last-child td { border-bottom: none; }
+  .up   { color: var(--bullish); }
+  .down { color: var(--bearish); }
+
+  /* PRIORITY SUMMARY TABLE */
+  .priority-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 11.5px;
+  }
+  .priority-table th {
+    text-align: left;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    border-bottom: 1px solid var(--border);
+    padding: 8px 14px;
+  }
+  .priority-table td {
+    padding: 10px 14px;
+    border-bottom: 1px solid rgba(30,45,69,0.5);
+  }
+  .priority-table tr:last-child td { border-bottom: none; }
+  .priority-table tr:hover td { background: rgba(74,158,255,0.04); }
+
+  .label-urgent  { color: var(--urgent); font-weight: 700; }
+  .label-watch   { color: var(--watch);  font-weight: 700; }
+  .label-confirm { color: var(--confirm); font-weight: 700; }
+  .label-noise   { color: var(--noise);  font-weight: 700; }
+
+  /* FOOTER */
+  .footer {
+    text-align: center;
+    font-size: 10px;
+    color: var(--noise);
+    padding: 30px;
+    border-top: 1px solid var(--border);
+    margin-top: 40px;
+  }
+
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  @media (max-width: 600px) {
+    .header { padding: 18px 18px 16px; }
+    .container { padding: 16px 14px 0; }
+    .cards-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div>
+    <div class="header-title">🕐 MIDDAY CATALYST CHECK</div>
+    <div class="header-sub">Real-time scan · Sources: Benzinga, Yahoo Finance, CNBC, Motley Fool, CoinDesk, Federal Reserve</div>
+  </div>
+  <div class="header-date">
+    Tuesday, May 19, 2026<br>
+    <span style="color:var(--urgent);font-weight:700;">⚠ FOMC Minutes 2:00PM ET</span>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- RISK EVENTS BAR -->
+  <div class="risk-bar" style="margin-top:20px;">
+    <div class="risk-bar-label">⚡ RISK EVENTS</div>
+    <div class="risk-pill warm">1:00PM ET — 20-Yr Bond Auction</div>
+    <div class="risk-pill hot">2:00PM ET — FOMC April Minutes ← MAJOR</div>
+    <div class="risk-pill warm">After Close — CAVA, KEYS Earnings</div>
+    <div class="risk-pill hot">Tomorrow May 20 — NVDA Earnings (After Close)</div>
+  </div>
+
+  <!-- STEP 1: WATCHLIST -->
+  <div class="section-header">STEP 1 — WATCHLIST ALERT CHECK</div>
+
+  <div class="cards-grid">
+
+    <!-- NVDA -->
+    <div class="card watch">
+      <div class="card-top">
+        <div class="card-ticker">NVDA</div>
+        <div class="badge badge-bullish">BULLISH</div>
+      </div>
+      <div class="card-price">~$220.88 &nbsp;▼ 0.6%</div>
+      <div class="card-headline">Earnings Tomorrow — 90% Beat Probability</div>
+      <div class="card-summary">
+        Consensus EPS $1.76–$1.78 (+120% YoY), revenue ~$79B. 58/61 analysts rate Buy. Key signal: Q2 guidance must exceed ~$87B to spark a rally. Pre-earnings compression in progress. <strong>Do NOT add ahead of earnings.</strong>
+        <br><a href="https://markets.financialcontent.com/stocks/article/stockstory-2026-5-19-nvidia-nvda-reports-earnings-tomorrow-what-to-expect" target="_blank">↗ Source: FinancialContent, May 19</a>
+      </div>
+      <div class="card-action">🟡 WATCH — Hold w/ stop &lt;$215</div>
+    </div>
+
+    <!-- TSLA -->
+    <div class="card urgent">
+      <div class="card-top">
+        <div class="card-ticker">TSLA</div>
+        <div class="badge badge-bearish">BEARISH</div>
+      </div>
+      <div class="card-price">~$397.05 &nbsp;▼ 3.2%</div>
+      <div class="card-headline">Robotaxi Glitches + Battery Delays + Valuation 208x FWD P/E</div>
+      <div class="card-summary">
+        Three converging bearish overhangs: Dallas/Houston robotaxi operational glitches, Panasonic battery delays threatening Cybercab ramp, extreme valuation. Sentiment index at 40.83 (-16.79 trend). No near-term positive catalyst.
+        <br><a href="https://247wallst.com/investing/2026/05/12/tesla-sinks-5-as-musk-heads-to-china-robotaxi-glitches-battery-delays-test-investor-patience/" target="_blank">↗ Source: 24/7 Wall St., May 12</a>
+      </div>
+      <div class="card-action">🔴 YES — Exit or reduce longs</div>
+    </div>
+
+    <!-- AMD -->
+    <div class="card watch">
+      <div class="card-top">
+        <div class="card-ticker">AMD</div>
+        <div class="badge badge-bullish">BULLISH</div>
+      </div>
+      <div class="card-price">Recent: +19% post-earnings</div>
+      <div class="card-headline">MI450 GPU Partnerships: OpenAI + Meta for H2 2026</div>
+      <div class="card-summary">
+        AMD's MI450 GPU deployments with OpenAI and Meta scheduled for H2 2026. Analyst Konstantinos Kosmidis turning more bullish. Key beneficiary if NVDA earnings disappoint — watch for rotation into AMD.
+        <br><a href="https://www.fool.com/investing/2026/05/19/nvidia-stock-may-or-may-not-soar-on-may-20-but-thi/" target="_blank">↗ Source: Motley Fool, May 19</a>
+      </div>
+      <div class="card-action">🟡 WATCH — AI thesis intact</div>
+    </div>
+
+    <!-- PLTR -->
+    <div class="card watch">
+      <div class="card-top">
+        <div class="card-ticker">PLTR</div>
+        <div class="badge badge-bullish">BULLISH</div>
+      </div>
+      <div class="card-price">~$135.58 &nbsp;(range $134–$137)</div>
+      <div class="card-headline">Argus Upgrades to Buy; Citi PT Raised to $225</div>
+      <div class="card-summary">
+        Argus upgraded to Buy on May 7. Citi raised PT to $225 from $210. AI-driven revenue acceleration and margin expansion cited. Holding well despite broad tech weakness — relative strength signal.
+        <br><a href="https://seekingalpha.com/news/4591475-sa-analyst-upgradesdowngrades-amd-pltr-vet-psix" target="_blank">↗ Source: Seeking Alpha, May 7</a>
+      </div>
+      <div class="card-action">🟡 WATCH — Hold, tight stop below $134</div>
+    </div>
+
+    <!-- MARA -->
+    <div class="card watch">
+      <div class="card-top">
+        <div class="card-ticker">MARA</div>
+        <div class="badge badge-bearish">BEARISH (Pivot)</div>
+      </div>
+      <div class="card-price">Q1 Revenue $174.6M ▼18% YoY</div>
+      <div class="card-headline">Sold $1.5B Bitcoin — Pivoting to AI/HPC</div>
+      <div class="card-summary">
+        MARA sold ~15,133 BTC (~$1.5B), dropped from 2nd to 4th largest public BTC treasury. $1.3B net loss Q1. Now acquiring Long Ridge Energy campus for AI/HPC. <strong>No longer a pure Bitcoin proxy.</strong>
+        <br><a href="https://www.coindesk.com/markets/2026/05/12/bitcoin-miner-mara-sold-usd1-5-billion-of-bitcoin-as-it-shifts-toward-ai-infrastructure" target="_blank">↗ Source: CoinDesk, May 12</a>
+      </div>
+      <div class="card-action">🟡 WATCH — Thesis changed materially</div>
+    </div>
+
+    <!-- SNDK -->
+    <div class="card watch">
+      <div class="card-top">
+        <div class="card-ticker">SNDK</div>
+        <div class="badge badge-bullish">BULLISH</div>
+      </div>
+      <div class="card-price">~$1,301.71 &nbsp;(-10.2% from recent high)</div>
+      <div class="card-headline">Memory Demand Strong; Multi-Year Revenue Lock-In</div>
+      <div class="card-summary">
+        Memory products in high demand with higher pricing. Multi-year agreements locking in revenue. However: -10.2% off intraday high of $1,449 = potential distribution. Watch $1,293 support.
+      </div>
+      <div class="card-action">🟡 WATCH — $1,293 is the line</div>
+    </div>
+
+    <!-- AMZN -->
+    <div class="card urgent">
+      <div class="card-top">
+        <div class="card-ticker">AMZN</div>
+        <div class="badge badge-bearish">BEARISH</div>
+      </div>
+      <div class="card-price">~$256.45 &nbsp;▼ 3.2%</div>
+      <div class="card-headline">Macro-Driven Selloff — Rate Cut Repricing</div>
+      <div class="card-summary">
+        Selling driven by zero-rate-cut repricing (68% odds of no cut all year) and FOMC minutes anxiety. No company-specific negative catalyst — pure macro pressure. If FOMC minutes are hawkish, expect extension lower.
+      </div>
+      <div class="card-action">🔴 URGENT — Reassess sizing</div>
+    </div>
+
+    <!-- META/SOFI noise -->
+    <div class="card noise">
+      <div class="card-top">
+        <div class="card-ticker">META / SOFI</div>
+        <div class="badge badge-neutral">NEUTRAL</div>
+      </div>
+      <div class="card-price">META ~$605.77 ▼0.9% &nbsp;|&nbsp; SOFI ~$15.72</div>
+      <div class="card-headline">No Fresh Catalyst — Noise</div>
+      <div class="card-summary">
+        META declining in line with broad tech. SOFI mixed Q1 (Tech Platform revenue -27%) already priced. No actionable setups today for either.
+      </div>
+      <div class="card-action">⚪ NOISE — No action</div>
+    </div>
+
+  </div><!-- /cards-grid -->
+
+  <!-- STEP 2: SECTOR ETFs -->
+  <div class="section-header">STEP 2 — SECTOR & THEME ETF MIDDAY CHECK</div>
+
+  <div class="macro-panel">
+    <div class="macro-label">Sector Rotation Signal</div>
+    <table class="sector-table">
+      <thead>
+        <tr>
+          <th>ETF</th>
+          <th>Sector</th>
+          <th>Move</th>
+          <th>Signal</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>XLF</strong></td>
+          <td>Financials</td>
+          <td class="up">▲ +1.25%</td>
+          <td class="up">🟢 LEADING — Higher-for-longer benefits bank NIM</td>
+        </tr>
+        <tr>
+          <td><strong>XLK</strong></td>
+          <td>Technology</td>
+          <td class="down">▼ −1.08%</td>
+          <td class="down">🔴 LAGGING — Rate repricing hurts growth tech</td>
+        </tr>
+        <tr>
+          <td><strong>GLD</strong></td>
+          <td>Gold / Commodities</td>
+          <td class="down">▼ −1.72% ($411.21)</td>
+          <td>⚪ UNUSUAL — Gold selling despite geopolitical risk</td>
+        </tr>
+        <tr>
+          <td><strong>QQQ</strong></td>
+          <td>Nasdaq-100</td>
+          <td class="down">▼ ~$706 (ATH $719.79 May 14)</td>
+          <td>🟡 WATCH — Down from all-time high, elevated put/call</td>
+        </tr>
+        <tr>
+          <td><strong>SPY</strong></td>
+          <td>S&amp;P 500</td>
+          <td class="down">▼ Weak</td>
+          <td>🟡 WATCH — Rate-cut odds 0% weighing on broad market</td>
+        </tr>
+      </tbody>
+    </table>
+    <div style="margin-top:12px;font-size:11px;color:var(--text-muted);">
+      <strong style="color:var(--text);">Rotation thesis:</strong> 68.3% market-implied probability of zero rate cuts in 2026 is driving rotation OUT of growth tech (XLK) and INTO financials (XLF). Defensive signals (XLU/XLP) not yet confirmed but watch post-FOMC minutes.
+    </div>
+  </div>
+
+  <!-- STEP 3: BREAKING CATALYSTS -->
+  <div class="section-header">STEP 3 — BREAKING CATALYSTS</div>
+
+  <div class="macro-panel" style="border-color:var(--urgent-border);background:var(--urgent-bg);">
+    <div class="macro-label" style="color:var(--urgent);">🔴 URGENT — FOMC April Minutes — 2:00PM ET TODAY</div>
+    <div class="macro-title">April FOMC Had Unusual 4-Member Dissent — Minutes May Reveal Hawkish Tone</div>
+    <div class="macro-body">
+      Three members (Hammack, Kashkari, Logan) wanted to remove the easing bias from the statement. One member (Miran) wanted immediate cut. If minutes reveal a more hawkish internal debate, expect yield spike and further tech selling. <strong>Do NOT add to rate-sensitive longs before 2PM.</strong> Reduce beta if you have outsized tech exposure.
+      <br><br>
+      <a href="https://www.federalreserve.gov/monetarypolicy/fomcpresconf20260429.htm" target="_blank">↗ Source: Federal Reserve April 28-29 Meeting</a>
+    </div>
+  </div>
+
+  <div class="macro-panel" style="border-color:var(--watch-border);">
+    <div class="macro-label" style="color:var(--watch);">🟡 MACRO — Rate Cut Odds at 0% / Iran War Energy Shock</div>
+    <div class="macro-title">Fed Holding at 3.50%–3.75% | Hot CPI 3.3% | Strait of Hormuz Disruptions</div>
+    <div class="macro-body">
+      68.3% market-implied probability of zero rate cuts in 2026. Hot April CPI at 3.3% + Iran war disrupting shipping lanes (30→50 day delays to Europe) = prolonged Fed hold scenario. Trump-Xi summit May 13 produced trade truce extension but Taiwan tensions remain.
+      <br><br>
+      Sources: <a href="https://www.cnbc.com/2026/03/19/traders-rate-cut.html" target="_blank">CNBC rate cut odds</a> | <a href="https://www.cnbc.com/2026/05/13/trump-xi-summit-china-iran-war-tariffs.html" target="_blank">CNBC Trump-Xi summit</a>
+    </div>
+  </div>
+
+  <!-- STEP 4: OPTIONS FLOW -->
+  <div class="section-header">STEP 4 — OPTIONS FLOW ALERTS</div>
+
+  <div class="macro-panel">
+    <div class="macro-label">Options Flow Summary</div>
+    <table class="flow-table">
+      <thead>
+        <tr>
+          <th>Ticker</th>
+          <th>Direction</th>
+          <th>Details</th>
+          <th>Signal</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>NVDA</strong></td>
+          <td class="tag-calls">CALLS HEAVY</td>
+          <td>Pre-earnings positioning. 90% beat odds on Polymarket. Concentrated flow ahead of May 20 earnings.</td>
+          <td>🟡 <span class="label-watch">WATCH</span> — Earnings vol play</td>
+        </tr>
+        <tr>
+          <td><strong>QQQ</strong></td>
+          <td class="tag-puts">PUTS > CALLS</td>
+          <td>OI Put/Call Ratio: <span class="tag-elevated">1.59</span> — elevated defensive positioning. More puts than calls in open interest.</td>
+          <td>🔴 <span class="label-urgent">URGENT</span> — Smart money hedged</td>
+        </tr>
+        <tr>
+          <td><strong>VIX</strong></td>
+          <td style="color:var(--watch);">MODERATE</td>
+          <td>VIX at 17.82 — not panicking but not complacent. FOMC minutes could push toward 20+ on hawkish surprise.</td>
+          <td>🟡 <span class="label-watch">WATCH</span> — Monitor at 2PM</td>
+        </tr>
+      </tbody>
+    </table>
+    <div style="margin-top:12px;font-size:11px;color:var(--urgent);">
+      ⚠ QQQ Put/Call OI Ratio of 1.59 CONTRADICTS last week's AI-driven rally. Institutional hedging at elevated levels — do not chase index longs.
+    </div>
+    <div style="margin-top:6px;font-size:10px;color:var(--text-muted);">
+      Sources: <a href="https://www.barchart.com/etfs-funds/quotes/QQQ/put-call-ratios">Barchart QQQ P/C Ratio</a> | <a href="https://finance.yahoo.com/quote/%5EVIX/">Yahoo Finance VIX</a>
+    </div>
+  </div>
+
+  <!-- STEP 5: POSITION CHECK -->
+  <div class="section-header">STEP 5 — POSITION CHECK SIGNALS</div>
+
+  <div class="macro-panel" style="border-color:var(--urgent-border);background:var(--urgent-bg);">
+    <div class="macro-label" style="color:var(--urgent);">🔴 EXIT / REDUCE</div>
+    <div class="macro-body">
+      <strong>TSLA longs:</strong> Three-pronged bearish overhang active (glitches + battery delays + 208x fwd P/E). Down 3.2%. No catalyst to hold through. Consider exit.<br>
+      <strong>AMZN longs:</strong> Down 3.2% on pure macro repricing. If FOMC minutes hawkish → extension lower. Reduce sizing.<br>
+      <strong>Any rate-sensitive tech longs:</strong> FOMC minutes at 2PM is the #1 risk event today. <strong>Do NOT add before 2PM.</strong>
+    </div>
+  </div>
+
+  <div class="macro-panel" style="border-color:var(--watch-border);background:var(--watch-bg);">
+    <div class="macro-label" style="color:var(--watch);">🟡 HOLD / TRIM / ADD CAREFULLY</div>
+    <div class="macro-body">
+      <strong>NVDA:</strong> Consolidating at $220 ahead of May 20 earnings. Hold with stop below $215. Do NOT add.<br>
+      <strong>PLTR:</strong> Holding relative strength at $135 despite tech weakness. Hold with stop below $134.<br>
+      <strong>SNDK:</strong> Watch $1,293 support. Holds = long thesis intact. Breaks = exit.<br>
+      <strong>XLF:</strong> Financial sector outperforming today — confirm direction through FOMC minutes before sizing up.
+    </div>
+  </div>
+
+  <div class="macro-panel" style="border-color:var(--confirm-border);background:var(--confirm-bg);">
+    <div class="macro-label" style="color:var(--confirm);">🟢 NEW SETUP — XLF / Financial Sector Rotation</div>
+    <div class="macro-body">
+      XLF +1.25% while XLK -1.08% today. Higher-for-longer rate environment (0% cut odds) directly benefits bank net interest margins. Setup: Long XLF / Underweight XLK pairs trade. <strong>Confirm direction post-FOMC minutes at 2PM before adding size.</strong>
+    </div>
+  </div>
+
+  <!-- STEP 6: PRIORITY SUMMARY -->
+  <div class="section-header">STEP 6 — PRIORITY SUMMARY</div>
+
+  <div class="macro-panel">
+    <table class="priority-table">
+      <thead>
+        <tr>
+          <th>Label</th>
+          <th>Ticker / Event</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="label-urgent">🔴 URGENT</span></td>
+          <td><strong>FOMC Minutes — 2:00PM ET</strong></td>
+          <td>Reduce beta NOW. Wait for release before adding longs.</td>
+        </tr>
+        <tr>
+          <td><span class="label-urgent">🔴 URGENT</span></td>
+          <td><strong>TSLA</strong></td>
+          <td>Exit or reduce longs. No near-term catalyst. 3 bearish overhangs active.</td>
+        </tr>
+        <tr>
+          <td><span class="label-urgent">🔴 URGENT</span></td>
+          <td><strong>QQQ P/C Ratio 1.59</strong></td>
+          <td>Smart money hedged at index level. Do not chase QQQ higher.</td>
+        </tr>
+        <tr>
+          <td><span class="label-watch">🟡 WATCH</span></td>
+          <td><strong>NVDA Earnings Tomorrow</strong></td>
+          <td>Hold w/ stop $215. No new adds. Guide &gt;$87B needed to rally.</td>
+        </tr>
+        <tr>
+          <td><span class="label-watch">🟡 WATCH</span></td>
+          <td><strong>20-Yr Bond Auction — 1:00PM</strong></td>
+          <td>Weak auction = yield spike = equity pressure. Monitor yields.</td>
+        </tr>
+        <tr>
+          <td><span class="label-watch">🟡 WATCH</span></td>
+          <td><strong>PLTR $134–$135</strong></td>
+          <td>Hold. Relative strength intact. Stop below $134.</td>
+        </tr>
+        <tr>
+          <td><span class="label-watch">🟡 WATCH</span></td>
+          <td><strong>SNDK $1,293 support</strong></td>
+          <td>Bounce = long intact. Break = exit.</td>
+        </tr>
+        <tr>
+          <td><span class="label-confirm">🟢 CONFIRM</span></td>
+          <td><strong>XLF outperformance</strong></td>
+          <td>Higher-for-longer favors financials. New setup if FOMC minutes hawkish.</td>
+        </tr>
+        <tr>
+          <td><span class="label-confirm">🟢 CONFIRM</span></td>
+          <td><strong>AMD AI thesis</strong></td>
+          <td>MI450 partnerships with OpenAI/Meta intact. Hold. NVDA rotation beneficiary.</td>
+        </tr>
+        <tr>
+          <td><span class="label-noise">⚪ NOISE</span></td>
+          <td>META, SOFI, COIN, MARA, GLD</td>
+          <td>No actionable edge today. Skip.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+</div><!-- /container -->
+
+<div class="footer">
+  Generated automatically · May 19, 2026 · Midday Scan<br>
+  Sources: Benzinga · Yahoo Finance · CNBC · Motley Fool · CoinDesk · Federal Reserve · Seeking Alpha · 24/7 Wall St.<br>
+  All claims sourced from verified financial news outlets. No Reddit or unverified social media used.
+</div>
+
+</body>
+</html>
