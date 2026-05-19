@@ -1,0 +1,826 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>After-Hours Scan — May 19, 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0e17;
+    --bg2: #111827;
+    --bg3: #1a2235;
+    --border: #1e293b;
+    --text: #e2e8f0;
+    --muted: #94a3b8;
+    --green: #22c55e;
+    --green-dim: #14532d;
+    --red: #ef4444;
+    --red-dim: #450a0a;
+    --amber: #f59e0b;
+    --amber-dim: #451a03;
+    --blue: #3b82f6;
+    --blue-dim: #1e3a5f;
+    --purple: #a855f7;
+    --cyan: #06b6d4;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    line-height: 1.6;
+    padding: 0;
+  }
+  .header {
+    background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #0f172a 100%);
+    border-bottom: 1px solid var(--purple);
+    padding: 24px 32px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .header-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: 0.05em;
+  }
+  .header-title span { color: var(--purple); }
+  .header-meta { color: var(--muted); font-size: 11px; text-align: right; }
+  .container { max-width: 1200px; margin: 0 auto; padding: 32px; }
+  
+  /* Alert banner */
+  .alert-banner {
+    background: linear-gradient(90deg, var(--amber-dim), #1a1200);
+    border: 1px solid var(--amber);
+    border-radius: 8px;
+    padding: 12px 20px;
+    margin-bottom: 24px;
+    color: var(--amber);
+    font-weight: 600;
+    font-size: 13px;
+  }
+
+  /* Section headers */
+  .section {
+    margin-bottom: 32px;
+  }
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 16px;
+    background: var(--bg3);
+    border-left: 3px solid var(--purple);
+    border-radius: 0 6px 6px 0;
+    margin-bottom: 16px;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--purple);
+  }
+  .section-header .step { color: var(--muted); font-weight: 400; }
+
+  /* Cards */
+  .card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px 20px;
+    margin-bottom: 12px;
+  }
+  .card.beat { border-left: 3px solid var(--green); }
+  .card.miss { border-left: 3px solid var(--red); }
+  .card.inline { border-left: 3px solid var(--amber); }
+  .card.neutral { border-left: 3px solid var(--blue); }
+  .card.warning { border-left: 3px solid var(--amber); }
+  .card.alert { border-left: 3px solid var(--red); background: linear-gradient(90deg, rgba(239,68,68,0.05), var(--bg2)); }
+  .card.divergence { border-left: 3px solid var(--amber); background: linear-gradient(90deg, rgba(245,158,11,0.08), var(--bg2)); }
+
+  .card-ticker {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .tag {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+  .tag.beat { background: var(--green-dim); color: var(--green); }
+  .tag.miss { background: var(--red-dim); color: var(--red); }
+  .tag.raised { background: var(--green-dim); color: var(--green); }
+  .tag.lowered { background: var(--red-dim); color: var(--red); }
+  .tag.neutral { background: var(--blue-dim); color: var(--blue); }
+  .tag.warning { background: var(--amber-dim); color: var(--amber); }
+  .tag.watchlist { background: linear-gradient(90deg, #5b21b6, #1d4ed8); color: #fff; }
+
+  .metric-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 8px;
+    margin: 10px 0;
+  }
+  .metric {
+    background: var(--bg3);
+    border-radius: 6px;
+    padding: 8px 12px;
+  }
+  .metric-label { color: var(--muted); font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 4px; }
+  .metric-value { font-size: 15px; font-weight: 600; }
+  .metric-value.green { color: var(--green); }
+  .metric-value.red { color: var(--red); }
+  .metric-value.amber { color: var(--amber); }
+  .metric-value.blue { color: var(--blue); }
+  .metric-value.purple { color: var(--purple); }
+
+  .readthrough {
+    background: var(--bg3);
+    border-radius: 6px;
+    padding: 10px 14px;
+    margin-top: 10px;
+    color: var(--muted);
+    font-size: 12px;
+  }
+  .readthrough strong { color: var(--cyan); }
+
+  /* Table */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 8px 0;
+    font-size: 12px;
+  }
+  th {
+    background: var(--bg3);
+    color: var(--muted);
+    padding: 8px 12px;
+    text-align: left;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    font-size: 10px;
+    border-bottom: 1px solid var(--border);
+  }
+  td {
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: rgba(255,255,255,0.02); }
+  .td-green { color: var(--green); font-weight: 600; }
+  .td-red { color: var(--red); font-weight: 600; }
+  .td-amber { color: var(--amber); font-weight: 600; }
+  .td-blue { color: var(--blue); }
+  .td-purple { color: var(--purple); }
+  .td-muted { color: var(--muted); }
+
+  /* Source link */
+  .source-link { color: var(--blue); font-size: 10px; text-decoration: none; opacity: 0.7; }
+  .source-link:hover { opacity: 1; text-decoration: underline; }
+
+  /* Flow badge */
+  .flow-calls { color: var(--green); font-weight: 700; }
+  .flow-puts { color: var(--red); font-weight: 700; }
+  .flow-neutral { color: var(--amber); font-weight: 700; }
+
+  /* Two-col */
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+  @media (max-width: 700px) {
+    .two-col { grid-template-columns: 1fr; }
+    .container { padding: 16px; }
+  }
+
+  /* Brief */
+  .brief-box {
+    background: linear-gradient(135deg, #1e1b4b, #0f172a);
+    border: 1px solid var(--purple);
+    border-radius: 10px;
+    padding: 20px 24px;
+    font-size: 13px;
+    line-height: 1.8;
+    color: #cbd5e1;
+  }
+  .brief-box .brief-title {
+    color: var(--purple);
+    font-weight: 700;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+
+  /* Assumption table */
+  .assumption td:first-child { color: var(--amber); font-weight: 500; }
+  .assumption td:nth-child(2) { color: var(--red); font-size: 11px; }
+  .assumption td:nth-child(3) { color: var(--cyan); font-size: 11px; }
+
+  /* Ticker strip */
+  .ticker-strip {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 24px;
+  }
+  .ticker-chip {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 8px 14px;
+    font-size: 12px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .ticker-chip .price { color: var(--muted); font-weight: 400; }
+  .ticker-chip .change.up { color: var(--green); }
+  .ticker-chip .change.down { color: var(--red); }
+
+  /* Key level bar */
+  .level-bar {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    padding: 8px 12px;
+    background: var(--bg3);
+    border-radius: 6px;
+    margin: 6px 0;
+    font-size: 12px;
+  }
+  .level-bar .label { color: var(--muted); min-width: 120px; }
+  .level-bar .value { font-weight: 600; }
+  .level-bar .value.support { color: var(--green); }
+  .level-bar .value.resistance { color: var(--red); }
+  .level-bar .value.neutral { color: var(--amber); }
+
+  /* Game plan cards */
+  .gp-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 10px;
+  }
+  .gp-num {
+    background: var(--purple);
+    color: #fff;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 700;
+    margin-right: 8px;
+  }
+  .gp-ticker { font-size: 16px; font-weight: 700; display: inline; }
+  .gp-body { margin-top: 8px; color: var(--muted); font-size: 12px; line-height: 1.7; }
+
+  .nvda-highlight {
+    background: linear-gradient(135deg, rgba(168,85,247,0.1), rgba(59,130,246,0.05));
+    border: 1px solid rgba(168,85,247,0.4);
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 20px;
+  }
+  .nvda-highlight .nvda-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--purple);
+    margin-bottom: 12px;
+  }
+
+  .footer {
+    text-align: center;
+    color: var(--muted);
+    font-size: 10px;
+    padding: 24px;
+    border-top: 1px solid var(--border);
+    margin-top: 40px;
+    letter-spacing: 0.05em;
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-title">🌙 AFTER-HOURS SCAN <span>// May 19, 2026</span></div>
+  <div class="header-meta">
+    Generated: After Market Close<br>
+    Model: Automated Catalyst Scanner
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- Alert Banner -->
+  <div class="alert-banner">
+    ⚡ CRITICAL TOMORROW: NVDA reports AMC May 20 — ±12.9% implied move. Everything pivots on Q2 guide vs. $86B consensus. FOMC minutes at 2 PM ET.
+  </div>
+
+  <!-- Market Overview Strip -->
+  <div class="ticker-strip">
+    <div class="ticker-chip">SPY <span class="price">~$720</span> <span class="change down">▼ 3rd red day</span></div>
+    <div class="ticker-chip">QQQ <span class="price"></span> <span class="change down">▼ -1.4%</span></div>
+    <div class="ticker-chip">OIL <span class="price">$110-112</span> <span class="change up">▲ Surging</span></div>
+    <div class="ticker-chip">GOLD <span class="price">~$4,518</span> <span class="change down">▼ Pulled back</span></div>
+    <div class="ticker-chip">BTC <span class="price">$76,200</span> <span class="change down">▼ Weak</span></div>
+    <div class="ticker-chip">10Y YIELD <span class="price">4.60%</span> <span class="change down">▲ Rising</span></div>
+    <div class="ticker-chip">CUT ODDS <span class="price">0%</span> <span class="change down">▼ Collapsed</span></div>
+    <div class="ticker-chip">PHIL SEMI <span class="price"></span> <span class="change down">▼ -7% (3 days)</span></div>
+  </div>
+
+  <!-- STEP 1: EARNINGS -->
+  <div class="section">
+    <div class="section-header"><span class="step">STEP 1</span> EARNINGS RELEASED TODAY (After Close)</div>
+
+    <div class="card beat">
+      <div class="card-ticker">
+        CAVA
+        <span class="tag beat">BEAT</span>
+        <span class="tag raised">GUIDE RAISED</span>
+        <span class="tag watchlist">+6% AH</span>
+      </div>
+      <div class="metric-grid">
+        <div class="metric">
+          <div class="metric-label">EPS Actual</div>
+          <div class="metric-value green">$0.20</div>
+        </div>
+        <div class="metric">
+          <div class="metric-label">EPS Estimate</div>
+          <div class="metric-value amber">$0.17</div>
+        </div>
+        <div class="metric">
+          <div class="metric-label">Revenue</div>
+          <div class="metric-value green">$438.3M</div>
+        </div>
+        <div class="metric">
+          <div class="metric-label">Rev Estimate</div>
+          <div class="metric-value amber">$418.2M</div>
+        </div>
+        <div class="metric">
+          <div class="metric-label">SSS Growth</div>
+          <div class="metric-value green">+9.7%</div>
+        </div>
+        <div class="metric">
+          <div class="metric-label">Traffic Growth</div>
+          <div class="metric-value green">+6.8%</div>
+        </div>
+        <div class="metric">
+          <div class="metric-label">New Restaurants</div>
+          <div class="metric-value blue">20 net new</div>
+        </div>
+        <div class="metric">
+          <div class="metric-label">AH Move</div>
+          <div class="metric-value green">+6.0%</div>
+        </div>
+      </div>
+      <div class="readthrough">
+        <strong>GUIDANCE:</strong> SSS raised to 4.5–6.5% (prev. 3.0–5.0%) | Adj. EBITDA $181–191M (raised)<br>
+        <strong>READ-THROUGH:</strong> Positive for fast-casual peers (CMG, SG). Consumer discretionary spending resilient despite macro headwinds. ETF: XLY.<br>
+        <strong>WATCHLIST:</strong> Not primary, but consumer strength = mild risk-on signal.<br>
+        <a href="https://www.investing.com/news/earnings/cava-stock-rises-on-earnings-beat-and-raised-guidance-4699579" class="source-link" target="_blank">📎 Source: Investing.com</a>
+      </div>
+    </div>
+
+    <div class="card miss">
+      <div class="card-ticker">
+        CAN &nbsp;<span style="font-size:13px;color:var(--muted)">Canaan Inc.</span>
+        <span class="tag miss">DOUBLE MISS</span>
+        <span class="tag" style="background:var(--red-dim);color:var(--red)">-7.5% AH</span>
+      </div>
+      <div class="metric-grid">
+        <div class="metric">
+          <div class="metric-label">EPS Actual</div>
+          <div class="metric-value red">-$0.13</div>
+        </div>
+        <div class="metric">
+          <div class="metric-label">EPS Estimate</div>
+          <div class="metric-value amber">-$0.03</div>
+        </div>
+        <div class="metric">
+          <div class="metric-label">Revenue</div>
+          <div class="metric-value red">$62.7M</div>
+        </div>
+        <div class="metric">
+          <div class="metric-label">Rev Estimate</div>
+          <div class="metric-value amber">$65.3M</div>
+        </div>
+        <div class="metric">
+          <div class="metric-label">EPS Miss Magnitude</div>
+          <div class="metric-value red">4x wider</div>
+        </div>
+        <div class="metric">
+          <div class="metric-label">AH Move</div>
+          <div class="metric-value red">-7.5%</div>
+        </div>
+      </div>
+      <div class="readthrough">
+        <strong>READ-THROUGH:</strong> Sympathy weakness watch for MARA (watchlist). BTC mining economics deteriorating. No ETF with direct exposure.<br>
+        <a href="https://www.chartmill.com/news/CAN/Chartmill-48725-Canaan-Inc-NASDAQCAN-Plunges-75-Premarket-After-Q1-Earnings-Miss-EPS-Loss-Far-Wider-Than-Expected" class="source-link" target="_blank">📎 Source: ChartMill</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 2: AH MOVERS -->
+  <div class="section">
+    <div class="section-header"><span class="step">STEP 2</span> AFTER-HOURS MOVERS</div>
+    <div class="card neutral">
+      <table>
+        <thead>
+          <tr>
+            <th>Ticker</th><th>AH % Change</th><th>Catalyst</th><th>Tradeable Tomorrow?</th><th>ETF</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td style="font-weight:700">CAVA</td>
+            <td class="td-green">+6.0%</td>
+            <td>EPS beat + raised guidance</td>
+            <td class="td-green">YES — Gap-up continuation or VWAP fade</td>
+            <td class="td-muted">XLY</td>
+          </tr>
+          <tr>
+            <td style="font-weight:700">CAN</td>
+            <td class="td-red">-7.5%</td>
+            <td>Double miss, loss 4x wider than est.</td>
+            <td class="td-amber">LOW CONVICTION — small float miner</td>
+            <td class="td-muted">Crypto/mining</td>
+          </tr>
+        </tbody>
+      </table>
+      <div style="color:var(--muted);font-size:11px;margin-top:10px;padding-top:10px;border-top:1px solid var(--border)">
+        ⚠️ Additional verified AH movers >5% not found. Session muted — market holding breath for NVDA earnings (AMC May 20).
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 3: ETF RECAP -->
+  <div class="section">
+    <div class="section-header"><span class="step">STEP 3</span> SECTOR & THEME ETF END-OF-DAY RECAP</div>
+
+    <div class="card alert" style="margin-bottom:16px;">
+      <div style="font-size:13px;font-weight:700;color:var(--red);margin-bottom:8px;">📰 Market Story: CHIP CRASH + OIL SURGE + RATE FEAR</div>
+      <div style="color:var(--muted);font-size:12px;line-height:1.7">
+        Three converging forces today: (1) Phil Semiconductor Index -7%+ over 3 sessions with AMD -5.7%, Qualcomm -6%, Intel and TSLA steep losses. (2) Oil surged to $110–$112/bbl on Iran tensions and Strait of Hormuz risk. (3) Fed rate cut odds collapsed from 37.6% one month ago to 0% today, driving yields higher (10yr to 4.6%).
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div class="card miss">
+        <div style="font-weight:700;color:var(--red);margin-bottom:8px;">❌ TECH & AI — SMH, XLK, IBIT</div>
+        <div style="font-size:12px;color:var(--muted);line-height:1.7">
+          SMH lagged badly. Phil Semi -7%+ over 3 sessions. AMD -5.7%, Qualcomm -6%.<br>
+          XLK: rate compression + multiple contraction.<br>
+          IBIT: Bitcoin ~$76,200, weak.<br><br>
+          <strong style="color:var(--cyan)">Tomorrow:</strong> NVDA AMC binary. Beat+guide → violent reversal. Miss → breakdown confirmed.<br>
+          <strong style="color:var(--cyan)">Best play:</strong> SMH as directional NVDA vehicle.<br>
+          <a href="https://www.fxleaders.com/news/2026/05/19/falling-chip-stocks-pull-nasdaq-down-0-8/" class="source-link" target="_blank">📎 FX Leaders</a>
+        </div>
+      </div>
+
+      <div class="card beat">
+        <div style="font-weight:700;color:var(--green);margin-bottom:8px;">✅ COMMODITIES — UCO/USO/BNO, GLD</div>
+        <div style="font-size:12px;color:var(--muted);line-height:1.7">
+          Oil the day's standout: $110–112/bbl on Iran tensions.<br>
+          Gold near all-time highs (~$4,518 area) but pulled back on dollar strength.<br>
+          Inflation at 3.8%, OPEC supply concerns, Iran Strait of Hormuz risk.<br><br>
+          <strong style="color:var(--cyan)">Tomorrow:</strong> Oil consolidates if Iran de-escalates. GLD moves with yield reaction to FOMC minutes.<br>
+          <strong style="color:var(--cyan)">Best play:</strong> UCO/BNO if Iran risk holds. GLD as NVDA-miss hedge.<br>
+          <a href="https://sundayguardianlive.com/business/us-stock-market-today-19-may-2026-dow-slips-400-nasdaq-sp-500-drop-as-chip-stocks-crash-oil-surges-112-on-us-iran-deal-gold-silver-bitcoin-retreats-77k-what-investors-should-watch-194250/" class="source-link" target="_blank">📎 Sunday Guardian</a>
+        </div>
+      </div>
+
+      <div class="card miss">
+        <div style="font-weight:700;color:var(--red);margin-bottom:8px;">❌ MACRO — TLT, UUP</div>
+        <div style="font-size:12px;color:var(--muted);line-height:1.7">
+          TLT: Selling. 10yr yield ~4.6%, 30yr ~5.14%.<br>
+          Rate cut odds: 0% (was 37.6% one month ago).<br>
+          UUP: Strengthening on higher-for-longer.<br>
+          Bond market: No relief in sight.<br><br>
+          <strong style="color:var(--cyan)">Tomorrow:</strong> FOMC minutes at 2 PM ET — new Fed Chair Warsh first policy test.<br>
+          <strong style="color:var(--cyan)">Best play:</strong> TLT put spreads on hawkish confirmation.<br>
+          <a href="https://www.tipranks.com/news/stock-market-today-spy-qqq-slip-as-rate-cut-odds-sink-to-0-trump-calls-off-planned-attack-on-iran" class="source-link" target="_blank">📎 TipRanks</a>
+        </div>
+      </div>
+
+      <div class="card neutral">
+        <div style="font-weight:700;color:var(--blue);margin-bottom:8px;">⚠️ DEFENSE — ITA</div>
+        <div style="font-size:12px;color:var(--muted);line-height:1.7">
+          ITA supported by lingering Iran escalation. Trump delayed — not canceled — planned attack.<br>
+          Watch for overnight Iran headline that could move ITA significantly.<br><br>
+          JETS, CIBR, KBE: No major catalyst verified today — skipped.<br>
+          TAN, ICLN, GRID, PAVE: Flat/uneventful, high rates = structural headwind — skipped.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 4: OPTIONS FLOW -->
+  <div class="section">
+    <div class="section-header"><span class="step">STEP 4</span> TODAY'S OPTIONS FLOW SUMMARY</div>
+
+    <div class="two-col" style="margin-bottom:12px">
+      <div class="card neutral">
+        <div style="font-weight:700;margin-bottom:10px;">A) Index-Level Positioning</div>
+        <table>
+          <tr><th>Index</th><th>P/C Ratio</th><th>Signal</th></tr>
+          <tr>
+            <td style="font-weight:700">QQQ</td>
+            <td class="td-red">1.59</td>
+            <td class="td-amber">ELEVATED — hedging</td>
+          </tr>
+          <tr>
+            <td style="font-weight:700">SPY</td>
+            <td class="td-muted">Unverified</td>
+            <td class="td-muted">VERIFY AT OPEN</td>
+          </tr>
+          <tr>
+            <td style="font-weight:700">VIX Calls</td>
+            <td class="td-muted">Unverified</td>
+            <td class="td-muted">VERIFY AT OPEN</td>
+          </tr>
+        </table>
+        <div style="margin-top:8px;font-size:11px;color:var(--muted)">
+          QQQ P/C 1.59 = institutional downside hedging confirmed. NOT necessarily directional short — longs buying protection ahead of NVDA.
+        </div>
+        <a href="https://fintel.io/sopt/us/qqq" class="source-link" target="_blank">📎 Fintel QQQ P/C</a>
+      </div>
+
+      <div class="card neutral">
+        <div style="font-weight:700;margin-bottom:10px;">B) NVDA Watchlist Flow</div>
+        <div class="metric-grid">
+          <div class="metric">
+            <div class="metric-label">Dominant Strategy</div>
+            <div class="metric-value amber">Put Credit Spreads</div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">Put Spreads %</div>
+            <div class="metric-value amber">46.18%</div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">Long Calls %</div>
+            <div class="metric-value green">13.58%</div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">Long Puts %</div>
+            <div class="metric-value red">6.13%</div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">IV Rank</div>
+            <div class="metric-value purple">61</div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">Implied Move</div>
+            <div class="metric-value purple">±12.9%</div>
+          </div>
+        </div>
+        <div style="margin-top:8px;font-size:11px;color:var(--muted)">Smart money SELLING volatility into earnings — believes actual move will be LESS than ±12.9%.</div>
+        <a href="https://averin.com/en/journal/nvda-earnings-may-2026-options-iv-strategy" class="source-link" target="_blank">📎 Averin NVDA Options</a>
+      </div>
+    </div>
+
+    <div class="card divergence">
+      <div style="font-weight:700;color:var(--amber);margin-bottom:8px;">⚡ D) FLOW vs. PRICE DIVERGENCE — HIGH SIGNAL ALERT</div>
+      <div style="font-size:12px;line-height:1.7">
+        <span style="color:var(--amber)">NVDA:</span> Price <span class="td-red">DOWN ~1%</span> today in broad chip selloff — BUT options positioning shows <span class="flow-calls">PUT CREDIT SPREAD DOMINANCE</span> = traders SELLING puts = neutral-to-bullish stance DESPITE price decline.<br><br>
+        <span style="color:var(--cyan)">Signal:</span> The chip selloff today may be pre-earnings positioning anxiety, NOT a structural breakdown. Smart money is not panicking bearish — they're selling volatility (implying they think the eventual move is manageable).
+      </div>
+    </div>
+
+    <div class="card warning" style="font-size:12px;color:var(--muted)">
+      ⚠️ TSLA, AMD, SOFI, PLTR, MARA, COIN, META, AMZN, SNDK: No verified unusual flow data found for May 19. <strong style="color:var(--amber)">VERIFY on Unusual Whales / FlowAlgo at open.</strong>
+    </div>
+  </div>
+
+  <!-- STEP 5: SEC FILINGS -->
+  <div class="section">
+    <div class="section-header"><span class="step">STEP 5</span> SEC FILINGS & INSIDER ACTIVITY</div>
+    <div class="card neutral" style="font-size:12px;color:var(--muted)">
+      No notable insider cluster buys, 13-D activist filings, or material 8-K events verified from May 19, 2026 with source URLs.<br><br>
+      <strong style="color:var(--amber)">ACTION ITEM:</strong> Check EDGAR 8-K feed (sec.gov) for May 19 filings at 9:00 AM before trading.
+    </div>
+  </div>
+
+  <!-- STEP 6: TOMORROW'S EARNINGS -->
+  <div class="section">
+    <div class="section-header"><span class="step">STEP 6</span> TOMORROW'S EARNINGS PREVIEW (May 20, 2026)</div>
+
+    <div class="nvda-highlight">
+      <div class="nvda-title">🚨 NVDA — NVIDIA Corporation ⭐ WATCHLIST</div>
+      <div class="metric-grid">
+        <div class="metric">
+          <div class="metric-label">Report Time</div>
+          <div class="metric-value purple">AMC ~4:20 PM ET</div>
+        </div>
+        <div class="metric">
+          <div class="metric-label">EPS Consensus</div>
+          <div class="metric-value amber">$1.78</div>
+        </div>
+        <div class="metric">
+          <div class="metric-label">Revenue Consensus</div>
+          <div class="metric-value amber">~$78.8–79B</div>
+        </div>
+        <div class="metric">
+          <div class="metric-label">Q2 Guide Key Level</div>
+          <div class="metric-value red">$86.08B</div>
+        </div>
+        <div class="metric">
+          <div class="metric-label">Implied Move</div>
+          <div class="metric-value purple">±12.9%</div>
+        </div>
+        <div class="metric">
+          <div class="metric-label">Historical Pattern</div>
+          <div class="metric-value red">Fell 4 of last 5</div>
+        </div>
+      </div>
+      <div style="margin-top:12px;font-size:12px;color:#94a3b8;line-height:1.7">
+        <strong style="color:#c4b5fd">Key Watch:</strong> Q2 Revenue Guide vs. $86.08B consensus. Data Center segment. Blackwell ramp. China revenue (export controls). Margin guidance.<br>
+        <strong style="color:#c4b5fd">Historical:</strong> NVDA has FALLEN on 4 of last 5 earnings reports despite beating revenue by 3–4%. Market punishes conservative Q2 guidance harshly.<br>
+        <strong style="color:#c4b5fd">ETFs Affected:</strong> SMH, XLK, QQQ, FNGU, BOTZ, ILIT<br>
+        <a href="https://www.fool.com/investing/2026/05/19/nvda-stock-earnings-beat-date-may-20/" class="source-link" target="_blank">📎 Motley Fool</a> &nbsp;
+        <a href="https://www.techi.com/nvda-earnings-may-20-q2-guide-q1-beat/" class="source-link" target="_blank">📎 TECHi</a> &nbsp;
+        <a href="https://www.heygotrade.com/en/blog/nvidia-q1-fy27-earnings-preview-may-20-2026/" class="source-link" target="_blank">📎 HeyGoTrade</a>
+      </div>
+    </div>
+
+    <div class="card neutral">
+      <div style="font-weight:700;color:var(--blue);margin-bottom:8px;">📋 FOMC Meeting Minutes — ~2:00 PM ET (May 20)</div>
+      <div style="font-size:12px;color:var(--muted);line-height:1.7">
+        Fed holding at 3.50–3.75%. Historic number of dissents in last meeting. New Fed Chair Kevin Warsh — first policy communication test.<br>
+        <strong style="color:var(--cyan)">Watch:</strong> Tone on future rate path; any pivot language; inflation acknowledgment.<br>
+        <strong style="color:var(--cyan)">Impact:</strong> Could move TLT, UUP, and rate-sensitive sectors significantly BEFORE NVDA prints.
+      </div>
+      <a href="https://www.kiplinger.com/investing/economy/this-weeks-economic-calendar" class="source-link" target="_blank">📎 Kiplinger Economic Calendar</a>
+    </div>
+  </div>
+
+  <!-- STEP 7: OVERNIGHT WATCH -->
+  <div class="section">
+    <div class="section-header"><span class="step">STEP 7</span> MACRO OVERNIGHT WATCH</div>
+    <div class="card neutral">
+      <table>
+        <thead>
+          <tr><th>Signal</th><th>Status</th><th>Notes</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Oil Futures</td><td class="td-amber">⚠️ ELEVATED</td><td>$110–112, Iran risk premium embedded</td></tr>
+          <tr><td>Gold Futures</td><td class="td-amber">📊 Near ATH</td><td>Yield-sensitive — watch FOMC minutes reaction</td></tr>
+          <tr><td>Bitcoin</td><td class="td-red">🔴 WEAK</td><td>~$76,200, below $77K resistance</td></tr>
+          <tr><td>10yr Treasury</td><td class="td-red">🔴 RISING</td><td>~4.6%, structural headwind for growth/tech</td></tr>
+          <tr><td>Iran Situation</td><td class="td-amber">⚠️ UNRESOLVED</td><td>Trump delayed — not canceled — planned attack</td></tr>
+          <tr><td>FOMC Minutes</td><td class="td-blue">📅 May 20 2PM</td><td>New Fed Chair Warsh's first test</td></tr>
+          <tr><td>Asia Futures</td><td class="td-red">🔴 WEAK</td><td>Nikkei -2.08% recent session; DAX -1.59%</td></tr>
+          <tr><td>NVDA Earnings</td><td class="td-red">🚨 AMC May 20</td><td>Everything pivots on this single report</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- STEP 8: GAME PLAN -->
+  <div class="section">
+    <div class="section-header"><span class="step">STEP 8</span> TOMORROW'S GAME PLAN</div>
+
+    <div class="gp-card">
+      <span class="gp-num">1</span><span class="gp-ticker" style="color:var(--purple)">NVDA</span>
+      <div class="gp-body">
+        <strong style="color:var(--text)">Why:</strong> The entire market pivots on NVDA AMC print. ±12.9% implied move.<br>
+        <strong style="color:var(--text)">Pre-Earnings:</strong> DO NOT take naked directional bet. Vol selling dominates — respect the uncertainty.<br>
+        <strong style="color:var(--text)">Post-Print Logic:</strong> If Q2 guide >$86B → buy SMH/NVDA at AH or next open. If miss/guide-down → short SMH, long GLD. The Q2 GUIDE is the ONLY number that matters — a beat on Q1 with conservative guide = SELL.
+      </div>
+    </div>
+
+    <div class="gp-card">
+      <span class="gp-num">2</span><span class="gp-ticker" style="color:var(--blue)">SMH</span>
+      <div class="gp-body">
+        <strong style="color:var(--text)">Why:</strong> Phil Semi -7%+ over 3 sessions = compressed spring OR confirms breakdown.<br>
+        <strong style="color:var(--text)">Entry Logic:</strong> WAIT for NVDA print. SMH is the cleanest ETF vehicle for post-earnings directional trade. Beat+guide strong → call spreads at open. Miss → puts, continuation of breakdown.<br>
+        <strong style="color:var(--text)">Advantage over NVDA:</strong> ETF = no gap risk, cleaner fills, captures sector-wide reaction.
+      </div>
+    </div>
+
+    <div class="gp-card">
+      <span class="gp-num">3</span><span class="gp-ticker" style="color:var(--green)">CAVA</span>
+      <div class="gp-body">
+        <strong style="color:var(--text)">Why:</strong> Beat + raised guidance = +6% AH. Legitimate earnings momentum gap setup.<br>
+        <strong style="color:var(--text)">Entry Logic:</strong> Watch opening range (first 5–15 min). If holds VWAP after gap → buy VWAP with target at prior resistance. If gap fills immediately in first 30 min → step aside. Failed earnings gaps reverse hard.<br>
+        <strong style="color:var(--text)">Risk:</strong> If broader market opens sharply red (NVDA AH miss would hit overnight), reduce CAVA size.
+      </div>
+    </div>
+
+    <div style="margin-top:16px;">
+      <div style="font-weight:700;margin-bottom:10px;color:var(--text)">SPY Key Levels</div>
+      <div class="level-bar"><span class="label">Resistance (near)</span><span class="value resistance">$739–$742</span></div>
+      <div class="level-bar"><span class="label">Support (immediate)</span><span class="value neutral">~$694 (50-day MA)</span></div>
+      <div class="level-bar"><span class="label">Support (major)</span><span class="value support">$655–$682 (200-day MA)</span></div>
+      <div style="font-size:11px;color:var(--muted);margin-top:6px">SPY in 3rd consecutive red session. Needs NVDA catalyst to reverse. <a href="https://altindex.com/ticker/spy/technical-analysis" class="source-link" target="_blank">📎 AltIndex</a></div>
+    </div>
+
+    <div style="margin-top:16px;">
+      <div style="font-weight:700;margin-bottom:8px;color:var(--text)">Sector Bias: <span class="td-amber">⚠️ MIXED / WAIT-AND-SEE (pre-NVDA)</span></div>
+      <div style="font-size:12px;color:var(--muted)">Pre-NVDA: cautious, reduce chip exposure. Pre-FOMC minutes (2 PM): cautious on rate-sensitive. Post-NVDA AH: strong directional read for May 21 open.</div>
+    </div>
+
+    <div style="margin-top:16px;">
+      <div style="font-weight:700;margin-bottom:8px;color:var(--text)">Options Flow Conviction</div>
+      <div style="font-size:12px;color:var(--muted);line-height:1.7">Smart money is <strong style="color:var(--green)">selling volatility</strong> into NVDA earnings (put spreads dominate), NOT loading directional bets. QQQ P/C at 1.59 = protective hedging by institutional longs. The market is pricing <em>uncertainty</em>, not a crash. Vol-selling posture implies street believes the eventual move will be SMALLER than ±12.9%.</div>
+    </div>
+
+    <!-- 30-second briefing -->
+    <div class="brief-box" style="margin-top:20px">
+      <div class="brief-title">⚡ 30-SECOND OVERNIGHT BRIEFING</div>
+      Chips got crushed today — Phil Semi down 7% over 3 sessions — as oil surged to $112, inflation runs at 3.8%, and Fed cut odds hit zero. NVDA reports TOMORROW after close and is the only thing that matters for tech direction. FOMC minutes drop at 2 PM before NVDA's print — watch for Warsh tone on rates. CAVA gave a clean consumer beat, up 6% AH — fast casual holding up. Smart money is selling vol into NVDA (put spread dominance), not loading puts — the selloff looks like pre-earnings fear, not structural breakdown. Q2 guide vs. $86B consensus is the ONLY number that matters: beat it and chips go vertical; miss it and the breakdown accelerates. Bitcoin weak at $76K, gold near all-time highs. Iran risk stays embedded in oil overnight. Reduce chip exposure before open, let NVDA set the tone for the next week.
+    </div>
+  </div>
+
+  <!-- STEP 9: ASSUMPTION AUDIT -->
+  <div class="section">
+    <div class="section-header"><span class="step">STEP 9</span> ASSUMPTION AUDIT</div>
+    <div class="card neutral">
+      <table class="assumption">
+        <thead>
+          <tr><th>Assumption</th><th>If Wrong</th><th>Trade Adjustment</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>CAVA +6% AH holds into open</td>
+            <td>Broader market selloff tanks it</td>
+            <td>Exit CAVA if VWAP fails at open</td>
+          </tr>
+          <tr>
+            <td>NVDA reports AMC May 20</td>
+            <td>Pre-market release instead</td>
+            <td>Check NVDA IR at 9 AM — all pre-earnings setups moot</td>
+          </tr>
+          <tr>
+            <td>Q2 guide is key, not Q1 beat</td>
+            <td>EPS miss >$0.10 dominates</td>
+            <td>Any EPS miss = sell first, ask questions later</td>
+          </tr>
+          <tr>
+            <td>Phil Semi selloff = fear-driven (reversal candidate)</td>
+            <td>Structural AI capex slowdown</td>
+            <td>Treat SMH as SHORT if NVDA guide is conservative</td>
+          </tr>
+          <tr>
+            <td>QQQ P/C 1.59 = protective hedging</td>
+            <td>Directional shorts loading</td>
+            <td>If VIX spikes >5% at open, assume shorts are real</td>
+          </tr>
+          <tr>
+            <td>Oil $110+ = Iran premium</td>
+            <td>Iran deal announced overnight = oil dumps</td>
+            <td>Reverse oil longs, rotate into growth on deal news</td>
+          </tr>
+          <tr>
+            <td>FOMC minutes neutral/hawkish</td>
+            <td>More hawkish than expected</td>
+            <td>Add TLT puts, reduce growth exposure at 2 PM</td>
+          </tr>
+          <tr>
+            <td>Bitcoin $76K = consolidation</td>
+            <td>Break below $74K = risk-off signal</td>
+            <td>Reduce MARA/COIN exposure if BTC breaks $74K</td>
+          </tr>
+          <tr>
+            <td>No notable 8-K filings = no hidden catalyst</td>
+            <td>Large undisclosed event surfaces</td>
+            <td>Check EDGAR at 9 AM before trading</td>
+          </tr>
+          <tr>
+            <td>CAN miss = sympathy weakness on MARA</td>
+            <td>MARA tracks BTC price, not mining peers</td>
+            <td>Treat MARA as BTC proxy first, miner second</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="footer">
+    AFTER-HOURS CATALYST SCAN — May 19, 2026 &nbsp;|&nbsp; Automated generation &nbsp;|&nbsp; All data requires verification at open &nbsp;|&nbsp; Not financial advice
+  </div>
+
+</div>
+</body>
+</html>
