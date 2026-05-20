@@ -1,0 +1,886 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Daily Theme Scanner — 2026-05-20</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #0a0e17;
+    --bg2: #0d1220;
+    --bg3: #111827;
+    --border: #1e2d45;
+    --text: #e2e8f0;
+    --muted: #8097b1;
+    --high: #10b981;
+    --medium: #f59e0b;
+    --low: #ef4444;
+    --accent: #3b82f6;
+    --accent2: #8b5cf6;
+    --ticker: #60a5fa;
+    --code-bg: #0f1929;
+  }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    line-height: 1.7;
+    padding: 0;
+  }
+  .page-wrapper { max-width: 1100px; margin: 0 auto; padding: 40px 24px; }
+  
+  /* Header */
+  .header {
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 28px;
+    margin-bottom: 40px;
+  }
+  .header-top {
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+    margin-bottom: 8px;
+  }
+  .header h1 {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--text);
+    letter-spacing: -0.5px;
+  }
+  .header .date-badge {
+    font-size: 11px;
+    color: var(--muted);
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    padding: 2px 10px;
+    border-radius: 4px;
+    letter-spacing: 0.5px;
+  }
+  .header .tagline {
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+
+  /* TOC / Nav */
+  .toc {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 40px;
+  }
+  .toc a {
+    font-size: 11px;
+    color: var(--muted);
+    text-decoration: none;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    padding: 4px 12px;
+    border-radius: 4px;
+    letter-spacing: 0.3px;
+    transition: color 0.15s, border-color 0.15s;
+  }
+  .toc a:hover { color: var(--text); border-color: var(--accent); }
+
+  /* Section headers */
+  .section-title {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--accent);
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 10px;
+    margin-bottom: 24px;
+    margin-top: 48px;
+  }
+  .section-title:first-of-type { margin-top: 0; }
+
+  /* Cards */
+  .card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 22px 26px;
+    margin-bottom: 20px;
+    position: relative;
+  }
+  .card:hover { border-color: #2a3f5f; }
+  .card-number {
+    position: absolute;
+    top: 22px;
+    right: 22px;
+    font-size: 11px;
+    color: var(--muted);
+    opacity: 0.5;
+  }
+  .card-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 14px;
+    line-height: 1.3;
+  }
+  .card-title .divider {
+    color: var(--border);
+    margin: 0 6px;
+  }
+  .card-title .sub {
+    font-weight: 400;
+    color: var(--muted);
+    font-size: 13px;
+  }
+
+  /* Meta grid */
+  .meta-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+  .meta-item { }
+  .meta-label {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--muted);
+    margin-bottom: 3px;
+  }
+  .meta-value {
+    font-size: 12px;
+    color: var(--text);
+  }
+
+  /* Conviction badges */
+  .conviction {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 10px;
+    border-radius: 4px;
+    letter-spacing: 0.5px;
+  }
+  .conviction-HIGH { color: var(--high); border: 1px solid var(--high); background: rgba(16,185,129,0.08); }
+  .conviction-MEDIUM { color: var(--medium); border: 1px solid var(--medium); background: rgba(245,158,11,0.08); }
+  .conviction-LOW { color: var(--low); border: 1px solid var(--low); background: rgba(239,68,68,0.08); }
+  .strength-STRONG { color: var(--high); }
+  .strength-MODERATE { color: var(--medium); }
+  .strength-WEAK { color: var(--low); }
+
+  /* Stage badges */
+  .stage {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 500;
+    padding: 2px 8px;
+    border-radius: 4px;
+    letter-spacing: 0.5px;
+    margin-left: 8px;
+  }
+  .stage-EARLY { color: var(--low); background: rgba(239,68,68,0.08); border: 1px solid rgba(239,68,68,0.3); }
+  .stage-DEVELOPING { color: var(--medium); background: rgba(245,158,11,0.08); border: 1px solid rgba(245,158,11,0.3); }
+  .stage-MATURING { color: var(--high); background: rgba(16,185,129,0.08); border: 1px solid rgba(16,185,129,0.3); }
+
+  /* Ticker chips */
+  .ticker-list { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 4px; }
+  .ticker {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--ticker);
+    background: rgba(96,165,250,0.08);
+    border: 1px solid rgba(96,165,250,0.2);
+    padding: 1px 7px;
+    border-radius: 3px;
+    letter-spacing: 0.3px;
+  }
+  .ticker.loser { color: var(--low); background: rgba(239,68,68,0.08); border-color: rgba(239,68,68,0.2); }
+
+  /* Evidence */
+  .evidence-section { margin: 14px 0; }
+  .evidence-label {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--accent);
+    margin-bottom: 8px;
+  }
+  .evidence-item {
+    background: var(--code-bg);
+    border-left: 2px solid var(--accent);
+    padding: 8px 12px;
+    margin-bottom: 6px;
+    font-size: 12px;
+    color: #94a3b8;
+    border-radius: 0 4px 4px 0;
+    line-height: 1.6;
+  }
+
+  /* Summary */
+  .summary {
+    font-size: 13px;
+    color: #94a3b8;
+    line-height: 1.75;
+    margin-top: 14px;
+    padding-top: 14px;
+    border-top: 1px solid var(--border);
+  }
+
+  /* Trade idea */
+  .trade-idea {
+    background: rgba(139,92,246,0.06);
+    border: 1px solid rgba(139,92,246,0.2);
+    border-radius: 6px;
+    padding: 10px 14px;
+    margin: 12px 0;
+    font-size: 12px;
+    color: #c4b5fd;
+  }
+  .trade-idea-label {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--accent2);
+    margin-bottom: 4px;
+  }
+
+  /* Action items */
+  .action-card {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 22px 26px;
+    margin-bottom: 20px;
+  }
+  .action-sub-title {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--medium);
+    margin-bottom: 14px;
+    margin-top: 18px;
+  }
+  .action-sub-title:first-of-type { margin-top: 0; }
+  .action-item {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 10px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border);
+    font-size: 12px;
+    color: #94a3b8;
+    line-height: 1.65;
+  }
+  .action-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+  .action-num {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--medium);
+    min-width: 20px;
+    padding-top: 1px;
+  }
+
+  /* Key dates */
+  .dates-grid { display: flex; flex-direction: column; gap: 8px; }
+  .date-row {
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+    padding: 8px 12px;
+    background: var(--code-bg);
+    border-radius: 4px;
+    font-size: 12px;
+  }
+  .date-label { color: var(--high); font-weight: 600; min-width: 140px; font-size: 12px; }
+  .date-desc { color: #94a3b8; }
+
+  /* Separator */
+  .sep {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 8px 0 20px 0;
+  }
+
+  /* Responsive */
+  @media (max-width: 700px) {
+    .meta-grid { grid-template-columns: 1fr 1fr; }
+    .header h1 { font-size: 17px; }
+  }
+
+  .footer {
+    margin-top: 60px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+    font-size: 11px;
+    color: var(--muted);
+    text-align: center;
+    letter-spacing: 0.3px;
+  }
+</style>
+</head>
+<body>
+<div class="page-wrapper">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="header-top">
+      <h1>📊 Daily Theme Scanner</h1>
+      <span class="date-badge">2026-05-20</span>
+    </div>
+    <div class="tagline">Pre-market thematic research &bull; Emerging narratives &bull; Earnings signals &bull; Catalyst map</div>
+  </div>
+
+  <!-- NAV -->
+  <div class="toc">
+    <a href="#narratives">Emerging Narratives</a>
+    <a href="#signals">Earnings Signals</a>
+    <a href="#catalysts">Upcoming Catalysts</a>
+    <a href="#actions">Action Items</a>
+  </div>
+
+  <!-- ====== SECTION 1: NARRATIVES ====== -->
+  <div id="narratives">
+    <div class="section-title">01 &mdash; Emerging Narratives</div>
+
+    <!-- Narrative 1 -->
+    <div class="card">
+      <div class="card-number">#1</div>
+      <div class="card-title">Bond Vigilante Reckoning <span class="divider">—</span><span class="sub">Fiscal Sustainability Crisis</span></div>
+      <div class="meta-grid">
+        <div class="meta-item">
+          <div class="meta-label">Conviction</div>
+          <div><span class="conviction conviction-HIGH">HIGH</span></div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Stage</div>
+          <div><span class="stage stage-DEVELOPING">DEVELOPING</span></div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Earnings Impact Timeline</div>
+          <div class="meta-value">Immediate → Q2-Q3 2026</div>
+        </div>
+      </div>
+      <div class="meta-item" style="margin-bottom:10px;">
+        <div class="meta-label">Primary Beneficiaries</div>
+        <div class="ticker-list">
+          <span class="ticker">TBT</span><span class="ticker">TIP</span><span class="ticker">SCHP</span><span class="ticker">GLD</span><span class="ticker">IAU</span><span class="ticker">JPM</span><span class="ticker">BAC</span><span class="ticker">WFC</span>
+        </div>
+      </div>
+      <div class="meta-item" style="margin-bottom:10px;">
+        <div class="meta-label">Losers / Disrupted</div>
+        <div class="ticker-list">
+          <span class="ticker loser">XLU</span><span class="ticker loser">VNQ</span><span class="ticker loser">TLT</span><span class="ticker loser">LEN</span><span class="ticker loser">DHI</span><span class="ticker loser">O</span>
+        </div>
+      </div>
+      <div class="evidence-section">
+        <div class="evidence-label">Evidence</div>
+        <div class="evidence-item">30-year Treasury yield briefly topped 5.19% on May 15, 2026 — its highest in nearly 19 years. The 10-year hit 4.687%, highest since January 2025. [CNBC, May 15 2026]</div>
+        <div class="evidence-item">Moody's downgraded U.S. sovereign credit from Aaa to Aa1. The One Big Beautiful Bill Act is projected to add $4.1 trillion in borrowing through 2034 and boost the 2026 deficit alone by ~$500 billion. [Fortune, May 2026; Tax Foundation]</div>
+        <div class="evidence-item">Treasury auction demand visibly weak: 30-year cleared at 5% yield for first time since 2007; earlier spring auctions for 2-, 5-, and 7-year notes required higher-than-expected primary dealer absorption. [Fortune, March 2026]</div>
+      </div>
+      <div class="summary">The confluence of Moody's downgrade, the Iran war oil shock (re-inflationary), and a massive fiscal expansion via the OBBBA has catalyzed a structural repricing of long-duration U.S. debt. Annual interest costs have already crossed $1 trillion. The bond market is forcing a conversation about fiscal discipline that Washington has avoided for years. This is NOT a transient rate spike — it reflects a deteriorating supply/demand imbalance for Treasuries that punishes rate-sensitive equity sectors and could accelerate broader multiple compression if the 10-year sustains above 5%.</div>
+    </div>
+
+    <!-- Narrative 2 -->
+    <div class="card">
+      <div class="card-number">#2</div>
+      <div class="card-title">Oil Shock Stagflation Trade <span class="divider">—</span><span class="sub">Iran War Supply Disruption</span></div>
+      <div class="meta-grid">
+        <div class="meta-item">
+          <div class="meta-label">Conviction</div>
+          <div><span class="conviction conviction-HIGH">HIGH</span></div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Stage</div>
+          <div><span class="stage stage-DEVELOPING">DEVELOPING</span></div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Earnings Impact Timeline</div>
+          <div class="meta-value">Q2 2026 earnings (July-August)</div>
+        </div>
+      </div>
+      <div class="meta-item" style="margin-bottom:10px;">
+        <div class="meta-label">Primary Beneficiaries</div>
+        <div class="ticker-list">
+          <span class="ticker">XOM</span><span class="ticker">CVX</span><span class="ticker">COP</span><span class="ticker">EOG</span><span class="ticker">PSX</span><span class="ticker">OIH</span><span class="ticker">LNG</span><span class="ticker">LMT</span><span class="ticker">RTX</span>
+        </div>
+      </div>
+      <div class="meta-item" style="margin-bottom:10px;">
+        <div class="meta-label">Losers / Disrupted</div>
+        <div class="ticker-list">
+          <span class="ticker loser">DAL</span><span class="ticker loser">UAL</span><span class="ticker loser">AAL</span><span class="ticker loser">LUV</span><span class="ticker loser">DOW</span><span class="ticker loser">LYB</span>
+        </div>
+      </div>
+      <div class="evidence-section">
+        <div class="evidence-label">Evidence</div>
+        <div class="evidence-item">Strait of Hormuz effectively closed. Iraq, Saudi Arabia, Kuwait, UAE, Qatar, and Bahrain shut in 10.5 million bpd collectively. Brent peaked at $138/barrel on April 7; currently trading near $104-111/barrel. [EIA May 2026 STEO; Wikipedia 2026 Strait of Hormuz crisis]</div>
+        <div class="evidence-item">IEA characterized the disruption as the "largest supply disruption in the history of the global oil market." Economists warn of a potential "big recession" with inflation compounding from energy costs bleeding into chemicals, food, and transport. [CNBC, May 4 2026]</div>
+        <div class="evidence-item">S&amp;P 500 hit a new all-time intraday high of 7,230 on May 1 despite the shock — suggesting markets are still NOT fully pricing recession risk embedded in sustained $100+ oil. [Morgan Stanley, 2026]</div>
+      </div>
+      <div class="summary">The Iran conflict created the largest oil supply shock in modern history, yet equity markets have been slower than bond markets to price the inflationary and recessionary implications. U.S. shale producers and LNG exporters are direct beneficiaries; airlines face near-binary price behavior on de-escalation/escalation signals. Key question: will a partial Hormuz reopening (late May/June) allow oil price normalization, or will structural supply damage keep Brent above $100 through year-end?</div>
+    </div>
+
+    <!-- Narrative 3 -->
+    <div class="card">
+      <div class="card-number">#3</div>
+      <div class="card-title">AI Infrastructure Supercycle <span class="divider">—</span><span class="sub">Hyperscaler Capex Acceleration</span></div>
+      <div class="meta-grid">
+        <div class="meta-item">
+          <div class="meta-label">Conviction</div>
+          <div><span class="conviction conviction-HIGH">HIGH</span></div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Stage (Hyperscalers)</div>
+          <div><span class="stage stage-MATURING">MATURING</span></div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Stage (2nd-order plays)</div>
+          <div><span class="stage stage-EARLY">EARLY</span></div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Earnings Impact Timeline</div>
+          <div class="meta-value">Ongoing — NVDA reports tonight</div>
+        </div>
+      </div>
+      <div class="meta-item" style="margin-bottom:10px;">
+        <div class="meta-label">Primary Beneficiaries</div>
+        <div class="ticker-list">
+          <span class="ticker">NVDA</span><span class="ticker">AVGO</span><span class="ticker">ANET</span><span class="ticker">CSCO</span><span class="ticker">VST</span><span class="ticker">CEG</span>
+        </div>
+      </div>
+      <div class="meta-item" style="margin-bottom:10px;">
+        <div class="meta-label">Secondary Beneficiaries</div>
+        <div class="ticker-list">
+          <span class="ticker">SMCI</span><span class="ticker">DELL</span><span class="ticker">VRT</span><span class="ticker">ETN</span><span class="ticker">HUBB</span><span class="ticker">PWR</span>
+        </div>
+      </div>
+      <div class="evidence-section">
+        <div class="evidence-label">Evidence</div>
+        <div class="evidence-item">Hyperscalers plan $630-690B capex for 2026 (+62% YoY): MSFT $190B, Alphabet $180-190B (backlog now $460B, nearly doubled QoQ), Meta $125-145B, Amazon $200B. [Futurum 2026; KuCoin April 2026]</div>
+        <div class="evidence-item">Cisco Q3 FY26 (May 13): Record $15.8B revenue (+12% YoY); AI Infrastructure hyperscaler orders of $2.1B; product order growth +35% YoY. Shares surged 15% post-earnings. [CNBC, May 13 2026]</div>
+        <div class="evidence-item">Nvidia reports Q1 FY27 tonight: consensus ~$79B revenue (+80% YoY), $1.77 EPS. Whisper for Q2 guidance is $90B vs. consensus $85-87B. Transitioning from Blackwell to Vera Rubin architecture. [Yahoo Finance / Motley Fool, May 2026]</div>
+      </div>
+      <div class="summary">The AI infrastructure supercycle is no longer early-stage — it is the dominant capex story in corporate America. The emerging opportunity is in second-order beneficiaries: power infrastructure (nuclear, natural gas peakers), networking (Cisco, Arista), cooling systems (Vertiv), and copper/electrical grid buildout. While NVDA itself is well-known, the thesis is UNDER-priced for utilities and electrical infrastructure companies that must meet the 40+ GW data center power gap forecast by 2028.</div>
+    </div>
+
+    <!-- Narrative 4 -->
+    <div class="card">
+      <div class="card-number">#4</div>
+      <div class="card-title">Defense Spending Re-Rating <span class="divider">—</span><span class="sub">Global Rearmament Cycle</span></div>
+      <div class="meta-grid">
+        <div class="meta-item">
+          <div class="meta-label">Conviction</div>
+          <div><span class="conviction conviction-MEDIUM">MEDIUM</span></div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Stage</div>
+          <div><span class="stage stage-DEVELOPING">DEVELOPING</span></div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Earnings Impact Timeline</div>
+          <div class="meta-value">Multi-year order backlog visibility</div>
+        </div>
+      </div>
+      <div class="meta-item" style="margin-bottom:10px;">
+        <div class="meta-label">Primary Beneficiaries</div>
+        <div class="ticker-list">
+          <span class="ticker">LMT</span><span class="ticker">RTX</span><span class="ticker">NOC</span><span class="ticker">GD</span><span class="ticker">KTOS</span><span class="ticker">ITA</span><span class="ticker">XAR</span><span class="ticker">SHLD</span>
+        </div>
+      </div>
+      <div class="evidence-section">
+        <div class="evidence-label">Evidence</div>
+        <div class="evidence-item">All NATO allies met 2% of GDP defense spending commitment for the first time in 2025. New European NATO target: 3.5% of GDP. Global defense spending hit $2.63T in 2025, up from $2.48T in 2024. [24/7 Wall St., April 2026]</div>
+        <div class="evidence-item">Aerospace sector shows 62.3% expected earnings growth — best among all 16 Zacks sectors. RTX stock climbed 60% through 2025 to all-time highs near $185/share. [RBCCM, 2026]</div>
+        <div class="evidence-item">U.S.-Iran war accelerating procurement cycles for precision munitions, missile defense systems (Patriot, THAAD), and ISR assets — all RTX/LMT/NOC primary products. [RBC Capital, Yahoo Finance]</div>
+      </div>
+      <div class="summary">The global rearmament cycle is structural, driven by Russia-Ukraine legacy, the Iran conflict, and NATO burden-sharing pressure. While defense stocks have already re-rated significantly (RTX +60% in 2025), the earnings growth runway is multi-year given procurement cycles. The under-appreciated angle: European defense companies (BAESY, Rheinmetall) are earlier in their re-rating cycle and face less political headwind.</div>
+    </div>
+
+    <!-- Narrative 5 -->
+    <div class="card">
+      <div class="card-number">#5</div>
+      <div class="card-title">Consumer Stress Inflection <span class="divider">—</span><span class="sub">Retail Sector Deterioration</span></div>
+      <div class="meta-grid">
+        <div class="meta-item">
+          <div class="meta-label">Conviction</div>
+          <div><span class="conviction conviction-MEDIUM">MEDIUM</span></div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Stage</div>
+          <div><span class="stage stage-EARLY">EARLY</span></div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Earnings Impact Timeline</div>
+          <div class="meta-value">THIS WEEK — WMT + TGT May 21</div>
+        </div>
+      </div>
+      <div class="meta-item" style="margin-bottom:10px;">
+        <div class="meta-label">Beneficiaries (trade-down)</div>
+        <div class="ticker-list">
+          <span class="ticker">WMT</span><span class="ticker">DG</span><span class="ticker">DLTR</span><span class="ticker">TJX</span><span class="ticker">ROST</span><span class="ticker">BURL</span>
+        </div>
+      </div>
+      <div class="meta-item" style="margin-bottom:10px;">
+        <div class="meta-label">Losers / Disrupted</div>
+        <div class="ticker-list">
+          <span class="ticker loser">TGT</span><span class="ticker loser">M</span><span class="ticker loser">KSS</span><span class="ticker loser">MCD</span><span class="ticker loser">CMG</span><span class="ticker loser">XRT</span>
+        </div>
+      </div>
+      <div class="evidence-section">
+        <div class="evidence-label">Evidence</div>
+        <div class="evidence-item">SPDR S&amp;P Retail ETF (XRT) fell more than 6% last week — now in its FOURTH consecutive weekly decline. Consumer confidence at historic lows. [TheStreet, May 19 2026]</div>
+        <div class="evidence-item">Walmart Q1 FY27 earnings May 21 — consensus: $174.57B revenue (+5.4% YoY), $0.66 EPS, ~3.9% comp sales growth. [HeyGoTrade, 2026]</div>
+        <div class="evidence-item">Oil price shock adds $50-80/month gasoline burden per household — a direct discretionary spending headwind NOT yet reflected in consensus Q2 estimates. [CNBC, May 4 2026]</div>
+      </div>
+      <div class="summary">The consumer is showing early signs of stress not yet at consensus: record-low confidence, rising gasoline prices from the Iran oil shock, and four consecutive weeks of retail ETF selling. Walmart's earnings this week will be the clearest real-time gauge of household financial health. Watch for language on trade-down behavior, basket size shrinkage, and any commentary on payment delinquencies.</div>
+    </div>
+  </div>
+
+  <!-- ====== SECTION 2: EARNINGS SIGNALS ====== -->
+  <div id="signals">
+    <div class="section-title">02 &mdash; Earnings Signals</div>
+
+    <!-- Signal 1 -->
+    <div class="card">
+      <div class="card-number">#1</div>
+      <div class="card-title">Nvidia Architecture Transition Risk <span class="divider">—</span><span class="sub">Vera Rubin Ramp</span></div>
+      <div class="meta-grid">
+        <div class="meta-item">
+          <div class="meta-label">Type</div>
+          <div class="meta-value">Guidance watch / architecture transition</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Strength</div>
+          <div class="meta-value"><span class="strength-STRONG">STRONG</span></div>
+        </div>
+      </div>
+      <div class="meta-item" style="margin-bottom:10px;">
+        <div class="meta-label">Companies</div>
+        <div class="ticker-list">
+          <span class="ticker">NVDA</span><span class="ticker">SMCI</span><span class="ticker">DELL</span><span class="ticker">AMD</span>
+        </div>
+      </div>
+      <div class="trade-idea">
+        <div class="trade-idea-label">⚡ Trade Idea</div>
+        Long NVDA via defined-risk options into tonight's earnings if $90B+ Q2 guidance is your conviction. Alternatively, long ANET or CSCO as cheaper AI networking plays regardless of NVDA architecture timing.
+      </div>
+      <div class="summary">Nvidia reports Q1 FY27 tonight (May 20, after close; call 5PM ET). Consensus: ~$79B revenue (+80% YoY), $1.77 EPS. The single most important number is Q2 FY27 guidance: consensus $85-87B, whisper near $90B. Mid-transition from Blackwell to Vera Rubin architecture — any margin deterioration or production delay is a negative surprise given premium valuation. Post-earnings price action in SOX/SOXX/SMH will be the market-wide signal.</div>
+    </div>
+
+    <!-- Signal 2 -->
+    <div class="card">
+      <div class="card-number">#2</div>
+      <div class="card-title">Cisco AI Networking Breakout <span class="divider">—</span><span class="sub">Demand Inflection Confirmed</span></div>
+      <div class="meta-grid">
+        <div class="meta-item">
+          <div class="meta-label">Type</div>
+          <div class="meta-value">Language shift + guidance raise + sector read-through</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Strength</div>
+          <div class="meta-value"><span class="strength-STRONG">STRONG</span></div>
+        </div>
+      </div>
+      <div class="meta-item" style="margin-bottom:10px;">
+        <div class="meta-label">Companies</div>
+        <div class="ticker-list">
+          <span class="ticker">CSCO</span><span class="ticker">ANET</span><span class="ticker">JNPR</span><span class="ticker">HPE</span>
+        </div>
+      </div>
+      <div class="trade-idea">
+        <div class="trade-idea-label">⚡ Trade Idea</div>
+        ANET is the highest-quality pure-play on AI data center networking. CSCO itself may have further upside after the 15% post-earnings surge confirmed re-rating. Watch JNPR/HPE for similar demand commentary.
+      </div>
+      <div class="summary">Cisco Q3 FY26 (May 13, 2026) was landmark: record $15.8B revenue, +12% YoY; AI Infrastructure hyperscaler orders of $2.1B; product order growth +35% YoY. Simultaneously announced 4,000 layoffs reallocating investment to AI, security, and cloud networking. This removes all doubt about AI networking demand inflection — the enterprise upgrade cycle is real, not just hyperscaler.</div>
+    </div>
+
+    <!-- Signal 3 -->
+    <div class="card">
+      <div class="card-number">#3</div>
+      <div class="card-title">Big Tech Q1 Capex Raises <span class="divider">—</span><span class="sub">AI Supply Chain Compounds</span></div>
+      <div class="meta-grid">
+        <div class="meta-item">
+          <div class="meta-label">Type</div>
+          <div class="meta-value">Recurring theme + unusual guidance raise</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Strength</div>
+          <div class="meta-value"><span class="strength-STRONG">STRONG</span></div>
+        </div>
+      </div>
+      <div class="meta-item" style="margin-bottom:10px;">
+        <div class="meta-label">Companies</div>
+        <div class="ticker-list">
+          <span class="ticker">MSFT</span><span class="ticker">GOOGL</span><span class="ticker">META</span><span class="ticker">AMZN</span><span class="ticker">NVDA</span><span class="ticker">AVGO</span><span class="ticker">VST</span><span class="ticker">CEG</span>
+        </div>
+      </div>
+      <div class="trade-idea">
+        <div class="trade-idea-label">⚡ Trade Idea</div>
+        Nuclear power utilities (VST, CEG) are structurally under-priced for data center power demand. CEG re-opening Three Mile Island specifically for Microsoft. Both have signed long-term PPAs with hyperscalers.
+      </div>
+      <div class="summary">All four hyperscalers raised 2026 capex guidance in Q1 earnings. Alphabet's AI infrastructure backlog hit $460B (nearly doubled QoQ). 84% of S&P 500 companies beat Q1 estimates with +1,200 bps upside surprise. The under-owned angle: power infrastructure companies with locked-in data center contracts are not yet reflected in consensus estimates.</div>
+    </div>
+
+    <!-- Signal 4 -->
+    <div class="card">
+      <div class="card-number">#4</div>
+      <div class="card-title">Retail Pre-Earnings Selloff <span class="divider">—</span><span class="sub">Consumer Stress Signal</span></div>
+      <div class="meta-grid">
+        <div class="meta-item">
+          <div class="meta-label">Type</div>
+          <div class="meta-value">Pre-earnings price action anomaly</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Strength</div>
+          <div class="meta-value"><span class="strength-MODERATE">MODERATE</span></div>
+        </div>
+      </div>
+      <div class="meta-item" style="margin-bottom:10px;">
+        <div class="meta-label">Companies</div>
+        <div class="ticker-list">
+          <span class="ticker">WMT</span><span class="ticker">TGT</span><span class="ticker">XRT</span><span class="ticker">DG</span><span class="ticker">DLTR</span>
+        </div>
+      </div>
+      <div class="trade-idea">
+        <div class="trade-idea-label">⚡ Trade Idea</div>
+        Long WMT vs. short TGT (WMT benefits from trade-down; TGT has more discretionary exposure). XRT puts as hedge. Long DG/DLTR if trade-down narrative gets confirmed tomorrow.
+      </div>
+      <div class="summary">XRT has fallen 6%+ in one week, now down four straight weeks. Unusual pre-earnings selling suggests institutional positioning for downside. If Walmart guides conservatively, it validates the stagflation risk thesis — oil shock + weak consumer = toxic for discretionary retail. Risk/reward is asymmetric to the upside for WMT specifically given heavy pre-positioning.</div>
+    </div>
+
+    <!-- Signal 5 -->
+    <div class="card">
+      <div class="card-number">#5</div>
+      <div class="card-title">Semiconductor Cycle Divergence <span class="divider">—</span><span class="sub">AI vs. Non-AI Chips</span></div>
+      <div class="meta-grid">
+        <div class="meta-item">
+          <div class="meta-label">Type</div>
+          <div class="meta-value">Sector read-through / language shift</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Strength</div>
+          <div class="meta-value"><span class="strength-MODERATE">MODERATE</span></div>
+        </div>
+      </div>
+      <div class="meta-item" style="margin-bottom:10px;">
+        <div class="meta-label">Companies</div>
+        <div class="ticker-list">
+          <span class="ticker">NVDA</span><span class="ticker">AVGO</span><span class="ticker">MU</span><span class="ticker loser">QCOM</span><span class="ticker loser">INTC</span>
+        </div>
+      </div>
+      <div class="trade-idea">
+        <div class="trade-idea-label">⚡ Trade Idea</div>
+        Long AVGO (custom AI ASICs + diversified networking) vs. short INTC (structural market share losses, no credible AI chip roadmap). Long MU for HBM memory demand as cheaper NVDA alternative.
+      </div>
+      <div class="summary">AI-specific chips (NVDA, AVGO) face parabolic demand; traditional semiconductor cycle (mobile, PC, legacy enterprise) faces cyclical softening. Multiple analysts note semis have "gotten ahead of themselves" after going parabolic through April-May 2026. The SOX index masks a significant internal divergence — surgically long AI infrastructure chips, cautious on legacy chip exposure as consumer weakens.</div>
+    </div>
+  </div>
+
+  <!-- ====== SECTION 3: CATALYSTS ====== -->
+  <div id="catalysts">
+    <div class="section-title">03 &mdash; Upcoming Catalysts</div>
+
+    <!-- Catalyst 1 -->
+    <div class="card">
+      <div class="card-number">#1</div>
+      <div class="card-title">Nvidia Q1 FY27 Earnings <span class="divider">—</span><span class="sub">Tonight After Close</span></div>
+      <div class="meta-grid">
+        <div class="meta-item">
+          <div class="meta-label">Date</div>
+          <div class="meta-value" style="color:var(--high);">May 20, 2026 — 5PM ET call</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Consensus</div>
+          <div class="meta-value">Revenue ~$79B; EPS ~$1.77; Q2 guide $85-87B</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Surprise Scenario</div>
+          <div class="meta-value">Q2 guidance $90B+; positive Vera Rubin ramp commentary</div>
+        </div>
+      </div>
+      <div class="meta-item" style="margin-bottom:10px;">
+        <div class="meta-label">Exposed Tickers</div>
+        <div class="ticker-list">
+          <span class="ticker">NVDA</span><span class="ticker">SMCI</span><span class="ticker">DELL</span><span class="ticker">AVGO</span><span class="ticker">ANET</span><span class="ticker">AMD</span>
+        </div>
+      </div>
+      <div class="summary">Most important earnings event of the week. Nvidia's report will either confirm the $690B hyperscaler capex super-cycle or introduce doubt about the Blackwell-to-Vera Rubin transition timing. Asymmetry is arguably to the DOWNSIDE — the stock is priced for perfection and the whisper number ($90B Q2 guidance) represents a very high bar. Watch the after-hours tape carefully for unusual volume patterns in SOX and semiconductor ETFs.</div>
+    </div>
+
+    <!-- Catalyst 2 -->
+    <div class="card">
+      <div class="card-number">#2</div>
+      <div class="card-title">Walmart + Target Q1 Earnings <span class="divider">—</span><span class="sub">Consumer Health Check</span></div>
+      <div class="meta-grid">
+        <div class="meta-item">
+          <div class="meta-label">Date</div>
+          <div class="meta-value" style="color:var(--high);">May 21, 2026 — Pre-market</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Consensus (WMT)</div>
+          <div class="meta-value">$174.57B rev; $0.66 EPS; ~3.9% comp</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Surprise (Downside)</div>
+          <div class="meta-value">WMT comp below 3% + cautious Q2 guidance</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Surprise (Upside)</div>
+          <div class="meta-value">Strong private label trade-down; no consumer deterioration</div>
+        </div>
+      </div>
+      <div class="meta-item" style="margin-bottom:10px;">
+        <div class="meta-label">Exposed Tickers</div>
+        <div class="ticker-list">
+          <span class="ticker">WMT</span><span class="ticker">TGT</span><span class="ticker">COST</span><span class="ticker">DG</span><span class="ticker">DLTR</span><span class="ticker loser">XRT</span>
+        </div>
+      </div>
+      <div class="summary">Walmart's earnings are the closest real-time U.S. consumer health check — 90% household grocery penetration means any comp miss or guide-down immediately reprices the entire retail sector. Given the sustained pre-earnings selloff, risk/reward is asymmetric to the upside for WMT specifically — but cautious guidance would confirm the broader stagflation/consumer stress thesis. Watch language on basket size, income cohort bifurcation, and Q2 guidance.</div>
+    </div>
+
+    <!-- Catalyst 3 -->
+    <div class="card">
+      <div class="card-number">#3</div>
+      <div class="card-title">April PCE Inflation Data <span class="divider">—</span><span class="sub">Last Fed Input Before June FOMC</span></div>
+      <div class="meta-grid">
+        <div class="meta-item">
+          <div class="meta-label">Date</div>
+          <div class="meta-value" style="color:var(--medium);">May 28, 2026</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Consensus</div>
+          <div class="meta-value">Core PCE ~2.8-3.0% YoY; modest improvement</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Surprise Scenario</div>
+          <div class="meta-value">Core PCE above 3.2% — oil passthrough begins showing</div>
+        </div>
+      </div>
+      <div class="meta-item" style="margin-bottom:10px;">
+        <div class="meta-label">Exposed Tickers</div>
+        <div class="ticker-list">
+          <span class="ticker loser">TLT</span><span class="ticker">TBT</span><span class="ticker">GLD</span><span class="ticker">TIP</span><span class="ticker loser">XLU</span><span class="ticker loser">VNQ</span>
+        </div>
+      </div>
+      <div class="summary">Last major inflation reading before the June 16-17 FOMC meeting with updated dot plots. Given the oil price shock (Brent near $100+ through April), there is a credible scenario where goods inflation re-accelerates, forcing the Fed to maintain a hawkish hold through Q3 2026. A print above 3% core PCE would validate the "no cuts in 2026" narrative and likely push the 30-year yield toward 5.3-5.5%, compressing equity multiples further.</div>
+    </div>
+
+    <!-- Catalyst 4 -->
+    <div class="card">
+      <div class="card-number">#4</div>
+      <div class="card-title">June FOMC Meeting + Dot Plot <span class="divider">—</span><span class="sub">Highest-Stakes Fed Meeting of 2026</span></div>
+      <div class="meta-grid">
+        <div class="meta-item">
+          <div class="meta-label">Date</div>
+          <div class="meta-value" style="color:var(--medium);">June 16-17, 2026</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Consensus</div>
+          <div class="meta-value">Hold at 3.50-3.75%; possible 2027 cut pathway</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Hawkish Surprise</div>
+          <div class="meta-value">No cuts through 2026 and into 2027 → yield spike</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Dovish Surprise</div>
+          <div class="meta-value">One 2026 cut signaled — minor relief rally</div>
+        </div>
+      </div>
+      <div class="meta-item" style="margin-bottom:10px;">
+        <div class="meta-label">Exposed Tickers</div>
+        <div class="ticker-list">
+          <span class="ticker loser">XLU</span><span class="ticker loser">VNQ</span><span class="ticker loser">LEN</span><span class="ticker loser">DHI</span><span class="ticker">GLD</span><span class="ticker loser">TLT</span><span class="ticker">TBT</span>
+        </div>
+      </div>
+      <div class="summary">The June FOMC includes the Summary of Economic Projections and dot plot — one of the year's highest-impact Fed meetings. The Fed faces a difficult dual mandate squeeze: cutting risks re-igniting inflation; holding risks accelerating the consumer slowdown. A hawkish hold with revised-up inflation projections could be the catalyst for a Q3 equity correction. Market currently prices ~65% probability of no Fed move.</div>
+    </div>
+
+    <!-- Catalyst 5 -->
+    <div class="card">
+      <div class="card-number">#5</div>
+      <div class="card-title">Strait of Hormuz Reopening <span class="divider">—</span><span class="sub">Iran Conflict De-escalation</span></div>
+      <div class="meta-grid">
+        <div class="meta-item">
+          <div class="meta-label">Date</div>
+          <div class="meta-value" style="color:var(--medium);">Ongoing — late May/early June</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Consensus</div>
+          <div class="meta-value">Gradual reopening; Brent drifts to $85-90 by Q3</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Negative Surprise</div>
+          <div class="meta-value">Re-escalation; Hormuz closes again; Brent retests $130-138</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Positive Surprise</div>
+          <div class="meta-value">Full diplomatic resolution; oil drops toward $80; airline recovery</div>
+        </div>
+      </div>
+      <div class="meta-item" style="margin-bottom:10px;">
+        <div class="meta-label">Exposed Tickers</div>
+        <div class="ticker-list">
+          <span class="ticker">XOM</span><span class="ticker">CVX</span><span class="ticker">COP</span><span class="ticker loser">DAL</span><span class="ticker loser">UAL</span><span class="ticker loser">AAL</span><span class="ticker">GLD</span>
+        </div>
+      </div>
+      <div class="summary">The Strait of Hormuz situation remains the single biggest tail risk for global markets. The oil shock of 50%+ since February has already done serious damage — re-inflationary, consumer-negative, airline-negative. Any re-escalation that closes Hormuz again would be a severe negative surprise across risk assets. Airline stocks are the clearest binary expression: long DAL/UAL on credible ceasefire, hedge the position with oil futures.</div>
+    </div>
+  </div>
+
+  <!-- ====== SECTION 4: ACTION ITEMS ====== -->
+  <div id="actions">
+    <div class="section-title">04 &mdash; Action Items</div>
+    <div class="action-card">
+      <div class="action-sub-title">🎯 Top 3 Tickers to Research Today</div>
+      <div class="action-item">
+        <div class="action-num">1.</div>
+        <div><span class="ticker" style="display:inline-block;margin-right:8px;">NVDA</span> Earnings after close tonight. Most important single event of the week. Bull case: $90B+ Q2 guidance + Vera Rubin color. Bear case: in-line $85B guide + Blackwell margin pressure. Binary risk — size positions via options.</div>
+      </div>
+      <div class="action-item">
+        <div class="action-num">2.</div>
+        <div><span class="ticker" style="display:inline-block;margin-right:8px;">WMT</span> Earnings pre-market tomorrow (May 21). Four consecutive weeks of XRT selling creates asymmetric risk/reward. Language on basket size, private label mix, and Q2 comp guidance is the key signal for the entire consumer sector.</div>
+      </div>
+      <div class="action-item">
+        <div class="action-num">3.</div>
+        <div><span class="ticker" style="display:inline-block;margin-right:8px;">TBT</span> / <span class="ticker" style="display:inline-block;margin-right:8px;">GLD</span> Bond market stress and fiscal deterioration are NOT yet consensus equity risks. These are the clearest expressions of the fiscal reckoning theme already playing out in bond markets. Consider as portfolio hedge.</div>
+      </div>
+
+      <div class="action-sub-title">📐 Position Adjustments</div>
+      <div class="action-item">
+        <div class="action-num">▸</div>
+        <div>Reduce long-duration rate-sensitive equity exposure (<span class="ticker" style="display:inline-block;">XLU</span>, <span class="ticker" style="display:inline-block;">VNQ</span>, high-multiple growth) ahead of the May 28 PCE print. Risk/reward is unfavorable going into a potentially hot inflation reading with yields already near 19-year highs.</div>
+      </div>
+      <div class="action-item">
+        <div class="action-num">▸</div>
+        <div>Consider tactical hedge on airlines (puts on <span class="ticker" style="display:inline-block;">DAL</span>/<span class="ticker" style="display:inline-block;">UAL</span>) given Iran conflict binary risk — Hormuz reopening optimism could be reversed quickly if conflict re-escalates.</div>
+      </div>
+      <div class="action-item">
+        <div class="action-num">▸</div>
+        <div>Add to AI second-order infrastructure plays (<span class="ticker" style="display:inline-block;">VST</span>, <span class="ticker" style="display:inline-block;">CEG</span> nuclear power; <span class="ticker" style="display:inline-block;">VRT</span> cooling; <span class="ticker" style="display:inline-block;">ANET</span> networking) which are under-priced relative to NVDA's direct beneficiary status.</div>
+      </div>
+
+      <div class="action-sub-title">📅 Key Dates to Watch</div>
+      <div class="dates-grid">
+        <div class="date-row"><span class="date-label">Tonight (May 20)</span><span class="date-desc">Nvidia Q1 FY27 earnings after close — conference call 5PM ET</span></div>
+        <div class="date-row"><span class="date-label">May 21 (pre-mkt)</span><span class="date-desc">Walmart + Target Q1 FY27 earnings — consumer health inflection point</span></div>
+        <div class="date-row"><span class="date-label">May 28</span><span class="date-desc">April PCE inflation data — last key Fed input before June FOMC</span></div>
+        <div class="date-row"><span class="date-label">June 10</span><span class="date-desc">May CPI release — additional inflation read before June 16-17 FOMC</span></div>
+        <div class="date-row"><span class="date-label">June 16-17</span><span class="date-desc">FOMC meeting with updated dot plot — highest-stakes Fed meeting of 2026</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    Daily Theme Scanner — Generated 2026-05-20 &bull; Pre-market scan &bull; All sources verified via web search &bull; Not financial advice
+  </div>
+
+</div>
+</body>
+</html>
