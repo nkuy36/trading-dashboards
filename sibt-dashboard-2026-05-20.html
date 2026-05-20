@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>SIBT Dashboard — 2026-05-20</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+:root { --bg:#0a0e17; --bg2:#111826; --bg3:#1a2332; --line:#243044; --text:#d1d9e6; --muted:#6b7a90; --green:#10b981; --red:#ef4444; --amber:#f59e0b; --blue:#3b82f6; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { background: var(--bg); color: var(--text); font-family: 'JetBrains Mono', monospace; font-size: 13px; line-height: 1.5; min-height: 100vh; }
+body { padding-bottom: 40px; }
+.ticker-bar { background: #000; border-bottom: 1px solid var(--line); overflow: hidden; height: 32px; display: flex; align-items: center; }
+.ticker-inner { display: inline-block; white-space: nowrap; animation: scroll 60s linear infinite; font-size: 12px; }
+.ticker-item { display: inline-block; padding: 0 18px; }
+.ticker-sym { color: var(--text); font-weight: 700; }
+.ticker-price { color: var(--text); margin-left: 6px; }
+.ticker-chg { margin-left: 6px; font-weight: 500; }
+.up { color: var(--green); } .down { color: var(--red); } .flat { color: var(--muted); }
+@keyframes scroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+.header { padding: 16px 24px; border-bottom: 1px solid var(--line); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; }
+.header-left h1 { font-size: 18px; font-weight: 700; letter-spacing: 1px; }
+.header-left .sub { color: var(--muted); font-size: 11px; margin-top: 2px; }
+.mode-toggle button { background: var(--bg2); color: var(--muted); border: 1px solid var(--line); padding: 8px 18px; font-family: inherit; font-size: 12px; font-weight: 500; cursor: pointer; letter-spacing: 1px; }
+.mode-toggle button.active { background: var(--blue); color: #fff; border-color: var(--blue); }
+.container { max-width: 1600px; margin: 0 auto; padding: 24px; }
+.hero { background: var(--bg2); border: 1px solid var(--line); padding: 28px 32px; margin-bottom: 24px; display: flex; justify-content: space-between; align-items: center; gap: 24px; flex-wrap: wrap; }
+.hero-left { flex: 1; min-width: 280px; }
+.hero-label { color: var(--muted); font-size: 11px; letter-spacing: 2px; margin-bottom: 8px; }
+.hero-decision { font-size: 56px; font-weight: 700; letter-spacing: 4px; line-height: 1; }
+.hero-sub { color: var(--muted); font-size: 13px; margin-top: 12px; max-width: 600px; }
+.gauge { width: 200px; height: 110px; position: relative; }
+.gauge-bg, .gauge-fg { fill: none; stroke-width: 16; stroke-linecap: round; }
+.gauge-bg { stroke: var(--bg3); }
+.gauge-text { position: absolute; bottom: 4px; width: 100%; text-align: center; font-size: 32px; font-weight: 700; }
+.gauge-label { position: absolute; bottom: -16px; width: 100%; text-align: center; font-size: 10px; color: var(--muted); letter-spacing: 1px; }
+.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 16px; margin-bottom: 24px; }
+.panel { background: var(--bg2); border: 1px solid var(--line); padding: 16px 18px; }
+.panel-title { font-size: 10px; letter-spacing: 2px; color: var(--muted); border-bottom: 1px solid var(--line); padding-bottom: 8px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; }
+.row { display: flex; justify-content: space-between; padding: 4px 0; }
+.row-k { color: var(--muted); font-size: 12px; } .row-v { color: var(--text); font-size: 12px; font-weight: 500; }
+.row-v.up { color: var(--green); } .row-v.down { color: var(--red); } .row-v.amber { color: var(--amber); }
+.tag { display: inline-block; padding: 1px 7px; font-size: 10px; border-radius: 2px; letter-spacing: 1px; }
+.tag.up { background: rgba(16,185,129,0.18); color: var(--green); }
+.tag.down { background: rgba(239,68,68,0.18); color: var(--red); }
+.tag.amber { background: rgba(245,158,11,0.18); color: var(--amber); }
+.tag.muted { background: var(--bg3); color: var(--muted); }
+.heatmap { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 6px; margin-bottom: 24px; }
+.heat-cell { background: var(--bg2); border: 1px solid var(--line); padding: 12px; text-align: center; }
+.heat-cell.up-strong { background: rgba(16,185,129,0.25); border-color: var(--green); }
+.heat-cell.up-mild { background: rgba(16,185,129,0.10); border-color: rgba(16,185,129,0.4); }
+.heat-cell.down-mild { background: rgba(239,68,68,0.10); border-color: rgba(239,68,68,0.4); }
+.heat-cell.down-strong { background: rgba(239,68,68,0.25); border-color: var(--red); }
+.heat-cell.flat-cell { background: var(--bg2); }
+.heat-sym { font-size: 13px; font-weight: 700; }
+.heat-pct { font-size: 16px; font-weight: 500; margin-top: 4px; }
+.heat-price { font-size: 10px; color: var(--muted); margin-top: 2px; }
+table.tbl { width: 100%; border-collapse: collapse; font-size: 12px; }
+.tbl th, .tbl td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--line); }
+.tbl th { font-size: 10px; color: var(--muted); letter-spacing: 1px; text-transform: uppercase; font-weight: 500; }
+.tbl td.right, .tbl th.right { text-align: right; }
+.tbl tr.top3 td { background: rgba(245,158,11,0.08); }
+.tbl tr.top3 td:first-child { border-left: 3px solid var(--amber); }
+.tbl td .score { display: inline-block; min-width: 32px; text-align: right; font-weight: 700; }
+.analysis { background: var(--bg2); border: 1px solid var(--line); padding: 18px 22px; margin-bottom: 24px; }
+.analysis-title { font-size: 10px; letter-spacing: 2px; color: var(--muted); margin-bottom: 10px; }
+.analysis-body { font-size: 13px; line-height: 1.65; color: var(--text); }
+.analysis-body p { margin-bottom: 10px; }
+.analysis-body strong { color: var(--amber); font-weight: 500; }
+.section-title { font-size: 12px; letter-spacing: 3px; color: var(--muted); margin: 20px 0 12px; padding-bottom: 6px; border-bottom: 1px solid var(--line); }
+.standout { background: var(--bg2); border: 1px solid var(--amber); padding: 16px 18px; margin-bottom: 16px; }
+.standout-item { padding: 10px 0; border-bottom: 1px dashed var(--line); }
+.standout-item:last-child { border-bottom: none; }
+.standout-h { font-size: 13px; font-weight: 700; color: var(--amber); margin-bottom: 4px; }
+.standout-b { font-size: 12px; color: var(--text); line-height: 1.5; }
+.hidden { display: none !important; }
+.footer { padding: 16px 24px; text-align: center; color: var(--muted); font-size: 10px; border-top: 1px solid var(--line); margin-top: 24px; }
+.decision-yes { color: var(--green); } .decision-caution { color: var(--amber); } .decision-no { color: var(--red); }
+</style>
+</head>
+<body>
+<div class="ticker-bar"><div class="ticker-inner" id="ticker"></div></div>
+<div class="header">
+  <div class="header-left">
+    <h1>🖥️ SIBT DASHBOARD</h1>
+    <div class="sub">Should I Be Trading? — 2026-05-20 | Generated <span id="gen-time"></span></div>
+  </div>
+  <div class="header-right mode-toggle">
+    <button id="btn-swing" class="active" onclick="setMode('swing')">SWING</button>
+    <button id="btn-day" onclick="setMode('day')">DAY TRADE</button>
+  </div>
+</div>
+
+<div class="container">
+
+<!-- SWING -->
+<div id="mode-swing">
+  <div class="hero">
+    <div class="hero-left">
+      <div class="hero-label">SWING DECISION</div>
+      <div class="hero-decision decision-no">NO</div>
+      <div class="hero-sub">Composite 59.10 (-0.10 DoD) <strong style="color:var(--red)">stays below 60 for second day</strong>. Risk State RISK OFF (4th day), Leading Regime DEFLATION, Inflation+Deflation tied at 30 each, breadth dead at 36.10, MMFI rolled over to 48.10 FALLING. Chop rising to 38.10. Distance ATH widened to -2.20%. <strong style="color:var(--red)">NO EDGE — sit out.</strong></div>
+    </div>
+    <div style="position: relative;">
+      <svg class="gauge" viewBox="0 0 200 110">
+        <path class="gauge-bg" d="M 16 100 A 84 84 0 0 1 184 100"/>
+        <path class="gauge-fg" d="M 16 100 A 84 84 0 0 1 184 100" stroke="#ef4444" stroke-dasharray="263.89" stroke-dashoffset="107.96"/>
+      </svg>
+      <div class="gauge-text" style="color: #ef4444;">59.10</div>
+      <div class="gauge-label">COMPOSITE SCORE</div>
+    </div>
+  </div>
+
+  <div class="grid">
+    <div class="panel">
+      <div class="panel-title">VOLATILITY (VIX) <span class="tag amber">COMPLACENT</span></div>
+      <div class="row"><span class="row-k">VIX (MACRO)</span><span class="row-v">18.20 (-1.20)</span></div>
+      <div class="row"><span class="row-k">VIX (Live)</span><span class="row-v">17.93 (-0.66%)</span></div>
+      <div class="row"><span class="row-k">vs SMA10</span><span class="row-v down">ABOVE (deteriorating)</span></div>
+      <div class="row"><span class="row-k">Hedge Signal</span><span class="row-v amber">TAKE PROFITS</span></div>
+    </div>
+    <div class="panel">
+      <div class="panel-title">INDEX TREND <span class="tag up">POWER</span></div>
+      <div class="row"><span class="row-k">SPY Trend</span><span class="row-v up">POWER TREND</span></div>
+      <div class="row"><span class="row-k">Chop Index</span><span class="row-v amber">SUPER TREND (38.10)</span></div>
+      <div class="row"><span class="row-k">HTF Weekly</span><span class="row-v up">BULLISH</span></div>
+      <div class="row"><span class="row-k">SPY</span><span class="row-v down">733.73 (-0.67%)</span></div>
+    </div>
+    <div class="panel">
+      <div class="panel-title">SECTOR BREADTH <span class="tag down">DEAD</span></div>
+      <div class="row"><span class="row-k">Breadth Score</span><span class="row-v down">36.10 (+0.10)</span></div>
+      <div class="row"><span class="row-k">Phases</span><span class="row-v">Rp:8 Tu:3 Tp:5 Cr:15</span></div>
+      <div class="row"><span class="row-k">Breadth Thrust</span><span class="row-v down">NO (25 ago)</span></div>
+      <div class="row"><span class="row-k">Liquidity (TNX)</span><span class="row-v down">TIGHT</span></div>
+    </div>
+    <div class="panel">
+      <div class="panel-title">FACTOR REGIME <span class="tag down">RISK OFF</span></div>
+      <div class="row"><span class="row-k">Risk State</span><span class="row-v down">RISK OFF</span></div>
+      <div class="row"><span class="row-k">Leading Regime</span><span class="row-v down">DEFLATION</span></div>
+      <div class="row"><span class="row-k">Regime %</span><span class="row-v">G:17 R:22 I:30 D:30</span></div>
+      <div class="row"><span class="row-k">Concern</span><span class="row-v down">Goldilocks dropping</span></div>
+    </div>
+    <div class="panel">
+      <div class="panel-title">IMPLIED CORRELATION <span class="tag up">RELAXED</span></div>
+      <div class="row"><span class="row-k">ImplCorr Avg</span><span class="row-v up">0.20 (-0.20)</span></div>
+      <div class="row"><span class="row-k">First Green</span><span class="row-v">32 ago</span></div>
+      <div class="row"><span class="row-k">Trend</span><span class="row-v up">EASING (stress↓↓)</span></div>
+    </div>
+    <div class="panel">
+      <div class="panel-title">MMFI <span class="tag down">FALLING</span></div>
+      <div class="row"><span class="row-k">MMFI Value</span><span class="row-v down">48.10 (-3.10)</span></div>
+      <div class="row"><span class="row-k">Zone</span><span class="row-v">NEUTRAL → BEARISH next</span></div>
+      <div class="row"><span class="row-k">Trend</span><span class="row-v down">FALLING (rolled over)</span></div>
+    </div>
+    <div class="panel">
+      <div class="panel-title">52W POSITION <span class="tag amber">EUPHORIC</span></div>
+      <div class="row"><span class="row-k">52W % of Range</span><span class="row-v amber">91.10%</span></div>
+      <div class="row"><span class="row-k">Distance ATH</span><span class="row-v down">-2.20% (widening)</span></div>
+      <div class="row"><span class="row-k">Action Zone</span><span class="row-v amber">HALF SIZE | ATH</span></div>
+      <div class="row"><span class="row-k">Open Bias</span><span class="row-v down">GAP DOWN -1.20% — buy open</span></div>
+    </div>
+    <div class="panel">
+      <div class="panel-title">VOLUME ROTATION <span class="tag down">DEFENSIVE</span></div>
+      <div class="row"><span class="row-k">Daily Leader</span><span class="row-v up">XLE +1.17%</span></div>
+      <div class="row"><span class="row-k">Daily Laggard</span><span class="row-v down">XLB -2.35%</span></div>
+      <div class="row"><span class="row-k">Defensive Up</span><span class="row-v up">XLV +1.10 / XLU +0.91 / XLP +0.22</span></div>
+      <div class="row"><span class="row-k">Cyclicals Down</span><span class="row-v down">XLB / XLI / XLY / XLF</span></div>
+    </div>
+  </div>
+
+  <div class="section-title">SECTOR HEATMAP — DAILY % CHANGE</div>
+  <div class="heatmap" id="heatmap-swing"></div>
+
+  <div class="analysis">
+    <div class="analysis-title">TERMINAL ANALYSIS — SWING</div>
+    <div class="analysis-body">
+      <p>Composite <strong>59.10 (-0.10)</strong> — second day below the 60 threshold. The drop is smaller than yesterday's -1.10 plunge, but this isn't a reversal yet, just slower bleeding. Risk State is RISK OFF for the <strong>4th consecutive day</strong>. Leading regime DEFLATION, and the regime distribution is shifting darker — Goldilocks fell to 17% (from 22%), while Inflation+Deflation are now tied at 30 each. That's a regime distribution that historically precedes deeper selling.</p>
+      <p>MMFI rolled over to <strong>48.10 FALLING</strong> — finally joining price below 50. That's the last "fast" breadth signal flipping. Chop Index ticked up to 38.10 (was 35.10 yesterday) — the trend is losing strength, oscillation rising. SPY -0.67%, QQQ -0.62%, sectors split <strong>4 defensive up, 6 cyclical down</strong>: XLE +1.17, XLV +1.10, XLU +0.91 bid; XLB -2.35, XLF -1.24, XLI -1.18, XLY -1.11, XLK -0.64 dumped. That's exactly the rotation deflation pricing produces.</p>
+      <p>Counter-narrative: ImplCorr still at 0.20 (very low stress), Power Trend / Bullish HTF intact, VIX 17.93 not panicking. <strong>So the slow signals say no recession yet</strong> — this could still be a buyable dip. But the dashboard's voting aggregate is NO and has been for 2 days. <strong>No edge for new swing entries.</strong> If you're already long, the bounce setup may be closer than yesterday — but don't add. If you're flat, wait for the composite to reclaim 60 with breadth confirming. <strong>Sit out.</strong></p>
+    </div>
+  </div>
+</div>
+
+<!-- DAY TRADE -->
+<div id="mode-day" class="hidden">
+  <div class="hero">
+    <div class="hero-left">
+      <div class="hero-label">DAY TRADE DECISION</div>
+      <div class="hero-decision decision-caution">CAUTION</div>
+      <div class="hero-sub">VIX 17.93 in sweet spot. EP tape thin — <strong>only 1 setup scores 70+</strong> (IMVT 73). Both sides active (4 longs / 6 shorts ≥55) but no slam-dunk. Counter-tape bounces on MARA / COIN / SNDK look like dead-cat — don't chase. Take 1 high-conviction trade max.</div>
+    </div>
+    <div style="position: relative;">
+      <svg class="gauge" viewBox="0 0 200 110">
+        <path class="gauge-bg" d="M 16 100 A 84 84 0 0 1 184 100"/>
+        <path class="gauge-fg" d="M 16 100 A 84 84 0 0 1 184 100" stroke="#f59e0b" stroke-dasharray="263.89" stroke-dashoffset="92.36"/>
+      </svg>
+      <div class="gauge-text" style="color: #f59e0b;">65.00</div>
+      <div class="gauge-label">EP TAPE SCORE</div>
+    </div>
+  </div>
+
+  <div class="section-title">RETAIL WATCHLIST</div>
+  <table class="tbl">
+    <thead><tr><th>SYMBOL</th><th class="right">PRICE</th><th class="right">CHANGE</th><th class="right">GAP</th><th class="right">OPEN</th><th class="right">HIGH</th><th class="right">LOW</th><th class="right">PREV CLOSE</th></tr></thead>
+    <tbody id="retail-body"></tbody>
+  </table>
+
+  <div class="section-title">EP MOVERS — TOP GAINERS (LONG)</div>
+  <table class="tbl">
+    <thead><tr><th>SYMBOL</th><th>COMPANY</th><th class="right">GAP %</th><th class="right">PRICE</th><th class="right">VOLUME</th><th>CATALYST</th><th class="right">EP SCORE</th><th class="right">BIAS</th></tr></thead>
+    <tbody id="ep-gainers"></tbody>
+  </table>
+
+  <div class="section-title">EP MOVERS — TOP LOSERS (SHORT)</div>
+  <table class="tbl">
+    <thead><tr><th>SYMBOL</th><th>COMPANY</th><th class="right">GAP %</th><th class="right">PRICE</th><th class="right">VOLUME</th><th>CATALYST</th><th class="right">EP SCORE</th><th class="right">BIAS</th></tr></thead>
+    <tbody id="ep-losers"></tbody>
+  </table>
+
+  <div class="section-title">STANDOUT SETUPS</div>
+  <div class="standout">
+    <div class="standout-item">
+      <div class="standout-h">1. IMVT — LONG | EP 73 | Gap +23.24% | $32.40 | 1.15M vol</div>
+      <div class="standout-b">Immunovant clinical readout: 72.7% response rate in tough arthritis cases. Clean fundamental catalyst at a tradeable mid-cap price. Best score on tape today. Trade plan: long pullback to opening range high / VWAP reclaim, target prior resistance, stop below gap fill. Risk: news interpretation reversal in afternoon.</div>
+    </div>
+    <div class="standout-item">
+      <div class="standout-h">2. PPBT — SHORT | EP 65 | Gap -17.95% | $2.88 | 5.74M vol</div>
+      <div class="standout-b">Purple Biotech down hard on 5.74M shares with no specific catalyst headline — that's institutional dumping pattern. Sub-$3 penny risk but the volume profile says someone is unloading. Trade plan: short rallies into VWAP, cover into round numbers. SIZE SMALL — penny dynamics.</div>
+    </div>
+    <div class="standout-item">
+      <div class="standout-h">3. POET — LONG | EP 65 | Gap +15.03% | $15.04 | 5.03M vol</div>
+      <div class="standout-b">POET Technologies — Seeking Alpha narrative on Lumilens "proof phase". Heavy volume (5M) but the catalyst is analyst opinion, not news. Trader-driven move with high reversal risk. Trade plan: small long only on a clean breakout above today's opening high, exit fast if it loses VWAP. Lower conviction than IMVT.</div>
+    </div>
+    <div class="standout-item">
+      <div class="standout-h">⚠️ SKIP TODAY: RETAIL COUNTER-TAPE BOUNCES</div>
+      <div class="standout-b">MARA +2.13%, COIN +2.12%, SNDK +3.77% are bouncing after multi-day declines. These look like dead-cat bounces under a RISK OFF tape — buyers stepping in on falling knives without macro confirmation. Don't chase. SNDK was -5.25% yesterday, +3.77% today on relatively normal volume = institutions not stepping in size. Same for TSLA -1.43, NVDA -0.77 — no buyer confirmation.</div>
+    </div>
+  </div>
+
+  <div class="analysis">
+    <div class="analysis-title">TERMINAL ANALYSIS — DAY TRADE</div>
+    <div class="analysis-body">
+      <p>VIX <strong>17.93 in 15-25 sweet spot</strong> — vol is fine for day trading. EP tape produces <strong>only 1 score above 70</strong> (IMVT 73). By the rubric this is borderline DEAD TAPE — but there's two-way action: 4 names scoring 55+ on the long side, 6 names scoring 55+ on the short side. Yesterday's INM (which scored 83 LONG on +170% gap) is on today's losers list at -11.83% — classic next-day mean reversion on small-cap parabolics.</p>
+      <p>Retail watchlist is mixed but the rotation tells a story: <strong>MARA +2.13%, COIN +2.12%, SNDK +3.77%</strong> are bouncing — but on a RISK OFF macro with breadth dead. These are dead-cat candidates, not reversal confirmations. NVDA -0.77, TSLA -1.43, AMD -1.65, META -1.41, AMZN -2.08 all bleeding. Sector defensives bid (XLV +1.10, XLU +0.91, XLP +0.22) while cyclicals dump (XLB -2.35, XLF -1.24, XLI -1.18) — same defensive rotation as yesterday, just continuing.</p>
+      <p>Bottom line: <strong>IMVT is your one trade</strong>. PPBT short as a secondary if you size small. Avoid retail dip-buys, avoid the catalyst-less EP gappers (MWC, DBL), skip the no-headline shorts (PPBT excepted for the volume signal). <strong>If you don't get a clean entry on IMVT in the first 30 minutes, sit out.</strong> Don't force 3 trades when the tape only gives you 1.</p>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<div class="footer">
+  Data captured: 2026-05-20 (TradingView MCP + Stock Catalyst NYSE Pre-Market) | No API calls / no auto-refresh | Generated <span id="gen-time2"></span>
+</div>
+
+<script>
+const DATA = {
+  generated: new Date().toLocaleString('en-US', {timeZone: 'America/New_York', dateStyle: 'medium', timeStyle: 'medium'}),
+  quotes: [
+    {sym:'SPY',  price:733.73, chg:-0.67, open:734.78, high:737.65, low:731.53, prev:738.65, type:'idx'},
+    {sym:'QQQ',  price:701.53, chg:-0.62, open:699.81, high:706.49, low:695.25, prev:705.88, type:'idx'},
+    {sym:'VIX',  price:17.93,  chg:-0.66, open:18.17,  high:18.18,  low:17.85,  prev:18.05,  type:'idx'},
+    {sym:'UUP',  price:27.79,  chg:0.32,  open:27.79,  high:27.81,  low:27.76,  prev:27.70,  type:'idx'},
+    {sym:'TSLA', price:404.11, chg:-1.43, open:403.16, high:405.63, low:393.63, prev:409.99, type:'retail'},
+    {sym:'NVDA', price:220.61, chg:-0.77, open:219.62, high:224.48, low:217.91, prev:222.32, type:'retail'},
+    {sym:'SOFI', price:15.23,  chg:-3.06, open:15.61,  high:15.64,  low:14.92,  prev:15.71,  type:'retail'},
+    {sym:'AMD',  price:414.05, chg:-1.65, open:412.60, high:428.75, low:393.36, prev:420.99, type:'retail'},
+    {sym:'PLTR', price:135.26, chg:0.09,  open:135.17, high:137.47, low:133.60, prev:135.14, type:'retail'},
+    {sym:'MARA', price:12.44,  chg:2.13,  open:11.88,  high:12.59,  low:11.53,  prev:12.18,  type:'retail'},
+    {sym:'COIN', price:193.45, chg:2.12,  open:188.38, high:195.53, low:185.53, prev:189.44, type:'retail'},
+    {sym:'SNDK', price:1383.29,chg:3.77,  open:1289.75,high:1392.86,low:1278.11,prev:1333.01,type:'retail'},
+    {sym:'META', price:602.61, chg:-1.41, open:608.92, high:613.93, low:600.55, prev:611.21, type:'retail'},
+    {sym:'AMZN', price:259.34, chg:-2.08, open:262.04, high:262.25, low:255.19, prev:264.86, type:'retail'}
+  ],
+  sectors: [
+    {sym:'XLE', price:61.29,  chg:1.17},
+    {sym:'XLV', price:147.32, chg:1.10},
+    {sym:'XLU', price:44.34,  chg:0.91},
+    {sym:'XLRE',price:43.94,  chg:0.43},
+    {sym:'XLP', price:86.09,  chg:0.22},
+    {sym:'XLK', price:173.24, chg:-0.64},
+    {sym:'XLC', price:115.85, chg:-0.97},
+    {sym:'XLY', price:115.03, chg:-1.11},
+    {sym:'XLI', price:168.74, chg:-1.18},
+    {sym:'XLF', price:51.10,  chg:-1.24},
+    {sym:'XLB', price:49.04,  chg:-2.35}
+  ],
+  epGainers: [
+    {sym:'IMVT', co:'Immunovant',           gap:23.24, px:32.40, vol:1148869, cat:'72.7% response rate in tough arthritis cases [5/20/2026 11:00 AM]',     score:73, bias:'LONG'},
+    {sym:'MWC',  co:'Micware Co',           gap:89.19, px:8.93,  vol:8381646, cat:'MWC Stock Price, News & Analysis (MarketBeat) [5/19/2026 11:29 PM]',     score:65, bias:'LONG'},
+    {sym:'POET', co:'POET Technologies',    gap:15.03, px:15.04, vol:5034002, cat:'Lumilens Moved Stock Into Brutal Proof Phase (Seeking Alpha) [5/20/2026 11:07 AM]', score:65, bias:'LONG'},
+    {sym:'TATT', co:'TAT Technologies',     gap:12.79, px:36.87, vol:42030,   cat:'GAAP EPS $0.26 beats by $0.07, rev $41.1M beats by $0.78M [5/20/2026 7:10 AM]', score:55, bias:'LONG'},
+    {sym:'RRGB', co:'Red Robin Gourmet',    gap:9.35,  px:4.21,  vol:163228,  cat:'Outlines 2026 adj EBITDA $70M-$73M, maintains comp guidance [5/19/2026 7:01 PM]', score:45, bias:'LONG'},
+    {sym:'DBL',  co:'Doubleline Opportunistic', gap:12.91, px:16.00, vol:200, cat:'(no recent headline)',                                                       score:35, bias:'LONG'}
+  ],
+  epLosers: [
+    {sym:'SUGP', co:'SU Group Holdings',    gap:-17.95, px:4.36, vol:1417230, cat:'Jumps 20% on new gov contract (headline counter to drop) [5/20/2026 12:31 PM]', score:67, bias:'SHORT'},
+    {sym:'PPBT', co:'Purple Biotech',       gap:-17.95, px:2.88, vol:5736618, cat:'(no recent headline) — heavy volume dump',                                  score:65, bias:'SHORT'},
+    {sym:'INM',  co:'InMed Pharmaceuticals',gap:-11.83, px:1.41, vol:690637,  cat:'InMed + Mentari all-stock merger (giving back +170% gap) [5/19/2026 8:51 AM]', score:63, bias:'SHORT'},
+    {sym:'RVSN', co:'Rail Vision',          gap:-18.29, px:4.96, vol:549606,  cat:"Google's quantum data training Rail Vision AI [5/20/2026 11:32 AM]",         score:55, bias:'SHORT'},
+    {sym:'PERI', co:'Perion Network',       gap:-11.06, px:9.49, vol:89798,   cat:'Mixed Q1 results; reaffirms FY26 outlook [5/20/2026 7:05 AM]',              score:55, bias:'SHORT'},
+    {sym:'BNZI', co:'Banzai International', gap:-10.85, px:3.40, vol:583955,  cat:'$7.8M debt wipe, potential acquisitions [5/20/2026 12:30 PM]',              score:55, bias:'SHORT'},
+    {sym:'EZGO', co:'EZGO Technologies',    gap:-16.92, px:1.81, vol:261559,  cat:'Self-driving delivery vehicles eyed for 2027 [5/19/2026 12:30 PM]',         score:35, bias:'SHORT'},
+    {sym:'CNEY', co:'CN Energy Group',      gap:-14.29, px:1.38, vol:305375,  cat:'(no recent headline)',                                                       score:35, bias:'SHORT'},
+    {sym:'BRAG', co:'Bragg Gaming Group',   gap:-12.20, px:1.44, vol:315648,  cat:'(no recent headline)',                                                       score:35, bias:'SHORT'},
+    {sym:'ANVS', co:'Annovis Bio',          gap:-10.82, px:1.73, vol:241592,  cat:'Launches proposed public stock + warrant offering (dilution) [5/19/2026 4:29 PM]', score:35, bias:'SHORT'}
+  ]
+};
+
+function fmtPct(v) { const s = v >= 0 ? '+' : ''; return s + v.toFixed(2) + '%'; }
+function fmtPrice(v) { return v.toFixed(2); }
+function fmtVol(v) { if (v >= 1e6) return (v/1e6).toFixed(2) + 'M'; if (v >= 1e3) return (v/1e3).toFixed(1) + 'K'; return v.toString(); }
+function pctClass(v) { if (v > 0.05) return 'up'; if (v < -0.05) return 'down'; return 'flat'; }
+function heatClass(v) { if (v >= 1.0) return 'up-strong'; if (v >= 0.2) return 'up-mild'; if (v > -0.2) return 'flat-cell'; if (v > -1.0) return 'down-mild'; return 'down-strong'; }
+function buildTicker() {
+  const all = [...DATA.quotes, ...DATA.sectors];
+  const items = all.map(q => `<span class="ticker-item"><span class="ticker-sym">${q.sym}</span> <span class="ticker-price">${fmtPrice(q.price)}</span> <span class="ticker-chg ${pctClass(q.chg)}">${fmtPct(q.chg)}</span></span>`).join('');
+  document.getElementById('ticker').innerHTML = items + items;
+}
+function buildHeatmap() {
+  const html = DATA.sectors.map(s => `<div class="heat-cell ${heatClass(s.chg)}"><div class="heat-sym">${s.sym}</div><div class="heat-pct ${pctClass(s.chg)}">${fmtPct(s.chg)}</div><div class="heat-price">${fmtPrice(s.price)}</div></div>`).join('');
+  document.getElementById('heatmap-swing').innerHTML = html;
+}
+function buildRetail() {
+  const retail = DATA.quotes.filter(q => q.type === 'retail').sort((a,b) => Math.abs(b.chg) - Math.abs(a.chg));
+  const html = retail.map(q => {
+    const gap = ((q.open - q.prev) / q.prev) * 100;
+    return `<tr><td><strong>${q.sym}</strong></td><td class="right">${fmtPrice(q.price)}</td><td class="right ${pctClass(q.chg)}">${fmtPct(q.chg)}</td><td class="right ${pctClass(gap)}">${fmtPct(gap)}</td><td class="right">${fmtPrice(q.open)}</td><td class="right">${fmtPrice(q.high)}</td><td class="right">${fmtPrice(q.low)}</td><td class="right">${fmtPrice(q.prev)}</td></tr>`;
+  }).join('');
+  document.getElementById('retail-body').innerHTML = html;
+}
+function buildEpTable(rows, targetId) {
+  const html = rows.map((r,i) => {
+    const cls = i < 3 ? 'top3' : '';
+    const biasClass = r.bias === 'LONG' ? 'up' : 'down';
+    return `<tr class="${cls}"><td><strong>${r.sym}</strong></td><td style="color: var(--muted); font-size: 11px;">${r.co}</td><td class="right ${pctClass(r.gap)}">${fmtPct(r.gap)}</td><td class="right">$${fmtPrice(r.px)}</td><td class="right">${fmtVol(r.vol)}</td><td style="font-size: 11px; color: var(--muted); max-width: 480px;">${r.cat}</td><td class="right"><span class="score">${r.score}</span></td><td class="right"><span class="tag ${biasClass}">${r.bias}</span></td></tr>`;
+  }).join('');
+  document.getElementById(targetId).innerHTML = html;
+}
+function setMode(m) {
+  document.getElementById('mode-swing').classList.toggle('hidden', m !== 'swing');
+  document.getElementById('mode-day').classList.toggle('hidden', m !== 'day');
+  document.getElementById('btn-swing').classList.toggle('active', m === 'swing');
+  document.getElementById('btn-day').classList.toggle('active', m === 'day');
+}
+document.getElementById('gen-time').textContent = DATA.generated;
+document.getElementById('gen-time2').textContent = DATA.generated;
+buildTicker();
+buildHeatmap();
+buildRetail();
+buildEpTable(DATA.epGainers, 'ep-gainers');
+buildEpTable(DATA.epLosers, 'ep-losers');
+</script>
+</body>
+</html>
