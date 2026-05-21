@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Daily Theme Scanner — 2026-05-21</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0e17;
+    --bg2: #0f1520;
+    --bg3: #141c2e;
+    --border: #1e2d45;
+    --text: #e2e8f0;
+    --muted: #64748b;
+    --high: #10b981;
+    --medium: #f59e0b;
+    --low: #ef4444;
+    --accent: #3b82f6;
+    --accent2: #8b5cf6;
+    --ticker: #38bdf8;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    line-height: 1.7;
+    padding: 0 0 80px 0;
+  }
+  /* Header */
+  .header {
+    background: var(--bg2);
+    border-bottom: 1px solid var(--border);
+    padding: 24px 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .header-left { display: flex; align-items: center; gap: 16px; }
+  .logo { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 2px; }
+  .title { font-size: 18px; font-weight: 700; color: var(--text); }
+  .date-badge {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    color: var(--accent);
+    padding: 4px 12px;
+    border-radius: 4px;
+    font-size: 11px;
+    letter-spacing: 1px;
+  }
+  /* Nav */
+  .nav {
+    background: var(--bg2);
+    border-bottom: 1px solid var(--border);
+    padding: 0 40px;
+    display: flex;
+    gap: 0;
+  }
+  .nav a {
+    color: var(--muted);
+    text-decoration: none;
+    padding: 12px 20px;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s;
+  }
+  .nav a:hover { color: var(--text); border-bottom-color: var(--accent); }
+  /* Main */
+  .container { max-width: 1200px; margin: 0 auto; padding: 40px 40px; }
+  /* Section headers */
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 48px 0 24px 0;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+  }
+  .section-number {
+    background: var(--accent);
+    color: #fff;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: 3px;
+    letter-spacing: 1px;
+  }
+  .section-title { font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: var(--text); }
+  /* Cards */
+  .card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 28px 32px;
+    margin-bottom: 20px;
+    position: relative;
+    overflow: hidden;
+  }
+  .card::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+  }
+  .card.high::before { background: var(--high); }
+  .card.medium::before { background: var(--medium); }
+  .card.low::before { background: var(--low); }
+  .card.strong::before { background: var(--high); }
+  .card.moderate::before { background: var(--medium); }
+  .card.weak::before { background: var(--low); }
+  .card.catalyst::before { background: var(--accent2); }
+  .card-title { font-size: 15px; font-weight: 700; color: var(--text); margin-bottom: 16px; }
+  /* Badges */
+  .badges { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
+  .badge {
+    font-size: 10px;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 3px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  .badge-high { background: rgba(16,185,129,0.15); color: var(--high); border: 1px solid rgba(16,185,129,0.3); }
+  .badge-medium { background: rgba(245,158,11,0.15); color: var(--medium); border: 1px solid rgba(245,158,11,0.3); }
+  .badge-low { background: rgba(239,68,68,0.15); color: var(--low); border: 1px solid rgba(239,68,68,0.3); }
+  .badge-stage { background: rgba(59,130,246,0.15); color: var(--accent); border: 1px solid rgba(59,130,246,0.3); }
+  .badge-type { background: rgba(139,92,246,0.15); color: var(--accent2); border: 1px solid rgba(139,92,246,0.3); }
+  /* Meta grid */
+  .meta-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; margin-bottom: 20px; }
+  .meta-item { }
+  .meta-label { font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); margin-bottom: 4px; }
+  .meta-value { font-size: 12px; color: var(--text); }
+  /* Tickers */
+  .ticker { color: var(--ticker); font-weight: 600; }
+  .ticker-red { color: var(--low); font-weight: 600; }
+  /* Summary block */
+  .summary-block {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 16px 20px;
+    margin-top: 16px;
+    color: #94a3b8;
+    font-size: 12px;
+    line-height: 1.8;
+  }
+  /* Evidence list */
+  .evidence-list { margin: 0; padding: 0; list-style: none; }
+  .evidence-list li {
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 12px;
+    color: #94a3b8;
+    padding-left: 16px;
+    position: relative;
+  }
+  .evidence-list li::before { content: '›'; position: absolute; left: 0; color: var(--accent); }
+  .evidence-list li:last-child { border-bottom: none; }
+  .evidence-list a { color: var(--accent); text-decoration: none; }
+  .evidence-list a:hover { text-decoration: underline; }
+  /* Trade idea */
+  .trade-idea {
+    background: rgba(16,185,129,0.07);
+    border: 1px solid rgba(16,185,129,0.2);
+    border-radius: 4px;
+    padding: 12px 16px;
+    margin-top: 14px;
+    font-size: 12px;
+    color: #a7f3d0;
+  }
+  .trade-idea strong { color: var(--high); }
+  /* Action items */
+  .action-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 24px 28px;
+    margin-bottom: 16px;
+  }
+  .action-title { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--accent); margin-bottom: 16px; }
+  .action-item {
+    display: flex;
+    gap: 14px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 12px;
+    align-items: flex-start;
+  }
+  .action-item:last-child { border-bottom: none; }
+  .action-num {
+    background: var(--accent);
+    color: #fff;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: 3px;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+  /* Table */
+  table { width: 100%; border-collapse: collapse; font-size: 12px; margin-top: 12px; }
+  th { background: var(--bg3); color: var(--muted); text-transform: uppercase; font-size: 10px; letter-spacing: 1px; padding: 10px 14px; text-align: left; border-bottom: 1px solid var(--border); }
+  td { padding: 10px 14px; border-bottom: 1px solid var(--border); color: #94a3b8; }
+  tr:hover td { background: var(--bg3); }
+  td:first-child { color: var(--accent); font-weight: 600; }
+  /* Footer */
+  .footer {
+    text-align: center;
+    color: var(--muted);
+    font-size: 10px;
+    margin-top: 60px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+    letter-spacing: 1px;
+  }
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-left">
+    <div>
+      <div class="logo">Hedge Fund Thematic Research</div>
+      <div class="title">Daily Theme Scanner</div>
+    </div>
+  </div>
+  <div class="date-badge">2026-05-21 · PRE-MARKET</div>
+</div>
+
+<div class="nav">
+  <a href="#narratives">Narratives</a>
+  <a href="#earnings">Earnings Signals</a>
+  <a href="#catalysts">Catalysts</a>
+  <a href="#action">Action Items</a>
+</div>
+
+<div class="container">
+
+  <!-- ==================== NARRATIVES ==================== -->
+  <div id="narratives">
+    <div class="section-header">
+      <span class="section-number">01</span>
+      <span class="section-title">Emerging Narratives</span>
+    </div>
+
+    <!-- Narrative 1 -->
+    <div class="card high">
+      <div class="card-title">1. Quantum Computing Government Equity Stakes</div>
+      <div class="badges">
+        <span class="badge badge-high">HIGH Conviction</span>
+        <span class="badge badge-stage">EARLY Stage</span>
+      </div>
+      <div class="meta-grid">
+        <div class="meta-item">
+          <div class="meta-label">Timeline for Earnings Impact</div>
+          <div class="meta-value">2–6 weeks (Q3–Q4 2026 contract ramp)</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Primary Beneficiaries</div>
+          <div class="meta-value"><span class="ticker">IONQ · QBTS · RGTI · QUBT</span></div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Secondary Beneficiaries</div>
+          <div class="meta-value"><span class="ticker">IBM · MSFT · GOOGL</span></div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Losers / Disrupted</div>
+          <div class="meta-value"><span class="ticker-red">HPE (classic HPC long-term)</span></div>
+        </div>
+      </div>
+      <div class="meta-label" style="margin-bottom:8px">Evidence</div>
+      <ul class="evidence-list">
+        <li>WSJ: Trump admin awarding $2B in grants to 9 quantum firms with government equity stakes — mirrors Intel (~10%) and MP Materials (~15%) stake playbook. <a href="https://seekingalpha.com/news/4595634-quantum-computing-is-the-latest-us-government-equity-bet" target="_blank">[Seeking Alpha]</a></li>
+        <li>IonQ +8.3%, D-Wave +18%, Rigetti +15% intraday. Deputy Commerce Sec. Paul Dabbar (former quantum exec) leading talks. <a href="https://www.fool.com/investing/2025/10/29/trump-stakes-in-quantum-computing-ionq-rgti-qbts/" target="_blank">[Motley Fool]</a></li>
+        <li>Quantum Computing Inc. filed 10-Q and 8-K for FY2026, signaling commercial traction at the private level. <a href="https://www.sec.gov/Archives/edgar/data/0001758009/000121390026054473/ea0289133-10q_quantum.htm" target="_blank">[SEC EDGAR]</a></li>
+      </ul>
+      <div class="summary-block">
+        The Trump administration's pattern of taking equity stakes in strategic technology companies has now extended to quantum computing. With $2B in federal grants and government stakes coming as a surprise announcement, this is firmly EARLY-stage — the market bid these stocks up sharply on the headline but fundamental revenue impact won't materialize until Q3/Q4 grant-to-contract conversion. At ~$3B market cap for IONQ vs. $2B in federal grants, the setup is asymmetric if deal sizes are confirmed. Key risk: deals may be structured as loans or small pilots that disappoint vs. headline grant figures.
+      </div>
+    </div>
+
+    <!-- Narrative 2 -->
+    <div class="card high">
+      <div class="card-title">2. SpaceX IPO — Space / AI Convergence Trade</div>
+      <div class="badges">
+        <span class="badge badge-high">HIGH Conviction</span>
+        <span class="badge badge-stage">DEVELOPING Stage</span>
+      </div>
+      <div class="meta-grid">
+        <div class="meta-item">
+          <div class="meta-label">Timeline</div>
+          <div class="meta-value">4–8 weeks (IPO pricing → index inclusion)</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Primary Beneficiaries</div>
+          <div class="meta-value"><span class="ticker">TSLA · RKLB · ASTS</span></div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Secondary Beneficiaries</div>
+          <div class="meta-value"><span class="ticker">PLTR · AXON</span></div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Losers / Disrupted</div>
+          <div class="meta-value"><span class="ticker-red">DISH / EchoStar · legacy defense primes</span></div>
+        </div>
+      </div>
+      <div class="meta-label" style="margin-bottom:8px">Evidence</div>
+      <ul class="evidence-list">
+        <li>SpaceX filed S-1 May 20, 2026 targeting $1.75T–$2T+ valuation; $18.7B 2025 revenue ($11.4B Starlink, $4.1B Launch, $3.2B AI). <a href="https://fortune.com/2026/05/21/spacex-ipo-filing-surprises/" target="_blank">[Fortune]</a> <a href="https://techcrunch.com/2026/05/20/the-spacex-ipo-filing-has-arrived/" target="_blank">[TechCrunch]</a></li>
+        <li>S-1 reveals prospective $60B acquisition of AI coding firm Cursor — framing SpaceX as an AI company to public markets. <a href="https://www.gurufocus.com/news/8873465/spacex-ipo-filing-highlights-deepening-ties-with-tesla-tsla" target="_blank">[GuruFocus]</a></li>
+        <li>Musk retains 85.1% voting power post-IPO; filing discloses deepening Tesla operational ties. <a href="https://www.bloomberg.com/news/articles/2026-05-20/spacex-ipo-what-to-look-for-in-public-filing" target="_blank">[Bloomberg]</a></li>
+      </ul>
+      <div class="summary-block">
+        SpaceX's S-1 is the most consequential IPO filing since Meta. At $2T, it would be larger than Berkshire Hathaway at IPO. The AI pivot narrative — including the Cursor acquisition — will draw enormous crossover demand from tech funds. TSLA is the cleanest public-market proxy; short-sellers may be forced out as Musk ecosystem enthusiasm builds. Starlink revenue ($11.4B) alone is larger than most satellite operators' entire enterprise value — this is a structural re-rating event for the space sector.
+      </div>
+    </div>
+
+    <!-- Narrative 3 -->
+    <div class="card high">
+      <div class="card-title">3. Global Bond Vigilante / Stagflation Pressure</div>
+      <div class="badges">
+        <span class="badge badge-high">HIGH Conviction</span>
+        <span class="badge badge-stage">DEVELOPING Stage</span>
+      </div>
+      <div class="meta-grid">
+        <div class="meta-item">
+          <div class="meta-label">Timeline</div>
+          <div class="meta-value">Immediate → sustained through Q3 2026</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Primary Beneficiaries</div>
+          <div class="meta-value"><span class="ticker">TBT · TIPS · JPM · BAC · C · Energy</span></div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Secondary Beneficiaries</div>
+          <div class="meta-value"><span class="ticker">MET · PRU · BDCs</span></div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Losers / Disrupted</div>
+          <div class="meta-value"><span class="ticker-red">TLT · TMF · VNQ · XLU · High-multiple tech</span></div>
+        </div>
+      </div>
+      <div class="meta-label" style="margin-bottom:8px">Evidence</div>
+      <ul class="evidence-list">
+        <li>30-year US Treasury yield at 5.2%, highest since 2007; 10-year at 4.67%, driven by oil shock + fiscal fears from OBBB. <a href="https://www.cnn.com/2026/05/19/business/30-year-treasury-yield-bond-record" target="_blank">[CNN Business]</a></li>
+        <li>Global selloff accelerating: UK 30-year gilt highest since 1998; Japan 30-year at all-time record. <a href="https://finance.yahoo.com/economy/policy/articles/global-bond-selloff-worsens-rising-103712848.html" target="_blank">[Yahoo Finance/Bloomberg]</a></li>
+        <li>Yardeni: Fed may be forced to hike in July; markets pricing 42% cumulative chance of hike by year-end. <a href="https://www.cnbc.com/2026/05/18/the-fed-will-have-to-raise-interest-rates-in-july-to-appease-bond-vigilantes-yardeni-says.html" target="_blank">[CNBC]</a></li>
+      </ul>
+      <div class="summary-block">
+        The bond market is sending a clear stagflationary signal: oil shock from the Strait of Hormuz crisis combined with the "Big Beautiful Bill" adding $4T to the 10-year deficit is creating a supply/demand imbalance in Treasuries. Equity markets have not yet fully reflected what 5.2% 30-year yields imply for discount rates. The disconnect between bond vigilante pricing and equity complacency is the core risk premium trade of Q2 2026.
+      </div>
+    </div>
+
+    <!-- Narrative 4 -->
+    <div class="card high">
+      <div class="card-title">4. Strait of Hormuz / Oil Supply Shock Repricing</div>
+      <div class="badges">
+        <span class="badge badge-high">HIGH Conviction</span>
+        <span class="badge badge-stage">DEVELOPING Stage</span>
+      </div>
+      <div class="meta-grid">
+        <div class="meta-item">
+          <div class="meta-label">WTI Crude</div>
+          <div class="meta-value" style="color:var(--medium)">$101.04 (+2.9%)</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Primary Beneficiaries</div>
+          <div class="meta-value"><span class="ticker">OXY · CVX · XOM · VLO · MPC · ZIM · LMT · RTX</span></div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Secondary Beneficiaries</div>
+          <div class="meta-value"><span class="ticker">LNG · SLB · HAL · CNQ · SU</span></div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Losers / Disrupted</div>
+          <div class="meta-value"><span class="ticker-red">UAL · DAL · AAL · Chemical manufacturers</span></div>
+        </div>
+      </div>
+      <div class="meta-label" style="margin-bottom:8px">Evidence</div>
+      <ul class="evidence-list">
+        <li>WTI at $101.04 (+2.9%) today; Iran supreme leader directive to keep enriched uranium in-country halts negotiations. <a href="https://www.thestreet.com/stock-market-today/stock-market-today-dow-jones-sp-500-nasdaq-updates-may-21-2026" target="_blank">[TheStreet]</a></li>
+        <li>Strait of Hormuz remains effectively closed; Brent hit $126 at April peak; ceasefire holding but no diplomatic resolution. <a href="https://www.euronews.com/business/2026/04/30/oil-temporarily-surges-above-126-per-barrel-as-us-iran-conflict-seemingly-intensifies" target="_blank">[Euronews]</a></li>
+        <li>April CPI energy +17.9% YoY; headline inflation 3.8%, complicating Fed path. <a href="https://finance.yahoo.com/economy/article/hot-cpi-report-likely-to-put-fed-on-guard-for-longer-lasting-inflation-meanwhile-rate-hike-odds-are-rising-141806600.html" target="_blank">[Yahoo Finance]</a></li>
+      </ul>
+      <div class="summary-block">
+        The market is treating $101 WTI as a "normalization" from $126 peaks, but the structural closure of Hormuz — which handles ~21% of global oil trade — has not resolved. The consensus view that oil retreats to $80–$85 by Q3 may be significantly wrong. Upstream E&P names remain the cleanest long expression; airlines and chemical companies are the clearest shorts if $100+ oil becomes the base case for 2–3 more quarters.
+      </div>
+    </div>
+
+    <!-- Narrative 5 -->
+    <div class="card medium">
+      <div class="card-title">5. GLP-1 Market Share Shift — Lilly Displacing Novo Internationally</div>
+      <div class="badges">
+        <span class="badge badge-medium">MEDIUM Conviction</span>
+        <span class="badge badge-stage">MATURING Stage</span>
+      </div>
+      <div class="meta-grid">
+        <div class="meta-item">
+          <div class="meta-label">Timeline</div>
+          <div class="meta-value">Q2 2026 earnings (July) confirm international acceleration</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Primary Beneficiaries</div>
+          <div class="meta-value"><span class="ticker">LLY</span></div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Secondary Beneficiaries</div>
+          <div class="meta-value"><span class="ticker">HIMS · ISRG · DXCM</span></div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Losers / Disrupted</div>
+          <div class="meta-value"><span class="ticker-red">NVO</span></div>
+        </div>
+      </div>
+      <div class="meta-label" style="margin-bottom:8px">Evidence</div>
+      <ul class="evidence-list">
+        <li>LLY overtook NVO in GLP-1 market share outside the US for first time; Mounjaro international $8.7B Q1 (+125% YoY). <a href="https://gxpnews.net/en/2026/05/eli-lilly-overtakes-novo-nordisk-in-glp-1-market-share-outside-us/" target="_blank">[GxP News]</a></li>
+        <li>LLY raised FY2026 EPS to $35.50–$37.00 (from $33.50–$35.00) and revenue to $82–85B; FDA approved oral GLP-1 Foundayo (orforglipron). <a href="https://www.sec.gov/Archives/edgar/data/0000059478/000005947826000043/q126lillysalesandearningsp.htm" target="_blank">[SEC 8-K]</a></li>
+        <li>Barclays projects GLP-1 market reaches $150B annually within the decade. <a href="https://www.fool.com/investing/2026/05/20/best-weight-loss-drug-stocks-to-buy-in-2026/" target="_blank">[Motley Fool]</a></li>
+      </ul>
+      <div class="summary-block">
+        This theme is maturing domestically but the international overtake is a new development. An oral GLP-1 (Foundayo) approval opens an entirely new addressable market — patients who refuse injections. If Lilly achieves even 30% adoption among that cohort, international revenue estimates need meaningful revision upward. NVO is in structural market share decline outside the US; the divergence trade (long LLY / short NVO) may have further legs.
+      </div>
+      <div class="trade-idea"><strong>Trade Idea:</strong> Long LLY / Short NVO pair trade — oral GLP-1 opens new addressable population; NVO oral pipeline shows inferior head-to-head efficacy.</div>
+    </div>
+  </div>
+
+  <!-- ==================== EARNINGS SIGNALS ==================== -->
+  <div id="earnings">
+    <div class="section-header">
+      <span class="section-number">02</span>
+      <span class="section-title">Earnings Signals</span>
+    </div>
+
+    <!-- Signal 1 -->
+    <div class="card strong">
+      <div class="card-title">Signal 1 — Nvidia Massive Beat with Supply Commitment Surge</div>
+      <div class="badges">
+        <span class="badge badge-high">STRONG</span>
+        <span class="badge badge-type">Unusual Guidance Raise</span>
+      </div>
+      <div class="meta-grid">
+        <div class="meta-item">
+          <div class="meta-label">Companies Involved</div>
+          <div class="meta-value"><span class="ticker">NVDA · AMD · AVGO · ANET · TSM</span></div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Revenue Result</div>
+          <div class="meta-value" style="color:var(--high)">$81.6B vs $79.2B est (+3% beat)</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Supply Commitments</div>
+          <div class="meta-value" style="color:var(--high)">$119B (raised from $95.2B)</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Data Center Revenue</div>
+          <div class="meta-value">$75.2B (+92% YoY)</div>
+        </div>
+      </div>
+      <div class="summary-block">
+        The $119B supply commitment figure is the most important single data point in this earnings cycle. It represents real purchase orders placed by hyperscalers — not optimistic guidance — and implies AI infrastructure spending remains on a steep upward trajectory through at least mid-2027. CEO Jensen Huang cited $1T in Blackwell/Rubin opportunity through 2027. Read-through: positive for TSM, ANET, MRVL, AVGO; negative for "post-AI-peak" hedges.
+      </div>
+      <div class="trade-idea"><strong>Trade Idea:</strong> Long ANET / MRVL as secondary infrastructure beneficiaries — equivalent fundamental tailwinds, less demanding multiples than NVDA. Avoid shorting NVDA until supply commitments begin to compress.</div>
+    </div>
+
+    <!-- Signal 2 -->
+    <div class="card moderate">
+      <div class="card-title">Signal 2 — Consumer Bifurcation: Walmart Gains, Target Bleeds</div>
+      <div class="badges">
+        <span class="badge badge-medium">MODERATE</span>
+        <span class="badge badge-type">Sector Read-Through</span>
+      </div>
+      <div class="meta-grid">
+        <div class="meta-item">
+          <div class="meta-label">Companies Involved</div>
+          <div class="meta-value"><span class="ticker">WMT · TGT · COST · HD</span></div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Walmart YTD</div>
+          <div class="meta-value" style="color:var(--high)">+20%</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Target Guidance</div>
+          <div class="meta-value" style="color:var(--low)">-1% revenue decline</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Home Depot SS Sales</div>
+          <div class="meta-value" style="color:var(--medium)">Flat (housing weakness)</div>
+        </div>
+      </div>
+      <div class="summary-block">
+        The US consumer is bifurcated. Value retail (WMT, COST, AMZN) is compounding through inflation. Discretionary and aspirational retail (TGT, M, ROST) is contracting. The aggregate data masks a barbell: thin slice of high-income consumers spending freely while a large share of the population is cutting back. Q2 earnings will make this divergence more visible as energy bills eat further into discretionary budgets.
+      </div>
+      <div class="trade-idea"><strong>Trade Idea:</strong> Long WMT / Short TGT spread. WMT has structural advantages (logistics, grocery share, AI integration) that TGT lacks in a stagflationary environment. Entry on WMT beat today (Thursday pre-market).</div>
+    </div>
+
+    <!-- Signal 3 -->
+    <div class="card strong">
+      <div class="card-title">Signal 3 — GLP-1 Oral Approval Opens New Addressable Market</div>
+      <div class="badges">
+        <span class="badge badge-high">STRONG</span>
+        <span class="badge badge-type">Language Shift + FDA Event</span>
+      </div>
+      <div class="meta-grid">
+        <div class="meta-item">
+          <div class="meta-label">Companies Involved</div>
+          <div class="meta-value"><span class="ticker">LLY</span> <span class="ticker-red">NVO (negative)</span></div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">LLY Q1 EPS Beat</div>
+          <div class="meta-value" style="color:var(--high)">$8.55 vs ~$6.80 est (+25%)</div>
+        </div>
+      </div>
+      <div class="summary-block">
+        FDA approved Foundayo (orforglipron) — first oral GLP-1 agonist — for obesity/overweight. The shift to oral GLP-1 massively expands the addressable patient population. Injection-reluctant patients (~40% of overweight population) now have a drug option. This is a second-derivative acceleration of a theme the market thought was "priced in." NVO's oral pipeline shows inferior efficacy in head-to-head data.
+      </div>
+    </div>
+
+    <!-- Signal 4 -->
+    <div class="card moderate">
+      <div class="card-title">Signal 4 — Broad S&P Beat Rate at Multi-Year High (84%)</div>
+      <div class="badges">
+        <span class="badge badge-medium">MODERATE</span>
+        <span class="badge badge-type">Recurring Theme</span>
+      </div>
+      <div class="meta-grid">
+        <div class="meta-item">
+          <div class="meta-label">Beat Rate</div>
+          <div class="meta-value" style="color:var(--high)">84% (vs 78% 5yr avg)</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Aggregate EPS Beat</div>
+          <div class="meta-value" style="color:var(--high)">+18.2% (vs 7.3% 5yr avg)</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Laggard Sector</div>
+          <div class="meta-value" style="color:var(--low)">Healthcare (negative EPS growth)</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Forward Q2 Estimate</div>
+          <div class="meta-value">+19.9% EPS growth</div>
+        </div>
+      </div>
+      <div class="summary-block">
+        Analysts systematically underestimated the resilience of corporate earnings in a high-rate, high-inflation environment. AI productivity gains are showing up in margins. This creates a positive revision cycle for 2H 2026 estimates — but Healthcare is the only sector with negative earnings growth and faces regulatory headwinds. Overweight high-quality compounders; underweight Healthcare broadly.
+      </div>
+    </div>
+
+    <!-- Signal 5 -->
+    <div class="card weak">
+      <div class="card-title">Signal 5 — Housing / Home Improvement Flat Despite Rate Stabilization</div>
+      <div class="badges">
+        <span class="badge badge-low">WEAK</span>
+        <span class="badge badge-type">Post-Earnings Anomaly</span>
+      </div>
+      <div class="meta-grid">
+        <div class="meta-item">
+          <div class="meta-label">Companies Involved</div>
+          <div class="meta-value"><span class="ticker-red">HD · LOW · DHI · LEN · TREX</span></div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">HD Same-Store Sales</div>
+          <div class="meta-value" style="color:var(--medium)">Flat (expected bounce did not materialize)</div>
+        </div>
+      </div>
+      <div class="summary-block">
+        Home Depot posted flat same-store sales despite market expectations for housing activity uptick as rates stabilized. With 30-year mortgage rates tracking Treasury yields above 5%, housing affordability remains near multi-decade lows. Signals that rate stabilization is NOT sufficient to restart housing activity — need actual rate cuts the Fed is not positioned to deliver. Avoid bottom-fishing in HD, LOW, homebuilders until rates fall 75bps+ or supply/demand rebalances.
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== CATALYSTS ==================== -->
+  <div id="catalysts">
+    <div class="section-header">
+      <span class="section-number">03</span>
+      <span class="section-title">Upcoming Catalysts</span>
+    </div>
+
+    <!-- Catalyst 1 -->
+    <div class="card catalyst">
+      <div class="card-title">Catalyst 1 — Kevin Warsh's First FOMC Meeting</div>
+      <div class="meta-grid">
+        <div class="meta-item">
+          <div class="meta-label">Date</div>
+          <div class="meta-value" style="color:var(--accent2)">June 16–17, 2026</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Consensus Expected</div>
+          <div class="meta-value">Hold 3.50%–3.75%; 0–1 cuts in dot plot</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Surprise Scenario</div>
+          <div class="meta-value" style="color:var(--low)">Warsh signals openness to July hike; dot plot shifts hawkish</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Exposed Tickers</div>
+          <div class="meta-value"><span class="ticker-red">TLT · TMF · QQQ · IWM · KRE</span></div>
+        </div>
+      </div>
+      <div class="summary-block">
+        Kevin Warsh was confirmed by the Senate May 13. His reputation as an inflation hawk means his first meeting — which includes a dot plot — is a key credibility test. With 42% market-implied probability of a hike by year-end, and inflation at 3.8% driven by energy, a hawkish press conference would send long-duration assets into another leg down. This is the single most important macro event in the next 4 weeks.
+      </div>
+    </div>
+
+    <!-- Catalyst 2 -->
+    <div class="card catalyst">
+      <div class="card-title">Catalyst 2 — May Nonfarm Payrolls</div>
+      <div class="meta-grid">
+        <div class="meta-item">
+          <div class="meta-label">Date</div>
+          <div class="meta-value" style="color:var(--accent2)">June 5, 2026</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Consensus Expected</div>
+          <div class="meta-value">~175K jobs, unemployment 4.0%–4.2%</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Upside Surprise</div>
+          <div class="meta-value" style="color:var(--low)">220K+ → eliminates cut expectations, prices hike</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Downside Surprise</div>
+          <div class="meta-value" style="color:var(--low)">Sub-100K → stagflation fears dominate</div>
+        </div>
+      </div>
+      <div class="summary-block">
+        The most important pre-FOMC data release. An upside surprise eliminates any remaining cut expectations and accelerates hike pricing. A downside surprise puts stagflation (high inflation + slowing jobs) front and center — the worst-case scenario for equities and the scenario bonds are partially pricing. Energy sector employment gains may be masking weakness in rate-sensitive sectors (housing, auto, consumer finance).
+      </div>
+    </div>
+
+    <!-- Catalyst 3 -->
+    <div class="card catalyst">
+      <div class="card-title">Catalyst 3 — SpaceX IPO Pricing</div>
+      <div class="meta-grid">
+        <div class="meta-item">
+          <div class="meta-label">Date</div>
+          <div class="meta-value" style="color:var(--accent2)">~June–July 2026 (6–8 weeks from S-1)</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Consensus Expected</div>
+          <div class="meta-value">$1.75T–$2T valuation; massive oversubscription</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Surprise Scenario</div>
+          <div class="meta-value" style="color:var(--medium)">Prices at $2T+ stretching capacity; OR pulls/delays due to risk-off from hawkish FOMC</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Exposed Tickers</div>
+          <div class="meta-value"><span class="ticker">TSLA · RKLB · ASTS</span></div>
+        </div>
+      </div>
+      <div class="summary-block">
+        A $2T IPO in a 10-year bond market at 5.2% is an extraordinary test of risk appetite. If the Fed is hawkish at June FOMC the week before IPO pricing, Warsh may inadvertently destroy one of the most anticipated public offerings in history. Conversely, if it prices successfully, it resets the "risk ceiling" for tech valuations significantly higher. Binary macro-meets-micro catalyst.
+      </div>
+    </div>
+
+    <!-- Catalyst 4 -->
+    <div class="card catalyst">
+      <div class="card-title">Catalyst 4 — "One Big Beautiful Bill" Senate Vote</div>
+      <div class="meta-grid">
+        <div class="meta-item">
+          <div class="meta-label">Date</div>
+          <div class="meta-value" style="color:var(--accent2)">Late May / Early June 2026</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Consensus Expected</div>
+          <div class="meta-value">Passes with minor amendments; TCJA permanent</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Surprise Scenario</div>
+          <div class="meta-value" style="color:var(--medium)">Senate strips EV/clean energy credits; fiscal math improves slightly (bond-positive)</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Exposed Tickers</div>
+          <div class="meta-value"><span class="ticker-red">TSLA · NEE · ENPH · FSLR</span> if credits stripped</div>
+        </div>
+      </div>
+      <div class="summary-block">
+        House passed May 22. Senate is the remaining gating factor. The $4T 10-year revenue impact is already being used by bond vigilantes as justification for higher term premium. If the Senate strips out major spending provisions, the fiscal math improves slightly (bond-positive). Key watch: any amendment to clean energy credits could trigger a sharp repricing in solar, wind, and EV supply chain names.
+      </div>
+    </div>
+
+    <!-- Catalyst 5 -->
+    <div class="card catalyst">
+      <div class="card-title">Catalyst 5 — April PCE Inflation Print</div>
+      <div class="meta-grid">
+        <div class="meta-item">
+          <div class="meta-label">Date</div>
+          <div class="meta-value" style="color:var(--accent2)">May 30, 2026</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Consensus Expected</div>
+          <div class="meta-value">Core PCE ~2.8%–3.0% YoY</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Hot Surprise (3.2%+)</div>
+          <div class="meta-value" style="color:var(--low)">Immediate jump in hike pricing; S&P -2%+ intraday</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Exposed Tickers</div>
+          <div class="meta-value"><span class="ticker-red">SPY · QQQ · TLT · XLU · XLRE · XHB</span></div>
+        </div>
+      </div>
+      <div class="summary-block">
+        With Warsh confirmed and his first meeting June 16, the May 30 PCE print is essentially the final input before a potentially watershed FOMC meeting. A hot PCE (3.2%+) makes a June hike discussion nearly unavoidable in the press conference Q&A. A cool print (below 2.6%) is the "all-clear" the equity market needs. Asymmetric setup: the downside surprise (hot print) has greater market impact than the upside.
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== ACTION ITEMS ==================== -->
+  <div id="action">
+    <div class="section-header">
+      <span class="section-number">04</span>
+      <span class="section-title">Action Items</span>
+    </div>
+
+    <div class="action-card">
+      <div class="action-title">Top 3 Tickers to Research Today</div>
+      <div class="action-item">
+        <div class="action-num">1</div>
+        <div><span class="ticker">IONQ</span> — Quantum Computing government stake story is early-stage and under-researched. At ~$3B market cap vs. $2B in federal grants, the setup is asymmetric if deal sizes are confirmed. Verify grant structure before sizing.</div>
+      </div>
+      <div class="action-item">
+        <div class="action-num">2</div>
+        <div><span class="ticker">LLY</span> — Oral GLP-1 (Foundayo) approval + international market share overtake of Novo creates a second-leg thesis the market has not yet fully priced into Q2/Q3 estimates. Clean long with raised guidance floor.</div>
+      </div>
+      <div class="action-item">
+        <div class="action-num">3</div>
+        <div><span class="ticker">OXY / XOM</span> — Strait of Hormuz closure remains structural; $101 WTI with 42% chance of a Fed hike creates a rare environment where energy stocks benefit from both high commodity prices and rotation from bonds into real assets.</div>
+      </div>
+    </div>
+
+    <div class="action-card">
+      <div class="action-title">Position Adjustments Suggested</div>
+      <div class="action-item">
+        <div class="action-num" style="background:var(--low)">↓</div>
+        <div><strong>Reduce</strong> long-duration tech exposure (high-multiple SaaS, unprofitable AI names) ahead of May 30 PCE — bond market is pricing a reality equities have not accepted yet.</div>
+      </div>
+      <div class="action-item">
+        <div class="action-num" style="background:var(--high)">↑</div>
+        <div><strong>Add</strong> energy upstream E&P (OXY, CVX, XOM): Hormuz closure duration underpriced; earnings revision tailwinds through Q3.</div>
+      </div>
+      <div class="action-item">
+        <div class="action-num" style="background:var(--accent)">⇄</div>
+        <div><strong>Pair trade:</strong> Long WMT / Short TGT into Walmart's Thursday pre-market earnings. Consumer bifurcation thesis directionally confirmed.</div>
+      </div>
+      <div class="action-item">
+        <div class="action-num" style="background:var(--high)">↑</div>
+        <div><strong>Hedge</strong> long tech with TBT (inverse long bond) — if Warsh surprises hawkish at June FOMC, TBT is a direct beneficiary with limited downside if equities are already correcting.</div>
+      </div>
+    </div>
+
+    <div class="action-card">
+      <div class="action-title">Key Dates This Week and Next</div>
+      <table>
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Event</th>
+            <th>Significance</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>May 21 (TODAY)</td><td>Walmart Q1 earnings (pre-market)</td><td>Consumer pulse / bifurcation confirmation</td></tr>
+          <tr><td>May 22</td><td>"Big Beautiful Bill" House vote finalized</td><td>Fiscal baseline / Senate sequence</td></tr>
+          <tr><td>May 30</td><td>April PCE inflation print</td><td>Critical pre-FOMC inflation read</td></tr>
+          <tr><td>June 5</td><td>May Nonfarm Payrolls</td><td>Labor market + stagflation risk</td></tr>
+          <tr><td>June 10</td><td>May CPI</td><td>Warsh FOMC pre-input</td></tr>
+          <tr><td>June 16–17</td><td>Warsh's first FOMC meeting</td><td>Rate hike risk / dot plot reset</td></tr>
+          <tr><td>June–July TBD</td><td>SpaceX IPO pricing</td><td>Risk appetite test at $2T valuation</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="footer">
+    DAILY THEME SCANNER · 2026-05-21 · PRE-MARKET<br>
+    Sources: TheStreet · Seeking Alpha · Fortune · TechCrunch · CNN Business · Bloomberg · CNBC · SEC EDGAR · Kiplinger · Motley Fool · GxP News · Yahoo Finance · Euronews · Intellectia.ai<br><br>
+    FOR INFORMATIONAL PURPOSES ONLY — NOT INVESTMENT ADVICE
+  </div>
+
+</div>
+</body>
+</html>
