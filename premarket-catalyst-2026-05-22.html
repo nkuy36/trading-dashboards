@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pre-Market Catalyst Scan — May 22, 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0e17;
+    --surface: #0f1623;
+    --surface2: #141d2e;
+    --border: #1e2d45;
+    --text: #e2e8f0;
+    --muted: #64748b;
+    --green: #22c55e;
+    --green-dim: #0d2618;
+    --red: #ef4444;
+    --red-dim: #1f0d0d;
+    --amber: #f59e0b;
+    --amber-dim: #1f1500;
+    --blue: #3b82f6;
+    --blue-dim: #0d1f3f;
+    --purple: #a855f7;
+    --purple-dim: #1e0a3c;
+    --cyan: #06b6d4;
+    --cyan-dim: #042a33;
+    --orange: #f97316;
+    --orange-dim: #1f1200;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    line-height: 1.7;
+    padding: 24px;
+    max-width: 1280px;
+    margin: 0 auto;
+  }
+  h1 { font-size: 22px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+  .subtitle { color: var(--muted); font-size: 11px; margin-bottom: 28px; border-bottom: 1px solid var(--border); padding-bottom: 16px; }
+  h2 {
+    font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px;
+    color: var(--cyan); margin: 32px 0 14px; padding: 8px 12px;
+    background: var(--surface); border-left: 3px solid var(--cyan); border-radius: 0 4px 4px 0;
+  }
+  h2.policy { border-color: var(--purple); color: var(--purple); }
+  h2.wire { border-color: var(--orange); color: var(--orange); }
+  h2.plan { border-color: var(--green); color: var(--green); }
+  h2.risk { border-color: var(--red); color: var(--red); }
+  h3 { font-size: 13px; font-weight: 600; color: var(--text); margin: 18px 0 10px; }
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; margin-bottom: 16px; }
+  .grid-4 { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; margin-bottom: 16px; }
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 16px; }
+  .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+  .ticker { font-size: 17px; font-weight: 700; }
+  .badge { font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: 4px; text-transform: uppercase; letter-spacing: 1px; }
+  .bg-green { background: var(--green-dim); color: var(--green); }
+  .bg-red { background: var(--red-dim); color: var(--red); }
+  .bg-amber { background: var(--amber-dim); color: var(--amber); }
+  .bg-purple { background: var(--purple-dim); color: var(--purple); }
+  .bg-cyan { background: var(--cyan-dim); color: var(--cyan); }
+  .bg-orange { background: var(--orange-dim); color: var(--orange); }
+  .price-big { font-size: 22px; font-weight: 700; margin: 4px 0; }
+  .up { color: var(--green); }
+  .down { color: var(--red); }
+  .flat { color: var(--amber); }
+  .purple { color: var(--purple); }
+  .cyan { color: var(--cyan); }
+  .orange { color: var(--orange); }
+  .metric-row { display: flex; justify-content: space-between; padding: 5px 0; border-bottom: 1px solid var(--border); font-size: 12px; }
+  .metric-row:last-child { border-bottom: none; }
+  .metric-label { color: var(--muted); }
+  .metric-val { font-weight: 600; }
+  table { width: 100%; border-collapse: collapse; font-size: 12px; margin: 10px 0; }
+  th { background: var(--surface2); color: var(--muted); padding: 8px 10px; text-align: left; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; font-size: 10px; border-bottom: 1px solid var(--border); }
+  td { padding: 8px 10px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  tr:hover td { background: var(--surface2); }
+  .tag { display: inline-block; padding: 2px 7px; border-radius: 3px; font-size: 10px; font-weight: 700; margin: 1px; letter-spacing: 0.5px; }
+  .alert { border-radius: 6px; padding: 14px 18px; margin: 12px 0; border-left: 4px solid; font-size: 12px; }
+  .alert-green { background: var(--green-dim); border-color: var(--green); }
+  .alert-red { background: var(--red-dim); border-color: var(--red); }
+  .alert-amber { background: var(--amber-dim); border-color: var(--amber); }
+  .alert-purple { background: var(--purple-dim); border-color: var(--purple); }
+  .alert-cyan { background: var(--cyan-dim); border-color: var(--cyan); }
+  .alert-orange { background: var(--orange-dim); border-color: var(--orange); }
+  .briefing {
+    background: linear-gradient(135deg, #0a1628 0%, #0f1e35 100%);
+    border: 1px solid var(--cyan);
+    border-radius: 10px;
+    padding: 20px 24px;
+    margin-bottom: 28px;
+  }
+  .briefing-title { font-size: 11px; font-weight: 700; color: var(--cyan); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 10px; }
+  .briefing-text { font-size: 13px; line-height: 1.8; color: var(--text); }
+  .top3-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-bottom: 28px; }
+  .top3-card {
+    background: var(--surface);
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    padding: 18px;
+    position: relative;
+  }
+  .top3-card.high { border-color: var(--green); }
+  .top3-card.medium { border-color: var(--amber); }
+  .top3-rank { position: absolute; top: 12px; right: 14px; font-size: 28px; font-weight: 700; color: var(--border); }
+  .top3-ticker { font-size: 24px; font-weight: 700; margin-bottom: 4px; }
+  .top3-theme { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; }
+  .theme-banner {
+    background: linear-gradient(90deg, #06040d 0%, #0d0620 50%, #06040d 100%);
+    border: 2px solid var(--purple);
+    border-radius: 8px;
+    padding: 16px 20px;
+    margin: 20px 0;
+    text-align: center;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--purple);
+    letter-spacing: 1px;
+  }
+  .theme-banner span { color: var(--cyan); }
+  .conf-high { color: var(--green); font-weight: 700; }
+  .conf-med { color: var(--amber); font-weight: 700; }
+  .conf-low { color: var(--red); font-weight: 700; }
+  a { color: var(--cyan); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  .source-link { font-size: 10px; color: var(--muted); margin-top: 6px; }
+  .etf-table td:nth-child(3) { font-weight: 700; }
+  .schedule-row td:first-child { color: var(--cyan); font-weight: 600; min-width: 90px; }
+  .footer { margin-top: 48px; padding-top: 20px; border-top: 1px solid var(--border); color: var(--muted); font-size: 10px; line-height: 1.8; }
+  .index-bar { display: flex; gap: 20px; flex-wrap: wrap; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 14px 20px; margin-bottom: 24px; }
+  .index-item { text-align: center; min-width: 70px; }
+  .index-name { color: var(--muted); font-size: 10px; text-transform: uppercase; letter-spacing: 1px; }
+  .index-val { font-size: 16px; font-weight: 700; }
+  .index-chg { font-size: 11px; font-weight: 600; }
+  .follow-on { font-size: 11px; color: var(--muted); margin-top: 8px; font-style: italic; }
+  .giant-flag {
+    background: linear-gradient(135deg, #120520 0%, #1a0830 100%);
+    border: 2px solid var(--cyan);
+    border-radius: 10px;
+    padding: 18px 22px;
+    margin: 18px 0;
+  }
+  .giant-flag .flag-label { font-size: 10px; font-weight: 700; color: var(--cyan); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 6px; }
+  .giant-flag .flag-title { font-size: 16px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+  .giant-flag .flag-detail { font-size: 12px; color: #94a3b8; }
+  @media (max-width: 900px) {
+    .grid-2, .grid-3, .grid-4, .top3-grid { grid-template-columns: 1fr; }
+    .index-bar { gap: 14px; }
+  }
+</style>
+</head>
+<body>
+
+<h1>☀️ Pre-Market Catalyst Scan</h1>
+<div class="subtitle">Friday, May 22, 2026 &nbsp;·&nbsp; v7.2 HEAVY+NAMED &nbsp;·&nbsp; Stockbee/Qullamaggie Breakout Framework &nbsp;·&nbsp; EOD Entry Bias</div>
+
+<!-- MORNING BRIEFING -->
+<div class="briefing">
+  <div class="briefing-title">☀️ Morning Briefing — 30-Second Read</div>
+  <div class="briefing-text">
+    <span class="cyan">🚨 DOMINANT THEME: QUANTUM COMPUTING — CHIPS ACT THEME-WIDE BREAKOUT.</span> The U.S. Department of Commerce signed Letters of Intent with 9 quantum computing companies for <strong>$2.013B in CHIPS Act funding</strong>, taking <strong>minority equity stakes in each</strong>. WSJ broke the story May 21 evening; NIST confirmed officially. <strong>IBM landed $1B</strong> (+6.2% AH), Rigetti (RGTI) +16.9%, D-Wave (QBTS) +19.4%, Infleqtion (INFQ) +22% (but faded to close $14.70). IONQ is NOT a direct recipient — sector halo only. <strong>Applied Digital (APLD)</strong> separately announced a <strong>$18.2B AI Campus lease</strong> ($31B total backlog) AMC, gapping +16–20%. Oil is easing overnight as Iran nuclear talks continue — index futures slightly higher. Michigan Consumer Sentiment Final (10:00 AM) is the key macro risk today. No Fed speakers. <strong>Top setups: IBM, APLD, RGTI. Best ETF: QTUM.</strong>
+  </div>
+</div>
+
+<!-- INDEX BAR (from May 21 close + PM estimates) -->
+<div class="index-bar">
+  <div class="index-item"><div class="index-name">S&P 500</div><div class="index-val flat">7,461</div><div class="index-chg flat">May 21 close</div></div>
+  <div class="index-item"><div class="index-name">Nasdaq 100</div><div class="index-val flat">29,433</div><div class="index-chg down">-0.48% May 21</div></div>
+  <div class="index-item"><div class="index-name">QQQ PM</div><div class="index-val up">~$700</div><div class="index-chg up">slight recovery</div></div>
+  <div class="index-item"><div class="index-name">SPY PM</div><div class="index-val up">~$744</div><div class="index-chg up">Iran oil relief</div></div>
+  <div class="index-item"><div class="index-name">SMH PM</div><div class="index-val up">$570–574</div><div class="index-chg up">~+1.0% PM</div></div>
+  <div class="index-item"><div class="index-name">WTI Oil</div><div class="index-val up">~$95–96</div><div class="index-chg up">easing overnight</div></div>
+  <div class="index-item"><div class="index-name">10-yr Yield</div><div class="index-val down">4.601%</div><div class="index-chg down">elevated</div></div>
+  <div class="index-item"><div class="index-name">Gold</div><div class="index-val flat">$4,512</div><div class="index-chg down">-$20 May 21</div></div>
+  <div class="index-item"><div class="index-name">DXY</div><div class="index-val flat">99.11</div><div class="index-chg flat">flat</div></div>
+  <div class="index-item"><div class="index-name">QTUM</div><div class="index-val up">$152+</div><div class="index-chg up">+4.2% May 21</div></div>
+</div>
+
+<!-- THEME-WIDE BREAKOUT BANNER -->
+<div class="theme-banner">
+  🚨 THEME-WIDE BREAKOUT &nbsp;·&nbsp; <span>QUANTUM COMPUTING</span> &nbsp;·&nbsp; $2.013B CHIPS ACT + GOV EQUITY STAKES &nbsp;·&nbsp; QTUM + ILIT + IBM + RGTI + QBTS + INFQ
+</div>
+
+<!-- TOP 3 NAMES -->
+<h2 class="plan">§ TOP 3 NAMES AT OPEN</h2>
+
+<div class="top3-grid">
+  <div class="top3-card high">
+    <div class="top3-rank">#1</div>
+    <div class="top3-ticker up">IBM</div>
+    <div class="top3-theme">QUANTUM · CHIPS ACT FOUNDRY AWARD</div>
+    <div class="metric-row"><span class="metric-label">Catalyst</span><span class="metric-val up">$1B CHIPS Act grant</span></div>
+    <div class="metric-row"><span class="metric-label">AH Move (5/21)</span><span class="metric-val up">+6.2%</span></div>
+    <div class="metric-row"><span class="metric-label">Entry Trigger</span><span class="metric-val">Gap holds; 15-min base above $230</span></div>
+    <div class="metric-row"><span class="metric-label">Stop</span><span class="metric-val">Below May 21 close</span></div>
+    <div class="metric-row"><span class="metric-label">ETF Confirm</span><span class="metric-val cyan">QTUM, SMH, QQQ</span></div>
+    <div class="metric-row"><span class="metric-label">Conviction</span><span class="metric-val conf-high">🟢 HIGH</span></div>
+    <div class="source-link">Source: <a href="https://www.nist.gov/news-events/news/2026/05/department-commerce-announces-letters-intent-9-companies-2-billion" target="_blank">NIST.gov official announcement</a></div>
+  </div>
+
+  <div class="top3-card high">
+    <div class="top3-rank">#2</div>
+    <div class="top3-ticker up">APLD</div>
+    <div class="top3-theme">AI INFRA · BTC MINER → AI PIVOT</div>
+    <div class="metric-row"><span class="metric-label">Catalyst</span><span class="metric-val up">$18.2B AI Campus lease deal</span></div>
+    <div class="metric-row"><span class="metric-label">AH Move (5/21)</span><span class="metric-val up">+16–20%</span></div>
+    <div class="metric-row"><span class="metric-label">Total Backlog</span><span class="metric-val">$31B contracted / $73B incl renewals</span></div>
+    <div class="metric-row"><span class="metric-label">Entry Trigger</span><span class="metric-val">5-min base after open; VWAP pullback</span></div>
+    <div class="metric-row"><span class="metric-label">Stop</span><span class="metric-val">-8–10% from open</span></div>
+    <div class="metric-row"><span class="metric-label">ETF Confirm</span><span class="metric-val cyan">WGMI, FDIG (AI pivot)</span></div>
+    <div class="metric-row"><span class="metric-label">Conviction</span><span class="metric-val conf-high">🟢 HIGH</span></div>
+    <div class="source-link">Source: <a href="https://finance.yahoo.com/sectors/technology/articles/applied-digital-reaches-significant-milestone-201500698.html" target="_blank">APLD 8-K / Yahoo Finance announcement</a></div>
+  </div>
+
+  <div class="top3-card medium">
+    <div class="top3-rank">#3</div>
+    <div class="top3-ticker flat">RGTI</div>
+    <div class="top3-theme">QUANTUM · DIRECT CHIPS ACT RECIPIENT</div>
+    <div class="metric-row"><span class="metric-label">Catalyst</span><span class="metric-val up">$100M CHIPS Act + gov equity stake</span></div>
+    <div class="metric-row"><span class="metric-label">May 21 Move</span><span class="metric-val up">+16.9%</span></div>
+    <div class="metric-row"><span class="metric-label">Entry Trigger</span><span class="metric-val">Wait: consolidation above $16–17; avoid chasing first 15 min</span></div>
+    <div class="metric-row"><span class="metric-label">Stop</span><span class="metric-val">-15% (RGTI is volatile)</span></div>
+    <div class="metric-row"><span class="metric-label">Risk Flag</span><span class="metric-val down">Day 2 fade risk; INFQ blueprint</span></div>
+    <div class="metric-row"><span class="metric-label">ETF Confirm</span><span class="metric-val cyan">QTUM, ILIT</span></div>
+    <div class="metric-row"><span class="metric-label">Conviction</span><span class="metric-val conf-med">🟡 MEDIUM</span></div>
+    <div class="source-link">Source: <a href="https://www.nist.gov/news-events/news/2026/05/department-commerce-announces-letters-intent-9-companies-2-billion" target="_blank">NIST.gov</a> + <a href="https://investors.rigetti.com/news-releases/news-release-details/rigetti-signs-letter-intent-us-government-quantum-computing" target="_blank">Rigetti IR</a></div>
+  </div>
+</div>
+
+<!-- ETF SWEEP -->
+<h2>§ 01 — ETF PRE-MARKET SWEEP</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>ETF</th>
+      <th>Theme</th>
+      <th>PM Move</th>
+      <th>Vol</th>
+      <th>Direction</th>
+      <th>Conviction</th>
+      <th>Notes</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>QTUM</strong></td>
+      <td>Quantum Computing</td>
+      <td class="up">~+3–5%*</td>
+      <td>Elevated</td>
+      <td><span class="tag bg-green">BULLISH</span></td>
+      <td><span class="conf-med">🟡 MEDIUM</span></td>
+      <td>🚨 THEME-WIDE; AUM below $500M threshold</td>
+    </tr>
+    <tr>
+      <td><strong>ILIT</strong></td>
+      <td>Quantum/AI/Emerging</td>
+      <td class="up">~+3–5%*</td>
+      <td>Thin</td>
+      <td><span class="tag bg-green">BULLISH</span></td>
+      <td><span class="conf-low">🔴 LOW</span></td>
+      <td>🚨 THEME-WIDE; THIN ETF — verify liquidity before trading</td>
+    </tr>
+    <tr>
+      <td><strong>SMH</strong></td>
+      <td>Semiconductors</td>
+      <td class="up">~+1.0%</td>
+      <td>Above avg</td>
+      <td><span class="tag bg-green">BULLISH</span></td>
+      <td><span class="conf-med">🟡 MEDIUM</span></td>
+      <td>IBM/NVDA/AMD; +3.8% May 21; below 2% threshold today</td>
+    </tr>
+    <tr>
+      <td><strong>ITA</strong></td>
+      <td>Defense/Aerospace</td>
+      <td class="up">~+0.5%</td>
+      <td>Avg</td>
+      <td><span class="tag bg-green">BULLISH</span></td>
+      <td><span class="conf-low">🔴 LOW</span></td>
+      <td>Iran bid softening as oil eases; +2.27% May 21</td>
+    </tr>
+    <tr>
+      <td><strong>USO / UCO</strong></td>
+      <td>Oil</td>
+      <td class="down">~-0.5 to flat</td>
+      <td>Avg</td>
+      <td><span class="tag bg-red">BEARISH</span></td>
+      <td><span class="conf-low">🔴 LOW</span></td>
+      <td>Oil easing on Iran talks; -1.94% May 21; no directional edge</td>
+    </tr>
+    <tr>
+      <td><strong>QQQ</strong></td>
+      <td>Nasdaq 100</td>
+      <td class="up">~+0.3%</td>
+      <td>Normal</td>
+      <td><span class="tag bg-amber">NEUTRAL</span></td>
+      <td>—</td>
+      <td>Recovery from -0.48% May 21; P/C 1.59 still elevated</td>
+    </tr>
+    <tr>
+      <td><strong>SPY</strong></td>
+      <td>S&P 500</td>
+      <td class="up">~+0.3%</td>
+      <td>Normal</td>
+      <td><span class="tag bg-amber">NEUTRAL</span></td>
+      <td>—</td>
+      <td>Oil relief + quantum halo; only 178/500 names advanced May 21</td>
+    </tr>
+    <tr>
+      <td><strong>IBIT</strong></td>
+      <td>Bitcoin</td>
+      <td class="flat">Flat</td>
+      <td>Normal</td>
+      <td><span class="tag bg-amber">NEUTRAL</span></td>
+      <td>—</td>
+      <td>$43.79 May 21 close; no catalyst</td>
+    </tr>
+    <tr>
+      <td><strong>URA / NLR</strong></td>
+      <td>Uranium/Nuclear</td>
+      <td class="flat">~flat</td>
+      <td>Normal</td>
+      <td><span class="tag bg-amber">NEUTRAL</span></td>
+      <td>—</td>
+      <td>No new nuclear catalyst; URA -3% May 19, bounced +1.78% May 21</td>
+    </tr>
+    <tr>
+      <td><strong>GLD</strong></td>
+      <td>Gold</td>
+      <td class="flat">~flat</td>
+      <td>Normal</td>
+      <td><span class="tag bg-amber">NEUTRAL</span></td>
+      <td>—</td>
+      <td>$4,512; -$20 May 21; rate environment weighing</td>
+    </tr>
+    <tr>
+      <td><strong>TLT</strong></td>
+      <td>Long Bonds</td>
+      <td class="flat">Slight bid</td>
+      <td>Normal</td>
+      <td><span class="tag bg-amber">NEUTRAL</span></td>
+      <td>—</td>
+      <td>$84.15; 10-yr 4.601%; Moody's downgrade still weighing</td>
+    </tr>
+    <tr>
+      <td><strong>COPX</strong></td>
+      <td>Copper Miners</td>
+      <td class="flat">~flat/up</td>
+      <td>Normal</td>
+      <td><span class="tag bg-green">BULLISH</span></td>
+      <td>—</td>
+      <td>+3.7% May 21; pullback zone $79–80 is watch area</td>
+    </tr>
+  </tbody>
+</table>
+<p style="font-size:11px;color:var(--muted);margin-top:6px;">*QTUM/ILIT PM estimates based on May 21 closing trajectory ($152, +4.2%) + IBM AH catalyst. Exact PM quotes unconfirmed — verify at 7 AM ET.</p>
+
+<!-- POLICY / STAKE -->
+<h2 class="policy">§ 02 — 🏛️ POLICY / STAKE / RUMOR CATALYSTS</h2>
+
+<div class="giant-flag">
+  <div class="flag-label">🏛️ MEGA CATALYST — CONFIRMED PRIMARY SOURCE</div>
+  <div class="flag-title">🚨 U.S. Department of Commerce: $2.013B CHIPS Act Quantum Funding + Government Equity Stakes</div>
+  <div class="flag-detail">Announced: May 21, 2026 &nbsp;·&nbsp; Administered by: NIST / DoC &nbsp;·&nbsp; WSJ broke story before official release &nbsp;·&nbsp; <a href="https://www.nist.gov/news-events/news/2026/05/department-commerce-announces-letters-intent-9-companies-2-billion">PRIMARY: nist.gov official release ↗</a></div>
+</div>
+
+<table>
+  <thead><tr><th>Company</th><th>Ticker</th><th>Award</th><th>Type</th><th>May 21 Move</th><th>Status Today</th></tr></thead>
+  <tbody>
+    <tr>
+      <td><strong>IBM</strong></td>
+      <td><span class="up">IBM</span></td>
+      <td><strong class="up">$1,000M</strong></td>
+      <td>Quantum Foundry</td>
+      <td class="up">+6.2% AH</td>
+      <td><span class="tag bg-green">HIGH CONVICTION — carry today</span></td>
+    </tr>
+    <tr>
+      <td><strong>GlobalFoundries</strong></td>
+      <td><span class="up">GFS</span></td>
+      <td><strong>$375M</strong></td>
+      <td>Quantum Foundry</td>
+      <td class="flat">n/a</td>
+      <td><span class="tag bg-amber">WATCH — semi infra play</span></td>
+    </tr>
+    <tr>
+      <td><strong>Rigetti</strong></td>
+      <td><span class="up">RGTI</span></td>
+      <td><strong>$100M</strong></td>
+      <td>Pure-play QC</td>
+      <td class="up">+16.9%</td>
+      <td><span class="tag bg-amber">MEDIUM — Day 2 fade risk</span></td>
+    </tr>
+    <tr>
+      <td><strong>D-Wave Quantum</strong></td>
+      <td><span class="up">QBTS</span></td>
+      <td><strong>$100M</strong></td>
+      <td>Pure-play QC</td>
+      <td class="up">+19.4%</td>
+      <td><span class="tag bg-amber">MEDIUM — Day 2 fade risk</span></td>
+    </tr>
+    <tr>
+      <td><strong>Infleqtion</strong></td>
+      <td><span class="flat">INFQ</span></td>
+      <td><strong>$100M</strong></td>
+      <td>Pure-play QC</td>
+      <td class="flat">+22% PM → closed $14.70 (-fade)</td>
+      <td><span class="tag bg-red">LOW — mostly faded; pred. open $14.73</span></td>
+    </tr>
+    <tr>
+      <td><strong>PsiQuantum</strong></td>
+      <td><span class="muted">Private</span></td>
+      <td><strong>$100M</strong></td>
+      <td>Pure-play QC</td>
+      <td>—</td>
+      <td>—</td>
+    </tr>
+    <tr>
+      <td><strong>Quantinuum</strong></td>
+      <td><span class="muted">Private</span></td>
+      <td><strong>$100M</strong></td>
+      <td>Pure-play QC</td>
+      <td>—</td>
+      <td>—</td>
+    </tr>
+    <tr>
+      <td><strong>Atom Computing</strong></td>
+      <td><span class="muted">Private</span></td>
+      <td><strong>$100M</strong></td>
+      <td>Pure-play QC</td>
+      <td>—</td>
+      <td>—</td>
+    </tr>
+    <tr>
+      <td><strong>Diraq</strong></td>
+      <td><span class="muted">Private</span></td>
+      <td><strong>$38M</strong></td>
+      <td>Pure-play QC</td>
+      <td>—</td>
+      <td>—</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="alert alert-amber">
+  <strong>⚠️ IONQ (IONQ) IS NOT A DIRECT RECIPIENT.</strong> IonQ gained +9.5–12% on May 21 as sector halo only. IonQ is NOT listed in the NIST announcement. Do not treat IONQ as having the same catalyst as RGTI/QBTS/INFQ. Additional IONQ context: SkyWater merger approved by stockholders May 8 (closing Q2-Q3 2026); Q1 revenue $64.7M (+755% YoY); DARPA HARQ program. Strong fundamental story but lower conviction on CHIPS Act theme specifically.
+</div>
+
+<div class="alert alert-purple">
+  <strong>🏛️ GOVERNMENT EQUITY STAKES TRACKER UPDATE:</strong> New additions as of May 21, 2026:<br>
+  • IBM — Quantum foundry ($1B) | RGTI — Quantum ($100M) | QBTS — Quantum ($100M) | INFQ — Quantum ($100M) | GlobalFoundries — Quantum ($375M)<br>
+  Prior stakes intact: Intel (CHIPS Act $5.7B), MP Materials (rare earth), Westinghouse (nuclear, private)
+</div>
+
+<!-- WIRE SERVICE SCOOPS -->
+<h2 class="wire">§ 03 — 📰 WIRE SERVICE SCOOPS (2B)</h2>
+
+<div class="grid-2">
+  <div class="card" style="border-color: var(--orange);">
+    <div class="card-header">
+      <span class="ticker orange">WSJ SCOOP</span>
+      <span class="badge bg-orange">PRIMARY</span>
+    </div>
+    <div class="metric-row"><span class="metric-label">Outlet</span><span class="metric-val">Wall Street Journal (exclusive)</span></div>
+    <div class="metric-row"><span class="metric-label">Published</span><span class="metric-val">May 21, 2026 (before NIST official release)</span></div>
+    <div class="metric-row"><span class="metric-label">Headline</span><span class="metric-val">Trump admin awarding $2B to 9 quantum firms; gov equity stakes</span></div>
+    <div class="metric-row"><span class="metric-label">Tickers</span><span class="metric-val up">IBM, RGTI, QBTS, INFQ, IONQ (halo), GFS</span></div>
+    <div class="metric-row"><span class="metric-label">ETFs</span><span class="metric-val">QTUM, ILIT, SMH</span></div>
+    <div class="metric-row"><span class="metric-label">Paywall status</span><span class="metric-val">WSJ paywall — verified via NIST primary source</span></div>
+    <div class="metric-row"><span class="metric-label">Direction</span><span class="metric-val up">🟢 BULLISH quantum theme</span></div>
+  </div>
+  <div class="card" style="border-color: var(--orange);">
+    <div class="card-header">
+      <span class="ticker orange">REUTERS SCOOP</span>
+      <span class="badge bg-amber">SECONDARY</span>
+    </div>
+    <div class="metric-row"><span class="metric-label">Outlet</span><span class="metric-val">Reuters</span></div>
+    <div class="metric-row"><span class="metric-label">Published</span><span class="metric-val">May 21/22, 2026</span></div>
+    <div class="metric-row"><span class="metric-label">Headline</span><span class="metric-val">Blackstone + CD&R evaluating takeover bids for Magnum Ice Cream (MICC)</span></div>
+    <div class="metric-row"><span class="metric-label">Ticker</span><span class="metric-val up">MICC +11% pre-market</span></div>
+    <div class="metric-row"><span class="metric-label">ETF</span><span class="metric-val">None in master universe</span></div>
+    <div class="metric-row"><span class="metric-label">Direction</span><span class="metric-val up">🟢 BULLISH for MICC (M&A premium)</span></div>
+    <div class="follow-on">Not in Stockbee framework; note for awareness only</div>
+  </div>
+</div>
+
+<div class="alert alert-amber">
+  <strong>⚠️ GEMINI SPACE STATION +22%:</strong> Company disclosed $100M capital injection from Winklevoss Capital Fund. Pre-market +22%. <strong>PRIMARY SOURCE UNCONFIRMED — investigate manually before any action.</strong> Related ETFs: ARKX, UFO (space theme). Do NOT trade without verified primary source.
+</div>
+
+<!-- OPTIONS FLOW -->
+<h2>§ 04 — OPTIONS FLOW (2C)</h2>
+
+<div class="grid-3">
+  <div class="card">
+    <div class="card-header"><span class="ticker">INDEX</span><span class="badge bg-red">BEARISH STRUCT.</span></div>
+    <div class="metric-row"><span class="metric-label">QQQ OI P/C</span><span class="metric-val down">1.59 (elevated)</span></div>
+    <div class="metric-row"><span class="metric-label">SPY</span><span class="metric-val flat">Slight recovery PM</span></div>
+    <div class="metric-row"><span class="metric-label">Note</span><span class="metric-val">P/C is structural (weeks of OI), not daily signal</span></div>
+  </div>
+  <div class="card" style="border-color:var(--green)">
+    <div class="card-header"><span class="ticker up">IBM / QTUM</span><span class="badge bg-green">CONFLUENCE ★★</span></div>
+    <div class="metric-row"><span class="metric-label">IBM</span><span class="metric-val up">CHIPS Act + AH gap = call buyers</span></div>
+    <div class="metric-row"><span class="metric-label">RGTI/QBTS</span><span class="metric-val up">Direct recipients — calls likely accumulating</span></div>
+    <div class="metric-row"><span class="metric-label">Signal</span><span class="metric-val conf-high">FLOW + CATALYST = HIGHEST CONVICTION</span></div>
+  </div>
+  <div class="card">
+    <div class="card-header"><span class="ticker">WATCHLIST</span></div>
+    <div class="metric-row"><span class="metric-label">NVDA</span><span class="metric-val flat">Puts hedges paid; calls at $212–217</span></div>
+    <div class="metric-row"><span class="metric-label">SNDK</span><span class="metric-val up">OI rolling toward $1,700–$1,800</span></div>
+    <div class="metric-row"><span class="metric-label">COIN</span><span class="metric-val up">June 8 catalyst; call buyers AH</span></div>
+    <div class="metric-row"><span class="metric-label">ITA</span><span class="metric-val up">Institutional calls (Iran bid)</span></div>
+  </div>
+</div>
+
+<!-- FOLLOW-THROUGH -->
+<h2>§ 05 — FOLLOW-THROUGH FROM 8 PM SCAN</h2>
+
+<table>
+  <thead><tr><th>Name</th><th>May 21 Close</th><th>AH/PM</th><th>Gap Status</th><th>Volume</th><th>Verdict</th></tr></thead>
+  <tbody>
+    <tr>
+      <td><strong>IBM</strong></td>
+      <td>~$224+</td>
+      <td class="up">+6.2% AH</td>
+      <td class="up">Gap holding — CHIPS Act catalyst real</td>
+      <td>Elevated</td>
+      <td><span class="tag bg-green">🟢 STILL ON — HIGH CONVICTION</span></td>
+    </tr>
+    <tr>
+      <td><strong>APLD</strong></td>
+      <td>Prior close</td>
+      <td class="up">+16–20% AH</td>
+      <td class="up">Gap holding — $18.2B deal confirmed via 8-K</td>
+      <td>Very high</td>
+      <td><span class="tag bg-green">🟢 STILL ON — HIGH CONVICTION</span></td>
+    </tr>
+    <tr>
+      <td><strong>SNDK</strong></td>
+      <td>$1,562.34</td>
+      <td class="flat">AH flat</td>
+      <td class="up">+16.6% day; Citi $2,025 PT intact</td>
+      <td>Heavy</td>
+      <td><span class="tag bg-green">🟢 STILL ON — trail stop $1,490</span></td>
+    </tr>
+    <tr>
+      <td><strong>RL</strong></td>
+      <td>Prior</td>
+      <td class="up">+10.26% AH</td>
+      <td class="up">Beat + guide up confirmed</td>
+      <td>Elevated</td>
+      <td><span class="tag bg-amber">🟡 WATCH — retail breakout day 1</span></td>
+    </tr>
+    <tr>
+      <td><strong>NVDA</strong></td>
+      <td>$219.51</td>
+      <td class="flat">AH flat ($219.50)</td>
+      <td class="flat">Sell-the-news; not at buy zone yet</td>
+      <td>Normal</td>
+      <td><span class="tag bg-amber">🟡 WEAKENING — wait for $212–217</span></td>
+    </tr>
+    <tr>
+      <td><strong>INFQ</strong></td>
+      <td>$14.70</td>
+      <td class="flat">Pred. $14.73 (+0.18%)</td>
+      <td class="down">Most gains faded intraday May 21</td>
+      <td>Dropping</td>
+      <td><span class="tag bg-red">🔴 FADED — low conviction Day 2</span></td>
+    </tr>
+    <tr>
+      <td><strong>INTU</strong></td>
+      <td>Prior</td>
+      <td class="down">-19% AH</td>
+      <td class="down">17% workforce cut; SaaS contagion risk</td>
+      <td>Heavy</td>
+      <td><span class="tag bg-red">🔴 BEARISH — avoid SaaS names at open</span></td>
+    </tr>
+    <tr>
+      <td><strong>BORR</strong></td>
+      <td>Prior</td>
+      <td class="down">-16% AH</td>
+      <td class="down">Revenue miss confirmed</td>
+      <td>Elevated</td>
+      <td><span class="tag bg-red">🔴 AVOID</span></td>
+    </tr>
+  </tbody>
+</table>
+
+<!-- WATCHLIST CHECK -->
+<h2>§ 06 — PERSONAL WATCHLIST</h2>
+
+<table>
+  <thead><tr><th>Ticker</th><th>5/21 Close</th><th>PM Est.</th><th>AH/PM %</th><th>Key Events</th><th>Action</th></tr></thead>
+  <tbody>
+    <tr>
+      <td><strong class="flat">TSLA</strong></td>
+      <td>$417.85</td>
+      <td>~$418–420</td>
+      <td class="flat">~flat</td>
+      <td>FSD China approved; SpaceX IPO filing shadow; breakout >$420 needed</td>
+      <td><span class="tag bg-amber">WATCH — breakout trigger $420</span></td>
+    </tr>
+    <tr>
+      <td><strong class="flat">NVDA</strong></td>
+      <td>$219.51</td>
+      <td>~$219–221</td>
+      <td class="flat">AH flat</td>
+      <td>Earnings beat (EPS $1.87/$1.75E, Rev $81.6B/$79.2E); Baird $500; $80B buyback; SELL-THE-NEWS</td>
+      <td><span class="tag bg-amber">ADD ON DIP — zone $212–217 only</span></td>
+    </tr>
+    <tr>
+      <td><strong class="down">SOFI</strong></td>
+      <td>$15.65</td>
+      <td>~$15.66</td>
+      <td class="flat">~flat</td>
+      <td>40% YTD decline; analyst cuts; PrimaryBid acq; CEO buys not enough</td>
+      <td><span class="tag bg-red">AVOID</span></td>
+    </tr>
+    <tr>
+      <td><strong class="up">AMD</strong></td>
+      <td>$449.59</td>
+      <td>~$448–450</td>
+      <td class="flat">~flat</td>
+      <td>2nm EPYC Venice in production; $10B Taiwan investment; BofA top AI chip pick</td>
+      <td><span class="tag bg-green">ADD ON PULLBACK — zone $440–445</span></td>
+    </tr>
+    <tr>
+      <td><strong class="flat">PLTR</strong></td>
+      <td>~$138.28</td>
+      <td>~$138</td>
+      <td class="flat">~flat</td>
+      <td>Consolidating; no material catalyst today</td>
+      <td><span class="tag bg-amber">NEUTRAL — watch for base break</span></td>
+    </tr>
+    <tr>
+      <td><strong class="up">MARA</strong></td>
+      <td>$13.55</td>
+      <td>~$13.50</td>
+      <td class="flat">+0.07% AH</td>
+      <td>Long Ridge Energy $1.5B acq; AI infra pivot; MS Underweight $7 PT is risk</td>
+      <td><span class="tag bg-amber">HOLD SMALL — stop $12.50</span></td>
+    </tr>
+    <tr>
+      <td><strong class="up">COIN</strong></td>
+      <td>$193.56</td>
+      <td>~$194</td>
+      <td class="up">+0.26% AH</td>
+      <td>Perpetual equity index futures launch June 8 — first US regulated exchange</td>
+      <td><span class="tag bg-green">WATCH — June 8 catalyst; buy June calls</span></td>
+    </tr>
+    <tr>
+      <td><strong class="up">SNDK</strong></td>
+      <td>$1,562.34</td>
+      <td>~$1,565+</td>
+      <td class="flat">AH flat</td>
+      <td>Citi PT $2,025 (Buy); NAND AI supercycle; Rev +251% YoY, GM 78.4%</td>
+      <td><span class="tag bg-green">HOLD — trail stop $1,490</span></td>
+    </tr>
+    <tr>
+      <td><strong class="flat">META</strong></td>
+      <td>$597.16</td>
+      <td>~$597</td>
+      <td class="flat">~flat</td>
+      <td>Low volume (2.94M vs 12.86M avg); AI reorg in progress</td>
+      <td><span class="tag bg-amber">NEUTRAL — monitor volume normalization</span></td>
+    </tr>
+    <tr>
+      <td><strong class="up">AMZN</strong></td>
+      <td>~$268.87</td>
+      <td>~$269</td>
+      <td class="flat">~flat</td>
+      <td>Consolidating near 52-wk high $278.56; Q1 EPS $2.78 ($1.63E beat); AWS +28% YoY</td>
+      <td><span class="tag bg-green">NEAR HIGHS — hold / buy on dip to $265</span></td>
+    </tr>
+  </tbody>
+</table>
+
+<!-- MACRO SCHEDULE -->
+<h2 class="risk">§ 07 — TODAY'S MACRO SCHEDULE</h2>
+
+<table class="schedule-row">
+  <thead><tr><th>Time ET</th><th>Event</th><th>Prior / Est</th><th>Impact</th></tr></thead>
+  <tbody>
+    <tr>
+      <td><strong>Pre-mkt (known)</strong></td>
+      <td>Weekly Jobless Claims (May 21 release)</td>
+      <td>211K vs 205K est — slight miss</td>
+      <td class="flat">Minor negative; still healthy labor market</td>
+    </tr>
+    <tr>
+      <td><strong>Pre-mkt (known)</strong></td>
+      <td>Flash US PMI — Mfg + Services (May 21 release)</td>
+      <td>"Economy ready to close book on uncertainties"</td>
+      <td class="up">Positive framing → risk-on backdrop</td>
+    </tr>
+    <tr>
+      <td><strong>10:00 AM</strong></td>
+      <td>Michigan Consumer Sentiment — Final (May)</td>
+      <td>Prelim ~57 area</td>
+      <td class="flat">RISK: If weak → risk-off hit to all longs at 10 AM</td>
+    </tr>
+    <tr>
+      <td><strong>12:45 PM</strong></td>
+      <td>NY Fed Staff Nowcast</td>
+      <td>—</td>
+      <td class="flat">Low immediate market impact</td>
+    </tr>
+    <tr>
+      <td><strong>All day</strong></td>
+      <td>Iran nuclear talks</td>
+      <td>Oil easing overnight = talks progressing</td>
+      <td class="up">De-escalation = oil stays down, equities bid</td>
+    </tr>
+    <tr>
+      <td><strong>Fed Speakers</strong></td>
+      <td>None scheduled</td>
+      <td>Kevin Warsh era — quiet Friday</td>
+      <td class="flat">No Fed risk today</td>
+    </tr>
+    <tr>
+      <td><strong>Background</strong></td>
+      <td>Moody's Aaa→Aa1 downgrade (May 16)</td>
+      <td>30-yr yield spiked >5%</td>
+      <td class="down">Still weighing on bonds/rate-sensitives</td>
+    </tr>
+  </tbody>
+</table>
+
+<!-- FULL TRADE PLAN -->
+<h2 class="plan">§ 08 — FULL MORNING TRADE PLAN</h2>
+
+<div class="grid-2">
+  <div class="card">
+    <h3 class="up">🟢 Top Theme Play</h3>
+    <div class="alert alert-green" style="margin:0 0 10px;">
+      <strong>QUANTUM COMPUTING — CHIPS ACT</strong><br>
+      Best ETF: <strong>QTUM</strong> (quantum pure play)<br>
+      Best names: IBM (large cap, $1B award), RGTI (pure play small cap), QBTS (direct recipient)<br>
+      Institutional validation: Government equity stakes = strongest sector endorsement possible
+    </div>
+    <div class="metric-row"><span class="metric-label">Theme status</span><span class="metric-val up">🚨 THEME-WIDE BREAKOUT</span></div>
+    <div class="metric-row"><span class="metric-label">ETF play</span><span class="metric-val">QTUM — buy above May 21 close</span></div>
+    <div class="metric-row"><span class="metric-label">AI Infra #2</span><span class="metric-val">APLD — $31B backlog = secular growth story</span></div>
+  </div>
+  <div class="card">
+    <h3 class="down">🔴 Avoid List</h3>
+    <div class="metric-row"><span class="metric-label">INTU</span><span class="metric-val down">-19% AH; SaaS contagion at open</span></div>
+    <div class="metric-row"><span class="metric-label">NVDA</span><span class="metric-val flat">Not at buy zone ($212–217); wait</span></div>
+    <div class="metric-row"><span class="metric-label">SOFI</span><span class="metric-val down">40% YTD decline; no edge</span></div>
+    <div class="metric-row"><span class="metric-label">USO/UCO</span><span class="metric-val flat">No directional edge; Iran binary unclear</span></div>
+    <div class="metric-row"><span class="metric-label">INFQ</span><span class="metric-val down">Faded Day 1; low Day 2 conviction</span></div>
+    <div class="metric-row"><span class="metric-label">BORR</span><span class="metric-val down">Revenue miss; -16% AH</span></div>
+  </div>
+</div>
+
+<!-- RISK EVENTS -->
+<div class="grid-3">
+  <div class="alert alert-amber">
+    <strong>⚠️ 10:00 AM — Michigan Sentiment</strong><br>
+    If soft print → risk-off hit across all quantum/AI names. Have defined stops before this release. Gap positions at risk if reading prints weak.
+  </div>
+  <div class="alert alert-red">
+    <strong>⚠️ Iran Binary (ongoing)</strong><br>
+    Overnight progress = positive signal, but Iran is still active risk. Any escalation headline → oil spike → equity futures drop → quantum theme suffers as risk-off dominates.
+  </div>
+  <div class="alert alert-orange">
+    <strong>⚠️ Quantum Day 2 Fade</strong><br>
+    INFQ gave back nearly ALL May 21 gains by close ($16 high → $14.70 close). RGTI and QBTS may repeat. Manage size, use stops, do not chase first 15 minutes.
+  </div>
+</div>
+
+<!-- ASSUMPTION AUDIT -->
+<h2>§ 09 — ASSUMPTION AUDIT</h2>
+
+<table>
+  <thead><tr><th>Assumption</th><th>Confidence</th><th>What Breaks It</th></tr></thead>
+  <tbody>
+    <tr><td>NIST primary source verified for quantum announcement</td><td class="conf-high">HIGH</td><td>Confirmed directly at nist.gov — N/A</td></tr>
+    <tr><td>IBM +6.2% AH carries into May 22 pre-market</td><td class="conf-high">HIGH</td><td>Sell-the-news pattern for IBM specifically; verify at 7 AM</td></tr>
+    <tr><td>APLD +16–20% AH is clean — deal confirmed via 8-K</td><td class="conf-high">HIGH</td><td>Partner non-investment-grade, or terms disputed — both unlikely given 15-yr take-or-pay structure</td></tr>
+    <tr><td>INFQ Day 2 conviction low (predicted open $14.73)</td><td class="conf-med">MEDIUM</td><td>If IBM AH drives renewed quantum buying, INFQ could spike again; monitor first 30 min</td></tr>
+    <tr><td>RGTI/QBTS actual May 21 closing prices (+16.9%/+19.4%)</td><td class="conf-med">MEDIUM</td><td>These may be intraday highs not closing prices; verify before sizing Day 2 trade</td></tr>
+    <tr><td>QTUM pre-market >2% (estimated, not confirmed)</td><td class="conf-med">MEDIUM</td><td>ETF pre-market may lag individual names; check at 7 AM ET directly</td></tr>
+    <tr><td>SMH pre-market ~+1.0%</td><td class="conf-med">MEDIUM</td><td>Data from 5:26 AM ($570.48); later quotes showed $573.66 — different timestamps</td></tr>
+    <tr><td>Iran overnight: oil easing, talks continue</td><td class="conf-med">MEDIUM</td><td>Polymarket source; single data point; could reverse on any headline before open</td></tr>
+    <tr><td>Jobless claims 211K already released (Thursday release)</td><td class="conf-med">MEDIUM</td><td>AH scan listed this for May 22 — possible timing confusion; if released today, watch at 8:30 AM</td></tr>
+    <tr><td>Gemini Space Station +22% has confirmed primary source</td><td class="conf-low">LOW</td><td>PRIMARY SOURCE UNCONFIRMED — do not trade; investigate manually before open</td></tr>
+    <tr><td>No Fed speakers today</td><td class="conf-high">HIGH</td><td>Kevin Warsh era; AH scan confirmed; very low risk of surprise</td></tr>
+  </tbody>
+</table>
+
+<!-- FOOTER -->
+<div class="footer">
+  <strong>Pre-Market Catalyst Scan — May 22, 2026</strong> &nbsp;·&nbsp; v7.2 HEAVY+NAMED &nbsp;·&nbsp; Generated pre-market<br>
+  Primary Sources: <a href="https://www.nist.gov/news-events/news/2026/05/department-commerce-announces-letters-intent-9-companies-2-billion">NIST.gov (quantum CHIPS Act)</a> &nbsp;·&nbsp;
+  <a href="https://investors.rigetti.com/news-releases/news-release-details/rigetti-signs-letter-intent-us-government-quantum-computing">Rigetti IR</a> &nbsp;·&nbsp;
+  <a href="https://www.dwavequantum.com/company/newsroom/press-release/d-wave-and-department-of-commerce-sign-letter-of-intent-for-100-million-in-chips-and-science-act-funding/">D-Wave IR</a> &nbsp;·&nbsp;
+  <a href="https://finance.yahoo.com/sectors/technology/articles/applied-digital-reaches-significant-milestone-201500698.html">APLD 8-K</a> &nbsp;·&nbsp;
+  After-Hours-Scan-2026-05-21 (local)<br>
+  Aggregators used for discovery (not citation): Benzinga, CNBC, StocksToTrade, ZeroHedge, MotleyFool, TipRanks<br>
+  <br>
+  <span class="up">🔗 Full report: https://nkuy36.github.io/trading-dashboards/premarket-catalyst-2026-05-22.html</span>
+</div>
+
+</body>
+</html>
