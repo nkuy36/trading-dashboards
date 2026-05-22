@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>After-Hours Scan — May 22, 2026</title>
+<style>
+  :root {
+    --bg: #0d0f14;
+    --bg2: #13161e;
+    --bg3: #1a1d28;
+    --border: #2a2d3a;
+    --text: #e2e4ec;
+    --muted: #6b7094;
+    --green: #22c55e;
+    --red: #ef4444;
+    --yellow: #f59e0b;
+    --blue: #3b82f6;
+    --purple: #a855f7;
+    --cyan: #06b6d4;
+    --orange: #f97316;
+    --accent: #6366f1;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    font-size: 14px;
+    line-height: 1.6;
+    padding: 0 0 60px;
+  }
+  .header {
+    background: linear-gradient(135deg, #0f1520 0%, #1a1d2e 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 24px 32px 20px;
+  }
+  .header-top { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+  .header h1 { font-size: 22px; font-weight: 700; color: #fff; }
+  .header h1 span { color: var(--accent); }
+  .badge { background: var(--bg3); border: 1px solid var(--border); border-radius: 6px; padding: 4px 12px; font-size: 12px; color: var(--muted); }
+  .badge.live { border-color: var(--green); color: var(--green); }
+  .badge.holiday { border-color: var(--yellow); color: var(--yellow); }
+  .market-bar {
+    margin-top: 16px;
+    display: flex; gap: 24px; flex-wrap: wrap;
+  }
+  .market-pill {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 16px;
+    display: flex; flex-direction: column; gap: 2px;
+    min-width: 110px;
+  }
+  .market-pill .label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
+  .market-pill .val { font-size: 16px; font-weight: 700; }
+  .market-pill .chg { font-size: 12px; }
+  .up { color: var(--green); }
+  .down { color: var(--red); }
+  .flat { color: var(--muted); }
+  .ath { color: var(--yellow); }
+
+  .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+  .section {
+    margin: 28px 0 0;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  .section-header {
+    display: flex; align-items: center; gap: 12px;
+    background: var(--bg3);
+    border-bottom: 1px solid var(--border);
+    padding: 14px 20px;
+  }
+  .section-header .step {
+    background: var(--accent);
+    color: #fff;
+    border-radius: 50%;
+    width: 26px; height: 26px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 700; flex-shrink: 0;
+  }
+  .section-header h2 { font-size: 15px; font-weight: 600; color: #fff; }
+  .section-body { padding: 20px; }
+
+  table { width: 100%; border-collapse: collapse; }
+  th {
+    text-align: left; padding: 9px 12px;
+    background: var(--bg3);
+    color: var(--muted); font-size: 11px;
+    text-transform: uppercase; letter-spacing: 0.05em;
+    border-bottom: 1px solid var(--border);
+  }
+  td { padding: 10px 12px; border-bottom: 1px solid var(--border); font-size: 13px; vertical-align: middle; }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: rgba(255,255,255,0.02); }
+  .ticker { font-weight: 700; font-family: 'Courier New', monospace; color: var(--cyan); font-size: 13px; }
+  .close-price { font-weight: 600; }
+  .event-tag { font-size: 11px; color: var(--muted); }
+
+  .narrative-box {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px 16px;
+    margin-top: 16px;
+  }
+  .narrative-box h3 { font-size: 13px; font-weight: 600; margin-bottom: 8px; color: #fff; }
+  .narrative-box p { font-size: 13px; color: var(--text); line-height: 1.7; }
+  .narrative-box ul { padding-left: 16px; }
+  .narrative-box ul li { font-size: 13px; margin-bottom: 4px; line-height: 1.6; }
+
+  .theme-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 14px; }
+  .theme-card {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 16px;
+  }
+  .theme-card .theme-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+  .theme-card .theme-name { font-size: 12px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; }
+  .theme-card .theme-dir {
+    font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 4px;
+  }
+  .theme-dir.bull { background: rgba(34,197,94,0.15); color: var(--green); }
+  .theme-dir.bear { background: rgba(239,68,68,0.15); color: var(--red); }
+  .theme-dir.mixed { background: rgba(245,158,11,0.15); color: var(--yellow); }
+  .theme-dir.flat { background: rgba(107,112,148,0.15); color: var(--muted); }
+  .etf-row { display: flex; justify-content: space-between; align-items: center; padding: 5px 0; border-bottom: 1px solid rgba(255,255,255,0.04); }
+  .etf-row:last-child { border-bottom: none; }
+  .etf-ticker { font-family: monospace; font-weight: 700; font-size: 13px; color: var(--cyan); }
+  .etf-price { font-size: 13px; color: var(--text); }
+  .theme-setup { margin-top: 10px; font-size: 12px; color: var(--muted); line-height: 1.5; }
+  .theme-setup strong { color: var(--text); }
+
+  .flow-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  @media (max-width: 640px) { .flow-grid { grid-template-columns: 1fr; } }
+  .flow-card {
+    background: var(--bg3); border: 1px solid var(--border); border-radius: 8px; padding: 14px;
+  }
+  .flow-card h4 { font-size: 12px; font-weight: 600; color: var(--muted); text-transform: uppercase; margin-bottom: 10px; }
+  .flow-item { display: flex; justify-content: space-between; align-items: center; padding: 5px 0; border-bottom: 1px solid rgba(255,255,255,0.04); font-size: 12px; }
+  .flow-item:last-child { border-bottom: none; }
+  .divergence-alert {
+    background: rgba(245,158,11,0.08);
+    border: 1px solid rgba(245,158,11,0.25);
+    border-radius: 8px;
+    padding: 12px 14px;
+    margin-top: 10px;
+    font-size: 12px;
+    color: var(--text);
+  }
+  .divergence-alert strong { color: var(--yellow); }
+
+  .macro-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  @media (max-width: 640px) { .macro-grid { grid-template-columns: 1fr; } }
+  .macro-card {
+    background: var(--bg3); border: 1px solid var(--border); border-radius: 8px; padding: 14px;
+  }
+  .macro-card h4 { font-size: 12px; font-weight: 600; color: var(--muted); text-transform: uppercase; margin-bottom: 10px; }
+  .macro-row { display: flex; justify-content: space-between; padding: 5px 0; border-bottom: 1px solid rgba(255,255,255,0.04); font-size: 12px; }
+  .macro-row:last-child { border-bottom: none; }
+
+  .positions-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  @media (max-width: 640px) { .positions-grid { grid-template-columns: 1fr; } }
+  .pos-card {
+    background: var(--bg3); border: 1px solid var(--border); border-radius: 8px; padding: 14px;
+  }
+  .pos-card h4 { font-size: 13px; font-weight: 700; color: var(--cyan); font-family: monospace; margin-bottom: 8px; }
+  .pos-row { font-size: 12px; margin-bottom: 4px; color: var(--text); }
+  .pos-row span { color: var(--muted); }
+  .risk-badge { font-size: 10px; font-weight: 700; padding: 1px 6px; border-radius: 3px; margin-left: 6px; }
+  .risk-low { background: rgba(34,197,94,0.15); color: var(--green); }
+  .risk-med { background: rgba(245,158,11,0.15); color: var(--yellow); }
+  .risk-high { background: rgba(239,68,68,0.15); color: var(--red); }
+
+  .audit-table { width: 100%; border-collapse: collapse; }
+  .audit-table th { background: var(--bg3); padding: 8px 12px; text-align: left; font-size: 11px; color: var(--muted); text-transform: uppercase; border-bottom: 1px solid var(--border); }
+  .audit-table td { padding: 9px 12px; border-bottom: 1px solid var(--border); font-size: 12px; vertical-align: top; }
+  .audit-table tr:last-child td { border-bottom: none; }
+  .audit-table .assumption { color: var(--text); font-weight: 500; }
+  .audit-table .risk { color: var(--muted); }
+
+  .edge-box {
+    background: linear-gradient(135deg, rgba(99,102,241,0.1), rgba(168,85,247,0.08));
+    border: 1px solid rgba(99,102,241,0.3);
+    border-radius: 10px;
+    padding: 18px 20px;
+    margin-top: 28px;
+  }
+  .edge-box h3 { font-size: 14px; font-weight: 700; color: var(--accent); margin-bottom: 10px; }
+  .edge-box p { font-size: 13px; line-height: 1.7; }
+  .edge-score { display: inline-flex; align-items: center; gap: 8px; margin-bottom: 12px; }
+  .edge-dot { width: 12px; height: 12px; border-radius: 50%; background: var(--yellow); }
+  .edge-label { font-size: 14px; font-weight: 700; color: var(--yellow); }
+
+  .macro-alert {
+    background: rgba(245,158,11,0.06);
+    border: 1px solid rgba(245,158,11,0.2);
+    border-radius: 8px;
+    padding: 12px 16px;
+    margin-bottom: 14px;
+    font-size: 13px;
+  }
+  .macro-alert strong { color: var(--yellow); }
+
+  .section-divider { margin: 6px 0; border: none; border-top: 1px solid var(--border); }
+
+  .earnings-card {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px 16px;
+    margin-bottom: 12px;
+  }
+  .earnings-card .co-name { font-size: 14px; font-weight: 700; color: #fff; margin-bottom: 4px; }
+  .earnings-card .meta { font-size: 11px; color: var(--muted); margin-bottom: 10px; }
+  .earnings-card .est-row { display: flex; gap: 20px; flex-wrap: wrap; }
+  .earnings-card .est-item { font-size: 12px; }
+  .earnings-card .est-item .label { color: var(--muted); font-size: 11px; }
+
+  .holiday-banner {
+    background: rgba(245,158,11,0.08);
+    border: 1px solid rgba(245,158,11,0.25);
+    border-radius: 8px;
+    padding: 12px 16px;
+    margin-bottom: 16px;
+    font-size: 13px;
+    color: var(--yellow);
+    display: flex; align-items: center; gap: 8px;
+  }
+
+  footer {
+    text-align: center;
+    padding: 40px 20px 20px;
+    font-size: 11px;
+    color: var(--muted);
+    border-top: 1px solid var(--border);
+    margin-top: 40px;
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-top">
+    <h1>🌙 After-Hours Scan — <span>May 22, 2026</span></h1>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;">
+      <span class="badge live">Post-Close</span>
+      <span class="badge holiday">⚑ Memorial Day Weekend</span>
+      <span class="badge">Next Session: Tue May 26</span>
+    </div>
+  </div>
+  <div class="market-bar">
+    <div class="market-pill">
+      <span class="label">Dow Jones</span>
+      <span class="val ath">50,723.95</span>
+      <span class="chg up">+0.87% ★ ATH</span>
+    </div>
+    <div class="market-pill">
+      <span class="label">SPY</span>
+      <span class="val">$745.64</span>
+      <span class="chg up">+0.39%</span>
+    </div>
+    <div class="market-pill">
+      <span class="label">QQQ</span>
+      <span class="val">$717.54</span>
+      <span class="chg up">+0.42%</span>
+    </div>
+    <div class="market-pill">
+      <span class="label">VIX</span>
+      <span class="val">16.76</span>
+      <span class="chg flat">Fear/Greed: 61</span>
+    </div>
+    <div class="market-pill">
+      <span class="label">BTC</span>
+      <span class="val">$77,447</span>
+      <span class="chg down">-0.3% 24hr</span>
+    </div>
+    <div class="market-pill">
+      <span class="label">Gold</span>
+      <span class="val">~$4,500</span>
+      <span class="chg down">-0.76%</span>
+    </div>
+    <div class="market-pill">
+      <span class="label">WTI Oil</span>
+      <span class="val">~$97–98</span>
+      <span class="chg up">+0.67%</span>
+    </div>
+  </div>
+  <div style="margin-top:14px;padding:10px 14px;background:var(--bg3);border:1px solid var(--border);border-radius:8px;font-size:12px;color:var(--muted);max-width:800px;">
+    <strong style="color:var(--text);">Macro:</strong> Dow hit ALL-TIME HIGH 50,723 (+294 pts). US-Iran war talks signaling progress (Rubio: "good signs") but uranium stockpile and Strait of Hormuz tolls remain unresolved. Oil elevated ($97-104). Gold at $4,500. Health Care +1.19%, Tech +1.02% led S&P sectors. Merck +5.34%, Caterpillar +2.71%, Salesforce +2.05% drove Dow.
+  </div>
+</div>
+
+<div class="container">
+
+<!-- STEP 1: WATCHLIST -->
+<div class="section">
+  <div class="section-header">
+    <div class="step">1</div>
+    <h2>WATCHLIST POST-CLOSE</h2>
+  </div>
+  <div class="section-body">
+    <table>
+      <thead>
+        <tr>
+          <th>Ticker</th>
+          <th>Close</th>
+          <th>Day %</th>
+          <th>AH Price</th>
+          <th>AH %</th>
+          <th>Key Event / Note</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="ticker">TSLA</td>
+          <td class="close-price">$426.01</td>
+          <td class="up">+1.95%</td>
+          <td>$424.91</td>
+          <td class="down">-0.26%</td>
+          <td class="event-tag">FSD expansion → Lithuania (2nd EU); Norway record Q2 sales</td>
+        </tr>
+        <tr>
+          <td class="ticker">NVDA</td>
+          <td class="close-price">$215.33</td>
+          <td class="down">-1.90%</td>
+          <td>$215.00</td>
+          <td class="down">-0.15%</td>
+          <td class="event-tag">4th post-earnings slide; support zone $212–217; $91B Q2 guide</td>
+        </tr>
+        <tr>
+          <td class="ticker">SOFI</td>
+          <td class="close-price">$15.62</td>
+          <td class="down">-0.19%</td>
+          <td>$15.61</td>
+          <td class="down">-0.06%</td>
+          <td class="event-tag">Quiet; post-Q1 miss overhang (-13% guidance shock May 10)</td>
+        </tr>
+        <tr>
+          <td class="ticker">AMD</td>
+          <td class="close-price">$467.51</td>
+          <td class="up" style="font-weight:700;">+3.99%</td>
+          <td>$466.57</td>
+          <td class="down">-0.20%</td>
+          <td class="event-tag">BofA PT $450→$500; 2nm EPYC Venice ramp; server market share gains</td>
+        </tr>
+        <tr>
+          <td class="ticker">PLTR</td>
+          <td class="close-price">$136.88</td>
+          <td class="down">-0.39%</td>
+          <td>$136.40</td>
+          <td class="down">-0.35%</td>
+          <td class="event-tag">Range-bound; no fresh catalyst</td>
+        </tr>
+        <tr>
+          <td class="ticker">MARA</td>
+          <td class="close-price">$13.81</td>
+          <td class="up">+1.92%</td>
+          <td>$13.83</td>
+          <td class="up">+0.14%</td>
+          <td class="event-tag">Riding Dow ATH; AI infra pivot (Long Ridge $1.5B acq) in place</td>
+        </tr>
+        <tr>
+          <td class="ticker">COIN</td>
+          <td class="close-price">$184.99</td>
+          <td class="down" style="font-weight:700;">-4.43%</td>
+          <td>$185.02</td>
+          <td class="up">+0.02%</td>
+          <td class="event-tag">Crypto selloff; BTC $77.4K; Q1 miss + 14% layoffs in context</td>
+        </tr>
+        <tr>
+          <td class="ticker">SNDK</td>
+          <td class="close-price">$1,478.69</td>
+          <td class="down" style="font-weight:700;">-4.12%</td>
+          <td>$1,478.00</td>
+          <td class="down">-0.05%</td>
+          <td class="event-tag">Profit-taking after Citi $2,025 raise; NAND oversupply fears</td>
+        </tr>
+        <tr>
+          <td class="ticker">META</td>
+          <td class="close-price">$610.26</td>
+          <td class="up">+0.47%</td>
+          <td>$609.90</td>
+          <td class="down">-0.06%</td>
+          <td class="event-tag">Quiet drift; AI reorg backdrop</td>
+        </tr>
+        <tr>
+          <td class="ticker">AMZN</td>
+          <td class="close-price">$266.32</td>
+          <td class="down">-0.80%</td>
+          <td>$266.59</td>
+          <td class="up">+0.10%</td>
+          <td class="event-tag">Light selling; no fresh news; consolidating</td>
+        </tr>
+        <tr>
+          <td class="ticker">SPY</td>
+          <td class="close-price">$745.64</td>
+          <td class="up">+0.39%</td>
+          <td>$744.94</td>
+          <td class="down">-0.09%</td>
+          <td class="event-tag">Near ATH range; quiet AH</td>
+        </tr>
+        <tr>
+          <td class="ticker">QQQ</td>
+          <td class="close-price">$717.54</td>
+          <td class="up">+0.42%</td>
+          <td>$716.72</td>
+          <td class="down">-0.11%</td>
+          <td class="event-tag">OI P/C 1.59 — institutional hedge tilt</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="narrative-box" style="margin-top:16px;border-color:rgba(34,197,94,0.25);">
+      <h3 style="color:var(--green);">AMD +4% — 2nm AI Catalyst</h3>
+      <p>Bank of America raised PT $450 → <strong>$500</strong> today, citing $1.7T AI data-center systems market by 2030. Root catalyst: 2nm EPYC "Venice" CPU ramp at TSMC — first HPC product on that node, delivering better performance/watt for AI/cloud workloads. Q1 (May 5) showed FCF tripling YoY. Server CPU market share growing vs Intel. Mizuho, Evercore ISI, Melius all in $515–579 band. <strong>Momentum intact into holiday weekend.</strong></p>
+    </div>
+    <div class="narrative-box" style="margin-top:10px;border-color:rgba(239,68,68,0.25);">
+      <h3 style="color:var(--red);">COIN -4.4% — Crypto Down Day</h3>
+      <p>Broad crypto selloff: BTC at $77,447 (-0.3%), down ~$34K from 1-year ago. COIN still carrying Q1 earnings miss, 14% AI-focused layoffs, and service outage context from mid-May. Perpetual equity index futures launch <strong>June 8</strong> = next positive catalyst. Re-entry watch only after BTC reclaims $80K.</p>
+    </div>
+    <div class="narrative-box" style="margin-top:10px;border-color:rgba(239,68,68,0.2);">
+      <h3 style="color:var(--red);">SNDK -4.1% — Post-Spike Profit-Taking</h3>
+      <p>SNDK surged +16.6% yesterday on Citi PT raise to $2,025. Today = profit-taking + NAND oversupply narrative (Micron CapEx expansion). Consensus analyst PT ~$1,460 vs current $1,479 — roughly consensus-fair. <strong>Needs next earnings catalyst to re-rate to $2,025.</strong> Bernstein PT $1,700 (May 4). 2-sided risk now.</p>
+    </div>
+    <div class="narrative-box" style="margin-top:10px;border-color:rgba(34,197,94,0.2);">
+      <h3 style="color:var(--green);">NVDA — Accumulation Window Open?</h3>
+      <p>4th consecutive post-earnings slide despite blowout results (EPS $1.87 vs $1.75e, Rev $81.6B +85% YoY, Q2 guide $91B). "Sell the news" pattern. Today: $215.33 close, $215.00 AH. Support zone: <strong>$212–217</strong>. Consensus: Strong Buy, avg PT $294. Baird raised to $500, BofA top AI pick. If support holds Tuesday, add small position.</p>
+    </div>
+  </div>
+</div>
+
+<!-- STEP 2: ETF THEMES -->
+<div class="section">
+  <div class="section-header">
+    <div class="step">2</div>
+    <h2>ETF THEME RECAP</h2>
+  </div>
+  <div class="section-body">
+    <div class="theme-grid">
+
+      <div class="theme-card">
+        <div class="theme-header">
+          <span class="theme-name">Tech & AI</span>
+          <span class="theme-dir bull">BULLISH</span>
+        </div>
+        <div class="etf-row"><span class="etf-ticker">SMH</span><span class="etf-price">$576.32</span><span class="up">+1.49%</span></div>
+        <div class="etf-row"><span class="etf-ticker">XLK</span><span class="etf-price">Sector</span><span class="up">+1.02%</span></div>
+        <div class="etf-row"><span class="etf-ticker">IBIT</span><span class="etf-price">$42.96</span><span class="down">-2.36%</span></div>
+        <div class="theme-setup"><strong>Setup:</strong> SMH continuation if AMD holds $460. IBIT/crypto lag = avoid until BTC $80K. Best play: <span style="color:var(--cyan);">SMH calls on Tuesday dip ~$572</span>.</div>
+      </div>
+
+      <div class="theme-card">
+        <div class="theme-header">
+          <span class="theme-name">Commodities</span>
+          <span class="theme-dir mixed">MIXED</span>
+        </div>
+        <div class="etf-row"><span class="etf-ticker">GLD</span><span class="etf-price">$413.82</span><span class="down">-0.76%</span></div>
+        <div class="etf-row"><span class="etf-ticker">SLV</span><span class="etf-price">~$68.50</span><span class="down">~-1.1%</span></div>
+        <div class="etf-row"><span class="etf-ticker">UCO</span><span class="etf-price">$47.24</span><span class="down">-1.93%</span></div>
+        <div class="etf-row"><span class="etf-ticker">COPX</span><span class="etf-price">~$82.75</span><span class="flat">flat</span></div>
+        <div class="theme-setup"><strong>Setup:</strong> GLD buyable dip on Iran deal uncertainty. Oil ceiling from deal progress. <span style="color:var(--cyan);">Best play: GLD as 3-day weekend hedge.</span></div>
+      </div>
+
+      <div class="theme-card">
+        <div class="theme-header">
+          <span class="theme-name">Defense</span>
+          <span class="theme-dir bull">BULLISH</span>
+        </div>
+        <div class="etf-row"><span class="etf-ticker">ITA</span><span class="etf-price">$225.21</span><span class="up">+0.92%</span></div>
+        <div class="theme-setup"><strong>Setup:</strong> Quiet strength. Iran deal keeps defense demand visible. Continuation on any dip to $223. JETS, ARKX skipped (flat).</div>
+      </div>
+
+      <div class="theme-card">
+        <div class="theme-header">
+          <span class="theme-name">Macro (Bonds/Dollar)</span>
+          <span class="theme-dir bull">RISK-ON</span>
+        </div>
+        <div class="etf-row"><span class="etf-ticker">TLT</span><span class="etf-price">$84.68</span><span class="up">+0.55%</span></div>
+        <div class="etf-row"><span class="etf-ticker">UUP</span><span class="etf-price">$27.77</span><span class="up">+0.14%</span></div>
+        <div class="theme-setup"><strong>TLT signal:</strong> Bonds firming = market pricing in some inflation reduction from potential oil-price peace dividend. <span style="color:var(--cyan);">TLT entry ~$84.50 if Consumer Confidence soft Tuesday.</span> Dollar flat = neutral.</div>
+      </div>
+
+    </div>
+    <p style="font-size:11px;color:var(--muted);margin-top:12px;">Skipped (flat/uneventful): TAN, ICLN, GRID, PAVE, BOTZ, QTUM, JETS, ARKX, CIBR, KBE, SLX, REMX, IBAT, ICOP, FNGU, ILIT, LIT, URA, BNO, USO</p>
+  </div>
+</div>
+
+<!-- STEP 3: OPTIONS FLOW -->
+<div class="section">
+  <div class="section-header">
+    <div class="step">3</div>
+    <h2>OPTIONS FLOW SUMMARY</h2>
+  </div>
+  <div class="section-body">
+    <div class="flow-grid">
+      <div class="flow-card">
+        <h4>A) Index Positioning</h4>
+        <div class="flow-item"><span>VIX Close</span><span style="color:var(--green);font-weight:700;">16.76 (Complacent)</span></div>
+        <div class="flow-item"><span>Fear & Greed</span><span style="color:var(--yellow);">61 — Greed</span></div>
+        <div class="flow-item"><span>QQQ OI Put/Call</span><span style="color:var(--yellow);">1.59 (hedge tilt)</span></div>
+        <div class="flow-item"><span>SPY AH</span><span class="down">-$0.70 (-0.09%)</span></div>
+        <div class="flow-item"><span>Market Bias</span><span style="color:var(--green);">Bullish (Dow ATH)</span></div>
+      </div>
+      <div class="flow-card">
+        <h4>B) Watchlist Flow</h4>
+        <div class="flow-item"><span>AMD</span><span style="color:var(--green);">Heavy CALLS (4% move + PT)</span></div>
+        <div class="flow-item"><span>COIN</span><span style="color:var(--red);">PUT pressure confirmed</span></div>
+        <div class="flow-item"><span>SNDK</span><span style="color:var(--yellow);">2-sided — puts emerged</span></div>
+        <div class="flow-item"><span>NVDA</span><span style="color:var(--yellow);">Mixed — support bet calls + hedges</span></div>
+        <div class="flow-item"><span>TSLA</span><span style="color:var(--green);">Moderate calls on FSD catalyst</span></div>
+      </div>
+      <div class="flow-card">
+        <h4>C) Sector ETF Flow</h4>
+        <div class="flow-item"><span>SMH</span><span style="color:var(--green);">Bullish call flow (AMD ramp)</span></div>
+        <div class="flow-item"><span>GLD</span><span style="color:var(--yellow);">Slight put/hedge on peace hope</span></div>
+        <div class="flow-item"><span>IBIT</span><span style="color:var(--red);">Bearish — confirmed by price</span></div>
+        <div class="flow-item"><span>TLT</span><span style="color:var(--green);">Modest call accumulation</span></div>
+        <div class="flow-item"><span>ITA / XLF</span><span class="flat">Quiet / constructive</span></div>
+      </div>
+      <div class="flow-card">
+        <h4>D) Flow vs Price Divergences</h4>
+        <div class="divergence-alert">
+          <strong>SIGNAL 1:</strong> QQQ P/C 1.59 despite +0.42% day → institutional hedging pre-3-day weekend. Not reversal but limits Tuesday follow-through.
+        </div>
+        <div class="divergence-alert" style="margin-top:8px;">
+          <strong>SIGNAL 2:</strong> NVDA heavy puts into 4th down day approaching $212–217 support → potential seller exhaustion setup.
+        </div>
+        <div class="divergence-alert" style="margin-top:8px;">
+          <strong>SIGNAL 3:</strong> COIN near-flat AH despite -4.4% close → no additional panic selling; $185 may be near-term floor.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- STEP 4: EARNINGS -->
+<div class="section">
+  <div class="section-header">
+    <div class="step">4</div>
+    <h2>TOMORROW'S WATCHLIST EARNINGS (MAY 26)</h2>
+  </div>
+  <div class="section-body">
+    <div class="holiday-banner">
+      ⚑ Markets closed Monday May 25 (Memorial Day). First session back: Tuesday, May 26.
+    </div>
+    <p style="font-size:13px;color:var(--muted);margin-bottom:16px;">No watchlist names report on May 26. Next major catalyst event:</p>
+    <div class="earnings-card">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px;">
+        <span class="ticker" style="font-size:16px;">DELL</span>
+        <span style="font-size:13px;color:#fff;font-weight:600;">Dell Technologies — Q1 FY2027</span>
+        <span style="margin-left:auto;font-size:11px;background:rgba(99,102,241,0.15);color:var(--accent);padding:2px 8px;border-radius:4px;border:1px solid rgba(99,102,241,0.3);">May 28 BMO</span>
+      </div>
+      <div class="meta">NOT on watchlist — key AI infrastructure signal; DELL +16% today on pre-earnings analyst upgrades</div>
+      <div class="est-row">
+        <div class="est-item"><div class="label">Consensus EPS</div><strong>$2.95–$3.00</strong></div>
+        <div class="est-item"><div class="label">Revenue Est</div><strong>$35.46–$35.74B</strong></div>
+        <div class="est-item"><div class="label">YoY EPS Growth</div><strong>+93.6%</strong></div>
+        <div class="est-item"><div class="label">AI Backlog (entry)</div><strong>$43B FY2027</strong></div>
+      </div>
+      <div style="margin-top:10px;font-size:12px;color:var(--muted);">
+        <strong style="color:var(--text);">Key watch:</strong> AI server backlog update + ISG margin trajectory. BofA PT $280 (strong beat+raise expected). UBS downgrade to Neutral ($243). <br>
+        <strong style="color:var(--text);">Theme impact:</strong> AI infrastructure, SMH, AMD, NVDA read-through — major catalyst for Tuesday/Wednesday.
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- STEP 5: MACRO OVERNIGHT -->
+<div class="section">
+  <div class="section-header">
+    <div class="step">5</div>
+    <h2>MACRO OVERNIGHT WATCH</h2>
+  </div>
+  <div class="section-body">
+    <div class="macro-alert">
+      <strong>PRIMARY RISK:</strong> Iran-US talks — any overnight statement from Rubio, State Dept, or Iran's Supreme Leader moves oil ±$5-8/bbl and triggers risk-on/off cascade. Uranium stockpile and Strait of Hormuz tolls remain unresolved deal-breakers.
+    </div>
+    <div class="macro-grid">
+      <div class="macro-card">
+        <h4>Commodity Futures</h4>
+        <div class="macro-row"><span>WTI Crude</span><span class="up">~$97–98/bbl</span></div>
+        <div class="macro-row"><span>Brent</span><span class="up">~$103–104/bbl</span></div>
+        <div class="macro-row"><span>Gold</span><span class="down">~$4,500/oz (-0.76%)</span></div>
+        <div class="macro-row"><span>BTC</span><span class="down">$77,447 (-0.31%)</span></div>
+        <div class="macro-row"><span>Oil weekly trend</span><span class="down">WTI -7%, Brent -5%</span></div>
+      </div>
+      <div class="macro-card">
+        <h4>Asia/Europe Signals</h4>
+        <div class="macro-row"><span>Japan/Taiwan semis</span><span style="color:var(--yellow);">AMD 2nm TSMC catalyst</span></div>
+        <div class="macro-row"><span>Iran headline risk</span><span style="color:var(--red);">Binary — watch overnight</span></div>
+        <div class="macro-row"><span>Europe open Tue</span><span style="color:var(--muted);">First to react to 3-day US wknd</span></div>
+        <div class="macro-row"><span>US close Tuesday</span><span class="up">Risk-on bias if Iran quiet</span></div>
+      </div>
+      <div class="macro-card">
+        <h4>May 26 Economic Calendar</h4>
+        <div class="macro-row"><span style="color:var(--muted);">08:30 ET</span><span>Philadelphia Fed Non-Mfg Survey</span></div>
+        <div class="macro-row"><span style="color:var(--yellow);font-weight:700;">10:00 ET</span><span style="font-weight:600;">Consumer Confidence ← KEY</span></div>
+        <div class="macro-row"><span style="color:var(--muted);">10:30 ET</span><span>Dallas Fed Manufacturing Survey</span></div>
+        <div class="macro-row"><span style="color:var(--muted);">11:00 ET</span><span>SCE Public Policy Survey</span></div>
+        <div class="macro-row"><span style="color:var(--muted);">All day</span><span>H.8 Commercial Bank Assets</span></div>
+      </div>
+      <div class="macro-card">
+        <h4>Fed & Rate Watch</h4>
+        <div class="macro-row"><span>TLT close</span><span class="up">$84.68 (+0.55%)</span></div>
+        <div class="macro-row"><span>Signal</span><span style="color:var(--text);">Inflation relief from oil peace</span></div>
+        <div class="macro-row"><span>Fed speakers May 26</span><span style="color:var(--muted);">None confirmed</span></div>
+        <div class="macro-row"><span>Next FOMC</span><span style="color:var(--muted);">Watch blackout timing</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- STEP 6: POSITIONS -->
+<div class="section">
+  <div class="section-header">
+    <div class="step">6</div>
+    <h2>PERSONAL POSITIONS NEXT-DAY PLAN</h2>
+  </div>
+  <div class="section-body">
+    <div class="positions-grid">
+      <div class="pos-card">
+        <h4>AMD <span class="risk-badge risk-low">LOW RISK</span></h4>
+        <div class="pos-row"><span>Action:</span> <strong style="color:var(--green);">ADD on dip</strong></div>
+        <div class="pos-row"><span>Entry zone:</span> $460–465</div>
+        <div class="pos-row"><span>Target:</span> $490–500 (BofA PT)</div>
+        <div class="pos-row"><span>Stop:</span> Below $450</div>
+        <div class="pos-row"><span>Catalyst:</span> 2nm ramp + BofA $500 PT still fresh</div>
+      </div>
+      <div class="pos-card">
+        <h4>NVDA <span class="risk-badge risk-med">MED RISK</span></h4>
+        <div class="pos-row"><span>Action:</span> <strong style="color:var(--yellow);">ACCUMULATE (small)</strong></div>
+        <div class="pos-row"><span>Entry zone:</span> $212–217 support</div>
+        <div class="pos-row"><span>Target:</span> $230–240 near-term</div>
+        <div class="pos-row"><span>Stop:</span> Below $210</div>
+        <div class="pos-row"><span>Thesis:</span> 4th slide = seller exhaustion; $294 consensus PT</div>
+      </div>
+      <div class="pos-card">
+        <h4>TSLA <span class="risk-badge risk-low">LOW RISK</span></h4>
+        <div class="pos-row"><span>Action:</span> <strong style="color:var(--green);">HOLD / ADD dip</strong></div>
+        <div class="pos-row"><span>Support:</span> $420</div>
+        <div class="pos-row"><span>Add zone:</span> $415–418</div>
+        <div class="pos-row"><span>Stop:</span> Below $415</div>
+        <div class="pos-row"><span>Catalyst:</span> FSD EU expansion + Norway sales</div>
+      </div>
+      <div class="pos-card">
+        <h4>COIN <span class="risk-badge risk-high">HIGH RISK</span></h4>
+        <div class="pos-row"><span>Action:</span> <strong style="color:var(--red);">TRIM / AVOID</strong></div>
+        <div class="pos-row"><span>Condition:</span> Until BTC reclaims $80K</div>
+        <div class="pos-row"><span>Re-entry watch:</span> June 8 (perpetual futures launch)</div>
+        <div class="pos-row"><span>AH stability:</span> $185 area — no further panic</div>
+      </div>
+      <div class="pos-card">
+        <h4>SNDK <span class="risk-badge risk-med">MED-HIGH RISK</span></h4>
+        <div class="pos-row"><span>Action:</span> <strong style="color:var(--yellow);">TIGHT STOP</strong></div>
+        <div class="pos-row"><span>Stop:</span> $1,450 hard</div>
+        <div class="pos-row"><span>Upside:</span> Citi $2,025 PT intact but timing unclear</div>
+        <div class="pos-row"><span>Risk:</span> Micron CapEx = NAND oversupply narrative</div>
+      </div>
+      <div class="pos-card">
+        <h4>Tuesday Setups</h4>
+        <div class="pos-row">• <strong style="color:var(--cyan);">SMH</strong> calls ~$572–575 (cont. AMD)</div>
+        <div class="pos-row">• <strong style="color:var(--yellow);">GLD</strong> ~$410–412 (Iran hedge)</div>
+        <div class="pos-row">• <strong style="color:var(--blue);">TLT</strong> ~$84.50 (if Cons Conf soft)</div>
+        <div class="pos-row">• <strong style="color:var(--green);">ITA</strong> dip near $223</div>
+        <div style="margin-top:8px;padding-top:8px;border-top:1px solid var(--border);font-size:11px;color:var(--yellow);">
+          Playbook: Cautious open → watch 30 min → trade Consumer Confidence at 10am
+        </div>
+      </div>
+    </div>
+    <div style="margin-top:14px;padding:12px 16px;background:var(--bg3);border:1px solid var(--border);border-radius:8px;font-size:13px;">
+      <strong>Theme Bias Tuesday: RISK-ON with hedges.</strong> Dow ATH + VIX 16.76 = bullish baseline. QQQ put-call 1.59 + 3-day weekend = open cautiously. Consumer Confidence 10am = flip point. Iran deal overnight = binary.
+    </div>
+  </div>
+</div>
+
+<!-- STEP 7: ASSUMPTION AUDIT -->
+<div class="section">
+  <div class="section-header">
+    <div class="step">7</div>
+    <h2>ASSUMPTION AUDIT</h2>
+  </div>
+  <div class="section-body">
+    <table class="audit-table">
+      <thead>
+        <tr>
+          <th>Assumption Made</th>
+          <th>What Changes the Call</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="assumption">Iran deal "progress" = oil ceiling</td>
+          <td class="risk">Surprise deal collapse → WTI spikes $5–8; UCO +10%; risk-off; GLD spikes</td>
+        </tr>
+        <tr>
+          <td class="assumption">NVDA support holds at $212–217</td>
+          <td class="risk">Secondary institutional selling wave → breaks to $200; add plan invalid</td>
+        </tr>
+        <tr>
+          <td class="assumption">AMD momentum continues post-BofA raise</td>
+          <td class="risk">TSMC confirms 2nm capacity constraints → AMD reverses; target stalls at $450</td>
+        </tr>
+        <tr>
+          <td class="assumption">Dow ATH = broad risk-on Tuesday open</td>
+          <td class="risk">Weak Consumer Confidence (10am) → sharp morning reversal; 3-day weekend squaring</td>
+        </tr>
+        <tr>
+          <td class="assumption">QQQ put-call 1.59 = institutional hedge, not exit</td>
+          <td class="risk">If market reads as distribution by large funds → accelerates selling</td>
+        </tr>
+        <tr>
+          <td class="assumption">BTC/COIN weakness = no crypto catalyst</td>
+          <td class="risk">Surprise regulatory clarity or major ETF inflow → crypto reverses hard; COIN +15%</td>
+        </tr>
+        <tr>
+          <td class="assumption">SNDK profit-taking = temporary pullback</td>
+          <td class="risk">Micron confirms major CapEx expansion → NAND oversupply narrative dominates; breaks $1,400</td>
+        </tr>
+        <tr>
+          <td class="assumption">TLT rally = Iran inflation relief trade</td>
+          <td class="risk">Strong PCE/CPI data later in week → bonds sell off, TLT reverses</td>
+        </tr>
+        <tr>
+          <td class="assumption">Dell May 28 AI setup confirms theme</td>
+          <td class="risk">DELL earnings miss or guide cut → AI infrastructure sentiment hits SMH/AMD/NVDA</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- EDGE ASSESSMENT -->
+<div class="container">
+  <div class="edge-box">
+    <div class="edge-score">
+      <div class="edge-dot"></div>
+      <span class="edge-label">Edge Quality: MODERATE</span>
+    </div>
+    <p>Clear catalyst on AMD (2nm + BofA PT), Dow ATH context, and Iran deal narrative provide directional confidence. Memorial Day 3-day weekend creates position squaring risk and mutes new-position conviction. NVDA exhaustion setup near $212–217 support and GLD Iran hedge are the two highest-probability setups for Tuesday.</p>
+    <p style="margin-top:10px;"><strong style="color:var(--cyan);">Priority Tuesday: AMD (long), NVDA (accumulate $212–217), GLD (hedge), TLT (if Consumer Confidence soft). Avoid COIN. Tight stop SNDK.</strong></p>
+  </div>
+</div>
+
+<footer>
+  After-Hours Scan — May 22, 2026 | Generated post-close, automated | Sources: StockAnalysis, TheStreet, Benzinga, CNBC, Fortune, StockStory, FinancialContent, Macrotrends
+</footer>
+
+</body>
+</html>
