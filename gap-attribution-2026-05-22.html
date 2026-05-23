@@ -1,0 +1,953 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gap Attribution — May 22, 2026 | v7.3 ETF-FIRST</title>
+<style>
+  :root {
+    --bg: #0d0d0d;
+    --bg2: #141414;
+    --bg3: #1a1a1a;
+    --bg4: #222;
+    --border: #2a2a2a;
+    --text: #e8e8e8;
+    --muted: #888;
+    --green: #00e676;
+    --green-dim: #1a4a2a;
+    --green-mid: #2d7a3a;
+    --red: #ff4444;
+    --red-dim: #4a1a1a;
+    --amber: #ffb300;
+    --amber-dim: #3a2e00;
+    --purple: #b388ff;
+    --purple-dim: #2a1a4a;
+    --cyan: #00e5ff;
+    --cyan-dim: #003a4a;
+    --orange: #ff6d00;
+    --orange-dim: #3a1e00;
+    --blue: #448aff;
+    --blue-dim: #0d1e3a;
+    --gold: #ffd600;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: 'Courier New', 'Consolas', monospace; font-size: 13px; line-height: 1.6; }
+  a { color: var(--cyan); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  /* HEADER */
+  .header { background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%); border-bottom: 2px solid var(--gold); padding: 20px 24px 14px; position: sticky; top: 0; z-index: 100; }
+  .header-top { display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 8px; }
+  .header-title { font-size: 18px; font-weight: bold; color: var(--gold); letter-spacing: 1px; }
+  .header-sub { font-size: 11px; color: var(--muted); margin-top: 2px; }
+  .header-meta { text-align: right; font-size: 11px; color: var(--muted); }
+  .header-meta span { color: var(--amber); font-weight: bold; }
+
+  /* TIER FILTERS */
+  .tier-filters { background: var(--bg2); border-bottom: 1px solid var(--border); padding: 10px 24px; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+  .tier-filters label { font-size: 11px; color: var(--muted); margin-right: 4px; }
+  .btn-filter { padding: 4px 12px; border-radius: 4px; border: 1px solid; font-size: 11px; cursor: pointer; font-family: inherit; font-weight: bold; transition: all 0.2s; }
+  .btn-filter.active { opacity: 1; }
+  .btn-filter.inactive { opacity: 0.35; }
+  .btn-all { border-color: var(--text); color: var(--text); background: var(--bg3); }
+  .btn-all:hover { background: #333; }
+  .btn-t0 { border-color: var(--cyan); color: var(--cyan); background: var(--cyan-dim); }
+  .btn-t1 { border-color: var(--amber); color: var(--amber); background: var(--amber-dim); }
+  .btn-t2 { border-color: var(--green); color: var(--green); background: var(--green-dim); }
+  .btn-t3 { border-color: var(--cyan); color: var(--cyan); background: var(--cyan-dim); }
+  .btn-t4 { border-color: var(--purple); color: var(--purple); background: var(--purple-dim); }
+  .btn-t5 { border-color: var(--blue); color: var(--blue); background: var(--blue-dim); }
+  .btn-t6 { border-color: var(--orange); color: var(--orange); background: var(--orange-dim); }
+  .btn-t7 { border-color: var(--amber); color: var(--amber); background: var(--amber-dim); }
+  .btn-t8 { border-color: var(--gold); color: var(--gold); background: #2a2000; }
+
+  /* MAIN LAYOUT */
+  .main { max-width: 1400px; margin: 0 auto; padding: 16px 24px; }
+
+  /* CARDS */
+  .card { background: var(--bg2); border: 1px solid var(--border); border-radius: 6px; margin-bottom: 16px; overflow: hidden; }
+  .card-header { padding: 10px 16px; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid var(--border); }
+  .card-header h2 { font-size: 13px; font-weight: bold; letter-spacing: 0.5px; }
+  .card-header .badge { font-size: 10px; padding: 2px 8px; border-radius: 3px; font-weight: bold; }
+  .card-body { padding: 14px 16px; }
+
+  /* TIER COLORS */
+  .t0-header { background: linear-gradient(90deg, var(--cyan-dim), transparent); border-left: 3px solid var(--cyan); }
+  .t0-header h2 { color: var(--cyan); }
+  .t1-header { background: linear-gradient(90deg, var(--amber-dim), transparent); border-left: 3px solid var(--amber); }
+  .t1-header h2 { color: var(--amber); }
+  .t2-header { background: linear-gradient(90deg, var(--green-dim), transparent); border-left: 3px solid var(--green); }
+  .t2-header h2 { color: var(--green); }
+  .t3-header { background: linear-gradient(90deg, var(--cyan-dim), transparent); border-left: 3px solid var(--cyan); }
+  .t3-header h2 { color: var(--cyan); }
+  .t4-header { background: linear-gradient(90deg, var(--purple-dim), transparent); border-left: 3px solid var(--purple); }
+  .t4-header h2 { color: var(--purple); }
+  .t5-header { background: linear-gradient(90deg, var(--blue-dim), transparent); border-left: 3px solid var(--blue); }
+  .t5-header h2 { color: var(--blue); }
+  .t6-header { background: linear-gradient(90deg, var(--orange-dim), transparent); border-left: 3px solid var(--orange); }
+  .t6-header h2 { color: var(--orange); }
+  .t7-header { background: linear-gradient(90deg, var(--amber-dim), transparent); border-left: 3px solid var(--amber); }
+  .t7-header h2 { color: var(--amber); }
+  .t8-header { background: linear-gradient(90deg, #2a2000, transparent); border-left: 3px solid var(--gold); }
+  .t8-header h2 { color: var(--gold); }
+  .t9-header { background: linear-gradient(90deg, #1a1a1a, transparent); border-left: 3px solid #555; }
+  .t9-header h2 { color: #aaa; }
+
+  /* TABLES */
+  table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  th { background: var(--bg4); color: var(--muted); padding: 6px 10px; text-align: left; font-weight: bold; font-size: 11px; border-bottom: 1px solid var(--border); }
+  td { padding: 6px 10px; border-bottom: 1px solid #1e1e1e; vertical-align: top; }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: #1e1e1e; }
+  td.num { text-align: right; font-variant-numeric: tabular-nums; }
+
+  /* COLORS */
+  .bull { color: var(--green); font-weight: bold; }
+  .bear { color: var(--red); font-weight: bold; }
+  .amber-t { color: var(--amber); }
+  .cyan-t { color: var(--cyan); }
+  .purple-t { color: var(--purple); }
+  .orange-t { color: var(--orange); }
+  .blue-t { color: var(--blue); }
+  .gold-t { color: var(--gold); font-weight: bold; }
+  .muted { color: var(--muted); }
+  .alert { color: var(--red); font-weight: bold; }
+
+  /* CONVICTION BADGES */
+  .conv-high { display: inline-block; background: var(--green-mid); color: var(--green); padding: 1px 8px; border-radius: 3px; font-size: 10px; font-weight: bold; }
+  .conv-med { display: inline-block; background: var(--amber-dim); color: var(--amber); padding: 1px 8px; border-radius: 3px; font-size: 10px; font-weight: bold; }
+  .conv-low { display: inline-block; background: var(--red-dim); color: var(--red); padding: 1px 8px; border-radius: 3px; font-size: 10px; font-weight: bold; }
+
+  /* ETF CARDS */
+  .etf-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 12px; }
+  .etf-card { background: var(--bg3); border: 1px solid var(--border); border-radius: 5px; padding: 12px; }
+  .etf-ticker { font-size: 20px; font-weight: bold; }
+  .etf-theme { font-size: 11px; color: var(--muted); }
+  .etf-move { font-size: 22px; font-weight: bold; }
+  .etf-row { display: flex; justify-content: space-between; margin-top: 6px; font-size: 11px; }
+  .constituents { margin-top: 8px; font-size: 11px; color: var(--muted); }
+  .constituents span { color: var(--text); }
+
+  /* TOP PICKS */
+  .pick-card { background: var(--bg3); border-radius: 5px; padding: 14px; margin-bottom: 10px; }
+  .pick-rank { font-size: 22px; font-weight: bold; color: var(--gold); float: left; margin-right: 12px; line-height: 1; }
+  .pick-ticker { font-size: 18px; font-weight: bold; }
+  .pick-desc { font-size: 11px; color: var(--muted); margin-top: 4px; }
+  .pick-meta { display: flex; gap: 16px; margin-top: 8px; flex-wrap: wrap; }
+  .pick-meta-item { font-size: 11px; }
+  .pick-meta-item label { color: var(--muted); }
+  .pick-meta-item value { color: var(--text); font-weight: bold; }
+  .pick-constituents { margin-top: 6px; font-size: 11px; color: var(--muted); }
+  .pick-constituents span { color: var(--green); font-weight: bold; }
+
+  /* BRIEFING BOX */
+  .briefing { background: linear-gradient(135deg, #0a1628 0%, #0d0d0d 100%); border: 1px solid #1e3a5f; border-radius: 6px; padding: 16px; font-size: 13px; line-height: 1.8; color: #b8d4f0; }
+
+  /* THEME BOX */
+  .theme-box { background: linear-gradient(135deg, #1a0a28 0%, #0d0d0d 100%); border: 2px solid var(--gold); border-radius: 6px; padding: 16px; margin-bottom: 12px; }
+  .theme-box h3 { color: var(--gold); font-size: 16px; margin-bottom: 6px; }
+  .theme-box p { font-size: 12px; color: var(--muted); }
+
+  /* REGIME BOX */
+  .regime-box { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 8px; }
+  .regime-tag { padding: 6px 14px; border-radius: 4px; font-size: 12px; font-weight: bold; }
+  .regime-on { background: var(--green-dim); border: 1px solid var(--green); color: var(--green); }
+  .regime-mixed { background: var(--amber-dim); border: 1px solid var(--amber); color: var(--amber); }
+  .regime-off { background: var(--red-dim); border: 1px solid var(--red); color: var(--red); }
+
+  /* DIVIDERS */
+  .section-sep { height: 1px; background: linear-gradient(90deg, transparent, var(--border), transparent); margin: 8px 0; }
+
+  /* NOTES */
+  .note { background: var(--bg4); border-left: 3px solid var(--amber); padding: 8px 12px; border-radius: 0 4px 4px 0; font-size: 11px; color: var(--amber); margin: 8px 0; }
+  .note-red { background: var(--red-dim); border-left: 3px solid var(--red); padding: 8px 12px; border-radius: 0 4px 4px 0; font-size: 11px; color: #ff8888; margin: 8px 0; }
+  .note-green { background: var(--green-dim); border-left: 3px solid var(--green); padding: 8px 12px; border-radius: 0 4px 4px 0; font-size: 11px; color: #88ff88; margin: 8px 0; }
+  .note-cyan { background: var(--cyan-dim); border-left: 3px solid var(--cyan); padding: 8px 12px; border-radius: 0 4px 4px 0; font-size: 11px; color: #88eeff; margin: 8px 0; }
+
+  /* TAGS */
+  .tag { display: inline-block; padding: 1px 7px; border-radius: 3px; font-size: 10px; font-weight: bold; margin: 1px; }
+  .tag-quantum { background: #1a004a; color: var(--purple); border: 1px solid var(--purple); }
+  .tag-space { background: #001a3a; color: var(--cyan); border: 1px solid var(--cyan); }
+  .tag-nuclear { background: #1a2a00; color: #a0e060; border: 1px solid #a0e060; }
+  .tag-semi { background: #002a2a; color: var(--cyan); border: 1px solid var(--cyan); }
+  .tag-ai { background: #001a1a; color: var(--green); border: 1px solid var(--green); }
+  .tag-macro { background: var(--purple-dim); color: var(--purple); border: 1px solid var(--purple); }
+  .tag-options { background: var(--blue-dim); color: var(--blue); border: 1px solid var(--blue); }
+  .tag-wire { background: var(--orange-dim); color: var(--orange); border: 1px solid var(--orange); }
+
+  /* RESPONSIVE */
+  @media (max-width: 700px) {
+    .main { padding: 10px 12px; }
+    .header { padding: 14px 12px 10px; }
+    .tier-filters { padding: 8px 12px; }
+    .etf-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══ HEADER ═══ -->
+<div class="header">
+  <div class="header-top">
+    <div>
+      <div class="header-title">🌃 GAP ATTRIBUTION v7.3 ETF-FIRST</div>
+      <div class="header-sub">Friday, May 22, 2026 &nbsp;|&nbsp; Scan: 4:00–8:00 PM ET &nbsp;|&nbsp; Pre-Memorial Day Weekend Edition</div>
+      <div class="header-sub" style="margin-top:2px">Next session: <span style="color:var(--amber)">Tuesday May 26</span> (markets closed May 25)</div>
+    </div>
+    <div class="header-meta">
+      <div>Dow <span>50,723.95</span> ▲ NEW ATH</div>
+      <div>VIX <span>16.76</span> &nbsp; F&G <span>61</span></div>
+      <div>BTC <span>$77,447</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ TIER FILTERS ═══ -->
+<div class="tier-filters">
+  <label>SHOW:</label>
+  <button class="btn-filter btn-all active" onclick="showAll()">ALL</button>
+  <button class="btn-filter btn-t0 active" onclick="toggle('t0')">ETF SWEEP</button>
+  <button class="btn-filter btn-t1 active" onclick="toggle('t1')">TIER 1 UNIVERSE</button>
+  <button class="btn-filter btn-t2 active" onclick="toggle('t2')">TIER 2 THEMES</button>
+  <button class="btn-filter btn-t3 active" onclick="toggle('t3')">TIER 3 EMERGING</button>
+  <button class="btn-filter btn-t4 active" onclick="toggle('t4')">TIER 4 MACRO</button>
+  <button class="btn-filter btn-t5 active" onclick="toggle('t5')">OPTIONS FLOW</button>
+  <button class="btn-filter btn-t6 active" onclick="toggle('t6')">WIRE SCOOPS</button>
+  <button class="btn-filter btn-t7 active" onclick="toggle('t7')">EARNINGS PREVIEW</button>
+  <button class="btn-filter btn-t8 active" onclick="toggle('t8')">GAP MAP</button>
+</div>
+
+<!-- ═══ MAIN ═══ -->
+<div class="main">
+
+<!-- ══ STEP 0 ETF SWEEP ══ -->
+<div class="card" data-tier="t0">
+  <div class="card-header t0-header">
+    <h2>STEP 0 — ETF AFTER-HOURS SWEEP (Discovery Engine)</h2>
+    <span class="badge" style="background:var(--cyan-dim);color:var(--cyan)">TIER 0</span>
+  </div>
+  <div class="card-body">
+    <div class="note">ETF moves estimated from constituent-level data (TV MCP unavailable). Verify exact ETF closes pre-market Tuesday.</div>
+    <div class="etf-grid">
+
+      <div class="etf-card" style="border-color:var(--green)">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start">
+          <div>
+            <div class="etf-ticker" style="color:var(--green)">QTUM</div>
+            <div class="etf-theme">Quantum Computing ETF</div>
+          </div>
+          <span class="conv-high">🟢 HIGH</span>
+        </div>
+        <div class="etf-move bull">+12–15% est</div>
+        <div class="constituents">Leaders: <span>RGTI +17%</span> &nbsp;|&nbsp; <span>QUBT +14%</span> &nbsp;|&nbsp; <span>QBTS +13%</span> &nbsp;|&nbsp; <span>IONQ +8%</span></div>
+        <div class="etf-row"><span class="muted">Catalyst:</span> <span style="color:var(--text)">$2B DoC CHIPS Act quantum funding</span></div>
+        <div class="etf-row"><span class="tag tag-quantum">POLICY-STAKE</span></div>
+      </div>
+
+      <div class="etf-card" style="border-color:#a0e060">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start">
+          <div>
+            <div class="etf-ticker" style="color:#a0e060">URA</div>
+            <div class="etf-theme">Global X Uranium ETF</div>
+          </div>
+          <span class="conv-med">🟡 MEDIUM</span>
+        </div>
+        <div class="etf-move" style="color:#a0e060">+6–8% est</div>
+        <div class="constituents">Leaders: <span>SMR +10%</span> &nbsp;|&nbsp; <span>CCJ +6%</span></div>
+        <div class="etf-row"><span class="muted">Catalyst:</span> <span style="color:var(--text)">CCJ India uranium deal; nuclear-AI power</span></div>
+        <div class="etf-row"><span class="tag tag-nuclear">NUCLEAR/AI-POWER</span></div>
+      </div>
+
+      <div class="etf-card" style="border-color:var(--cyan)">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start">
+          <div>
+            <div class="etf-ticker" style="color:var(--cyan)">UFO</div>
+            <div class="etf-theme">Procure Space ETF</div>
+          </div>
+          <span class="conv-med">🟡 MEDIUM</span>
+        </div>
+        <div class="etf-move" style="color:var(--cyan)">+5–6% est</div>
+        <div class="constituents">Leaders: <span>ASTS +7%</span> &nbsp;|&nbsp; <span>RKLB +6%</span> &nbsp;|&nbsp; <span>PL +4%</span></div>
+        <div class="etf-row"><span class="muted">Catalyst:</span> <span style="color:var(--text)">RKLB $90M Space Force contract; ASTS MNO</span></div>
+        <div class="etf-row"><span class="tag tag-space">SPACE</span> <span style="font-size:10px;color:var(--red)">⚠ RKLB $3B ATM overhang</span></div>
+      </div>
+
+      <div class="etf-card" style="border-color:var(--cyan)">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start">
+          <div>
+            <div class="etf-ticker" style="color:var(--cyan)">ROKT</div>
+            <div class="etf-theme">S&P Kensho Final Frontiers ETF</div>
+          </div>
+          <span class="conv-med">🟡 MEDIUM</span>
+        </div>
+        <div class="etf-move" style="color:var(--cyan)">+4–5% est</div>
+        <div class="constituents">Leaders: <span>ASTS +7%</span> &nbsp;|&nbsp; <span>RKLB +6%</span></div>
+        <div class="etf-row"><span class="muted">Note:</span> <span style="color:var(--text)">Defense-tilt buffer vs pure UFO</span></div>
+        <div class="etf-row"><span class="tag tag-space">SPACE/DEFENSE</span></div>
+      </div>
+
+      <div class="etf-card">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start">
+          <div>
+            <div class="etf-ticker amber-t">SMH</div>
+            <div class="etf-theme">VanEck Semiconductor ETF</div>
+          </div>
+          <span class="conv-med">🟡 MEDIUM</span>
+        </div>
+        <div class="etf-move amber-t">+1.49% confirmed</div>
+        <div class="constituents">Leaders: <span>AMD +4%</span> &nbsp;|&nbsp; offset: <span style="color:var(--red)">NVDA -1.9%</span></div>
+        <div class="etf-row"><span class="muted">Catalyst:</span> <span style="color:var(--text)">AMD 2nm EPYC ramp; BofA $500 PT</span></div>
+        <div class="etf-row"><span class="tag tag-semi">SEMIS</span></div>
+      </div>
+
+      <div class="etf-card" style="border-color:var(--red)">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start">
+          <div>
+            <div class="etf-ticker" style="color:var(--red)">IBIT</div>
+            <div class="etf-theme">iShares Bitcoin Trust ETF</div>
+          </div>
+          <span class="conv-low">🔴 FADE</span>
+        </div>
+        <div class="etf-move bear">-2.36% confirmed</div>
+        <div class="constituents">Driver: <span style="color:var(--red)">BTC $77,447 (-0.24%) below $80K</span></div>
+        <div class="etf-row"><span class="muted">Catalyst:</span> <span style="color:var(--red)">COIN -4.4%; no crypto catalyst until June 8</span></div>
+        <div class="etf-row"><span class="tag" style="background:var(--red-dim);color:var(--red);border-color:var(--red)">CRYPTO FADE</span></div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ══ STEP 1 TIER 1 ══ -->
+<div class="card" data-tier="t1">
+  <div class="card-header t1-header">
+    <h2>STEP 1 — TIER 1: UNIVERSE-WIDE MARKET-MOVERS</h2>
+    <span class="badge" style="background:var(--amber-dim);color:var(--amber)">TIER 1</span>
+  </div>
+  <div class="card-body">
+
+    <h3 style="color:var(--amber);font-size:12px;margin-bottom:8px">A) MAG 7 / HYPERSCALERS</h3>
+    <table>
+      <thead><tr><th>TICKER</th><th>CLOSE</th><th>DAY %</th><th>AH %</th><th>KEY EVENT</th></tr></thead>
+      <tbody>
+        <tr><td><strong>NVDA</strong></td><td class="num">$215.33</td><td class="num bear">-1.90%</td><td class="num bear">-0.15%</td><td>4th post-earnings decline. EPS $1.87 beat; $81.6B rev; Q2 guide $91B. Support $212–217 = accumulate.</td></tr>
+        <tr><td><strong>AMD</strong></td><td class="num">$467.51</td><td class="num bull">+3.99%</td><td class="num bear">-0.20%</td><td>BofA PT $450→$500 (Buy). 2nm EPYC Venice ramp at TSMC. $1.7T AI data-center market by 2030.</td></tr>
+        <tr><td><strong>TSLA</strong></td><td class="num">$426.01</td><td class="num bull">+1.95%</td><td class="num bear">-0.26%</td><td>FSD Supervised live in Lithuania (2nd EU). Norway record Q2 daily sales. No overhang.</td></tr>
+        <tr><td><strong>MSFT</strong></td><td class="num">$420.30</td><td class="num">+0.22%</td><td class="num muted">flat</td><td>Quiet. No fresh catalyst.</td></tr>
+        <tr><td><strong>GOOGL</strong></td><td class="num">$379.68</td><td class="num muted">~flat</td><td class="num muted">flat</td><td>Range-bound. No major news.</td></tr>
+        <tr><td><strong>META</strong></td><td class="num">$610.26</td><td class="num">+0.47%</td><td class="num muted">-0.06%</td><td>AI reorg backdrop. Range-bound.</td></tr>
+        <tr><td><strong>AMZN</strong></td><td class="num">$266.32</td><td class="num bear">-0.80%</td><td class="num">+0.10%</td><td>Light selling. No fresh news.</td></tr>
+      </tbody>
+    </table>
+
+    <div class="section-sep"></div>
+    <h3 style="color:var(--amber);font-size:12px;margin:10px 0 8px">B) SEMIS BELLWETHERS</h3>
+    <table>
+      <thead><tr><th>TICKER</th><th>DAY %</th><th>KEY NOTES</th></tr></thead>
+      <tbody>
+        <tr><td><strong>AMD</strong></td><td class="num bull">+3.99%</td><td>BofA $500 PT; 2nm EPYC Venice; server share vs Intel</td></tr>
+        <tr><td>TSM</td><td class="num muted">~flat</td><td>No news; 2nm capacity ramp = AMD bullish backdrop</td></tr>
+        <tr><td>ASML</td><td class="num muted">~flat</td><td>EUV backlog intact. Quiet.</td></tr>
+        <tr><td>AVGO</td><td class="num muted">~flat</td><td>AI networking thesis intact. No new catalyst.</td></tr>
+        <tr><td>MU</td><td class="num muted">put flow</td><td><span class="bear">$725 put sweep</span> — NAND oversupply concern persisting from SNDK</td></tr>
+      </tbody>
+    </table>
+
+    <div class="section-sep"></div>
+    <h3 style="color:var(--amber);font-size:12px;margin:10px 0 8px">D) NAMES >10% AH MOVE</h3>
+    <table>
+      <thead><tr><th>TICKER</th><th>AH %</th><th>AH PRICE</th><th>MKT CAP</th><th>CATALYST</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><strong style="color:var(--red)">WSC</strong><br><span class="muted" style="font-size:10px">WillScot Holdings</span></td>
+          <td class="num bear">-33.13%</td>
+          <td class="num">$16.57</td>
+          <td class="num">~$4.5B ✓</td>
+          <td><span class="alert">🚨 CATALYST UNCONFIRMED — INVESTIGATE MANUALLY</span><br><span class="muted">Last news: Q1 earnings May 7. No 8-K, M&A found. Check IR + EDGAR before Tuesday open.</span></td>
+        </tr>
+        <tr>
+          <td><strong>BTM</strong><br><span class="muted" style="font-size:10px">Bitcoin Depot</span></td>
+          <td class="num bear">-29.62%</td>
+          <td class="num">$0.35</td>
+          <td class="num muted">sub-$1B</td>
+          <td>BTC ATM operator following BTC lower. Below universe filter.</td>
+        </tr>
+        <tr>
+          <td><strong>ARTL</strong></td>
+          <td class="num bull">+67.23%</td>
+          <td class="num">$1.99</td>
+          <td class="num muted">sub-$1B</td>
+          <td>Small-cap pharma. Below universe filter.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="section-sep"></div>
+    <h3 style="color:var(--amber);font-size:12px;margin:10px 0 8px">E) MATERIAL 8-K FILINGS TODAY</h3>
+    <table>
+      <thead><tr><th>COMPANY</th><th>TICKER</th><th>ITEM</th><th>SUMMARY</th><th>SOURCE</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>Rigetti Computing</td>
+          <td><strong class="bull">RGTI</strong></td>
+          <td class="amber-t">8.01</td>
+          <td>LOI with U.S. Dept of Commerce for up to $100M quantum R&D under CHIPS Act. Govt receives equity stake.</td>
+          <td><a href="https://www.sec.gov/Archives/edgar/data/1838359/000110465926064861/tm2615300d1_8k.htm" target="_blank">EDGAR 8-K ↗</a></td>
+        </tr>
+        <tr>
+          <td>Rocket Lab</td>
+          <td><strong class="cyan-t">RKLB</strong></td>
+          <td class="amber-t">S-3/ATM</td>
+          <td>$3B ATM common stock program registered (May 20). Market digesting dilution risk.</td>
+          <td><a href="https://www.stocktitan.net/sec-filings/RKLB/424b5-rocket-lab-corp-prospectus-supplement-debt-securities-b7f202be045c.html" target="_blank">Stocktitan ↗</a></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ══ STEP 2 TIER 2 ══ -->
+<div class="card" data-tier="t2">
+  <div class="card-header t2-header">
+    <h2>STEP 2 — TIER 2: THEME-ALIGNED MOVERS (ETF-FIRST)</h2>
+    <span class="badge" style="background:var(--green-dim);color:var(--green)">TIER 2</span>
+  </div>
+  <div class="card-body">
+
+    <!-- QUANTUM -->
+    <div style="background:linear-gradient(135deg,#0d001e,#0d0d0d);border:1px solid var(--purple);border-radius:6px;padding:14px;margin-bottom:14px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+        <div>
+          <span style="font-size:18px;font-weight:bold;color:var(--green)">🔬 QTUM</span>
+          <span style="color:var(--muted);font-size:12px;margin-left:10px">Defiance Quantum ETF</span>
+          <span class="tag tag-quantum" style="margin-left:8px">QUANTUM</span>
+          <span class="tag" style="background:var(--purple-dim);color:var(--purple);border-color:var(--purple);margin-left:4px">POLICY-STAKE</span>
+        </div>
+        <div style="text-align:right">
+          <span class="conv-high">🟢 HIGH CONVICTION</span>
+          <div style="font-size:22px;font-weight:bold;color:var(--green)">+12–15% est</div>
+        </div>
+      </div>
+      <div class="note-green">🏆 THEME OF THE NIGHT — $2.013B CHIPS Act quantum funding with govt equity stakes in 7 companies. Intel-model framework for quantum computing.</div>
+      <div style="margin:8px 0;font-size:11px">
+        <strong style="color:var(--text)">Primary Sources:</strong>
+        <a href="https://www.nist.gov/news-events/news/2026/05/department-commerce-announces-letters-intent-9-companies-2-billion" target="_blank">NIST Official Announcement ↗</a>
+        &nbsp;|&nbsp;
+        <a href="https://investors.rigetti.com/news-releases/news-release-details/rigetti-signs-letter-intent-us-government-quantum-computing" target="_blank">Rigetti IR ↗</a>
+        &nbsp;|&nbsp;
+        <a href="https://www.sec.gov/Archives/edgar/data/1838359/000110465926064861/tm2615300d1_8k.htm" target="_blank">EDGAR 8-K ↗</a>
+      </div>
+      <table>
+        <thead><tr><th>TICKER</th><th>DAY %</th><th>PARENT ETF</th><th>TYPE</th><th>AH</th></tr></thead>
+        <tbody>
+          <tr><td><strong class="bull">RGTI</strong></td><td class="num bull">+17%</td><td>QTUM</td><td class="purple-t">POLICY-STAKE</td><td class="muted">flat</td></tr>
+          <tr><td><strong class="bull">QUBT</strong></td><td class="num bull">+14%</td><td>QTUM</td><td class="purple-t">POLICY-STAKE</td><td class="muted">flat</td></tr>
+          <tr><td><strong class="bull">QBTS</strong></td><td class="num bull">+13%</td><td>QTUM</td><td class="purple-t">POLICY-STAKE</td><td class="muted">flat</td></tr>
+          <tr><td><strong class="bull">IONQ</strong></td><td class="num bull">+8%</td><td>QTUM</td><td class="purple-t">POLICY-STAKE</td><td class="muted">flat</td></tr>
+        </tbody>
+      </table>
+      <div style="margin-top:8px;font-size:11px;color:var(--muted)">
+        9 companies funded: IBM ($1B foundry), GlobalFoundries ($375M foundry), Atom Computing, Diraq, D-Wave, Infleqtion, PSIQuantum, Quantinuum, Rigetti<br>
+        <strong style="color:var(--text)">Next catalyst:</strong> D-Wave Investor Day <span class="amber-t">June 1, NYSE</span>
+      </div>
+    </div>
+
+    <!-- SPACE -->
+    <div style="background:linear-gradient(135deg,#001020,#0d0d0d);border:1px solid var(--cyan);border-radius:6px;padding:14px;margin-bottom:14px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+        <div>
+          <span style="font-size:18px;font-weight:bold;color:var(--cyan)">🚀 UFO / ROKT</span>
+          <span style="color:var(--muted);font-size:12px;margin-left:10px">Space ETFs</span>
+          <span class="tag tag-space" style="margin-left:8px">SPACE</span>
+        </div>
+        <div style="text-align:right">
+          <span class="conv-med">🟡 MEDIUM (2-sided)</span>
+          <div style="font-size:22px;font-weight:bold;color:var(--cyan)">+5–6% / +4–5%</div>
+        </div>
+      </div>
+      <div class="note">⚠ RKLB $3B ATM program (filed May 20) = dilution overhang. Watch pre-market carefully.</div>
+      <table>
+        <thead><tr><th>TICKER</th><th>DAY %</th><th>CATALYST</th><th>TYPE</th></tr></thead>
+        <tbody>
+          <tr><td><strong class="cyan-t">ASTS</strong></td><td class="num bull">+7%</td><td>60 MNO partners; 3B subscribers; FY26 guide $150–200M reaffirmed</td><td class="cyan-t">CONTRACT</td></tr>
+          <tr><td><strong class="cyan-t">RKLB</strong></td><td class="num bull">+6%</td><td>$90M Space Force contract; Q1 rev $200M (+64% YoY); $2.2B backlog. <span class="bear">AH: $3B ATM dilution</span></td><td class="cyan-t">CONTRACT</td></tr>
+          <tr><td><strong class="cyan-t">PL</strong></td><td class="num bull">+4%</td><td>Defense RPO +361% to $672M; NGA, NRO, Navy, NATO</td><td class="cyan-t">CONTRACT</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- NUCLEAR -->
+    <div style="background:linear-gradient(135deg,#0a1500,#0d0d0d);border:1px solid #a0e060;border-radius:6px;padding:14px;margin-bottom:14px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+        <div>
+          <span style="font-size:18px;font-weight:bold;color:#a0e060">⚡ URA</span>
+          <span style="color:var(--muted);font-size:12px;margin-left:10px">Global X Uranium ETF</span>
+          <span class="tag tag-nuclear" style="margin-left:8px">NUCLEAR/AI-POWER</span>
+        </div>
+        <div style="text-align:right">
+          <span class="conv-med">🟡 MEDIUM</span>
+          <div style="font-size:22px;font-weight:bold;color:#a0e060">+6–8% est</div>
+        </div>
+      </div>
+      <table>
+        <thead><tr><th>TICKER</th><th>DAY %</th><th>CATALYST</th><th>TYPE</th><th>SOURCE</th></tr></thead>
+        <tbody>
+          <tr><td><strong style="color:#a0e060">SMR</strong></td><td class="num bull">+10%</td><td>NRC regulatory momentum; nuclear-AI power demand</td><td style="color:#a0e060">REGULATORY</td><td>—</td></tr>
+          <tr><td><strong style="color:#a0e060">CCJ</strong></td><td class="num bull">+6%</td><td>India uranium supply deal; ~22M lbs/9 yrs; ~$2.6B</td><td style="color:#a0e060">CONTRACT</td><td><a href="https://www.sec.gov/Archives/edgar/data/0001009001/000119312526213812/d152766dex991.htm" target="_blank">EDGAR 6-K ↗</a></td></tr>
+          <tr><td><strong style="color:#a0e060">NNE</strong></td><td class="num bull">est.+5%</td><td>NRC KRONOS MMR permit accepted; Supermicro AI MOU</td><td style="color:#a0e060">REGULATORY</td><td>—</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- AI INFRA -->
+    <div style="background:linear-gradient(135deg,#001a0a,#0d0d0d);border:1px solid var(--green);border-radius:6px;padding:14px;margin-bottom:14px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+        <div>
+          <span style="font-size:18px;font-weight:bold;color:var(--green)">🖥️ AI INFRASTRUCTURE CLUSTER</span>
+          <span style="color:var(--muted);font-size:12px;margin-left:10px">QQQ / XLK components</span>
+          <span class="tag tag-ai" style="margin-left:8px">AI INFRA</span>
+        </div>
+        <div style="text-align:right">
+          <span class="conv-high">🟢 HIGH CONVICTION</span>
+        </div>
+      </div>
+      <div class="note-green">DELL +15% on Dell Technologies World product blitz + pre-earnings hype (May 28 BMO). $43B AI backlog. HPE +9% sympathy. AI infra secular cycle intact.</div>
+      <table>
+        <thead><tr><th>TICKER</th><th>DAY %</th><th>CATALYST</th><th>TYPE</th></tr></thead>
+        <tbody>
+          <tr><td><strong class="bull">DELL</strong></td><td class="num bull">+15%</td><td>Dell World 2026 (18th gen PowerEdge, NVIDIA AI collab); May 28 BMO earnings ($43B backlog)</td><td class="bull">EARNINGS PREVIEW</td></tr>
+          <tr><td><strong class="bull">HPE</strong></td><td class="num bull">+9%</td><td>Sympathy with DELL AI server narrative</td><td class="muted">SYMPATHY</td></tr>
+          <tr><td><strong class="bull">SMCI</strong></td><td class="num bull">+5%</td><td>AI server beneficiary</td><td class="muted">SYMPATHY</td></tr>
+          <tr><td><strong class="bull">NBIS</strong></td><td class="num bull">+8%</td><td>Nebius AI infrastructure expansion</td><td class="bull">CONTRACT</td></tr>
+          <tr><td><strong class="bull">BE</strong></td><td class="num bull">+8%</td><td>$2.6B fuel cell deal with Nebius; 328 MW AI data center power; 10-year contract</td><td class="bull">CONTRACT</td></tr>
+        </tbody>
+      </table>
+      <div style="margin-top:6px;font-size:11px">
+        Sources: <a href="https://investors.delltechnologies.com/news-releases/news-release-details/dell-ai-data-platform-advancements-unlock-power-enterprise-data" target="_blank">Dell IR ↗</a>
+        &nbsp;|&nbsp; <a href="https://techstartups.com/2026/05/21/bloom-energy-lands-2-6-billion-ai-infrastructure-deal-with-nebius-to-tackle-data-center-power-shortages/" target="_blank">BE/NBIS Deal ↗</a>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══ STEP 3 TIER 3 ══ -->
+<div class="card" data-tier="t3">
+  <div class="card-header t3-header">
+    <h2>STEP 3 — TIER 3: EMERGING THEME RADAR</h2>
+    <span class="badge" style="background:var(--cyan-dim);color:var(--cyan)">TIER 3</span>
+  </div>
+  <div class="card-body">
+    <div class="note-red">🚨 WSC (WillScot Holdings) -33.13% AH — CATALYST UNCONFIRMED. No M&A, earnings, or 8-K found. Market cap ~$4.5B (in scope). INVESTIGATE before Tuesday open via <a href="https://investors.willscot.com" target="_blank">WSC IR ↗</a> and SEC EDGAR.</div>
+
+    <table style="margin-top:12px">
+      <thead><tr><th>TICKER</th><th>SECTOR</th><th>AH %</th><th>CATALYST</th><th>STATUS</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><strong class="bear">WSC</strong><br><span class="muted" style="font-size:10px">WillScot Holdings</span></td>
+          <td>Specialty Rental</td>
+          <td class="num bear">-33.13%</td>
+          <td><span class="alert">CATALYST UNCONFIRMED — INVESTIGATE MANUALLY</span></td>
+          <td><span class="bear">🔴 FLAG</span></td>
+        </tr>
+        <tr>
+          <td><strong>BTM</strong><br><span class="muted" style="font-size:10px">Bitcoin Depot</span></td>
+          <td>Crypto ATM</td>
+          <td class="num bear">-29.62%</td>
+          <td>Following BTC lower. No standalone catalyst.</td>
+          <td><span class="muted">Sub-$1B filter</span></td>
+        </tr>
+        <tr>
+          <td><strong class="bull">BE + NBIS</strong><br><span class="muted" style="font-size:10px">Fuel Cell / AI Power</span></td>
+          <td>Clean Energy / AI Infra</td>
+          <td class="num bull">+8% each</td>
+          <td>$2.6B Bloom Energy fuel cell deal for AI data centers (328 MW, 10-yr). New sub-theme: solid oxide fuel cells for AI power.</td>
+          <td><span class="amber-t">🟡 Night 1 — Monitor</span></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="note" style="margin-top:10px">Cluster Monitor: BE + NBIS = Night 1 data point for fuel cell AI power theme. If PLUG, FuelCell, or similar announce deals = promote to Tier 2. Not yet 2-night cluster.</div>
+  </div>
+</div>
+
+<!-- ══ STEP 4 TIER 4 MACRO ══ -->
+<div class="card" data-tier="t4">
+  <div class="card-header t4-header">
+    <h2>STEP 4 — TIER 4: MACRO / EXOGENOUS</h2>
+    <span class="badge" style="background:var(--purple-dim);color:var(--purple)">TIER 4</span>
+  </div>
+  <div class="card-body">
+
+    <div style="background:linear-gradient(135deg,#100028,#0d0d0d);border:1px solid var(--purple);border-radius:5px;padding:12px;margin-bottom:12px">
+      <div style="font-size:14px;font-weight:bold;color:var(--purple);margin-bottom:6px">🏛️ FED CHAIR TRANSITION — HIGHEST MACRO IMPACT</div>
+      <div style="font-size:12px">Kevin Warsh sworn in as 17th Fed Chair at White House by Justice Clarence Thomas. First Fed Chair sworn in at White House since Greenspan 1987.</div>
+      <div style="margin-top:6px;font-size:11px;color:var(--muted)">Inflation: 3.8% YoY (April) | First FOMC: June 16–17 | Warsh: vowed independence, will not pre-set rates | Markets pricing hold through 2026; possible hike 2027</div>
+      <div style="margin-top:6px;font-size:11px">Sources: <a href="https://www.cnbc.com/2026/05/22/trump-kevin-warsh-fed-chair-interest-rates.html" target="_blank">CNBC ↗</a> &nbsp;|&nbsp; <a href="https://www.pbs.org/newshour/politics/watch-live-kevin-warsh-sworn-in-as-chairman-of-the-federal-reserve" target="_blank">PBS ↗</a> &nbsp;|&nbsp; <a href="https://www.washingtonpost.com/business/2026/05/22/kevin-warsh-sworn-fed-chair-facing-inflation-political-pressure/" target="_blank">WashPost ↗</a></div>
+      <div style="margin-top:6px"><span class="tag tag-macro">RATE UNCERTAINTY</span> <span style="font-size:11px;color:var(--muted);margin-left:8px">Regime: MIXED-TO-CAUTIOUS on rates; watch TLT/XLF into June FOMC</span></div>
+    </div>
+
+    <div style="background:linear-gradient(135deg,#1a0a00,#0d0d0d);border:1px solid var(--amber);border-radius:5px;padding:12px;margin-bottom:12px">
+      <div style="font-size:14px;font-weight:bold;color:var(--amber);margin-bottom:6px">🛢️ IRAN-US DEAL — OIL BINARY EVENT</div>
+      <div style="font-size:12px">Rubio: "good signs" on Iran deal. Sticking points: enriched uranium stockpile + Strait of Hormuz toll proposals.</div>
+      <table style="margin-top:8px">
+        <thead><tr><th>ASSET</th><th class="num">PRICE</th><th class="num">DAY</th><th class="num">WEEK</th></tr></thead>
+        <tbody>
+          <tr><td>Brent Crude</td><td class="num">$103.54</td><td class="num bull">+$0.96</td><td class="num bear">-5%</td></tr>
+          <tr><td>WTI</td><td class="num">$96.60</td><td class="num bull">+$0.25</td><td class="num bear">-8%</td></tr>
+        </tbody>
+      </table>
+      <div style="margin-top:6px;font-size:11px"><span class="bear">Deal closure</span>: WTI → $85–88; UCO gap-down 10–15%; GLD eases &nbsp;|&nbsp; <span class="bull">Deal failure</span>: WTI +$5–8; UCO gap-up; GLD rallies</div>
+      <div style="margin-top:4px;font-size:11px">Source: <a href="https://www.cnbc.com/2026/05/22/oil-prices-today-trump-iran-strait-of-hormuz-uranium-.html" target="_blank">CNBC Oil Report ↗</a></div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+      <div style="background:var(--bg3);border:1px solid var(--border);border-radius:5px;padding:12px">
+        <div style="font-size:12px;font-weight:bold;color:var(--muted);margin-bottom:6px">₿ CRYPTO / BTC</div>
+        <div style="font-size:20px;font-weight:bold;color:var(--red)">$77,447</div>
+        <div style="font-size:11px;color:var(--muted)">24h: -0.24% | Below $80K support</div>
+        <div style="font-size:11px;margin-top:4px">IBIT -2.36% | COIN -4.43% | No catalyst until June 8</div>
+        <div class="tag" style="background:var(--red-dim);color:var(--red);border-color:var(--red);margin-top:6px">CRYPTO NEGATIVE</div>
+      </div>
+      <div style="background:var(--bg3);border:1px solid var(--border);border-radius:5px;padding:12px">
+        <div style="font-size:12px;font-weight:bold;color:var(--muted);margin-bottom:6px">📊 CONSUMER MACRO (Tuesday Trigger)</div>
+        <div style="font-size:14px;font-weight:bold;color:var(--amber)">Consumer Confidence — Tue May 26, 10:00 AM ET</div>
+        <div style="font-size:11px;color:var(--muted);margin-top:4px">May sentiment: 44.8 (below 48.2 est, below 49.8 April)</div>
+        <div style="font-size:11px;margin-top:4px">Gas $4.55/gallon (+50%+ since Feb 28 war). Soft print = risk-off; beat = ATH extension.</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══ STEP 5 OPTIONS FLOW ══ -->
+<div class="card" data-tier="t5">
+  <div class="card-header t5-header">
+    <h2>STEP 5 — OPTIONS FLOW</h2>
+    <span class="badge" style="background:var(--blue-dim);color:var(--blue)">OPTIONS</span>
+  </div>
+  <div class="card-body">
+    <table>
+      <thead><tr><th>TICKER</th><th>TYPE</th><th>STRIKE</th><th>EXPIRY</th><th>AMOUNT</th><th>SIGNAL</th></tr></thead>
+      <tbody>
+        <tr><td><strong>MSTR</strong></td><td class="bull">Call</td><td class="num">$170</td><td>05/22</td><td class="num">$94.5K</td><td><span class="bull">🔵 BULLISH</span> — BTC directional bet on expiry day</td></tr>
+        <tr><td><strong>DELL</strong></td><td>Call</td><td class="num">$250</td><td>05/22</td><td class="num">$52.3K</td><td><span class="bear">🔴 PROFIT-TAKING</span> — same-day expiry call = locking +15% gain</td></tr>
+        <tr><td><strong>ARM</strong></td><td class="bull">Call</td><td class="num">$265</td><td>05/22</td><td class="num">$35.2K</td><td><span class="bull">🔵 BULLISH</span> — semi momentum</td></tr>
+        <tr><td><strong>NVDA</strong></td><td>Call</td><td class="num">$225</td><td>05/22</td><td class="num">$33.5K</td><td><span class="bear">🔴 BEARISH</span> — call write near resistance; institutional sellers at $225</td></tr>
+        <tr><td><strong>MU</strong></td><td class="bear">Put</td><td class="num">$725</td><td>05/22</td><td class="num">$25.8K</td><td><span class="bear">🔴 BEARISH</span> — NAND oversupply concern</td></tr>
+      </tbody>
+    </table>
+    <div style="font-size:10px;color:var(--muted);margin-top:4px">Source: <a href="https://www.benzinga.com/insights/options/26/05/52699799/10-information-technology-stocks-with-whale-alerts-in-todays-session" target="_blank">Benzinga Unusual Options ↗</a></div>
+
+    <div class="section-sep" style="margin:12px 0"></div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;font-size:11px">
+      <div style="background:var(--bg3);padding:10px;border-radius:4px">
+        <div class="muted">VIX</div>
+        <div style="font-size:20px;font-weight:bold;color:var(--green)">16.76</div>
+        <div class="muted">Low — market complacent</div>
+      </div>
+      <div style="background:var(--bg3);padding:10px;border-radius:4px">
+        <div class="muted">QQQ Put/Call OI</div>
+        <div style="font-size:20px;font-weight:bold;color:var(--amber)">1.59</div>
+        <div class="muted">Institutional hedge tilt despite green day</div>
+      </div>
+      <div style="background:var(--bg3);padding:10px;border-radius:4px">
+        <div class="muted">Fear & Greed</div>
+        <div style="font-size:20px;font-weight:bold;color:var(--amber)">61</div>
+        <div class="muted">Greed — elevated, not extreme</div>
+      </div>
+    </div>
+    <div class="note" style="margin-top:10px">🔵 CONFLUENCE: QTUM constituents show NO bearish options flow → quantum rally unhedged = genuine conviction. NVDA call write at $225 = resistance confirmed; support $212–217 = entry zone.</div>
+  </div>
+</div>
+
+<!-- ══ STEP 6 WIRE SCOOPS ══ -->
+<div class="card" data-tier="t6">
+  <div class="card-header t6-header">
+    <h2>STEP 6 — WIRE SERVICE SCOOPS (4 PM – 8 PM ET)</h2>
+    <span class="badge" style="background:var(--orange-dim);color:var(--orange)">WIRE SCOOPS</span>
+  </div>
+  <div class="card-body">
+    <table>
+      <thead><tr><th>OUTLET</th><th>HEADLINE</th><th>AFFECTED ETFs</th><th>DIRECTION</th></tr></thead>
+      <tbody>
+        <tr>
+          <td class="orange-t">CNBC</td>
+          <td><a href="https://www.cnbc.com/2026/05/22/trump-kevin-warsh-fed-chair-interest-rates.html" target="_blank">Kevin Warsh sworn in as Fed chair ↗</a></td>
+          <td>TLT, XLF, IEF</td>
+          <td><span class="amber-t">🟡 Mixed</span></td>
+        </tr>
+        <tr>
+          <td class="orange-t">CNBC</td>
+          <td><a href="https://www.cnbc.com/2026/05/22/oil-prices-today-trump-iran-strait-of-hormuz-uranium-.html" target="_blank">Oil posts weekly loss; Iran deal progress ↗</a></td>
+          <td>UCO, BNO, XLE, GLD</td>
+          <td><span class="bear">🔴 Oil negative</span></td>
+        </tr>
+        <tr>
+          <td class="orange-t">CNBC</td>
+          <td><a href="https://www.cnbc.com/2026/05/22/stock-market-next-week-outlook-for-may-25-29-2026.html" target="_blank">Stock market next week: May 25–29 outlook ↗</a></td>
+          <td>SPY, QQQ</td>
+          <td><span class="amber-t">🟡 Mixed/bullish</span></td>
+        </tr>
+        <tr>
+          <td class="orange-t">🚨 GlobeNewswire / NIST</td>
+          <td><a href="https://www.globenewswire.com/news-release/2026/05/21/3299199/0/en/Rigetti-Signs-Letter-of-Intent-with-U-S-Government-for-Quantum-Computing-Research.html" target="_blank">Rigetti LOI: U.S. Govt $100M quantum research ↗</a></td>
+          <td>QTUM</td>
+          <td><span class="bull">🟢 Bullish Quantum</span></td>
+        </tr>
+        <tr>
+          <td class="orange-t">24/7 Wall St.</td>
+          <td><a href="https://247wallst.com/investing/2026/05/22/dell-surges-15-leading-ai-server-rally-hpe-pops-9-super-micro-rises-5-ahead-of-earnings-catalyst/" target="_blank">Dell +15% leads AI server rally; HPE +9%, SMCI +5% ↗</a></td>
+          <td>QQQ, XLK</td>
+          <td><span class="bull">🟢 Bullish AI Infra</span></td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="note" style="margin-top:10px">🚨 POLICY-STAKE ESCALATION: NIST/DoC $2B quantum = Intel-model framework for quantum computing. Congress treating quantum as strategic infrastructure. Not a one-time grant — structural multi-year commitment.</div>
+  </div>
+</div>
+
+<!-- ══ STEP 7 EARNINGS ══ -->
+<div class="card" data-tier="t7">
+  <div class="card-header t7-header">
+    <h2>STEP 7 — TOMORROW'S EARNINGS PREVIEW</h2>
+    <span class="badge" style="background:var(--amber-dim);color:var(--amber)">EARNINGS</span>
+  </div>
+  <div class="card-body">
+    <div class="note">Markets closed Monday May 25 (Memorial Day). Next session: Tuesday May 26.</div>
+    <table style="margin-top:10px">
+      <thead><tr><th>TICKER</th><th>DATE</th><th>TIME</th><th>CONS. EPS</th><th>CONS. REV</th><th>IMPL. MOVE</th><th>NOTES</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><strong>AZO</strong><br><span class="muted" style="font-size:10px">AutoZone</span></td>
+          <td>May 26</td>
+          <td>BMO</td>
+          <td class="num">~$38</td>
+          <td class="num">~$4.5B</td>
+          <td class="num amber-t">~5%</td>
+          <td>Consumer bellwether; watch gas price impact on auto maintenance demand</td>
+        </tr>
+        <tr style="background:linear-gradient(90deg,#001a0a,transparent)">
+          <td><strong class="gold-t">DELL</strong><br><span class="muted" style="font-size:10px">🔑 KEY CATALYST</span></td>
+          <td class="gold-t">May 28</td>
+          <td class="gold-t">BMO</td>
+          <td class="num gold-t">$3.00 (+93.6% YoY)</td>
+          <td class="num gold-t">$35.46B (+51.7% YoY)</td>
+          <td class="num bull">~11%</td>
+          <td>$43B AI backlog; ~$50B AI rev FY27 guide (100% YoY); 94% Polymarket beat probability. Beat+raise = AI infra complex gap-up. Miss = theme hit across SMH, QQQ, SMCI, HPE.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ══ STEP 8 GAP MAP ══ -->
+<div class="card" data-tier="t8">
+  <div class="card-header t8-header">
+    <h2>STEP 8 — SYNTHESIS: TOMORROW'S GAP MAP (ETF-FIRST)</h2>
+    <span class="badge" style="background:#2a2000;color:var(--gold)">GAP MAP</span>
+  </div>
+  <div class="card-body">
+
+    <!-- THEME OF NIGHT -->
+    <div class="theme-box">
+      <h3>🏆 THEME OF THE NIGHT: QUANTUM COMPUTING</h3>
+      <p>$2.013B CHIPS Act quantum funding with government equity stakes in 7 companies is the cleanest, most primary-sourced catalyst of the night. Intel-model policy framework = quantum enters strategic infrastructure. RGTI +17%, QBTS +13%, QUBT +14%, IONQ +8%. Direction: <span class="bull">BULLISH</span> — POLICY-STAKE catalyst class = highest durability.</p>
+    </div>
+
+    <!-- REGIME -->
+    <div style="margin-bottom:14px">
+      <div style="font-size:12px;font-weight:bold;color:var(--muted);margin-bottom:6px">REGIME READ</div>
+      <div class="regime-box">
+        <div class="regime-on">RISK-ON: Growth/Tech/Quantum</div>
+        <div class="regime-mixed">MIXED: Consumer/Rates (Warsh/Iran)</div>
+        <div class="regime-off">AVOID: IBIT / UCO binary risk</div>
+      </div>
+    </div>
+
+    <!-- TOP 5 ETF PICKS -->
+    <div style="font-size:13px;font-weight:bold;color:var(--gold);margin-bottom:10px">▲ TOP 5 ETF GAP-UP CANDIDATES — TUESDAY MAY 26</div>
+
+    <div class="pick-card" style="border:1px solid var(--green)">
+      <span class="pick-rank">1</span>
+      <span class="pick-ticker" style="color:var(--green)">QTUM</span>
+      <span class="conv-high" style="margin-left:10px">🟢 HIGH CONVICTION</span>
+      <span class="tag tag-quantum" style="margin-left:8px">QUANTUM / POLICY-STAKE</span>
+      <div class="pick-desc">$2.013B CHIPS Act quantum funding; govt equity stakes; Intel-model framework confirmed</div>
+      <div class="pick-meta">
+        <div class="pick-meta-item"><label>Session Move: </label><value class="bull"> +12–15% est</value></div>
+        <div class="pick-meta-item"><label>Entry: </label><value> Open or VWAP reclaim dip</value></div>
+        <div class="pick-meta-item"><label>Stop: </label><value> Below Thursday's pre-rally close</value></div>
+        <div class="pick-meta-item"><label>Next Cat: </label><value class="amber-t"> D-Wave Investor Day June 1</value></div>
+      </div>
+      <div class="pick-constituents">Leaders: <span>RGTI +17%</span> &nbsp;|&nbsp; <span>QUBT +14%</span> &nbsp;|&nbsp; <span>QBTS +13%</span> &nbsp;|&nbsp; <span>IONQ +8%</span></div>
+    </div>
+
+    <div class="pick-card" style="border:1px solid #888">
+      <span class="pick-rank" style="color:var(--amber)">2</span>
+      <span class="pick-ticker amber-t">SMH</span>
+      <span class="conv-med" style="margin-left:10px">🟡 MEDIUM</span>
+      <span class="tag tag-semi" style="margin-left:8px">SEMIS / AI COMPUTE</span>
+      <div class="pick-desc">AMD 2nm EPYC ramp + BofA $500 PT; NVDA at $212–217 support = accumulate window</div>
+      <div class="pick-meta">
+        <div class="pick-meta-item"><label>Session Move: </label><value class="bull"> +1.49% confirmed</value></div>
+        <div class="pick-meta-item"><label>Entry: </label><value> Dip to $570–572</value></div>
+        <div class="pick-meta-item"><label>Stop: </label><value> $565</value></div>
+        <div class="pick-meta-item"><label>Target: </label><value> $590</value></div>
+      </div>
+      <div class="pick-constituents">Drivers: <span>AMD +4%</span> &nbsp;|&nbsp; <span style="color:var(--red)">NVDA -1.9%</span> (at support, stabilizing)</div>
+    </div>
+
+    <div class="pick-card" style="border:1px solid #888">
+      <span class="pick-rank" style="color:var(--amber)">3</span>
+      <span class="pick-ticker" style="color:#a0e060">URA</span>
+      <span class="conv-med" style="margin-left:10px">🟡 MEDIUM</span>
+      <span class="tag tag-nuclear" style="margin-left:8px">NUCLEAR / AI POWER</span>
+      <div class="pick-desc">CCJ India uranium deal ($2.6B); SMR +10%; nuclear-AI power secular theme; Iran oil ceiling paradox</div>
+      <div class="pick-meta">
+        <div class="pick-meta-item"><label>Session Move: </label><value class="bull"> +6–8% est</value></div>
+        <div class="pick-meta-item"><label>Entry: </label><value> Breakout or dip off open</value></div>
+        <div class="pick-meta-item"><label>Stop: </label><value> Below 10-day EMA</value></div>
+      </div>
+      <div class="pick-constituents">Leaders: <span>SMR +10%</span> &nbsp;|&nbsp; <span>CCJ +6%</span></div>
+    </div>
+
+    <div class="pick-card" style="border:1px solid #888">
+      <span class="pick-rank" style="color:var(--amber)">4</span>
+      <span class="pick-ticker cyan-t">UFO</span>
+      <span class="conv-med" style="margin-left:10px">🟡 MEDIUM (2-sided)</span>
+      <span class="tag tag-space" style="margin-left:8px">SPACE / DEFENSE</span>
+      <div class="pick-desc">ASTS +7%; RKLB +6% + $90M Space Force contract; PL +4%. Headwind: RKLB $3B ATM dilution.</div>
+      <div class="pick-meta">
+        <div class="pick-meta-item"><label>Session Move: </label><value class="bull"> +5–6% est</value></div>
+        <div class="pick-meta-item"><label>Entry: </label><value> ONLY above Friday's high; avoid if RKLB pre-mkt weak</value></div>
+        <div class="pick-meta-item"><label>Stop: </label><value> Below Friday's open</value></div>
+      </div>
+      <div class="pick-constituents">Drivers: <span>ASTS +7%</span> &nbsp;|&nbsp; <span>RKLB +6%</span> &nbsp;|&nbsp; <span>PL +4%</span></div>
+    </div>
+
+    <div class="pick-card" style="border:1px solid #888">
+      <span class="pick-rank" style="color:var(--amber)">5</span>
+      <span class="pick-ticker amber-t">ITA</span>
+      <span class="conv-med" style="margin-left:10px">🟡 MEDIUM</span>
+      <span class="tag tag-space" style="margin-left:8px">AEROSPACE / DEFENSE</span>
+      <div class="pick-desc">Dow ATH momentum; RKLB contracts; CAT +2.71%; Iran situation keeps defense demand in view</div>
+      <div class="pick-meta">
+        <div class="pick-meta-item"><label>Session Move: </label><value class="bull"> +0.92% confirmed</value></div>
+        <div class="pick-meta-item"><label>Entry: </label><value> Dip to $223</value></div>
+        <div class="pick-meta-item"><label>Stop: </label><value> Below $221</value></div>
+      </div>
+    </div>
+
+    <div class="section-sep" style="margin:16px 0"></div>
+
+    <!-- TOP 3 FADE RISKS -->
+    <div style="font-size:13px;font-weight:bold;color:var(--red);margin-bottom:10px">▼ TOP 3 ETF GAP-DOWN / FADE RISKS</div>
+
+    <table>
+      <thead><tr><th>ETF</th><th>REASON</th><th>TRADE</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><strong class="bear">IBIT</strong></td>
+          <td>BTC $77.4K below $80K; COIN -4.43%; no crypto catalyst until June 8</td>
+          <td class="bear">Avoid long; short only below BTC $76K</td>
+        </tr>
+        <tr>
+          <td><strong class="bear">UCO</strong></td>
+          <td>Iran deal advancing = oil supply ceiling; Brent -5%, WTI -8% weekly</td>
+          <td class="bear">Avoid long until Hormuz sticking point resolves; binary</td>
+        </tr>
+        <tr>
+          <td><strong class="amber-t">UFO/ROKT</strong></td>
+          <td>Conditional: if RKLB pre-market down >3% on $3B ATM narrative → dilution-driven fade</td>
+          <td class="amber-t">Watch RKLB pre-market as canary; hedge space long if RKLB weak</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="section-sep" style="margin:16px 0"></div>
+
+    <!-- EOD ENTRY CANDIDATES -->
+    <div style="font-size:12px;font-weight:bold;color:var(--muted);margin-bottom:8px">EOD ENTRY CANDIDATES — Tuesday Close Hold (3–5 Day Stockbee/Qullamaggie Pattern)</div>
+    <table>
+      <thead><tr><th>ETF</th><th>PATTERN</th><th>ENTRY</th><th>TARGET</th><th>HOLD PERIOD</th></tr></thead>
+      <tbody>
+        <tr><td><strong class="bull">QTUM</strong></td><td>Breakout continuation</td><td>VWAP reclaim Tuesday</td><td>+10–20%</td><td>Through D-Wave Investor Day June 1</td></tr>
+        <tr><td><strong style="color:#a0e060">URA</strong></td><td>Momentum continuation</td><td>Dip off open</td><td>+5–8%</td><td>Through DELL earnings May 28</td></tr>
+        <tr><td><strong class="amber-t">SMH</strong></td><td>NVDA bottom + AMD momentum</td><td>$570 dip</td><td>$590</td><td>Through DELL earnings May 28</td></tr>
+      </tbody>
+    </table>
+
+    <div class="section-sep" style="margin:16px 0"></div>
+
+    <!-- OVERNIGHT BRIEFING -->
+    <div style="font-size:12px;font-weight:bold;color:var(--muted);margin-bottom:8px">📋 OVERNIGHT BRIEFING — 30-Second Read</div>
+    <div class="briefing">
+      The quantum computing theme dominated the final Friday session before the Memorial Day weekend, with RGTI +17%, QBTS +13%, QUBT +14%, and IONQ +8% all surging on the Trump administration's $2.013 billion CHIPS Act quantum funding announcement — including government equity stakes in seven companies, marking quantum's transition from academic curiosity to strategic infrastructure on par with semiconductors. The Dow closed at a fresh all-time high of 50,723.95, driven by Dell's +15% surge on AI server momentum ahead of its May 28 earnings ($3.00 EPS est., $35.46B rev est., $43B AI backlog), AMD's +4% on BofA's $500 price target, and nuclear stocks pushing higher as Iran deal optimism caps oil while paradoxically strengthening baseload nuclear demand. The big overnight wildcard is Kevin Warsh, now officially sworn in as Fed Chair at the White House, facing 3.8% inflation at his inaugural June 16–17 FOMC. Secondary alert: WillScot Holdings (WSC) plunged 33% AH with no confirmed catalyst — check WSC IR and EDGAR before the open. <strong style="color:var(--gold)">Tuesday playbook: buy QTUM on any dip, accumulate SMH near $570, watch Consumer Confidence at 10 AM ET as the intraday pivot point.</strong>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══ STEP 9 ASSUMPTION AUDIT ══ -->
+<div class="card" data-tier="t9">
+  <div class="card-header t9-header">
+    <h2>STEP 9 — ASSUMPTION AUDIT</h2>
+  </div>
+  <div class="card-body">
+    <table>
+      <thead><tr><th>ASSUMPTION</th><th>WHAT CHANGES THE CALL</th><th>TRADE IMPACT</th></tr></thead>
+      <tbody>
+        <tr><td>QTUM moved +12–15% (estimated from constituents)</td><td>TV MCP confirms actual ETF move <5%</td><td class="amber-t">Lower conviction; verify pre-market Tuesday</td></tr>
+        <tr><td>$2B quantum funding confirmed and durable</td><td>Congress claws back or reduces scope</td><td class="bear">QTUM/RGTI gap-down; exit immediately</td></tr>
+        <tr><td>NVDA support holds at $212–217</td><td>Secondary selling breaks below $210</td><td class="bear">SMH loses support; avoid adds</td></tr>
+        <tr><td>Iran deal progress continues = oil ceiling</td><td>Surprise deal collapse → WTI +$5–8</td><td class="amber-t">UCO gap-up 10%; GLD rally; equity risk-off</td></tr>
+        <tr><td>Warsh preserves Fed independence</td><td>Trump rate-cut pressure perceived as effective</td><td class="amber-t">TLT sells; XLF rallies on curve steepening</td></tr>
+        <tr><td>WSC -33% AH is a real move, not data error</td><td>Illiquid AH print → recovers Tuesday</td><td class="muted">Monitor; investigate before open</td></tr>
+        <tr><td>Consumer Confidence beats Tuesday 10 AM</td><td>Weak print → risk-off morning</td><td class="amber-t">Dip in NVDA/AMD/TSLA; use to add QTUM/SMH</td></tr>
+        <tr><td>DELL beats May 28 (94% Polymarket probability)</td><td>Miss or margin compression</td><td class="bear">AI infra theme hit; SMH/QQQ/SMCI/HPE negative</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<div style="text-align:center;padding:20px;color:var(--muted);font-size:11px;border-top:1px solid var(--border);margin-top:16px">
+  Gap Attribution v7.3 ETF-FIRST &nbsp;|&nbsp; May 22, 2026 &nbsp;|&nbsp;
+  Sources: NIST, Rigetti IR, EDGAR, 247wallst.com, techstartups.com, Dell IR, CNBC, PBS, WashPost, Benzinga, stockanalysis.com
+</div>
+
+</div><!-- end main -->
+
+<script>
+const tierMap = {
+  t0: '[data-tier="t0"]',
+  t1: '[data-tier="t1"]',
+  t2: '[data-tier="t2"]',
+  t3: '[data-tier="t3"]',
+  t4: '[data-tier="t4"]',
+  t5: '[data-tier="t5"]',
+  t6: '[data-tier="t6"]',
+  t7: '[data-tier="t7"]',
+  t8: '[data-tier="t8"]',
+};
+
+function toggle(tier) {
+  const cards = document.querySelectorAll(tierMap[tier]);
+  const btn = document.querySelector(`.btn-${tier}`);
+  const isActive = btn.classList.contains('active');
+  cards.forEach(c => c.style.display = isActive ? 'none' : '');
+  btn.classList.toggle('active', !isActive);
+  btn.classList.toggle('inactive', isActive);
+}
+
+function showAll() {
+  Object.keys(tierMap).forEach(tier => {
+    document.querySelectorAll(tierMap[tier]).forEach(c => c.style.display = '');
+    const btn = document.querySelector(`.btn-${tier}`);
+    if (btn) { btn.classList.add('active'); btn.classList.remove('inactive'); }
+  });
+}
+</script>
+</body>
+</html>
