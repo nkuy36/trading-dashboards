@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>After-Hours Scan — May 26, 2026</title>
+<style>
+  :root {
+    --bg: #0d1117;
+    --surface: #161b22;
+    --surface2: #1c2128;
+    --border: #30363d;
+    --text: #e6edf3;
+    --muted: #8b949e;
+    --green: #3fb950;
+    --red: #f85149;
+    --yellow: #d29922;
+    --orange: #e3b341;
+    --blue: #58a6ff;
+    --purple: #bc8cff;
+    --cyan: #39d353;
+    --accent: #1f6feb;
+    --alert-bg: #3d2200;
+    --alert-border: #f85149;
+    --alert2-bg: #0f2d1a;
+    --alert2-border: #3fb950;
+    --alert3-bg: #1a1420;
+    --alert3-border: #bc8cff;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Segoe UI', 'SF Pro Display', -apple-system, sans-serif;
+    font-size: 14px;
+    line-height: 1.6;
+    padding: 20px;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+  h1 { font-size: 1.6em; color: var(--blue); border-bottom: 2px solid var(--accent); padding-bottom: 8px; margin-bottom: 6px; }
+  h2 { font-size: 1.2em; color: var(--orange); margin: 24px 0 10px; border-left: 4px solid var(--orange); padding-left: 10px; }
+  h3 { font-size: 1.05em; color: var(--blue); margin: 16px 0 8px; }
+  h4 { font-size: 0.95em; color: var(--purple); margin: 12px 0 6px; }
+  .subtitle { color: var(--muted); font-size: 0.85em; margin-bottom: 20px; }
+  .alert-box {
+    background: var(--alert-bg);
+    border: 2px solid var(--alert-border);
+    border-radius: 8px;
+    padding: 14px 16px;
+    margin-bottom: 16px;
+  }
+  .alert-box .alert-title {
+    color: var(--red);
+    font-weight: 700;
+    font-size: 1.05em;
+    margin-bottom: 8px;
+  }
+  .alert-box2 {
+    background: var(--alert2-bg);
+    border: 2px solid var(--alert2-border);
+    border-radius: 8px;
+    padding: 14px 16px;
+    margin-bottom: 16px;
+  }
+  .alert-box2 .alert-title {
+    color: var(--green);
+    font-weight: 700;
+    font-size: 1.05em;
+    margin-bottom: 8px;
+  }
+  .alert-box3 {
+    background: var(--alert3-bg);
+    border: 2px solid var(--alert3-border);
+    border-radius: 8px;
+    padding: 14px 16px;
+    margin-bottom: 16px;
+  }
+  .alert-box3 .alert-title {
+    color: var(--purple);
+    font-weight: 700;
+    font-size: 1.05em;
+    margin-bottom: 8px;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 10px 0 16px;
+    font-size: 0.88em;
+  }
+  th {
+    background: var(--surface2);
+    color: var(--orange);
+    padding: 7px 10px;
+    text-align: left;
+    border: 1px solid var(--border);
+    font-weight: 600;
+  }
+  td {
+    padding: 6px 10px;
+    border: 1px solid var(--border);
+    vertical-align: top;
+  }
+  tr:nth-child(even) td { background: var(--surface); }
+  tr:nth-child(odd) td { background: var(--bg); }
+  .up { color: var(--green); font-weight: 600; }
+  .down { color: var(--red); font-weight: 600; }
+  .neutral { color: var(--yellow); }
+  .hot { color: var(--orange); font-weight: 700; }
+  .tag {
+    display: inline-block;
+    padding: 1px 7px;
+    border-radius: 10px;
+    font-size: 0.78em;
+    font-weight: 600;
+    margin-right: 4px;
+  }
+  .tag-bull { background: #0f2d1a; color: var(--green); border: 1px solid var(--green); }
+  .tag-bear { background: #3d1a1a; color: var(--red); border: 1px solid var(--red); }
+  .tag-neutral { background: #2a2200; color: var(--yellow); border: 1px solid var(--yellow); }
+  .tag-watch { background: #1a1a2e; color: var(--blue); border: 1px solid var(--blue); }
+  .tag-policy { background: #1a1420; color: var(--purple); border: 1px solid var(--purple); }
+  section { margin-bottom: 32px; }
+  .divider { border: none; border-top: 1px solid var(--border); margin: 24px 0; }
+  .note { background: var(--surface2); border-left: 3px solid var(--muted); padding: 8px 12px; margin: 8px 0 14px; color: var(--muted); font-size: 0.85em; border-radius: 0 4px 4px 0; }
+  .highlight-row td { background: #1c2e1c !important; }
+  .theme-row td { background: #1a1420 !important; }
+  .ticker { font-weight: 700; font-family: 'Courier New', monospace; color: var(--cyan); }
+  .index-bar {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px 16px;
+    margin: 10px 0 18px;
+  }
+  .index-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 90px;
+  }
+  .index-name { font-size: 0.75em; color: var(--muted); }
+  .index-val { font-size: 1.1em; font-weight: 700; color: var(--text); }
+  .index-chg { font-size: 0.85em; font-weight: 600; }
+  .step-header {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 10px 14px;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .step-num {
+    background: var(--accent);
+    color: white;
+    border-radius: 50%;
+    width: 26px;
+    height: 26px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.85em;
+    flex-shrink: 0;
+  }
+  .step-title { font-weight: 600; color: var(--text); font-size: 1em; }
+  ul { padding-left: 18px; margin: 6px 0; }
+  li { margin: 3px 0; }
+  p { margin: 6px 0; }
+  strong { color: var(--text); }
+  .emoji-icon { font-size: 1.2em; }
+  footer { margin-top: 40px; padding-top: 16px; border-top: 1px solid var(--border); color: var(--muted); font-size: 0.8em; text-align: center; }
+</style>
+</head>
+<body>
+
+<h1>🌙 After-Hours Scan — May 26, 2026</h1>
+<div class="subtitle">v7.3 +SAFETY NET &nbsp;|&nbsp; First session after Memorial Day &nbsp;|&nbsp; Primary sources only &nbsp;|&nbsp; Generated post-close</div>
+
+<!-- INDEX BAR -->
+<div class="index-bar">
+  <div class="index-item">
+    <span class="index-name">S&P 500</span>
+    <span class="index-val">7,519</span>
+    <span class="index-chg up">+0.61%</span>
+  </div>
+  <div class="index-item">
+    <span class="index-name">NASDAQ</span>
+    <span class="index-val">26,656</span>
+    <span class="index-chg up">+1.19%</span>
+  </div>
+  <div class="index-item">
+    <span class="index-name">DOW</span>
+    <span class="index-val">50,462</span>
+    <span class="index-chg down">-0.23%</span>
+  </div>
+  <div class="index-item">
+    <span class="index-name">VIX</span>
+    <span class="index-val">16.59</span>
+    <span class="index-chg neutral">Complacent</span>
+  </div>
+  <div class="index-item">
+    <span class="index-name">BTC</span>
+    <span class="index-val">$77,275</span>
+    <span class="index-chg up">+1.62%</span>
+  </div>
+  <div class="index-item">
+    <span class="index-name">GOLD</span>
+    <span class="index-val">$4,600</span>
+    <span class="index-chg neutral">~flat</span>
+  </div>
+  <div class="index-item">
+    <span class="index-name">WTI OIL</span>
+    <span class="index-val">~$92</span>
+    <span class="index-chg neutral">Iran watch</span>
+  </div>
+</div>
+
+<!-- ================================================ -->
+<!-- STEP 0 -->
+<!-- ================================================ -->
+<section>
+<div class="step-header">
+  <div class="step-num">0</div>
+  <div class="step-title">🚨 CRITICAL NEWS SWEEP (Safety Net) — 1 PM–5 PM Coverage</div>
+</div>
+
+<div class="alert-box">
+  <div class="alert-title">🚨 CATALYST #1: MICRON CROSSES $1 TRILLION MARKET CAP</div>
+  <p><strong>Source: GuruFocus, U.S. News, Invezz — confirmed</strong></p>
+  <p style="margin-top:8px">Micron Technology (<span class="ticker">MU</span>) surged <span class="up">+18.3%</span> to <strong>$886.60</strong>, crossing $1 trillion market cap for the first time. UBS raised its price target from $535 to <strong>$1,625</strong> — the highest of 46 brokerages.</p>
+  <table style="margin-top:10px">
+    <tr><th>Metric</th><th>Value</th></tr>
+    <tr><td>Close</td><td class="up">$886.60 (+18.3%)</td></tr>
+    <tr><td>UBS Target</td><td class="hot">$1,625 (from $535)</td></tr>
+    <tr><td>Q2 FY2026 Revenue</td><td>$23.8B (vs $8B YoY)</td></tr>
+    <tr><td>Gross Margin</td><td class="up">74.4%</td></tr>
+    <tr><td>Net Income</td><td>$13.78B</td></tr>
+    <tr><td>Market Cap</td><td class="hot">~$1.04 trillion</td></tr>
+  </table>
+  <p style="margin-top:8px">UBS cited structural change in the AI storage industry — HBM and enterprise NAND for LLM workloads at inflection. <strong>ETF implication:</strong> <span class="ticker">SMH</span> is the cleanest expression. Gap likely tomorrow.</p>
+</div>
+
+<div class="alert-box">
+  <div class="alert-title">🚨 CATALYST #2: SpaceX IPO LIFTS ENTIRE SPACE SECTOR</div>
+  <p><strong>Source: CNBC, Al Jazeera, Fortune, NPR — confirmed</strong></p>
+  <p style="margin-top:8px">SpaceX filed S-1: Nasdaq ticker <strong>SPCX</strong>, $75B raise target, $1.75–2T valuation. Roadshow June 4 | Pricing June 11 | Listing June 12. Musk controls 85% voting power; 30% allocated to retail.</p>
+  <table style="margin-top:10px">
+    <tr><th>Ticker</th><th>Move Today</th><th>Catalyst</th></tr>
+    <tr class="highlight-row"><td class="ticker">ASTS</td><td class="up">+20%</td><td>SpaceX IPO halo + 45 BlueBird satellites mid-June launch</td></tr>
+    <tr class="highlight-row"><td class="ticker">PL</td><td class="up">+15%</td><td>Q3 revenue $81.25M (+33% YoY); remaining obligations +361% to $672M</td></tr>
+    <tr class="highlight-row"><td class="ticker">RKLB</td><td class="up">+6%</td><td>Golden Dome Space Based Interceptor contract (DoW/Raytheon)</td></tr>
+  </table>
+  <p style="margin-top:8px"><strong>ETF implication:</strong> <span class="ticker">ARKX</span> (+60.55% YTD). SpaceX IPO halo window carries to June 12.</p>
+</div>
+
+<div class="alert-box3">
+  <div class="alert-title">🔬 CATALYST #3: QUANTUM SECTOR CONTINUATION (QBTS DoD Second-Year Funding)</div>
+  <p><strong>Source: TipRanks, DoD Microelectronics Commons — confirmed</strong></p>
+  <p style="margin-top:8px">D-Wave Quantum (<span class="ticker">QBTS</span>) confirmed second-year DoD funding today for its Improved Materials for Superconducting Qubits project. The original $2B DoC CHIPS Act quantum announcement continues driving sector. QBTS trading $29.40 (+56% month).</p>
+  <table style="margin-top:10px">
+    <tr><th>Ticker</th><th>Price</th><th>Weekly Trend</th><th>Note</th></tr>
+    <tr><td class="ticker">RGTI</td><td>$26.42</td><td class="up">+48% this week</td><td>$100M CHIPS Act LOI; Cepheus-1 108-qubit system</td></tr>
+    <tr><td class="ticker">QBTS</td><td>$29.40</td><td class="up">+56% month</td><td>NEW: DoD second-year Microelectronics funding confirmed</td></tr>
+    <tr><td class="ticker">IONQ</td><td>~$63.64</td><td class="neutral">Mixed</td><td>Q1 Rev $64.7M +755% YoY; sector sympathy pullback</td></tr>
+    <tr><td class="ticker">INFQ</td><td>~$15.84</td><td class="down">Pulling back</td><td>From $18.20 high; mean reversion underway</td></tr>
+  </table>
+  <p style="margin-top:8px"><span class="tag tag-policy">🏛️ POLICY</span> <strong>ETF:</strong> <span class="ticker">QTUM</span> ($153.44 Fri close) — less volatile than extended individual names.</p>
+</div>
+
+<h3>Wire Service Scoops (1 PM–5 PM)</h3>
+<table>
+  <tr><th>Source</th><th>Story</th><th>Impact</th></tr>
+  <tr><td>Investing.com</td><td>SoFi CEO Noto — Basis Points podcast; 41% adj. revenue growth; SoFiUSD stablecoin; Mastercard partnership</td><td><span class="ticker">SOFI</span> <span class="up">+~2.7%</span></td></tr>
+  <tr><td>Multiple</td><td>CoreWeave $99.4B backlog; Meta deal to 2032 for $21B; 10 clients at $1B+ each</td><td>CRWV AI thesis confirmed</td></tr>
+  <tr><td>White House</td><td>World Trade Week — 20+ trade deals secured; manufacturing trillions committed</td><td>Macro positive; mild USD support</td></tr>
+  <tr><td>Reuters/Bloomberg</td><td>Kevin Warsh taking Fed Chairman oath this week; first FOMC June</td><td>Rate watch; <span class="ticker">TLT</span> June catalyst</td></tr>
+</table>
+
+<h3>Government Equity Portfolio Tracker</h3>
+<ul>
+  <li><span class="ticker">QBTS</span>: DoD second-year Microelectronics Commons funding — <strong>fresh catalyst today</strong>.</li>
+  <li><span class="ticker">RGTI</span>: Holding $2B CHIPS Act LOI gains. No new news today.</li>
+  <li><span class="ticker">MP</span>: DoD deal steady (10-year NdPr off-take, DoD as largest shareholder). No new news.</li>
+  <li><span class="ticker">INTC / IBM</span>: No government news today.</li>
+</ul>
+</section>
+
+<hr class="divider">
+
+<!-- ================================================ -->
+<!-- STEP 1 -->
+<!-- ================================================ -->
+<section>
+<div class="step-header">
+  <div class="step-num">1</div>
+  <div class="step-title">WATCHLIST POST-CLOSE</div>
+</div>
+<div class="note">First session after Memorial Day — gaps vs. Friday May 22 closes reflect 3-day weekend news flow.</div>
+
+<table>
+  <tr>
+    <th>Ticker</th>
+    <th>Close</th>
+    <th>Day %</th>
+    <th>vs. Fri Close</th>
+    <th>AH</th>
+    <th>Key Event</th>
+  </tr>
+  <tr>
+    <td class="ticker">TSLA</td>
+    <td>$432.33</td>
+    <td class="up">+1.48%</td>
+    <td class="up">+$6.32</td>
+    <td>—</td>
+    <td>Continuation from FSD EU rollout; no new catalyst today</td>
+  </tr>
+  <tr>
+    <td class="ticker">NVDA</td>
+    <td>~$217</td>
+    <td class="up">~+1%</td>
+    <td>Recovering</td>
+    <td>—</td>
+    <td>Post-earnings "sell the news" fading; Q1 $81.6B beat; Q2 guide $91B</td>
+  </tr>
+  <tr>
+    <td class="ticker">SOFI</td>
+    <td>~$16.04</td>
+    <td class="up">+~2.7%</td>
+    <td class="up">+$0.42</td>
+    <td>Quiet</td>
+    <td>CEO Noto podcast — 41% adj. revenue growth; stablecoin; Mastercard</td>
+  </tr>
+  <tr>
+    <td class="ticker">AMD</td>
+    <td>~$467</td>
+    <td class="neutral">~flat</td>
+    <td>Near ATH $481</td>
+    <td>—</td>
+    <td>BofA PT $500; 2nm EPYC Venice ramp at TSMC</td>
+  </tr>
+  <tr class="highlight-row">
+    <td class="ticker">PLTR</td>
+    <td>$157.16</td>
+    <td class="up">+2.94%</td>
+    <td class="up">+$20.28</td>
+    <td>—</td>
+    <td>Major post-holiday gap; AI/defense analytics; Golden Dome narrative</td>
+  </tr>
+  <tr>
+    <td class="ticker">MARA</td>
+    <td>~$14.00</td>
+    <td class="neutral">+small</td>
+    <td class="up">+$0.19</td>
+    <td>—</td>
+    <td>BTC $77,275 (+1.62%); AI pivot; Long Ridge Energy deal</td>
+  </tr>
+  <tr>
+    <td class="ticker">COIN</td>
+    <td>$184.29</td>
+    <td class="neutral">est. flat</td>
+    <td class="down">-$0.70</td>
+    <td>—</td>
+    <td>BTC $77,275 (below $80K key level); Jun 8 perp futures catalyst</td>
+  </tr>
+  <tr>
+    <td class="ticker">SNDK</td>
+    <td>~$1,514</td>
+    <td class="neutral">Volatile</td>
+    <td class="up">+$35</td>
+    <td>—</td>
+    <td>Range $1,466–$1,528; +550% YTD; Citi $2,025 PT anchor</td>
+  </tr>
+  <tr>
+    <td class="ticker">META</td>
+    <td>$610.64</td>
+    <td class="neutral">~flat</td>
+    <td class="up">+$0.38</td>
+    <td>—</td>
+    <td>Quiet; CoreWeave Meta deal known</td>
+  </tr>
+  <tr>
+    <td class="ticker">AMZN</td>
+    <td>$267.99</td>
+    <td class="up">+0.63%</td>
+    <td class="up">+$1.67</td>
+    <td>—</td>
+    <td>AWS/AI infrastructure tailwinds</td>
+  </tr>
+  <tr class="highlight-row">
+    <td class="ticker">SPY</td>
+    <td>~$751</td>
+    <td class="up">+0.61%</td>
+    <td>—</td>
+    <td>—</td>
+    <td>S&P 500 7,519.12; 8+ week bull run intact</td>
+  </tr>
+  <tr class="highlight-row">
+    <td class="ticker">QQQ</td>
+    <td>~$721</td>
+    <td class="up">+1.19%</td>
+    <td>—</td>
+    <td>—</td>
+    <td>Nasdaq 26,656; tech leading; OI P/C 1.59 (hedge tilt)</td>
+  </tr>
+</table>
+
+<h4>Key Narrative Movers</h4>
+<ul>
+  <li><strong>PLTR +$20 from Friday:</strong> Significant 3-day gap. AI/government analytics thesis + Golden Dome momentum. AIP platform pricing in continued growth. Q1 revenue +85% YoY backdrop. Confirm catalyst premarket tomorrow.</li>
+  <li><strong>SNDK $1,514 (volatile):</strong> Range $1,466–$1,528 intraday. +550% YTD creates both buyers and sellers. Citi's $2,025 PT is the call anchor. Tight stop mandatory below $1,450.</li>
+  <li><strong>NVDA recovery:</strong> 4-day post-earnings slide appears resolving. $215 support held. Accumulate window still open toward $212–217 zone.</li>
+  <li><strong>COIN range-bound:</strong> BTC needs $80K. June 8 perpetual equity futures = next catalyst. Avoid until then.</li>
+</ul>
+</section>
+
+<hr class="divider">
+
+<!-- ================================================ -->
+<!-- STEP 2 -->
+<!-- ================================================ -->
+<section>
+<div class="step-header">
+  <div class="step-num">2</div>
+  <div class="step-title">ETF THEME RECAP</div>
+</div>
+
+<h3>🔥 AI/COMPUTE — Dominant Theme</h3>
+<table>
+  <tr><th>ETF</th><th>Context</th><th>Direction</th><th>Best Play?</th></tr>
+  <tr class="highlight-row">
+    <td class="ticker">SMH</td>
+    <td>+126% 1yr; 52-wk $234–$581; MU $1T milestone</td>
+    <td><span class="tag tag-bull">BREAKOUT</span></td>
+    <td>✅ Best ETF — liquid options, highest MU weight</td>
+  </tr>
+  <tr><td class="ticker">FNGU</td><td>Mega-cap AI basket</td><td><span class="tag tag-bull">Bullish</span></td><td>Secondary exposure</td></tr>
+  <tr><td class="ticker">DRAM</td><td>HBM/NAND structural demand</td><td><span class="tag tag-bull">Bullish</span></td><td>Less liquid than SMH</td></tr>
+</table>
+<p><strong>Setup tomorrow:</strong> SMH likely gaps up on MU $1T. Wait for 9:45–10 AM consolidation before adding. Dip to $575–580 = buy opportunity.</p>
+
+<h3>🔬 QUANTUM — Momentum Continuing</h3>
+<table>
+  <tr><th>ETF</th><th>Last Close</th><th>Trend</th><th>Best Play?</th></tr>
+  <tr class="highlight-row">
+    <td class="ticker">QTUM</td>
+    <td>$153.44 (Fri)</td>
+    <td><span class="tag tag-bull">Bullish</span></td>
+    <td>✅ ETF over individual names — less mean-reversion risk</td>
+  </tr>
+  <tr><td class="ticker">ILIT</td><td>—</td><td><span class="tag tag-watch">Watch</span></td><td>Secondary exposure</td></tr>
+</table>
+<p>RGTI +48%/QBTS +56% weekly runs = extended. INFQ already gave back 13%. QTUM consolidation at $148–152 = better add level tomorrow.</p>
+
+<h3>🚀 SPACE — Breakout Day</h3>
+<table>
+  <tr><th>ETF</th><th>YTD</th><th>1yr</th><th>Direction</th></tr>
+  <tr class="highlight-row">
+    <td class="ticker">ARKX</td>
+    <td class="up">+60.55%</td>
+    <td class="up">+91.68%</td>
+    <td><span class="tag tag-bull">BREAKOUT</span> — SpaceX IPO window to June 12</td>
+  </tr>
+  <tr><td class="ticker">UFO</td><td>—</td><td>—</td><td><span class="tag tag-bull">In play</span> — broader satellite coverage</td></tr>
+</table>
+<p><strong>Setup tomorrow:</strong> ASTS digests +20% move. RKLB (only +6%) = better risk/reward. ARKX = cleanest ETF play.</p>
+
+<h3>⚛️ NUCLEAR — Muted (No Fresh Catalyst)</h3>
+<table>
+  <tr><th>ETF</th><th>YTD</th><th>1yr</th><th>Direction</th></tr>
+  <tr><td class="ticker">NLR</td><td class="up">+13.82%</td><td class="up">+79.12%</td><td><span class="tag tag-neutral">Hold</span> — AI electricity demand thesis intact</td></tr>
+  <tr><td class="ticker">URA</td><td>—</td><td class="up">+62.1%</td><td><span class="tag tag-neutral">Hold</span> — Oklo/NuScale news-driven</td></tr>
+</table>
+
+<h3>🪨 RARE EARTH — Steady</h3>
+<table>
+  <tr><th>ETF</th><th>YTD</th><th>1yr</th><th>Direction</th></tr>
+  <tr><td class="ticker">REMX</td><td class="up">+41.73%</td><td class="up">+181.09%</td><td><span class="tag tag-bull">Bullish</span> — MP/DoD China-decoupling thesis</td></tr>
+</table>
+
+<h3>₿ BTC MINERS — Quiet / Transitional</h3>
+<table>
+  <tr><th>ETF</th><th>Context</th><th>Direction</th></tr>
+  <tr><td class="ticker">WGMI</td><td>BTC $77,275; below $80K key level</td><td><span class="tag tag-neutral">Range-bound</span> until $80K</td></tr>
+  <tr><td class="ticker">FDIG</td><td>In line with WGMI</td><td><span class="tag tag-neutral">Range-bound</span></td></tr>
+</table>
+<p>IREN AI pivot (Microsoft $9.7B deal, Mirantis $625M, Nostrum EUR 165M) is the individual standout over ETFs here.</p>
+
+<h3>📊 COMMODITIES / MACRO</h3>
+<table>
+  <tr><th>ETF</th><th>Close</th><th>Direction</th><th>Setup</th></tr>
+  <tr><td class="ticker">GLD</td><td>$414.09</td><td><span class="tag tag-neutral">Hold</span></td><td>Iran deal binary; buy dip if deal stalls</td></tr>
+  <tr><td class="ticker">TLT</td><td>$84.68</td><td><span class="tag tag-neutral">Watch</span></td><td>-2% YTD; June Warsh FOMC = catalyst</td></tr>
+  <tr><td class="ticker">UCO/USO</td><td>WTI ~$92</td><td><span class="tag tag-neutral">Binary</span></td><td>Iran deal = -$5/bbl; No deal = +$5/bbl</td></tr>
+</table>
+
+<p class="note"><strong>FLAT / SKIP TODAY:</strong> IBIT (BTC sub-$80K), TAN, ICLN, GRID, PAVE, BOTZ, JETS (Iran limbo), CIBR, HACK, KBE, XBI, IBB, GDX, GDXJ, SLV, BNO, KWEB, FXI, EEM</p>
+</section>
+
+<hr class="divider">
+
+<!-- ================================================ -->
+<!-- STEP 3 -->
+<!-- ================================================ -->
+<section>
+<div class="step-header">
+  <div class="step-num">3</div>
+  <div class="step-title">OPTIONS FLOW SUMMARY</div>
+</div>
+<div class="note">Live flow (Unusual Whales) requires subscription. Summary derived from VIX/P-C data and sector price action inference.</div>
+
+<h3>A) Index Positioning</h3>
+<table>
+  <tr><th>Metric</th><th>Value</th><th>Signal</th></tr>
+  <tr><td>VIX</td><td>16.59</td><td>Complacent; slightly below Friday 16.76</td></tr>
+  <tr class="highlight-row"><td>QQQ OI P/C</td><td class="neutral">1.59</td><td><span class="tag tag-bear">Institutional hedge</span> Nasdaq +1.19% despite heavy puts = short squeeze dynamic</td></tr>
+  <tr><td>S&P 500</td><td class="up">+0.61%</td><td>Broad advance; Tech/AI leading</td></tr>
+  <tr><td>Dow</td><td class="down">-0.23%</td><td>Value/defensive underperforming — tech bifurcation</td></tr>
+</table>
+
+<h3>B) Watchlist Flow (Inferred)</h3>
+<table>
+  <tr><th>Ticker</th><th>Inferred Flow</th><th>Rationale</th></tr>
+  <tr><td class="ticker">MU</td><td><span class="tag tag-bull">Heavy Calls</span></td><td>+18.3%; UBS $1,625 PT — chase + conviction calls</td></tr>
+  <tr><td class="ticker">ASTS</td><td><span class="tag tag-bull">Call activity</span></td><td>+20% surge; SpaceX IPO halo</td></tr>
+  <tr><td class="ticker">RGTI/QBTS</td><td><span class="tag tag-bear">Profit-taking puts</span></td><td>Extended 48–56% weekly runs; mean-reversion sellers emerging</td></tr>
+  <tr><td class="ticker">PLTR</td><td><span class="tag tag-bull">Call continuation</span></td><td>3-day gap; breakout structure confirmed</td></tr>
+  <tr><td class="ticker">SNDK</td><td><span class="tag tag-neutral">Two-sided</span></td><td>+550% YTD creates both call holders and put protection</td></tr>
+  <tr><td class="ticker">NVDA</td><td><span class="tag tag-bull">Call accumulation</span></td><td>$215 support held; 4-day slide = sellers exhausted</td></tr>
+  <tr><td class="ticker">COIN</td><td><span class="tag tag-bear">Put pressure</span></td><td>BTC sub-$80K; Q1 miss overhang</td></tr>
+</table>
+
+<h3>C) Sector ETF Flow</h3>
+<table>
+  <tr><th>ETF</th><th>Signal</th></tr>
+  <tr><td class="ticker">SMH</td><td><span class="tag tag-bull">Bullish calls</span> — MU $1T milestone, NVDA recovery</td></tr>
+  <tr><td class="ticker">ARKX / UFO</td><td><span class="tag tag-bull">Call activity</span> — SpaceX IPO catalyst through June 12</td></tr>
+  <tr><td class="ticker">QTUM</td><td><span class="tag tag-watch">Watch call flow</span> — consolidation setting up next leg</td></tr>
+  <tr><td class="ticker">GLD</td><td><span class="tag tag-neutral">Modest put/hedge</span> — Iran peace hope dampening gold premium</td></tr>
+  <tr><td class="ticker">TLT</td><td><span class="tag tag-bull">Call building</span> — inflation relief / Warsh FOMC June</td></tr>
+  <tr><td class="ticker">IBIT</td><td><span class="tag tag-bear">Bearish</span> — BTC $77.3K</td></tr>
+</table>
+
+<h3>D) Flow vs. Price Divergences (Highest Signal)</h3>
+<ol style="padding-left:18px; margin:6px 0">
+  <li><strong>QQQ P/C 1.59 + Nasdaq +1.19%</strong> = bears wrong-footed. Potential for continued squeeze if macro holds.</li>
+  <li><strong>SNDK two-sided flow</strong> at $1,514 = elevated volatility tomorrow; watch for direction signal at open.</li>
+  <li><strong>NVDA recovery at $215–217 support</strong> = call/put imbalance resolving upside; confirmation pending.</li>
+  <li><strong>RGTI/QBTS after 48–66% weekly runs</strong> = profit-taking flow emerging; QTUM ETF is the hedge.</li>
+</ol>
+</section>
+
+<hr class="divider">
+
+<!-- ================================================ -->
+<!-- STEP 4 -->
+<!-- ================================================ -->
+<section>
+<div class="step-header">
+  <div class="step-num">4</div>
+  <div class="step-title">TOMORROW'S WATCHLIST EARNINGS (May 27)</div>
+</div>
+
+<table>
+  <tr><th>Company</th><th>Ticker</th><th>Time</th><th>Consensus EPS</th><th>Theme Impact</th></tr>
+  <tr><td>BMO Financial Group</td><td class="ticker">BMO</td><td>6 AM ET</td><td>~$2.80 CAD</td><td>KBE/financials — not primary theme</td></tr>
+</table>
+
+<div class="note">
+  <strong>No primary watchlist names reporting May 27.</strong> NVDA already reported May 20 (massive beat). PLTR, META, AMZN reported April–early May. Clean slate. Market driven by: SpaceX roadshow prep (June 4), macro (Warsh FOMC June), AI capex data flow.
+</div>
+
+<p><strong>Forward earnings watch:</strong> No major watchlist names until mid-June. The next event calendar is: SpaceX roadshow (June 4) → SpaceX pricing (June 11) → SpaceX listing (June 12) → June FOMC (Warsh first meeting).</p>
+</section>
+
+<hr class="divider">
+
+<!-- ================================================ -->
+<!-- STEP 5 -->
+<!-- ================================================ -->
+<section>
+<div class="step-header">
+  <div class="step-num">5</div>
+  <div class="step-title">MACRO OVERNIGHT WATCH</div>
+</div>
+
+<table>
+  <tr><th>Factor</th><th>Status</th><th>Direction</th></tr>
+  <tr><td>Asia markets</td><td>No major data release</td><td>Follow US tech lead; likely positive open</td></tr>
+  <tr><td>Europe markets</td><td>Following US close</td><td>Positive open expected</td></tr>
+  <tr><td>Oil (WTI ~$92)</td><td>Iran deal status unclear</td><td class="neutral">BINARY: deal = -$5/bbl | no deal = +$5/bbl</td></tr>
+  <tr><td>Gold (~$4,600/oz)</td><td>Support on uncertainty</td><td>Buy dip if deal stalls</td></tr>
+  <tr><td>Bitcoin ($77,275)</td><td>+1.62% today; needs $80K</td><td>Range-bound for miners/crypto sector</td></tr>
+  <tr><td>USD</td><td>Trade Week positive backdrop</td><td>Mild support</td></tr>
+</table>
+
+<h3>Economic Data Tomorrow (May 27)</h3>
+<table>
+  <tr><th>Release</th><th>Time</th><th>Expected</th><th>Market Impact</th></tr>
+  <tr><td>No tier-1 US data</td><td>—</td><td>Light data day</td><td>Low impact</td></tr>
+  <tr><td>BMO Q2 Earnings</td><td>6 AM ET</td><td>$2.80 EPS CAD</td><td>Financials only</td></tr>
+</table>
+
+<h3>Fed Watch</h3>
+<ul>
+  <li><strong>Kevin Warsh</strong> taking oath as Fed Chairman this week (replacing Powell).</li>
+  <li>First FOMC under Warsh: <strong>June</strong> — markets pricing cautious first meeting. Warsh is known as a hawk.</li>
+  <li>Current macro: Inflation <strong>3.8%</strong> | Unemployment <strong>4.3%</strong>.</li>
+  <li><strong>TLT watch:</strong> Holds above $84. Break below = rate-fear signal.</li>
+</ul>
+
+<h3>Overnight Risk Events</h3>
+<ol style="padding-left:18px; margin:6px 0">
+  <li><strong>Iran ceasefire update</strong> — most important binary overnight. Oil and gold gap accordingly.</li>
+  <li><strong>SpaceX IPO investor call leaks</strong> — pre-roadshow chatter (June 4 roadshow) could drive further ASTS/PL/RKLB overnight moves.</li>
+  <li><strong>MU AH/after-market analyst commentary</strong> — any post-$1T crossing conference calls could move SMH overnight.</li>
+</ol>
+</section>
+
+<hr class="divider">
+
+<!-- ================================================ -->
+<!-- STEP 6 -->
+<!-- ================================================ -->
+<section>
+<div class="step-header">
+  <div class="step-num">6</div>
+  <div class="step-title">PERSONAL POSITIONS NEXT-DAY PLAN</div>
+</div>
+
+<table>
+  <tr><th>Position/Theme</th><th>Overnight Risk</th><th>Action</th></tr>
+  <tr>
+    <td><span class="ticker">QTUM</span> (quantum ETF)</td>
+    <td class="neutral">Low-moderate</td>
+    <td>Hold. No add at these levels without new primary source catalyst. Stop ~$145.</td>
+  </tr>
+  <tr>
+    <td><span class="ticker">ARKX</span> / Space</td>
+    <td class="neutral">Moderate</td>
+    <td>Hold. SpaceX IPO halo through June 12. Trim if ASTS gives back &gt;10% of +20%.</td>
+  </tr>
+  <tr>
+    <td><span class="ticker">SMH</span> / Semis</td>
+    <td class="up">Low</td>
+    <td>Consider adding on gap-fill dip to $575–580 tomorrow. MU $1T = milestone event.</td>
+  </tr>
+  <tr>
+    <td><span class="ticker">PLTR</span></td>
+    <td class="neutral">Moderate</td>
+    <td>Big gap from Friday. Take partial profits if opens flat/down. Don't add into gap. Confirm catalyst premarket.</td>
+  </tr>
+  <tr>
+    <td><span class="ticker">NVDA</span></td>
+    <td class="up">Low</td>
+    <td>Accumulate window still open at $212–217. Recovery from 4-day slide.</td>
+  </tr>
+  <tr>
+    <td><span class="ticker">SNDK</span></td>
+    <td class="down">High vol</td>
+    <td>Tight stop below $1,450. +550% YTD = any news creates outsized moves.</td>
+  </tr>
+  <tr>
+    <td><span class="ticker">MARA</span> / BTC miners</td>
+    <td class="neutral">Moderate</td>
+    <td>Wait for BTC to clear $80K before adding. AI pivot thesis is valid but timing uncertain.</td>
+  </tr>
+</table>
+
+<h3>Best EOD Entry Setups for Tomorrow</h3>
+<ol style="padding-left:18px; margin:6px 0">
+  <li><span class="ticker">NVDA</span> — any dip to $212–217 zone = accumulate. Watch pre-market.</li>
+  <li><span class="ticker">SMH</span> — gap-fill dip to $575–580 = buy opportunity post-MU catalyst.</li>
+  <li><span class="ticker">RKLB</span> — least extended (+6% vs ASTS +20%); Golden Dome contract fundamental support. Better space risk/reward.</li>
+  <li><span class="ticker">QTUM</span> — wait for consolidation into $148–152 before adding.</li>
+</ol>
+
+<h3>Theme Bias for Tomorrow</h3>
+<div class="alert-box2">
+  <div class="alert-title">RISK-ON / TECH BULLISH (with caveats)</div>
+  <p><strong>Primary theme tomorrow: AI Semiconductor (SMH/MU/NVDA) + Space (ARKX/RKLB)</strong></p>
+  <ul style="margin-top:8px">
+    <li>MU's +18.3% today was massive — gap-up opens typically fade in first 30 min. Wait for base before chasing.</li>
+    <li>Quantum names are extended. QTUM ETF &gt; individual names for risk control.</li>
+    <li>Iran oil binary remains live overnight — hedge with oil-correlated names.</li>
+    <li>QQQ P/C 1.59 = short-squeeze fuel if Nasdaq holds gains.</li>
+  </ul>
+</div>
+</section>
+
+<hr class="divider">
+
+<!-- ================================================ -->
+<!-- STEP 7 -->
+<!-- ================================================ -->
+<section>
+<div class="step-header">
+  <div class="step-num">7</div>
+  <div class="step-title">ASSUMPTION AUDIT</div>
+</div>
+
+<table>
+  <tr><th>Assumption</th><th>Confidence</th><th>What Changes If Wrong</th></tr>
+  <tr>
+    <td>MU $1T crossing is structural AI story, not one-day event</td>
+    <td class="up">High</td>
+    <td>If UBS upgrade was just "news," MU fades and SMH reverses. Watch MU AH and tomorrow open for follow-through.</td>
+  </tr>
+  <tr>
+    <td>SpaceX IPO sentiment carries through June 12</td>
+    <td class="neutral">Moderate</td>
+    <td>If IPO pricing delayed or SEC queries emerge, space stocks reverse hard. ASTS -20% possible in one session.</td>
+  </tr>
+  <tr>
+    <td>Quantum sector consolidating after 48–66% weekly runs</td>
+    <td class="up">High</td>
+    <td>If another DoC/DARPA announcement drops, RGTI/QBTS could spike again. QTUM ETF is the hedge.</td>
+  </tr>
+  <tr>
+    <td>NVDA post-earnings selling exhausted at $215</td>
+    <td class="neutral">Moderate</td>
+    <td>If broader AI sentiment turns risk-off, NVDA could test $205. Accumulate only on confirmed bounce.</td>
+  </tr>
+  <tr>
+    <td>Iran deal binary unresolved overnight</td>
+    <td class="up">High</td>
+    <td>If deal signed: oil -$5-8, gold -1.5%, JETS +3-5%. If fails: oil +$5-8, gold +1.5%. Both are tradeable outcomes.</td>
+  </tr>
+  <tr>
+    <td>PLTR gap from $136.88 to $157.16 has AI/defense catalyst</td>
+    <td class="neutral">~75%</td>
+    <td>Price data confidence moderate. Confirm via premarket sources tomorrow. If no catalyst found, treat as mean-reversion risk.</td>
+  </tr>
+  <tr>
+    <td>BTC needs $80K for miner/crypto sector recovery</td>
+    <td class="up">High</td>
+    <td>$77,275 today (+1.62%). $80K is the structural key. Below it, WGMI/COIN/MARA stay range-bound.</td>
+  </tr>
+  <tr>
+    <td>QQQ P/C 1.59 creates short-squeeze fuel</td>
+    <td class="neutral">Moderate</td>
+    <td>If macro event turns negative, institutional hedges protect aggressively. Watch VIX above 18 as caution signal.</td>
+  </tr>
+</table>
+</section>
+
+<footer>
+  <p>After-Hours Scan v7.3 +SAFETY NET &nbsp;|&nbsp; May 26, 2026 &nbsp;|&nbsp; Primary sources verified where noted &nbsp;|&nbsp; Not financial advice</p>
+  <p style="margin-top:4px">🔗 <a href="https://nkuy36.github.io/trading-dashboards/" style="color: var(--blue);">nkuy36.github.io/trading-dashboards</a></p>
+</footer>
+
+</body>
+</html>
