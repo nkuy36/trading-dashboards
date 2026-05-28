@@ -1,0 +1,1001 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gap Attribution — May 27, 2026 | v7.3 ETF-First</title>
+<style>
+  :root {
+    --bg: #0d1117;
+    --bg2: #161b22;
+    --bg3: #21262d;
+    --border: #30363d;
+    --text: #e6edf3;
+    --muted: #8b949e;
+    --green: #3fb950;
+    --green-dim: #1a4a1e;
+    --red: #f85149;
+    --red-dim: #4a1a1a;
+    --amber: #d29922;
+    --amber-dim: #3d2e0a;
+    --purple: #a371f7;
+    --purple-dim: #2d1a4a;
+    --cyan: #39d353;
+    --cyan-alt: #79c0ff;
+    --cyan-dim: #0d2b1e;
+    --orange: #f0883e;
+    --orange-dim: #3d200a;
+    --blue: #58a6ff;
+    --blue-dim: #0d2149;
+    --white: #ffffff;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-size: 14px;
+    line-height: 1.6;
+    padding: 0;
+  }
+
+  .header {
+    background: linear-gradient(135deg, #0d1117 0%, #161b22 100%);
+    border-bottom: 2px solid var(--border);
+    padding: 20px 24px 16px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    backdrop-filter: blur(10px);
+  }
+
+  .header h1 { font-size: 20px; font-weight: 700; color: var(--white); letter-spacing: -0.5px; }
+  .header .meta { color: var(--muted); font-size: 12px; margin-top: 4px; }
+  .header .meta span { color: var(--amber); font-weight: 600; }
+
+  .filter-bar { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+
+  .filter-btn {
+    padding: 5px 14px; border-radius: 20px; border: 1px solid var(--border);
+    background: var(--bg3); color: var(--muted); font-size: 12px; font-weight: 600;
+    cursor: pointer; transition: all 0.2s; text-transform: uppercase; letter-spacing: 0.5px;
+  }
+  .filter-btn:hover { border-color: var(--cyan-alt); color: var(--cyan-alt); }
+  .filter-btn.active { background: var(--blue-dim); border-color: var(--blue); color: var(--blue); }
+  .filter-btn.t0 { border-color: var(--cyan-alt); color: var(--cyan-alt); }
+  .filter-btn.t1 { border-color: var(--white); color: var(--white); }
+  .filter-btn.t2 { border-color: var(--green); color: var(--green); }
+  .filter-btn.t3 { border-color: var(--cyan-alt); }
+  .filter-btn.t4 { border-color: var(--purple); color: var(--purple); }
+  .filter-btn.t5 { border-color: var(--blue); color: var(--blue); }
+  .filter-btn.t6 { border-color: var(--orange); color: var(--orange); }
+  .filter-btn.t7 { border-color: var(--amber); color: var(--amber); }
+  .filter-btn.t8 { border-color: var(--green); color: var(--green); }
+
+  .container { max-width: 1280px; margin: 0 auto; padding: 20px 24px 60px; }
+
+  .section { margin-bottom: 28px; border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
+
+  .section-header {
+    padding: 12px 16px; display: flex; align-items: center; gap: 10px;
+    font-weight: 700; font-size: 13px; text-transform: uppercase; letter-spacing: 0.8px;
+  }
+  .section-header.etf-sweep { background: rgba(121,192,255,0.1); color: var(--cyan-alt); border-bottom: 1px solid rgba(121,192,255,0.2); }
+  .section-header.tier1 { background: rgba(255,255,255,0.05); color: var(--white); border-bottom: 1px solid var(--border); }
+  .section-header.tier2 { background: rgba(63,185,80,0.1); color: var(--green); border-bottom: 1px solid rgba(63,185,80,0.2); }
+  .section-header.tier3 { background: rgba(121,192,255,0.07); color: var(--cyan-alt); border-bottom: 1px solid rgba(121,192,255,0.15); }
+  .section-header.tier4 { background: rgba(163,113,247,0.1); color: var(--purple); border-bottom: 1px solid rgba(163,113,247,0.2); }
+  .section-header.options { background: rgba(88,166,255,0.1); color: var(--blue); border-bottom: 1px solid rgba(88,166,255,0.2); }
+  .section-header.scoops { background: rgba(240,136,62,0.1); color: var(--orange); border-bottom: 1px solid rgba(240,136,62,0.2); }
+  .section-header.earnings { background: rgba(210,153,34,0.1); color: var(--amber); border-bottom: 1px solid rgba(210,153,34,0.2); }
+  .section-header.synthesis { background: rgba(63,185,80,0.12); color: var(--green); border-bottom: 1px solid rgba(63,185,80,0.2); }
+  .section-header.audit { background: rgba(163,113,247,0.07); color: var(--purple); border-bottom: 1px solid rgba(163,113,247,0.15); }
+
+  .section-body { padding: 16px; }
+
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th { color: var(--muted); font-weight: 600; text-align: left; padding: 6px 10px; border-bottom: 1px solid var(--border); font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; }
+  td { padding: 8px 10px; border-bottom: 1px solid rgba(48,54,61,0.5); vertical-align: top; }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: rgba(255,255,255,0.02); }
+
+  .bull { color: var(--green); font-weight: 700; }
+  .bear { color: var(--red); font-weight: 700; }
+  .neutral { color: var(--amber); font-weight: 600; }
+  .macro { color: var(--purple); font-weight: 600; }
+  .emerging { color: var(--cyan-alt); font-weight: 600; }
+  .options-clr { color: var(--blue); font-weight: 600; }
+  .wire { color: var(--orange); font-weight: 600; }
+
+  .tag {
+    display: inline-block; padding: 2px 8px; border-radius: 4px;
+    font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;
+  }
+  .tag-green { background: var(--green-dim); color: var(--green); }
+  .tag-red { background: var(--red-dim); color: var(--red); }
+  .tag-amber { background: var(--amber-dim); color: var(--amber); }
+  .tag-purple { background: var(--purple-dim); color: var(--purple); }
+  .tag-blue { background: var(--blue-dim); color: var(--blue); }
+  .tag-orange { background: var(--orange-dim); color: var(--orange); }
+  .tag-cyan { background: var(--cyan-dim); color: #00d4aa; }
+
+  .conviction-green::before { content: "🟢"; margin-right: 4px; }
+  .conviction-yellow::before { content: "🟡"; margin-right: 4px; }
+  .conviction-red::before { content: "🔴"; margin-right: 4px; }
+
+  .etf-card {
+    background: var(--bg2); border: 1px solid var(--border); border-radius: 8px;
+    padding: 14px 16px; margin-bottom: 12px;
+  }
+  .etf-card:last-child { margin-bottom: 0; }
+  .etf-card-header { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; flex-wrap: wrap; }
+  .etf-ticker { font-size: 18px; font-weight: 800; color: var(--white); letter-spacing: -0.5px; }
+  .etf-theme { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; }
+  .etf-move { font-size: 16px; font-weight: 700; margin-left: auto; }
+  .etf-card p { font-size: 13px; color: var(--text); margin-bottom: 6px; }
+  .etf-card .setup-row {
+    display: flex; gap: 12px; flex-wrap: wrap; margin-top: 10px;
+    padding-top: 10px; border-top: 1px solid var(--border); font-size: 12px;
+  }
+  .setup-row span { color: var(--muted); }
+  .setup-row strong { color: var(--text); }
+
+  .card-sub {
+    background: var(--bg3); border-radius: 6px; padding: 10px 12px; margin-top: 8px;
+    font-size: 12px; color: var(--muted);
+  }
+  .card-sub strong { color: var(--text); }
+
+  .macro-block {
+    background: var(--bg2); border-left: 3px solid var(--purple); border-radius: 0 8px 8px 0;
+    padding: 12px 16px; margin-bottom: 12px;
+  }
+  .macro-block h4 { color: var(--purple); font-size: 13px; margin-bottom: 6px; }
+  .macro-block p { font-size: 13px; color: var(--text); margin-bottom: 4px; }
+  .macro-block .src { font-size: 11px; color: var(--muted); }
+  .macro-block .src a { color: var(--blue); text-decoration: none; }
+  .macro-block .src a:hover { text-decoration: underline; }
+
+  .regime-box {
+    background: linear-gradient(135deg, var(--bg2), var(--bg3));
+    border: 1px solid var(--amber); border-radius: 8px; padding: 16px; margin-bottom: 16px;
+  }
+  .regime-box h3 { color: var(--amber); font-size: 14px; margin-bottom: 8px; }
+  .regime-box p { color: var(--text); font-size: 13px; }
+
+  .briefing-box {
+    background: linear-gradient(135deg, #161b22, #1a2030);
+    border: 1px solid var(--cyan-alt); border-radius: 10px; padding: 20px; margin-bottom: 16px;
+  }
+  .briefing-box h3 { color: var(--cyan-alt); font-size: 14px; margin-bottom: 10px; }
+  .briefing-box p { color: var(--text); font-size: 14px; line-height: 1.7; }
+
+  .gap-candidate {
+    background: var(--bg2); border: 1px solid var(--border); border-radius: 8px;
+    padding: 14px 16px; margin-bottom: 12px; border-left: 4px solid var(--green);
+  }
+  .gap-candidate.fade { border-left-color: var(--red); }
+  .gap-candidate .rank { font-size: 22px; font-weight: 900; color: var(--muted); margin-right: 10px; }
+  .gap-candidate .header-row { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+  .gap-candidate h3 { font-size: 16px; font-weight: 700; color: var(--white); }
+  .gap-candidate p { font-size: 13px; color: var(--text); margin-bottom: 6px; }
+  .gap-candidate .meta-row {
+    display: flex; gap: 16px; flex-wrap: wrap; margin-top: 8px;
+    padding-top: 8px; border-top: 1px solid var(--border); font-size: 12px;
+  }
+  .gap-candidate .meta-row span { color: var(--muted); }
+  .gap-candidate .meta-row strong { color: var(--text); }
+
+  .theme-of-night {
+    background: linear-gradient(135deg, #1a1e2e, #1e2438);
+    border: 2px solid var(--green); border-radius: 10px; padding: 18px; margin-bottom: 16px;
+  }
+  .theme-of-night h3 { color: var(--green); font-size: 16px; margin-bottom: 8px; }
+  .theme-of-night p { font-size: 13px; color: var(--text); line-height: 1.6; }
+
+  .flag-item {
+    padding: 8px 12px; border-radius: 6px; margin-bottom: 6px;
+    border-left: 3px solid; font-size: 13px;
+  }
+  .flag-bull { background: rgba(63,185,80,0.08); border-color: var(--green); }
+  .flag-bear { background: rgba(248,81,73,0.08); border-color: var(--red); }
+  .flag-neutral { background: rgba(210,153,34,0.08); border-color: var(--amber); }
+
+  a { color: var(--blue); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  .src-link { font-size: 11px; color: var(--blue); }
+  .unconfirmed { color: var(--amber); font-style: italic; font-size: 12px; }
+  .confirmed { color: var(--green); font-size: 12px; font-weight: 700; }
+
+  .ticker-big { font-size: 15px; font-weight: 800; color: var(--white); }
+  .ticker-small { font-size: 12px; font-weight: 600; color: var(--muted); }
+
+  .highlight-snow { background: rgba(63,185,80,0.06); }
+
+  h2 { font-size: 15px; font-weight: 700; color: var(--white); margin: 16px 0 10px; }
+  h3 { font-size: 13px; font-weight: 700; color: var(--text); margin: 12px 0 8px; }
+  p { margin-bottom: 8px; }
+  ul { padding-left: 20px; margin-bottom: 8px; }
+  li { margin-bottom: 4px; font-size: 13px; }
+  strong { font-weight: 700; }
+
+  .divider { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>🌃 GAP ATTRIBUTION — May 27, 2026 <span style="font-size:14px;color:var(--muted);font-weight:400;">v7.3 ETF-FIRST</span></h1>
+  <div class="meta">
+    Scan window: 4:00 PM – ~8:00 PM ET &nbsp;|&nbsp; Next session: <span>Thursday May 28</span> &nbsp;|&nbsp;
+    Context: <span>SNOW +36% AH · Iran Hormuz deal crushes oil · SpaceX IPO June 12 · BTC bull trap</span>
+  </div>
+  <div class="filter-bar">
+    <button class="filter-btn t0" onclick="filterTier('all')">ALL</button>
+    <button class="filter-btn t0" onclick="filterTier('t0')">Step 0: ETF Sweep</button>
+    <button class="filter-btn t1" onclick="filterTier('t1')">Tier 1: Universe</button>
+    <button class="filter-btn t2" onclick="filterTier('t2')">Tier 2: Theme Movers</button>
+    <button class="filter-btn t3" onclick="filterTier('t3')">Tier 3: Emerging</button>
+    <button class="filter-btn t4" onclick="filterTier('t4')">Tier 4: Macro</button>
+    <button class="filter-btn t5" onclick="filterTier('t5')">Step 5: Options Flow</button>
+    <button class="filter-btn t6" onclick="filterTier('t6')">Step 6: Wire Scoops</button>
+    <button class="filter-btn t7" onclick="filterTier('t7')">Step 7: Earnings Preview</button>
+    <button class="filter-btn t8" onclick="filterTier('t8')">Step 8: Gap Map</button>
+  </div>
+</div>
+
+<div class="container">
+
+<!-- STEP 0: ETF SWEEP -->
+<div class="section t0" data-tier="t0">
+  <div class="section-header etf-sweep">📡 STEP 0 — ETF AFTER-HOURS SWEEP (Discovery Engine)</div>
+  <div class="section-body">
+    <table>
+      <thead>
+        <tr>
+          <th>ETF</th><th>Theme</th><th>AH % Est</th><th>Top 3 Constituents</th><th>Initial Catalyst Hypothesis</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="highlight-snow">
+          <td><span class="ticker-big">CLOU / WCLD</span></td>
+          <td><span class="tag tag-green">Cloud Software</span></td>
+          <td><span class="bull">+8 to +15%</span></td>
+          <td>SNOW <span class="bull">+36% AH</span>, CRM <span class="bear">lower AH</span>, MRVL <span class="bull">+3.5%</span></td>
+          <td>SNOW blockbuster Q1 ($1.39B +33% YoY) + $6B AWS deal dwarfs CRM softness. Cloud re-rating night.</td>
+        </tr>
+        <tr>
+          <td><span class="ticker-big">IGV</span></td>
+          <td><span class="tag tag-green">Expanded Software</span></td>
+          <td><span class="bull">+5 to +8%</span></td>
+          <td>SNOW +36%, CRM lower, ORCL stable</td>
+          <td>Agentforce $1.2B ARR long-term bullish; SNOW weight dominant in near-term ETF move.</td>
+        </tr>
+        <tr>
+          <td><span class="ticker-big">SKYY</span></td>
+          <td><span class="tag tag-green">Cloud AI Infra</span></td>
+          <td><span class="bull">+3 to +6%</span></td>
+          <td>SNOW major holding, MRVL +3.5%, MSFT stable</td>
+          <td>Broad cloud lift from SNOW magnitude. MSFT Azure backstop.</td>
+        </tr>
+        <tr>
+          <td><span class="ticker-big">UFO / ROKT / MARS</span></td>
+          <td><span class="tag tag-blue">Space</span></td>
+          <td><span class="bull">+2 to +5%</span></td>
+          <td>ASTS <span class="bull">+8% intraday</span>, RKLB 52-wk high (fading), PL stable</td>
+          <td>SpaceX SPCX IPO June 12 (16 days away). Persistent institutional bid. UFO +40% YTD, ROKT +35% YTD.</td>
+        </tr>
+        <tr>
+          <td><span class="ticker-big">XLE / XOP</span></td>
+          <td><span class="tag tag-red">Energy</span></td>
+          <td><span class="bear">-3 to -5%</span></td>
+          <td>CVX <span class="bear">-3.05%</span>, XOM <span class="bear">-2.68%</span>, BP <span class="bear">-4.52%</span></td>
+          <td>Iran Hormuz framework deal → WTI -5.7% to $88.53. Structural bearish regime.</td>
+        </tr>
+        <tr>
+          <td><span class="ticker-big">WGMI / BITO</span></td>
+          <td><span class="tag tag-red">BTC Miners</span></td>
+          <td><span class="bear">-3 to -5%</span></td>
+          <td>MARA, WULF, IREN — BTC headwind</td>
+          <td>BTC $75,740 (-1.75%). "Bull trap." $1.3B IBIT dark pool sale. 8 consecutive days ETF outflows ($2B+).</td>
+        </tr>
+        <tr>
+          <td><span class="ticker-big">QTUM</span></td>
+          <td><span class="tag tag-amber">Quantum</span></td>
+          <td><span class="bear">-3 to -5%</span></td>
+          <td>RGTI <span class="bear">-9.3% recent</span>, QBTS, IONQ</td>
+          <td>Profit-taking after May 22 rally (RGTI +17%, QBTS +13%). No fresh catalyst tonight.</td>
+        </tr>
+      </tbody>
+    </table>
+    <div style="margin-top:14px;">
+      <div class="flag-item flag-bull">🟢 <strong>SNOW +36% AH</strong> — DOMINANT catalyst. Triggers CLOU/WCLD/IGV/SKYY gap-up. Night's defining event. <a href="https://www.sec.gov/Archives/edgar/data/0001640147/000164014726000027/fy2027q1earnings.htm" class="src-link">[SEC 8-K]</a></div>
+      <div class="flag-item flag-bull">🟢 <strong>SpaceX SPCX IPO June 12</strong> — UFO/ROKT/MARS persistent bid. ASTS +8% intraday confirmation. Bloomberg: "Space Stocks Are Soaring."</div>
+      <div class="flag-item flag-bear">🔴 <strong>Iran Hormuz framework</strong> — WTI -5.7%. XLE/XOP structural gap-down. CVX/XOM/BP all declining session.</div>
+      <div class="flag-item flag-bear">🔴 <strong>BTC "bull trap" at $75,740</strong> — WGMI/BITO miners fade risk. 8-day outflow streak. $1.3B dark pool IBIT sale.</div>
+      <div class="flag-item flag-bear">🔴 <strong>RKLB $3B ATM offering</strong> — space sector micro-headwind. RKLB fading from 52-wk highs.</div>
+      <div class="flag-item flag-neutral">🟡 <strong>MRVL +3.5% AH</strong> — beat + raise. Q2 guide $2.7B (+35% YoY). AI custom silicon confirmed. SMH/SOXX positive read.</div>
+      <div class="flag-item flag-neutral">🟡 <strong>CRM lower despite record Q1</strong> — Agentforce $1.2B ARR (+205% YoY) but sell-the-news dynamic at -32% YTD setup.</div>
+    </div>
+  </div>
+</div>
+
+<!-- STEP 1: TIER 1 -->
+<div class="section t1" data-tier="t1">
+  <div class="section-header tier1">⚡ STEP 1 — TIER 1: ALWAYS REPORT (Universe-Wide Market Movers)</div>
+  <div class="section-body">
+
+    <h2>A) MAG 7 / HYPERSCALERS</h2>
+    <table>
+      <thead><tr><th>Ticker</th><th>AH Est</th><th>Day %</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td><span class="ticker-big">NVDA</span></td><td>~$220–225</td><td><span class="neutral">~flat</span></td><td>Reported Q1 FY2027 on <strong>May 20</strong> (not tonight). Revenue $81.6B (+85% YoY), Data Center $75.2B (+92%), Q2 guide $91B, $80B buyback, dividend $0.01→$0.25/share. Stock stable. <a href="https://nvidianews.nvidia.com/news/nvidia-announces-financial-results-for-first-quarter-fiscal-2027" class="src-link">[NVDA Newsroom]</a></td></tr>
+        <tr><td><span class="ticker-big">MSFT</span></td><td>~$419</td><td><span class="neutral">~flat</span></td><td>No AH catalyst tonight. Azure/AI narrative stable. SNOW $6B AWS deal is adjacent read-through.</td></tr>
+        <tr><td><span class="ticker-big">AMZN</span></td><td>~flat</td><td><span class="neutral">~flat</span></td><td><strong>AMZN positive read-through:</strong> SNOW $6B 5-year AWS commitment = direct AWS revenue confirmation. Cloud demand thesis validated by independent software leader at hyperscaler-scale.</td></tr>
+        <tr><td><span class="ticker-big">GOOGL</span></td><td>~$383</td><td><span class="neutral">~flat</span></td><td>No AH catalyst tonight.</td></tr>
+        <tr><td><span class="ticker-big">META</span></td><td>~flat</td><td><span class="neutral">~flat</span></td><td>$21B CoreWeave backdrop. No news tonight.</td></tr>
+        <tr><td><span class="ticker-big">AAPL</span></td><td>~$310</td><td><span class="neutral">~flat</span></td><td>No AH catalyst tonight.</td></tr>
+        <tr><td><span class="ticker-big">TSLA</span></td><td>~flat</td><td><span class="neutral">~flat</span></td><td>No specific catalyst tonight.</td></tr>
+      </tbody>
+    </table>
+
+    <hr class="divider">
+    <h2>B) SEMIS BELLWETHERS</h2>
+    <table>
+      <thead><tr><th>Ticker</th><th>AH %</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr class="highlight-snow">
+          <td><span class="ticker-big">MRVL</span></td>
+          <td><span class="bull">+3.5% AH</span></td>
+          <td><strong>Q1 FY2027 BEAT+RAISE:</strong> Revenue $2.418B (+28% YoY, record), non-GAAP EPS $0.80 (beat $0.75 est by 6.7%), Q2 guide $2.7B (+35% YoY). Custom AI silicon leadership confirmed. <a href="https://www.sec.gov/Archives/edgar/data/0001835632/000183563226000014/mrvl-20260527.htm" class="src-link">[SEC 8-K]</a> | <a href="https://www.gurufocus.com/news/8886246/marvell-mrvl-reports-strong-q1-earnings-and-raises-revenue-forecast" class="src-link">[Gurufocus]</a></td>
+        </tr>
+        <tr><td><span class="ticker-big">AVGO</span></td><td><span class="neutral">~flat</span></td><td>AI networking thesis intact. Session high $435.31, low $413.11. No AH news.</td></tr>
+        <tr><td><span class="ticker-big">AMD</span></td><td><span class="neutral">~flat</span></td><td>BofA $500 PT. 2nm EPYC Venice ramp at TSMC confirmed. No AH news.</td></tr>
+        <tr><td><span class="ticker-big">TSM</span></td><td><span class="neutral">~flat</span></td><td>No AH news. Taiwan Taiex ATH backdrop.</td></tr>
+        <tr><td><span class="ticker-big">MU</span></td><td><span class="neutral">~flat</span></td><td>No AH catalyst.</td></tr>
+      </tbody>
+    </table>
+
+    <hr class="divider">
+    <h2>C) MACRO PROXIES</h2>
+    <table>
+      <thead><tr><th>Ticker</th><th>Day %</th><th>Driver</th></tr></thead>
+      <tbody>
+        <tr><td><span class="ticker-big">CVX</span></td><td><span class="bear">-3.05%</span></td><td>Iran/Hormuz peace framework → WTI -5.7% to $88.53, Brent -4.7% to $94.91. Structural bearish for energy sector.</td></tr>
+        <tr><td><span class="ticker-big">XOM</span></td><td><span class="bear">-2.68%</span></td><td>Same driver. Hormuz reopening framework = oil supply relief pressure.</td></tr>
+        <tr><td><span class="ticker-big">BP</span></td><td><span class="bear">-4.52%</span></td><td>Same driver — larger European exposure to Hormuz routes.</td></tr>
+        <tr><td><span class="ticker-big">JPM / GS / BAC</span></td><td><span class="neutral">~flat</span></td><td>No specific AH catalyst. 5-year note auctioned today (results pending). New Fed Chair Warsh (sworn in May 22) watching first data prints.</td></tr>
+        <tr><td><span class="ticker-big">CAT / DE</span></td><td><span class="neutral">~flat</span></td><td>Industrial demand stable. No specific catalyst.</td></tr>
+      </tbody>
+    </table>
+
+    <hr class="divider">
+    <h2>D) NAMES >10% AH MOVE (Magnitude = Signal)</h2>
+    <table>
+      <thead><tr><th>Ticker</th><th>AH %</th><th>AH Volume</th><th>Catalyst</th><th>Primary Source</th><th>Confirmed?</th></tr></thead>
+      <tbody>
+        <tr style="background:rgba(63,185,80,0.05);">
+          <td><span class="ticker-big bull">SNOW</span></td>
+          <td><span class="bull" style="font-size:18px;">+36%</span></td>
+          <td>~16.8M shares</td>
+          <td><strong>Q1 FY2027:</strong> Revenue $1.39B (+33% YoY), Product rev $1.33B (+34%), Net rev retention 126%, RPO $9.21B (+38%), $6B 5-year AWS deal. Raised FY guide to product rev +31% ($5.84B). "Strongest sequential dollar growth in history." CEO Ramaswamy: "milestone quarter." Agentforce-era data platform demand confirmed.</td>
+          <td><a href="https://www.sec.gov/Archives/edgar/data/0001640147/000164014726000027/fy2027q1earnings.htm">SEC EDGAR 8-K ✅</a></td>
+          <td><span class="confirmed">✅ CONFIRMED</span></td>
+        </tr>
+        <tr style="background:rgba(248,81,73,0.04);">
+          <td><span class="ticker-big bear">BRZE</span></td>
+          <td><span class="bear">-16.1%</span></td>
+          <td>High</td>
+          <td><strong>Q1 CY2026:</strong> Revenue $211M (+30.2% YoY — beat), EPS $0.10 (in-line, not a beat). Market punishes near-line EPS in growth software. Q2 guide $220M midpoint, full-year $897M raised. Valuation compression even on revenue beat = sector warning.</td>
+          <td><a href="https://stockstory.org/us/stocks/nasdaq/brze/news/earnings/brazes-nasdaqbrze-q1-cy2026-sales-top-estimates-but-stock-drops-161percent">StockStory ✅</a></td>
+          <td><span class="confirmed">✅ CONFIRMED</span></td>
+        </tr>
+        <tr>
+          <td><span class="ticker-big neutral">ATPC</span></td>
+          <td><span class="bull">+124%</span></td>
+          <td>Speculative (thin)</td>
+          <td>Micro-cap speculative move. Very thin volume. No confirmed primary catalyst.</td>
+          <td><span class="unconfirmed">Catalyst unconfirmed — investigate manually</span></td>
+          <td>❌</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <hr class="divider">
+    <h2>E) MATERIAL 8-K FILINGS TODAY (May 27, 2026)</h2>
+    <table>
+      <thead><tr><th>Company</th><th>Ticker</th><th>Event</th><th>Item</th><th>Source</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Snowflake</strong></td><td><span class="ticker-big bull">SNOW</span></td><td>Q1 FY2027: Rev $1.39B (+33%), $6B AWS deal, RPO +38%, raised FY guide. +36% AH.</td><td>2.02</td><td><a href="https://www.sec.gov/Archives/edgar/data/0001640147/000164014726000027/fy2027q1earnings.htm">SEC 8-K</a></td></tr>
+        <tr><td><strong>Salesforce</strong></td><td><span class="ticker-big">CRM</span></td><td>Q1 FY2027: Rev $11.1B (+13%), Non-GAAP EPS $3.88 (beat $3.11, +25%), Agentforce ARR $1.2B (+205% YoY). Stock lower AH despite record results. FCF $6.6B.</td><td>2.02</td><td><a href="https://www.sec.gov/Archives/edgar/data/0001108524/000110852426000125/crm-q1fy27xexhibit991.htm">SEC 8-K</a></td></tr>
+        <tr><td><strong>Marvell Technology</strong></td><td><span class="ticker-big bull">MRVL</span></td><td>Q1 FY2027: Rev $2.418B (record, +28% YoY), EPS $0.80 (beat $0.75), Q2 guide $2.7B (+35% YoY). +3.5% AH.</td><td>2.02</td><td><a href="https://www.sec.gov/Archives/edgar/data/0001835632/000183563226000014/mrvl-20260527.htm">SEC 8-K</a></td></tr>
+        <tr><td><strong>Newcleo / NewHold III</strong></td><td><span class="ticker-big emerging">NWCL (pending)</span></td><td>Definitive business combination agreement — Newcleo (advanced modular reactor / AMR + nuclear fuel) going public on Nasdaq via SPAC merger. Investor call held today.</td><td>1.01</td><td><a href="https://www.sec.gov/Archives/edgar/data/0002043699/000121390026061270/ea029209701ex99-1.htm">SEC 8-K</a></td></tr>
+        <tr><td><strong>Entergy Corporation</strong></td><td><span class="ticker-big">ENJ</span></td><td>Leadership transition: R. Jackson (SVP/CAO) retiring May 31; Patrick Stack effective June 1.</td><td>5.02</td><td>SEC EDGAR 8-K</td></tr>
+      </tbody>
+    </table>
+
+  </div>
+</div>
+
+<!-- STEP 2: TIER 2 -->
+<div class="section t2" data-tier="t2">
+  <div class="section-header tier2">🎯 STEP 2 — TIER 2: THEME-ALIGNED MOVERS (ETF-First)</div>
+  <div class="section-body">
+
+    <!-- CLOUD -->
+    <div class="etf-card" style="border-left:4px solid var(--green);">
+      <div class="etf-card-header">
+        <span class="etf-ticker">CLOU / WCLD / IGV / SKYY</span>
+        <span class="etf-theme">☁️ Cloud Software / AI Enterprise</span>
+        <span class="etf-move bull">+5 to +15% est gap</span>
+        <span class="tag tag-green">🟢 HIGH CONVICTION</span>
+      </div>
+      <p><strong>ETF Context:</strong> Benzinga May 27: <em>"The forgotten AI trade is back — software ETFs outpace QQQ as ServiceNow, Salesforce rebound."</em> SNOW delivers the night's dominant catalyst. WCLD/CLOU hold SNOW at ~5% weight.</p>
+      <table>
+        <thead><tr><th>Ticker</th><th>AH %</th><th>Volume</th><th>Catalyst</th><th>Type</th><th>Source</th></tr></thead>
+        <tbody>
+          <tr style="background:rgba(63,185,80,0.06);">
+            <td><strong class="bull ticker-big">SNOW</strong></td><td><span class="bull">+36%</span></td><td>16.8M</td>
+            <td>Q1 FY2027: Rev $1.39B (+33%), $6B AWS deal, RPO $9.21B (+38%), Net Rev Retention 126%, FY guide +31% to $5.84B. "Milestone quarter."</td>
+            <td><span class="tag tag-green">EARNINGS / CONTRACT</span></td>
+            <td><a href="https://www.sec.gov/Archives/edgar/data/0001640147/000164014726000027/fy2027q1earnings.htm">SEC 8-K</a></td>
+          </tr>
+          <tr>
+            <td><strong class="bear ticker-big">CRM</strong></td><td><span class="bear">Lower AH</span></td><td>High</td>
+            <td>Record Q1: Rev $11.1B (+13%), Non-GAAP EPS $3.88 (+25% beat), Agentforce ARR $1.2B (+205% YoY), 3.4B AI ARR. FCF $6.6B. Stock lower = sell-the-news on -32% YTD name. Long-term Agentforce bull thesis intact.</td>
+            <td><span class="tag tag-amber">EARNINGS (sell-the-news)</span></td>
+            <td><a href="https://www.sec.gov/Archives/edgar/data/0001108524/000110852426000125/crm-q1fy27xexhibit991.htm">SEC 8-K</a></td>
+          </tr>
+          <tr>
+            <td><strong class="bull ticker-big">MRVL</strong></td><td><span class="bull">+3.5%</span></td><td>Moderate</td>
+            <td>Q1 FY2027: Rev $2.418B (+28%, record), EPS $0.80 (beat), Q2 guide $2.7B (+35% YoY). AI custom silicon leadership.</td>
+            <td><span class="tag tag-green">EARNINGS / GUIDANCE</span></td>
+            <td><a href="https://www.gurufocus.com/news/8886246/marvell-mrvl-reports-strong-q1-earnings-and-raises-revenue-forecast">Gurufocus</a></td>
+          </tr>
+          <tr>
+            <td><strong class="bear ticker-big">BRZE</strong></td><td><span class="bear">-16.1%</span></td><td>High</td>
+            <td>Rev $211M (+30.2% — beat). EPS $0.10 (in-line, not a beat). Market punishes near-line EPS = growth multiple compression signal.</td>
+            <td><span class="tag tag-red">EARNINGS (compression)</span></td>
+            <td><a href="https://stockstory.org/us/stocks/nasdaq/brze/news/earnings/brazes-nasdaqbrze-q1-cy2026-sales-top-estimates-but-stock-drops-161percent">StockStory</a></td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="setup-row">
+        <span>Setup:</span><strong>GAP-AND-GO</strong>
+        <span>Entry:</span><strong>Pre-market bid / confirm first 15 min</strong>
+        <span>Stop:</span><strong>Below prior session close</strong>
+        <span>Theme:</span><strong>Cloud AI / Enterprise Data Platform</strong>
+      </div>
+    </div>
+
+    <!-- SPACE -->
+    <div class="etf-card" style="border-left:4px solid var(--blue);">
+      <div class="etf-card-header">
+        <span class="etf-ticker">UFO / ROKT / MARS / ARKX</span>
+        <span class="etf-theme">🚀 Space — SpaceX IPO Pre-Game</span>
+        <span class="etf-move bull">+2 to +5% est gap</span>
+        <span class="tag tag-green">🟢 HIGH CONVICTION</span>
+      </div>
+      <p><strong>ETF Context:</strong> SpaceX filed publicly May 20. Nasdaq listing as <strong>SPCX</strong> June 12 (16 days). $1.75-2T valuation, $75B raise = largest IPO planned in history. Bloomberg May 27: <em>"SpaceX IPO Filing Is Classic Musk Bravado — and Space Stocks Are Soaring."</em> UFO +40% YTD, ROKT +35% YTD, ASTS +78% YTD.</p>
+      <table>
+        <thead><tr><th>Ticker</th><th>AH %</th><th>Catalyst</th><th>Type</th><th>Source</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><strong class="bull ticker-big">ASTS</strong></td><td><span class="bull">+8% intraday</span></td>
+            <td>SpaceX IPO June 12 sympathy rally. ASTS treated as primary space sector proxy. Up 78% YTD. Space sector re-rating ongoing.</td>
+            <td><span class="tag tag-blue">IPO SYMPATHY</span></td>
+            <td><a href="https://247wallst.com/investing/2026/05/27/ast-spacemobile-surges-8-virgin-galactic-rocket-lab-ride-the-spacex-ipo-wave/">24/7 Wall St.</a></td>
+          </tr>
+          <tr>
+            <td><strong class="bear ticker-big">RKLB</strong></td><td><span class="bear">Fading AH</span></td>
+            <td>Hit 52-week highs intraday ($137.91–$155.24 range) then falling AH. $3B ATM equity distribution (disclosed May 20, 16 bank partners). Dilution fear caps the SpaceX IPO rally specifically for RKLB.</td>
+            <td><span class="tag tag-red">CORPORATE ACTION (ATM)</span></td>
+            <td><a href="https://www.thestreet.com/investing/stocks/rocket-lab-stock-price-tumbles-as-3b-share-sale-spooks-investors">TheStreet</a></td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="setup-row">
+        <span>Setup:</span><strong>GAP-AND-GO (UFO/ROKT) | FADE (RKLB standalone)</strong>
+        <span>Entry:</span><strong>SpaceX IPO-related overnight headlines = accelerant</strong>
+        <span>Stop:</span><strong>ETF below prior close; RKLB $3B ATM creates ceiling</strong>
+        <span>Theme:</span><strong>Space / SpaceX IPO Anticipation (16 days)</strong>
+      </div>
+    </div>
+
+    <!-- QUANTUM -->
+    <div class="etf-card" style="border-left:4px solid var(--amber);">
+      <div class="etf-card-header">
+        <span class="etf-ticker">QTUM</span>
+        <span class="etf-theme">🔬 Quantum Computing — Correction Mode</span>
+        <span class="etf-move bear">-3 to -5% est</span>
+        <span class="tag tag-amber">🟡 MEDIUM (squeeze risk)</span>
+      </div>
+      <p><strong>Context:</strong> Profit-taking after May 22 rally driven by DoC $2.013B CHIPS quantum grants. RGTI -9.3% recent session. IONQ raised 2026 guide to $260-270M (positive fundamental) but sector is cooling. No fresh catalyst tonight. High short interest (RGTI 15.4%, QBTS 14.6%) = squeeze potential if any news arrives.</p>
+      <div class="setup-row">
+        <span>Setup:</span><strong>CHOP / RANGE-BOUND</strong>
+        <span>Squeeze trigger:</span><strong>Any new gov contract or DoC follow-up announcement</strong>
+        <span>Stop:</span><strong>Extended correction below $148 QTUM</strong>
+        <span>Theme:</span><strong>Quantum / Policy-Stake (DoC grants echo)</strong>
+      </div>
+    </div>
+
+    <!-- NUCLEAR -->
+    <div class="etf-card" style="border-left:4px solid var(--cyan-alt);">
+      <div class="etf-card-header">
+        <span class="etf-ticker">URA / URNM / NLR</span>
+        <span class="etf-theme">⚡ Nuclear / AI Power</span>
+        <span class="etf-move neutral">Monitoring</span>
+        <span class="tag tag-cyan">🟡 STRUCTURAL</span>
+      </div>
+      <p><strong>Tonight's catalyst:</strong> Newcleo Ltd. + NewHold Investment Corp III announced definitive SPAC merger agreement (May 27). Newcleo = liquid-metal fast reactor (AMR) + nuclear fuel manufacturing. Will list on Nasdaq as <strong>NWCL</strong>. Nuclear AI data center power theme extension. <a href="https://www.sec.gov/Archives/edgar/data/0002043699/000121390026061270/ea029209701ex99-1.htm" class="src-link">[SEC 8-K]</a></p>
+      <p>OKLO: NRC Aurora approval May 6 (+12% catalyst). NVIDIA + LANL nuclear fuel R&D partnership ongoing. Q1 reported May 12. SMR, NNE — no new AH catalysts tonight. Structural AI power demand thesis intact.</p>
+    </div>
+
+    <!-- BTC MINERS -->
+    <div class="etf-card" style="border-left:4px solid var(--red);">
+      <div class="etf-card-header">
+        <span class="etf-ticker">WGMI / BITO</span>
+        <span class="etf-theme">₿ BTC Miners → AI</span>
+        <span class="etf-move bear">-3 to -5% est</span>
+        <span class="tag tag-red">🔴 HIGH FADE RISK</span>
+      </div>
+      <p><strong>Context:</strong> BTC at $75,740 (-1.75%). Anonymous entity sold 29.2M IBIT shares ($1.3B) via dark pool on May 26. Eight consecutive days of US spot Bitcoin ETF net outflows ($2B+ cumulative). "Bull trap" narrative after May 25-26 bounce to $77,500 failed to hold. Miners pivoting to AI — IREN holds 0 BTC (least exposed), WULF and MARA most exposed to BTC price. <a href="https://blockchainreporter.net/bitcoin-price-today-btc-at-75740-after-failed-recovery-was-the-bounce-a-bull-trap/" class="src-link">[BlockchainReporter]</a></p>
+      <div class="setup-row">
+        <span>Setup:</span><strong>GAP-DOWN RISK</strong>
+        <span>Next level:</span><strong>$74,500 BTC key support</strong>
+        <span>Flip trigger:</span><strong>BTC above $77,500 for 2 sessions</strong>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- STEP 3: TIER 3 -->
+<div class="section t3" data-tier="t3">
+  <div class="section-header tier3">🔭 STEP 3 — TIER 3: EMERGING THEME RADAR</div>
+  <div class="section-body">
+
+    <h2>📊 Growth Software Multiple Compression Cluster (2 nights, 2 names)</h2>
+    <div class="card-sub">
+      <p><strong>BRZE -16.1% AH</strong> (May 27) despite +30% YoY revenue beat — market punishes near-line EPS in growth SaaS.</p>
+      <p><strong>ZS -20.79% AH</strong> (May 26) despite EPS beat — FCF margin guidance cut punished.</p>
+      <p><strong>Pattern emerging:</strong> "Beat-and-lower" syndrome in growth software. Market requires BOTH revenue beat AND EPS upside to reward. Revenue-only beats getting sold. This is a selective sector — do NOT assume all cloud names gap up on SNOW sympathy. ETF-level math (SNOW vs BRZE) works in favor of cloud ETFs; individual stock picks are higher risk.</p>
+      <p><strong>Cluster check:</strong> 2 names over 2 sessions. Promote if COST or DELL shows similar pattern tomorrow.</p>
+    </div>
+
+    <hr class="divider">
+    <h2>🚀 Space Sector IPO Anticipation Cluster (3+ nights — TIER 2 PROMOTION CANDIDATE)</h2>
+    <div class="card-sub">
+      <p><strong>ASTS +8% (May 27)</strong> | <strong>RKLB 52-wk highs (May 27)</strong> | <strong>MNTS +65% (May 26)</strong> | <strong>Bloomberg "Space Stocks Are Soaring" (May 27 headline)</strong></p>
+      <p><strong>Catalyst forcing function:</strong> SpaceX SPCX IPO June 12 — 16 days away. $1.75-2T valuation = largest IPO ever. UFO +40% YTD, ROKT +35% YTD.</p>
+      <p><strong>Cluster count:</strong> 4+ space names over 3+ sessions = <strong>CLUSTER CONFIRMED.</strong> This theme is READY FOR TIER 2 PROMOTION post-June 12 SPCX listing.</p>
+      <p><strong>ETF candidates already active:</strong> UFO, ROKT, MARS, ARKX.</p>
+    </div>
+
+    <hr class="divider">
+    <h2>⚛️ Advanced Nuclear SPAC Cluster (Confirmed — 4 names in May)</h2>
+    <div class="card-sub">
+      <p><strong>Newcleo/NWCL:</strong> SPAC merger with NewHold III announced May 27. AMR technology for AI data centers.</p>
+      <p><strong>OKLO:</strong> NRC Aurora approval May 6. NVIDIA + LANL partnership.</p>
+      <p><strong>NNE:</strong> Supermicro MOU May 6 for AI data centers.</p>
+      <p><strong>SMR (NuScale):</strong> Active retail attention despite earnings miss.</p>
+      <p><strong>Theme:</strong> Advanced nuclear + AI data center power = institutionally relevant sub-theme. Watch for dedicated ETF launch as cluster matures. URA/URNM partially capture uranium miners but not advanced reactor companies.</p>
+    </div>
+
+  </div>
+</div>
+
+<!-- STEP 4: TIER 4 -->
+<div class="section t4" data-tier="t4">
+  <div class="section-header tier4">🌐 STEP 4 — TIER 4: MACRO / EXOGENOUS (Regime Tier)</div>
+  <div class="section-body">
+
+    <div class="macro-block">
+      <h4>1. 🏛️ Iran / US Hormuz Framework Deal — OIL REGIME CHANGE</h4>
+      <p><strong>Event:</strong> Iran agrees to framework for Strait of Hormuz reopening within ~1 month (US-Iran negotiation progress post-Operation Epic Fury). Commercial shipping to resume at pre-war levels.</p>
+      <p><strong>Oil impact today:</strong> WTI -5.7% to <strong>$88.53/bbl</strong> | Brent -4.7% to <strong>$94.91/bbl</strong>. CVX -3.05%, XOM -2.68%, BP -4.52%.</p>
+      <p><strong>Regime implication:</strong> Oil BEARISH trend. XLE/XOP gap-down continuing. Formal signing = -5 to -10% more. Deal collapse = violent reversal +$10-15. Inflation deflationary signal if sustained.</p>
+      <div class="src"><strong>Sources:</strong> <a href="https://www.gurufocus.com/news/8885293/oil-prices-drop-as-iran-to-resume-shipping-through-strait-of-hormuz">Gurufocus</a> | <a href="https://www.cnbc.com/2026/05/26/oil-prices-today-brent-wti-iran-trump-hormuz.html">CNBC May 26</a></div>
+    </div>
+
+    <div class="macro-block">
+      <h4>2. 🏦 New Fed Chair Kevin Warsh — Hawkish Watch</h4>
+      <p><strong>Event:</strong> Kevin Warsh confirmed as Fed Chair (May 13, 54-45 vote — narrowest in history). Sworn in by Justice Thomas at White House May 22. Succeeds Jerome Powell. Known hawkish inflation views.</p>
+      <p><strong>Today:</strong> Governor Lisa Cook speech on "AI, Economy, and Financial System" — AI productivity thesis positive. First Warsh policy signals being closely watched.</p>
+      <p><strong>Implication:</strong> Oil deflation from Iran deal could give Warsh cover to hold rates. BUT 3 months of Hormuz closure-driven inflation may still be feeding through CPI. MIXED. High long-duration tech (SNOW, CRM) faces valuation headwind if yields rise.</p>
+      <div class="src"><a href="https://www.cnbc.com/2026/05/13/kevin-warsh-wins-senate-confirmation-as-the-next-federal-reserve-chair.html">CNBC — Warsh Confirmation</a> | <a href="https://www.npr.org/2026/05/13/nx-s1-5816235/kevin-warsh-federal-reserve-chair-jerome-powell">NPR</a></div>
+    </div>
+
+    <div class="macro-block">
+      <h4>3. 📊 Treasury Auctions — 5-Year Note Today, 7-Year Tomorrow</h4>
+      <p><strong>Event:</strong> 5-Year Note auctioned May 27. 7-Year Note auctions May 28 (tomorrow). Prior context: 30Y yield at 5.198%.</p>
+      <p><strong>Results:</strong> Specific yield and bid-to-cover ratio for 5Y <span class="unconfirmed">unconfirmed — investigate manually.</span> Weak results = yield spike = growth stock valuation headwind.</p>
+      <div class="src"><a href="https://home.treasury.gov/system/files/221/Tentative-Auction-Schedule.pdf">US Treasury Schedule</a></div>
+    </div>
+
+    <div class="macro-block">
+      <h4>4. ₿ Bitcoin — Bull Trap at $75,740</h4>
+      <p><strong>Event:</strong> BTC at <strong>$75,740</strong> (-1.75% from prior day). Anonymous entity sold 29.2M IBIT shares ($1.3B) via dark pool May 26. Eight consecutive days of US spot BTC ETF net outflows ($2B+ cumulative since mid-May).</p>
+      <p>May 25-26 bounce to $77,500 described as "bull trap" — failed to hold. BTC down ~$33,550 from a year ago.</p>
+      <p><strong>Implication:</strong> BEARISH for WGMI, BITO, MARA, WULF. AI conversion (IREN, APLD) provides partial insulation but no immunity on big down days.</p>
+      <div class="src"><a href="https://blockchainreporter.net/bitcoin-price-today-btc-at-75740-after-failed-recovery-was-the-bounce-a-bull-trap/">BlockchainReporter</a> | <a href="https://mudrex.com/learn/bitcoin-down-today/">Mudrex — Why BTC Down</a></div>
+    </div>
+
+    <div class="macro-block" style="border-color:var(--blue);">
+      <h4>5. 🚀 SpaceX IPO — SECTOR REGIME EVENT (June 12)</h4>
+      <p><strong>Event:</strong> SpaceX filed publicly May 20. Nasdaq listing as <strong>SPCX</strong> June 12. $1.75-2T valuation. $75B+ raise. Q1: Net loss $4.28B on $4.69B revenue. Super-voting structure retains Musk control. 16 days to listing.</p>
+      <p><strong>Implication:</strong> Space becomes institutionally relevant asset class on June 12. UFO, ROKT, MARS, ARKX = proxy vehicles. ASTS and RKLB = primary single-name proxies. Daily catalyst flow expected as roadshow proceeds.</p>
+      <div class="src"><a href="https://www.bloomberg.com/news/newsletters/2026-05-27/spacex-ipo-filing-is-classic-musk-bravado-and-space-stocks-are-soaring">Bloomberg May 27</a> | <a href="https://www.cnbc.com/2026/05/20/spacex-ipo-live-updates.html">CNBC Live Updates</a></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- STEP 5: OPTIONS FLOW -->
+<div class="section t5" data-tier="t5">
+  <div class="section-header options">🔵 STEP 5 — AFTER-HOURS OPTIONS FLOW</div>
+  <div class="section-body">
+    <p style="color:var(--amber);font-size:12px;margin-bottom:12px;">⚠️ Live Unusual Whales/Barchart real-time flow unavailable via automated scan. Implied move data based on pre-earnings pricing (resolved). Flow inference from price/volume context — verify before trading.</p>
+    <table>
+      <thead><tr><th>Ticker</th><th>Pre-Event Implied Move</th><th>Actual AH %</th><th>Resolution</th><th>Flow Inference</th></tr></thead>
+      <tbody>
+        <tr style="background:rgba(63,185,80,0.05);">
+          <td><strong class="bull">SNOW</strong></td><td>±13.52%</td><td><span class="bull">+36%</span></td>
+          <td><span class="bull">🟢 Massive BEAT (2.7× implied)</span></td>
+          <td>Call-side dominated pre-earnings. Expect continued call buying post-print as analyst targets reset upward. 16.8M AH volume = massive real-money confirmation.</td>
+        </tr>
+        <tr>
+          <td><strong class="bear">CRM</strong></td><td>±8.71%</td><td><span class="bear">Lower AH</span></td>
+          <td><span class="bear">🔴 Sell-the-news despite massive EPS beat</span></td>
+          <td>"Sell the news" positioning was the trade. Significant put buying or call selling pre-earnings. Watch for post-call reversal if Agentforce $1.2B ARR gets re-rated by market.</td>
+        </tr>
+        <tr>
+          <td><strong class="bull">MRVL</strong></td><td>±11.78%</td><td><span class="bull">+3.5%</span></td>
+          <td><span class="bull">🟢 Beat confirmed — moderate AH</span></td>
+          <td>AI custom silicon not fully priced at +142% YTD. Watch for institutional accumulation on moderate reaction. Q2 guide $2.7B (+35%) is bullish.</td>
+        </tr>
+        <tr>
+          <td><strong class="bear">BRZE</strong></td><td>N/A</td><td><span class="bear">-16.1%</span></td>
+          <td><span class="bear">🔴 Severe compression despite beat</span></td>
+          <td>Likely put buying or short positioning in growth SaaS heading into print. Pattern of "beat-and-sell" = elevated put flow in similar mid-cap SaaS names.</td>
+        </tr>
+        <tr>
+          <td><strong class="bear">XLE/CVX/XOM</strong></td><td>N/A</td><td><span class="bear">-2.7 to -4.5%</span></td>
+          <td><span class="bear">🔴 Energy sector selling confirmed</span></td>
+          <td>Iran deal = energy bears likely pressing. Put sweeps on CVX/XOM/BP probable in AH session. Investigate on Unusual Whales.</td>
+        </tr>
+      </tbody>
+    </table>
+    <p style="margin-top:12px;font-size:12px;color:var(--muted);">Source for pre-earnings implied moves: <a href="https://www.tipranks.com/news/options-volatility-and-implied-earnings-moves-this-week-may-26-may-28-2026">TipRanks Options Volatility Report</a></p>
+  </div>
+</div>
+
+<!-- STEP 6: WIRE SCOOPS -->
+<div class="section t6" data-tier="t6">
+  <div class="section-header scoops">📰 STEP 6 — WIRE SERVICE SCOOPS (4 PM – 8 PM, May 27)</div>
+  <div class="section-body">
+    <table>
+      <thead><tr><th>Outlet</th><th>Headline</th><th>Time</th><th>ETFs</th><th>Tickers</th><th>Direction</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><strong class="wire">Bloomberg</strong></td>
+          <td><a href="https://www.bloomberg.com/news/newsletters/2026-05-27/spacex-ipo-filing-is-classic-musk-bravado-and-space-stocks-are-soaring">"SpaceX IPO Filing Is Classic Musk Bravado — and Space Stocks Are Soaring"</a></td>
+          <td>May 27</td><td>UFO, ROKT, MARS, ITA, XAR</td><td>ASTS, RKLB, PL</td><td><span class="bull">🟢 Bullish space</span></td>
+        </tr>
+        <tr>
+          <td><strong class="wire">Investing.com</strong></td>
+          <td><a href="https://www.investing.com/news/earnings/snowflake-stock-surges-30-on-6b-aws-deal-strong-q1-print-4713071">"Snowflake stock surges 30% on $6B AWS deal, strong Q1 print"</a></td>
+          <td>May 27 AMC</td><td>CLOU, WCLD, IGV, SKYY</td><td>SNOW</td><td><span class="bull">🟢 Bullish cloud</span></td>
+        </tr>
+        <tr>
+          <td><strong class="wire">Seeking Alpha</strong></td>
+          <td><a href="https://seekingalpha.com/news/4597586-snowflake-skyrockets-after-q1-report-features-33-revenue-gain-natoma-acquisition-aws-deal">"Snowflake skyrockets after Q1 report features 33% revenue gain, Natoma acquisition, AWS deal"</a></td>
+          <td>May 27 AMC</td><td>CLOU, WCLD, IGV</td><td>SNOW</td><td><span class="bull">🟢 Bullish cloud</span></td>
+        </tr>
+        <tr>
+          <td><strong class="wire">AskTraders</strong></td>
+          <td><a href="https://www.asktraders.com/analysis/salesforce-shares-lower-despite-record-q1-results-as-agentforce-ai-arr-tops-1-2-billion/">"Salesforce Shares Lower Despite Record Q1 Results as Agentforce AI ARR Tops $1.2 Billion"</a></td>
+          <td>May 27 AMC</td><td>IGV, SKYY, WCLD</td><td>CRM</td><td><span class="bear">🔴 Near-term sell the news</span></td>
+        </tr>
+        <tr>
+          <td><strong class="wire">Gurufocus</strong></td>
+          <td><a href="https://www.gurufocus.com/news/8886246/marvell-mrvl-reports-strong-q1-earnings-and-raises-revenue-forecast">"Marvell (MRVL) Reports Strong Q1 Earnings and Raises Revenue Forecast"</a></td>
+          <td>May 27 AMC</td><td>SMH, SOXX</td><td>MRVL</td><td><span class="bull">🟢 Bullish semis</span></td>
+        </tr>
+        <tr>
+          <td><strong class="wire">Gurufocus</strong></td>
+          <td><a href="https://www.gurufocus.com/news/8885293/oil-prices-drop-as-iran-to-resume-shipping-through-strait-of-hormuz">"Oil Prices Drop as Iran to Resume Shipping Through Strait of Hormuz"</a></td>
+          <td>May 27 session</td><td>XLE, XOP, OIH, USO</td><td>CVX, XOM, COP, BP</td><td><span class="bear">🔴 Bearish energy</span></td>
+        </tr>
+        <tr>
+          <td><strong class="wire">Benzinga</strong></td>
+          <td><a href="https://www.benzinga.com/etfs/sector-etfs/26/05/52669747/the-forgotten-ai-trade-is-back-software-etfs-outpace-qqq-as-servicenow-salesforce-rebound">"The Forgotten AI Trade Is Back — Software ETFs Outpace QQQ as ServiceNow, Salesforce Rebound"</a></td>
+          <td>May 27 session</td><td>IGV, WCLD, SKYY</td><td>NOW, CRM, SNOW</td><td><span class="bull">🟢 Bullish software</span></td>
+        </tr>
+        <tr>
+          <td><strong class="wire">StockStory</strong></td>
+          <td><a href="https://stockstory.org/us/stocks/nasdaq/brze/news/earnings/brazes-nasdaqbrze-q1-cy2026-sales-top-estimates-but-stock-drops-161percent">"Braze's Q1 CY2026 Sales Top Estimates But Stock Drops 16.1%"</a></td>
+          <td>May 27 AMC</td><td>No major ETF</td><td>BRZE</td><td><span class="bear">🔴 Bearish BRZE / compression signal</span></td>
+        </tr>
+      </tbody>
+    </table>
+    <p style="margin-top:10px;font-size:12px;color:var(--muted);">No gov equity portfolio / active Tier 2 policy-stake scoops confirmed tonight. SpaceX IPO is the dominant wire narrative. SNOW is the dominant earnings narrative.</p>
+  </div>
+</div>
+
+<!-- STEP 7: EARNINGS PREVIEW -->
+<div class="section t7" data-tier="t7">
+  <div class="section-header earnings">📅 STEP 7 — TOMORROW'S EARNINGS PREVIEW (May 28, 2026)</div>
+  <div class="section-body">
+
+    <div class="etf-card" style="border-left:4px solid var(--amber);">
+      <div class="etf-card-header">
+        <span class="etf-ticker">DELL</span>
+        <span class="etf-theme">Dell Technologies — AMC May 28</span>
+        <span class="tag tag-amber">🟡 HIGH PRIORITY</span>
+      </div>
+      <p><strong>Context:</strong> $50B AI revenue forecast, $43B AI server backlog. Primary downstream NVDA beneficiary — NVDA GPUs → DELL servers → enterprise deployment. Key AI capex cycle bellwether.</p>
+      <p><strong>Key focus:</strong> ISG (Infrastructure Solutions Group) AI server orders, backlog visibility, margin expansion in AI mix. Any guidance change = AI capex read-through for the sector.</p>
+      <p><strong>Sector read-through:</strong> Beat → SMH, AIEQ, SOXX, IGV positive; Miss → AI capex cycle concern across the board (NVDA downstream, cloud ETFs under pressure).</p>
+      <p><strong>Implied move:</strong> <span class="unconfirmed">Not confirmed — investigate manually.</span></p>
+    </div>
+
+    <div class="etf-card" style="border-left:4px solid var(--amber);">
+      <div class="etf-card-header">
+        <span class="etf-ticker">COST</span>
+        <span class="etf-theme">Costco Wholesale — AMC May 28</span>
+        <span class="tag tag-amber">🟡 MEDIUM PRIORITY</span>
+      </div>
+      <p><strong>Context:</strong> Membership growth story, tariff trade-down consumer behavior, fuel revenue normalization post-Hormuz.</p>
+      <p><strong>Key focus:</strong> US same-store sales, membership fee income, commentary on tariff impacts and consumer behavior.</p>
+      <p><strong>Sector read-through:</strong> COST beat → XRT, RTH consumer staples positive. Miss → consumer discretionary pressure.</p>
+    </div>
+
+    <div class="card-sub" style="margin-top:12px;">
+      <strong>Other May 28 Watch Items:</strong><br>
+      • <strong>7-Year Treasury Note Auction</strong> — following today's 5-year. Any tail = yield spike = risk-off.<br>
+      • <strong>Fed speakers</strong> — watch for any Warsh commentary on Iran oil deflation and inflation path.<br>
+      • <strong>SpaceX IPO roadshow updates</strong> — any pricing or investor interest headlines = space sector catalyst.
+    </div>
+
+  </div>
+</div>
+
+<!-- STEP 8: SYNTHESIS -->
+<div class="section t8" data-tier="t8">
+  <div class="section-header synthesis">🗺️ STEP 8 — TOMORROW'S GAP MAP (ETF-FIRST)</div>
+  <div class="section-body">
+
+    <h2 style="color:var(--green);margin-bottom:16px;">A) TOP 5 ETF GAP-UP CANDIDATES 🟢</h2>
+
+    <div class="gap-candidate">
+      <div class="header-row">
+        <span class="rank">1</span>
+        <h3>WCLD / CLOU — Cloud Computing ETFs</h3>
+        <span class="tag tag-green">Cloud AI</span>
+        <span class="tag tag-green conviction-green">HIGH CONVICTION</span>
+      </div>
+      <p><strong>Catalyst:</strong> SNOW +36% AH ($1.39B revenue, $6B AWS deal, RPO +38%, NRR 126%). Both ETFs hold SNOW at ~5% weight = +1.8% from SNOW alone. Broader cloud sentiment re-rating adds additional lift. "Forgotten AI trade is back."</p>
+      <p><strong>Constituent leaders:</strong> <span class="bull">SNOW +36%</span> | <span class="bull">MRVL +3.5%</span> | CRM (watch for reversal from sell-the-news)</p>
+      <div class="meta-row">
+        <span>AH % est:</span><strong class="bull">+5 to +12% ETF gap open</strong>
+        <span>Volume:</span><strong>SNOW 16.8M shares (massive institutional)</strong>
+        <span>Entry:</span><strong>Pre-market gap; confirm first 15 min bid</strong>
+        <span>Stop:</span><strong>WCLD/CLOU below prior session close</strong>
+        <span>Theme:</span><strong>Cloud AI / Enterprise Data Platform</strong>
+      </div>
+    </div>
+
+    <div class="gap-candidate">
+      <div class="header-row">
+        <span class="rank">2</span>
+        <h3>UFO / ROKT — Space ETFs</h3>
+        <span class="tag tag-blue">Space IPO</span>
+        <span class="tag tag-green conviction-green">HIGH CONVICTION</span>
+      </div>
+      <p><strong>Catalyst:</strong> SpaceX SPCX IPO June 12 (16 days away). Bloomberg May 27 confirms space stocks soaring. ASTS +8% intraday. UFO +40% YTD, ROKT +35% YTD. Each day closer to June 12 = persistent catalyst.</p>
+      <p><strong>Constituent leaders:</strong> <span class="bull">ASTS +8% session</span> | RKLB 52-wk high (fading on ATM) | MNTS +65% May 26 (prior session momentum)</p>
+      <div class="meta-row">
+        <span>AH % est:</span><strong class="bull">+2 to +5% ETF gap open</strong>
+        <span>Entry:</span><strong>Pre-market; SpaceX IPO roadshow news = accelerant</strong>
+        <span>Stop:</span><strong>ETF below prior close; RKLB ATM = key risk</strong>
+        <span>Theme:</span><strong>Space / SpaceX IPO Anticipation (16 days to SPCX)</strong>
+      </div>
+    </div>
+
+    <div class="gap-candidate">
+      <div class="header-row">
+        <span class="rank">3</span>
+        <h3>IGV — iShares Expanded Tech-Software ETF</h3>
+        <span class="tag tag-green">Enterprise Software</span>
+        <span class="tag tag-green conviction-green">HIGH CONVICTION</span>
+      </div>
+      <p><strong>Catalyst:</strong> SNOW +36% + CRM Agentforce $1.2B ARR (+205% YoY — long-term bull even if near-term sell-the-news). MRVL +3.5% from adjacent AI silicon. IGV holds SNOW, CRM, MSFT, ORCL, ADBE, NOW.</p>
+      <p><strong>Constituent leaders:</strong> <span class="bull">SNOW +36%</span> | <span class="bull">MRVL +3.5%</span> | CRM (near-term softness, structural positive)</p>
+      <div class="meta-row">
+        <span>AH % est:</span><strong class="bull">+3 to +6% gap open</strong>
+        <span>Entry:</span><strong>Pre-market gap; watch CRM for reversal</strong>
+        <span>Stop:</span><strong>IGV below prior day close</strong>
+        <span>Theme:</span><strong>Enterprise Software / AI Applications</strong>
+      </div>
+    </div>
+
+    <div class="gap-candidate">
+      <div class="header-row">
+        <span class="rank">4</span>
+        <h3>SMH — VanEck Semiconductor ETF</h3>
+        <span class="tag tag-green">AI Silicon</span>
+        <span class="tag tag-amber conviction-yellow">MEDIUM CONVICTION</span>
+      </div>
+      <p><strong>Catalyst:</strong> MRVL Q1 FY2027 beat+raise (Q2 guide $2.7B, +35% YoY). NVDA structural $91B Q2 guide. AMD EPYC momentum. AI custom silicon demand confirmed.</p>
+      <p><strong>Constituent leaders:</strong> <span class="bull">MRVL +3.5%</span> | AVGO stable | NVDA stable</p>
+      <div class="meta-row">
+        <span>AH % est:</span><strong class="bull">+0.5 to +1.5% gap open</strong>
+        <span>Entry:</span><strong>MRVL pre-market confirmation</strong>
+        <span>Stop:</span><strong>SMH below prior close</strong>
+        <span>Theme:</span><strong>AI Semiconductors / Custom Silicon</strong>
+      </div>
+    </div>
+
+    <div class="gap-candidate">
+      <div class="header-row">
+        <span class="rank">5</span>
+        <h3>SKYY — First Trust Cloud Computing ETF</h3>
+        <span class="tag tag-green">Cloud Infra</span>
+        <span class="tag tag-amber conviction-yellow">MEDIUM CONVICTION</span>
+      </div>
+      <p><strong>Catalyst:</strong> SNOW gap-up + MSFT Azure stability + MRVL +3.5%. Broader cloud sentiment lift.</p>
+      <div class="meta-row">
+        <span>AH % est:</span><strong class="bull">+2 to +4% gap open</strong>
+        <span>Entry:</span><strong>Confirm pre-market cloud bid</strong>
+        <span>Stop:</span><strong>SKYY below prior close</strong>
+        <span>Theme:</span><strong>Cloud Infrastructure / AI Services</strong>
+      </div>
+    </div>
+
+    <hr class="divider">
+    <h2 style="color:var(--red);margin-bottom:16px;">B) TOP 3 ETF GAP-DOWN / FADE RISKS 🔴</h2>
+
+    <div class="gap-candidate fade">
+      <div class="header-row">
+        <span class="rank">1</span>
+        <h3>XLE / XOP — Energy ETFs</h3>
+        <span class="tag tag-red">Energy</span>
+        <span class="tag tag-red conviction-red">HIGH CONVICTION</span>
+      </div>
+      <p><strong>Catalyst:</strong> Iran Hormuz framework → WTI -5.7% to $88.53, Brent -4.7% to $94.91. CVX -3.05%, XOM -2.68%, BP -4.52%. Structural bearish if deal progresses. Reversal risk: deal collapses → violent oil +$10-15.</p>
+      <div class="src" style="margin-top:8px;font-size:12px;"><a href="https://www.gurufocus.com/news/8885293/oil-prices-drop-as-iran-to-resume-shipping-through-strait-of-hormuz">Source: Gurufocus</a></div>
+    </div>
+
+    <div class="gap-candidate fade">
+      <div class="header-row">
+        <span class="rank">2</span>
+        <h3>WGMI / BITO — Bitcoin Miner / BTC ETFs</h3>
+        <span class="tag tag-red">BTC Miners</span>
+        <span class="tag tag-red conviction-red">HIGH CONVICTION</span>
+      </div>
+      <p><strong>Catalyst:</strong> BTC $75,740 "bull trap." $1.3B IBIT dark pool sale. Eight consecutive ETF outflow days ($2B+ cumulative). Negative momentum intact. BTC down ~$33,550 from a year ago.</p>
+      <div class="src" style="margin-top:8px;font-size:12px;"><a href="https://blockchainreporter.net/bitcoin-price-today-btc-at-75740-after-failed-recovery-was-the-bounce-a-bull-trap/">Source: BlockchainReporter</a></div>
+    </div>
+
+    <div class="gap-candidate fade">
+      <div class="header-row">
+        <span class="rank">3</span>
+        <h3>QTUM — Quantum ETF</h3>
+        <span class="tag tag-amber">Quantum</span>
+        <span class="tag tag-amber conviction-yellow">MEDIUM CONVICTION</span>
+      </div>
+      <p><strong>Catalyst:</strong> Profit-taking after May 22 DoC grant rally. RGTI -9.3% last session. No fresh catalyst tonight. High SI (RGTI 15.4%, QBTS 14.6%) = squeeze risk if news arrives. Range-bound absent catalyst.</p>
+    </div>
+
+    <hr class="divider">
+
+    <div class="theme-of-night">
+      <h3>C) 🌟 THEME OF THE NIGHT: Cloud Software Renaissance + Space IPO Pre-Game</h3>
+      <p><strong>Cloud Renaissance:</strong> SNOW's $1.39B quarter (+33% YoY) + $6B AWS deal + RPO +38% validates the thesis that AI value is shifting from chips to the application layer. "Forgotten AI trade is back." Bullish for CLOU, WCLD, IGV, SKYY. <strong>Bullish direction.</strong></p>
+      <p style="margin-top:8px;"><strong>Space IPO Pre-Game:</strong> SpaceX SPCX June 12 — 16 days away. The imminent arrival of the world's largest IPO is forcing institutional positioning in space proxies. Each day = another catalyst. UFO, ROKT, MARS maintaining persistent bid. <strong>Bullish direction.</strong></p>
+    </div>
+
+    <div class="regime-box">
+      <h3>D) 🗺️ REGIME READ: MIXED → TECH-RISK-ON / ENERGY-RISK-OFF / EVENT-DRIVEN</h3>
+      <p>☁️ <strong>Cloud/AI Software:</strong> Risk-ON — SNOW magnitude + "forgotten AI trade" validation<br>
+      🚀 <strong>Space:</strong> Risk-ON — SpaceX IPO 16 days away, persistent institutional bid<br>
+      🛢️ <strong>Energy:</strong> Risk-OFF — Iran Hormuz de-escalation = oil structural bearish<br>
+      ₿ <strong>Crypto/Miners:</strong> Risk-OFF — BTC bull trap, 8-day outflow streak<br>
+      🏦 <strong>Fed/Rates:</strong> MIXED — Warsh hawkish but Iran oil deflation provides cover<br>
+      Overall: <strong>EVENT-DRIVEN / TECH BULLISH / ENERGY BEARISH</strong></p>
+    </div>
+
+    <div class="card-sub" style="margin-bottom:16px;">
+      <strong>E) EOD ETF ENTRY CANDIDATES (3–5 Day Hold)</strong><br>
+      1. <strong>WCLD / CLOU:</strong> If SNOW gap holds all day → buy EOD for cloud re-rating continuation. $6B AWS deal = 5 years committed revenue (structural, not one-day event).<br>
+      2. <strong>UFO / ROKT:</strong> If space bid continues → buy EOD each day closer to June 12. Persistent IPO catalyst.<br>
+      3. <strong>IGV:</strong> If CRM reverses from sell-the-news to buying post-call (Agentforce $1.2B ARR re-rated) → buy IGV at close for 3-day hold.
+    </div>
+
+    <div class="briefing-box">
+      <h3>F) 🌃 OVERNIGHT BRIEFING (30-Second Read for Tomorrow Morning)</h3>
+      <p><strong>Cloud takes the night.</strong> Snowflake's Q1 FY2027 report is the defining catalyst: $1.39B revenue (+33% YoY), a $6B five-year AWS deal, and RPO that surged 38% to $9.21B — all pointing to AI data platform adoption accelerating beyond any prior estimate. Stock surging 36% AH on 16.8M shares. The "forgotten AI trade" (enterprise software, not chips) is confirmed back: WCLD, CLOU, IGV, and SKYY are gap-up candidates Thursday. Salesforce delivered a record quarter — Agentforce ARR +205% to $1.2B — but trades lower (sell-the-news dynamics after -32% YTD); long-term bull thesis intact. Marvell +3.5% on beat+raise (Q2 guide $2.7B) confirms AI silicon demand. On the other side of the ledger: WTI crude -5.7% to $88.53 on the Iran-US Strait of Hormuz framework — structural bearish for XLE/XOP, while BTC sits at $75,740 in "bull trap" territory after an $1.3B dark pool IBIT sale with 8 consecutive days of ETF outflows. Space ETFs (UFO +40% YTD, ROKT +35% YTD) maintain persistent pre-game bid with SpaceX SPCX IPO exactly 16 days away. Tomorrow's key event: DELL AMC (May 28) = next major AI capex read-through; 7-year treasury auction could move yields; any Warsh commentary on Iran oil deflation vs. sticky inflation = regime signal.</p>
+    </div>
+
+    <h2>G) INDIVIDUAL CONSTITUENTS WATCH (Context Only — NOT Top Picks)</h2>
+    <table>
+      <thead><tr><th>Ticker</th><th>Move</th><th>Theme</th><th>Watch For</th></tr></thead>
+      <tbody>
+        <tr style="background:rgba(63,185,80,0.04);"><td><strong class="bull ticker-big">SNOW</strong></td><td><span class="bull">+36% AH</span></td><td>Cloud AI</td><td>Open gap follow-through; analyst target price resets upward; AWS read-through for AMZN</td></tr>
+        <tr><td><strong class="ticker-big">CRM</strong></td><td><span class="bear">Lower AH</span></td><td>Enterprise AI</td><td>Post-call reversal if Agentforce $1.2B ARR gets digested bullishly; watch opening 30 min</td></tr>
+        <tr><td><strong class="bull ticker-big">MRVL</strong></td><td><span class="bull">+3.5% AH</span></td><td>AI Semis</td><td>AI custom silicon confirmation; DELL AMC tomorrow = next read-through</td></tr>
+        <tr><td><strong class="bear ticker-big">BRZE</strong></td><td><span class="bear">-16.1% AH</span></td><td>Growth SaaS</td><td>Multiple compression indicator — watch other mid-cap SaaS for sympathy drops</td></tr>
+        <tr><td><strong class="bull ticker-big">ASTS</strong></td><td><span class="bull">+8% session</span></td><td>Space</td><td>SpaceX IPO 16 days — daily catalyst flow expected. Up 78% YTD.</td></tr>
+        <tr><td><strong class="bear ticker-big">RKLB</strong></td><td><span class="bear">Fading AH</span></td><td>Space</td><td>$3B ATM overhang vs. SpaceX IPO bid — net direction of space ETF positioning</td></tr>
+        <tr><td><strong class="bear ticker-big">CVX / XOM</strong></td><td><span class="bear">-2.7 to -3.1%</span></td><td>Energy</td><td>Iran Hormuz deal progress — one headline = 5-10% move either direction</td></tr>
+        <tr><td><strong class="bear ticker-big">BTC</strong></td><td><span class="bear">$75,740</span></td><td>Crypto</td><td>8-day outflow streak; $74,500 next key support; $77,500 = bull case flip</td></tr>
+        <tr><td><strong class="ticker-big">MARA / WULF</strong></td><td><span class="bear">Headwind</span></td><td>BTC Miners→AI</td><td>BTC price vs. AI conversion; IREN holds 0 BTC = most insulated</td></tr>
+        <tr><td><strong class="neutral ticker-big">RGTI / QBTS</strong></td><td><span class="bear">-9.3% recent</span></td><td>Quantum</td><td>Squeeze watch: RGTI 15.4% SI, QBTS 14.6% SI — needs a catalyst</td></tr>
+        <tr><td><strong class="bull ticker-big">IONQ</strong></td><td><span class="neutral">~flat</span></td><td>Quantum</td><td>2026 guide raised to $260-270M; strongest fundamental in quantum sector</td></tr>
+        <tr><td><strong class="emerging ticker-big">Newcleo / NWCL</strong></td><td>Pre-listing</td><td>Nuclear</td><td>Advanced modular reactor SPAC — watch for Nasdaq listing date confirmation</td></tr>
+      </tbody>
+    </table>
+
+  </div>
+</div>
+
+<!-- STEP 9: ASSUMPTION AUDIT -->
+<div class="section audit" data-tier="audit">
+  <div class="section-header audit">🔍 STEP 9 — ASSUMPTION AUDIT</div>
+  <div class="section-body">
+    <table>
+      <thead><tr><th>Assumption</th><th>What Changes If Wrong</th><th>Trade Adjustment</th></tr></thead>
+      <tbody>
+        <tr><td><strong>SNOW +36% directly lifts CLOU/WCLD at open</strong></td><td>If CRM AH softness and BRZE -16% overwhelm SNOW's weight → lighter gap than expected</td><td>Reduce WCLD/CLOU size; wait first 15 min to confirm bid</td></tr>
+        <tr><td><strong>Iran Hormuz framework holds and progresses to signing</strong></td><td>Deal collapses or denied → oil reverses +$10-15 violently</td><td>Flip XLE/XOP to LONG on deal collapse; buy CVX/XOM dip</td></tr>
+        <tr><td><strong>SpaceX IPO (June 12) proceeds on schedule</strong></td><td>IPO delayed, pulled, or poorly priced → UFO/ROKT give back YTD gains rapidly</td><td>Exit UFO/ROKT on any IPO timing news change</td></tr>
+        <tr><td><strong>CRM sell-the-news is temporary</strong></td><td>If Agentforce $1.2B ARR misses Q2 targets → IGV/SKYY re-price lower next quarter</td><td>Watch CRM Q2 guide carefully on earnings call; don't chase CRM individually</td></tr>
+        <tr><td><strong>BTC remains in "bull trap" at $75K</strong></td><td>BTC reverses above $77,500 and reclaims $80K → WGMI/BITO flip bullish</td><td>Re-evaluate miner ETF position if BTC holds above $77.5K for 2 sessions</td></tr>
+        <tr><td><strong>MRVL +3.5% = AI custom silicon demand confirmed</strong></td><td>DELL misses AI server orders tomorrow → AI capex cycle concern hits MRVL, NVDA downstream</td><td>Hedge SMH ahead of DELL AMC; size smaller until DELL result</td></tr>
+        <tr><td><strong>5-year treasury auction results benign</strong></td><td>Auction tails badly → yield spike → long-duration growth (SNOW, CRM) face valuation pressure day after</td><td>Watch pre-market bond moves; 10Y above 4.8% = cloud ETF headwind</td></tr>
+        <tr><td><strong>Kevin Warsh stays quiet on immediate rate path</strong></td><td>Warsh speaks hawkishly citing sticky inflation → all growth stocks face pressure</td><td>Stay nimble; don't size up large positions before Warsh's first speech post-swearing-in</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<div style="border-top:1px solid var(--border);padding:16px;margin-top:24px;font-size:11px;color:var(--muted);text-align:center;">
+  Gap Attribution v7.3 ETF-FIRST | May 27, 2026 | Primary sources confirmed where noted | Items marked "Catalyst unconfirmed — investigate manually" require human verification before trading.<br>
+  <a href="https://nkuy36.github.io/trading-dashboards/gap-attribution-2026-05-27.html" style="color:var(--blue);">🔗 https://nkuy36.github.io/trading-dashboards/gap-attribution-2026-05-27.html</a>
+</div>
+
+</div><!-- end container -->
+
+<script>
+function filterTier(tier) {
+  const sections = document.querySelectorAll('.section[data-tier]');
+  const buttons = document.querySelectorAll('.filter-btn');
+  buttons.forEach(b => b.classList.remove('active'));
+
+  if (tier === 'all') {
+    sections.forEach(s => s.style.display = '');
+    document.querySelector('.filter-btn:first-child').classList.add('active');
+  } else {
+    sections.forEach(s => {
+      if (s.dataset.tier === tier || s.dataset.tier === 'audit') {
+        s.style.display = '';
+      } else {
+        s.style.display = 'none';
+      }
+    });
+    document.querySelectorAll('.filter-btn').forEach(b => {
+      if (b.onclick && b.onclick.toString().includes(tier)) {
+        b.classList.add('active');
+      }
+    });
+  }
+}
+</script>
+
+</body>
+</html>
