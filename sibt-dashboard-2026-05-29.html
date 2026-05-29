@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>SIBT Dashboard — 2026-05-29</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0a0e17; --panel:#111726; --panel2:#0f1421; --border:#1e2638;
+  --text:#d6deeb; --dim:#7a869a; --hi:#e6edf3;
+  --green:#10b981; --red:#ef4444; --amber:#f59e0b; --blue:#3b82f6;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'JetBrains Mono',monospace;background:var(--bg);color:var(--text);font-size:13px;line-height:1.45}
+a{color:var(--blue);text-decoration:none}
+.ticker{background:#000;border-bottom:1px solid var(--border);overflow:hidden;white-space:nowrap;padding:6px 0;font-size:12px}
+.ticker-track{display:inline-block;animation:scroll 60s linear infinite;padding-left:100%}
+.ticker span{margin:0 18px;color:var(--dim)}
+.ticker .sym{color:var(--hi);font-weight:700}
+.ticker .g{color:var(--green)}
+.ticker .r{color:var(--red)}
+@keyframes scroll{0%{transform:translateX(0)}100%{transform:translateX(-100%)}}
+header{padding:16px 24px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
+header h1{font-size:18px;letter-spacing:1px;color:var(--hi)}
+header .meta{font-size:11px;color:var(--dim)}
+.toggle{display:flex;background:var(--panel);border:1px solid var(--border);border-radius:4px;overflow:hidden}
+.toggle button{background:transparent;border:0;color:var(--dim);padding:8px 18px;font-family:inherit;font-size:12px;cursor:pointer;letter-spacing:1px}
+.toggle button.active{background:var(--amber);color:#000;font-weight:700}
+.container{padding:20px 24px;max-width:1600px;margin:0 auto}
+.hero{background:var(--panel);border:1px solid var(--border);border-radius:6px;padding:24px;margin-bottom:20px;display:grid;grid-template-columns:1fr 1fr;gap:24px}
+.hero-decision{display:flex;flex-direction:column;justify-content:center}
+.hero-decision .label{font-size:11px;color:var(--dim);letter-spacing:2px;margin-bottom:8px}
+.hero-decision .verdict{font-size:54px;font-weight:700;letter-spacing:3px;line-height:1}
+.verdict.yes{color:var(--green)}
+.verdict.caution{color:var(--amber)}
+.verdict.no{color:var(--red)}
+.hero-decision .sub{font-size:13px;color:var(--dim);margin-top:8px}
+.gauge{display:flex;flex-direction:column;justify-content:center;align-items:center}
+.gauge-score{font-size:64px;font-weight:700;color:var(--hi)}
+.gauge-bar{width:100%;height:10px;background:var(--panel2);border:1px solid var(--border);border-radius:6px;overflow:hidden;margin-top:8px;position:relative}
+.gauge-fill{height:100%;background:linear-gradient(90deg,var(--red),var(--amber),var(--green))}
+.gauge-label{font-size:11px;color:var(--dim);margin-top:6px;letter-spacing:1px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;margin-bottom:20px}
+.panel{background:var(--panel);border:1px solid var(--border);border-radius:6px;padding:14px 16px}
+.panel h3{font-size:11px;color:var(--amber);letter-spacing:2px;margin-bottom:10px;border-bottom:1px solid var(--border);padding-bottom:6px}
+.row{display:flex;justify-content:space-between;padding:3px 0;font-size:12px}
+.row .k{color:var(--dim)}
+.row .v{color:var(--hi);font-weight:500}
+.v.g{color:var(--green)}
+.v.r{color:var(--red)}
+.v.a{color:var(--amber)}
+.heatmap{display:grid;grid-template-columns:repeat(11,1fr);gap:6px;margin-bottom:20px}
+.heat{background:var(--panel);border:1px solid var(--border);padding:10px 6px;border-radius:4px;text-align:center;font-size:11px}
+.heat .s{font-weight:700;color:var(--hi);font-size:13px}
+.heat .p{font-size:11px;margin-top:4px;font-weight:600}
+.heat.up{background:rgba(16,185,129,0.12);border-color:rgba(16,185,129,0.4)}
+.heat.up .p{color:var(--green)}
+.heat.dn{background:rgba(239,68,68,0.12);border-color:rgba(239,68,68,0.4)}
+.heat.dn .p{color:var(--red)}
+.heat.fl{background:var(--panel)}
+.heat.fl .p{color:var(--dim)}
+table{width:100%;border-collapse:collapse;font-size:12px}
+table th{text-align:left;padding:8px 10px;font-size:10px;color:var(--amber);letter-spacing:1.5px;border-bottom:1px solid var(--border);background:var(--panel2)}
+table td{padding:8px 10px;border-bottom:1px solid var(--border);color:var(--text)}
+table tr.top{background:rgba(245,158,11,0.08)}
+table tr.top td:first-child::before{content:"★ ";color:var(--amber)}
+.bias-long{color:var(--green);font-weight:700}
+.bias-short{color:var(--red);font-weight:700}
+.analysis{background:var(--panel);border:1px solid var(--border);border-left:3px solid var(--amber);border-radius:6px;padding:16px 18px;margin-top:20px;font-size:13px;line-height:1.7}
+.analysis h3{color:var(--amber);font-size:11px;letter-spacing:2px;margin-bottom:10px}
+.standout{background:var(--panel);border:1px solid var(--border);border-radius:6px;padding:16px;margin-top:20px}
+.standout h3{color:var(--amber);font-size:11px;letter-spacing:2px;margin-bottom:12px}
+.setup{padding:12px;border:1px solid var(--border);border-radius:4px;margin-bottom:10px;background:var(--panel2)}
+.setup .head{display:flex;justify-content:space-between;margin-bottom:6px}
+.setup .tk{font-weight:700;color:var(--hi);font-size:14px}
+.setup .sc{color:var(--amber);font-weight:700}
+.setup .body{font-size:12px;color:var(--text);line-height:1.5}
+.hidden{display:none}
+section h2{font-size:12px;color:var(--amber);letter-spacing:2px;margin:24px 0 10px;padding-bottom:6px;border-bottom:1px solid var(--border)}
+footer{padding:20px 24px;text-align:center;color:var(--dim);font-size:10px;border-top:1px solid var(--border);margin-top:30px}
+</style>
+</head>
+<body>
+
+<div class="ticker">
+<div class="ticker-track">
+<span class="sym">SPY</span> <span>754.60 <span class="g">+0.55%</span></span>
+<span class="sym">QQQ</span> <span>735.60 <span class="g">+0.84%</span></span>
+<span class="sym">VIX</span> <span>16.20 <span class="g">-1.20</span></span>
+<span class="sym">UUP</span> <span>27.70 <span class="r">-0.18%</span></span>
+<span class="sym">PLTR</span> <span>143.34 <span class="g">+8.17%</span></span>
+<span class="sym">SOFI</span> <span>16.97 <span class="g">+4.95%</span></span>
+<span class="sym">COIN</span> <span>182.25 <span class="g">+4.87%</span></span>
+<span class="sym">AMD</span> <span>518.09 <span class="g">+4.55%</span></span>
+<span class="sym">SNDK</span> <span>1641.64 <span class="g">+3.25%</span></span>
+<span class="sym">AMZN</span> <span>274.00 <span class="g">+0.79%</span></span>
+<span class="sym">NVDA</span> <span>214.25 <span class="g">+0.78%</span></span>
+<span class="sym">TSLA</span> <span>442.10 <span class="g">+0.40%</span></span>
+<span class="sym">META</span> <span>635.29 <span class="g">+0.01%</span></span>
+<span class="sym">MARA</span> <span>14.07 <span class="r">-1.81%</span></span>
+<span class="sym">XLV</span> <span>150.88 <span class="g">+1.40%</span></span>
+<span class="sym">XLK</span> <span>186.85 <span class="g">+1.31%</span></span>
+<span class="sym">XLU</span> <span>44.63 <span class="r">-1.13%</span></span>
+<span class="sym">DELL</span> <span>423.46 <span class="g">+33.56% PM</span></span>
+<span class="sym">REPL</span> <span>8.06 <span class="g">+72.22% PM</span></span>
+<span class="sym">CLIK</span> <span>2.17 <span class="g">+18.55% PM</span></span>
+<span class="sym">ASTS</span> <span>116.99 <span class="r">-12.10% PM</span></span>
+</div>
+</div>
+
+<header>
+<div>
+  <h1>SIBT DASHBOARD</h1>
+  <div class="meta">2026-05-29 • Generated 2026-05-29 • Macro Command Center v2.3 / v4.0 • SPY anchor</div>
+</div>
+<div class="toggle">
+  <button id="b-swing" class="active" onclick="setMode('swing')">SWING</button>
+  <button id="b-day" onclick="setMode('day')">DAY TRADE</button>
+</div>
+</header>
+
+<div class="container">
+
+<!-- ========== SWING MODE ========== -->
+<div id="mode-swing">
+
+<div class="hero">
+  <div class="hero-decision">
+    <div class="label">SWING DECISION</div>
+    <div class="verdict caution">CAUTION</div>
+    <div class="sub">Composite 74.10 (+10.10 DoD) — material improvement to RISK ON / GOLDILOCKS, but still EUPHORIC at ATH • Half-size adds only</div>
+  </div>
+  <div class="gauge">
+    <div class="gauge-score">74.10</div>
+    <div class="gauge-bar"><div class="gauge-fill" style="width:74.10%"></div></div>
+    <div class="gauge-label">COMPOSITE SCORE (+10.10 DoD)</div>
+  </div>
+</div>
+
+<div class="grid">
+
+<div class="panel">
+<h3>VOLATILITY (VIX)</h3>
+<div class="row"><span class="k">VIX Value</span><span class="v g">16.20 (-1.20)</span></div>
+<div class="row"><span class="k">VIX Zone</span><span class="v g">COMPLACENT</span></div>
+<div class="row"><span class="k">vs SMA10</span><span class="v g">BELOW (improving)</span></div>
+<div class="row"><span class="k">Hedge Signal</span><span class="v">NO ACTION / TP</span></div>
+</div>
+
+<div class="panel">
+<h3>INDEX TREND</h3>
+<div class="row"><span class="k">SPY Trend</span><span class="v g">POWER TREND</span></div>
+<div class="row"><span class="k">Chop Index</span><span class="v a">TRANSITION (54.10)</span></div>
+<div class="row"><span class="k">HTF Weekly</span><span class="v g">BULLISH</span></div>
+<div class="row"><span class="k">Action Zone</span><span class="v a">HALF SIZE | ATH</span></div>
+</div>
+
+<div class="panel">
+<h3>BREADTH</h3>
+<div class="row"><span class="k">Breadth Score</span><span class="v">49.10 <span class="g">(+0.10)</span></span></div>
+<div class="row"><span class="k">Phase Counts</span><span class="v">Rp:10 Tu:4 Tp:6 Cr:10</span></div>
+<div class="row"><span class="k">Breadth Thrust</span><span class="v r">NO (31 ago)</span></div>
+<div class="row"><span class="k">Liquidity (TNX)</span><span class="v g">OK</span></div>
+</div>
+
+<div class="panel">
+<h3>FACTOR REGIME</h3>
+<div class="row"><span class="k">Risk State</span><span class="v g">RISK ON</span></div>
+<div class="row"><span class="k">Leading</span><span class="v g">GOLDILOCKS</span></div>
+<div class="row"><span class="k">Regime %</span><span class="v">G:30 R:37 I:15 D:19</span></div>
+<div class="row"><span class="k">Offensive %</span><span class="v g">67%</span></div>
+</div>
+
+<div class="panel">
+<h3>IMPLIED CORRELATION</h3>
+<div class="row"><span class="k">ImplCorr Avg</span><span class="v a">1.20 (+0.20)</span></div>
+<div class="row"><span class="k">First Green</span><span class="v">38 ago</span></div>
+<div class="row"><span class="k">Read</span><span class="v a">RISING — single-tape risk</span></div>
+</div>
+
+<div class="panel">
+<h3>MMFI</h3>
+<div class="row"><span class="k">MMFI Value</span><span class="v">61.10 <span class="g">(+2.10)</span></span></div>
+<div class="row"><span class="k">Zone</span><span class="v g">HEALTHY</span></div>
+<div class="row"><span class="k">Trend</span><span class="v g">RISING (&gt;MAs)</span></div>
+</div>
+
+<div class="panel">
+<h3>52W POSITION</h3>
+<div class="row"><span class="k">52W % of Range</span><span class="v a">100.10% EUPHORIC</span></div>
+<div class="row"><span class="k">Distance ATH</span><span class="v">-0.20%</span></div>
+<div class="row"><span class="k">Open Bias</span><span class="v">FLAT (-0.20%)</span></div>
+<div class="row"><span class="k">Euphoria Cap</span><span class="v a">ACTIVE</span></div>
+</div>
+
+<div class="panel">
+<h3>VOLUME ROTATION</h3>
+<div class="row"><span class="k">Hot (daily)</span><span class="v g">XLV, XLK, XLY</span></div>
+<div class="row"><span class="k">Cold (daily)</span><span class="v r">XLU, XLRE, XLI/XLF</span></div>
+<div class="row"><span class="k">Read</span><span class="v g">Tech + Healthcare led, rates-sensitive lagged</span></div>
+</div>
+
+</div><!-- /grid -->
+
+<section>
+<h2>SECTOR HEATMAP — DAILY % CHANGE</h2>
+<div class="heatmap">
+  <div class="heat up"><div class="s">XLV</div><div class="p">+1.40%</div></div>
+  <div class="heat up"><div class="s">XLK</div><div class="p">+1.31%</div></div>
+  <div class="heat up"><div class="s">XLY</div><div class="p">+0.42%</div></div>
+  <div class="heat up"><div class="s">XLB</div><div class="p">+0.35%</div></div>
+  <div class="heat up"><div class="s">XLC</div><div class="p">+0.35%</div></div>
+  <div class="heat dn"><div class="s">XLE</div><div class="p">-0.07%</div></div>
+  <div class="heat dn"><div class="s">XLP</div><div class="p">-0.18%</div></div>
+  <div class="heat dn"><div class="s">XLF</div><div class="p">-0.29%</div></div>
+  <div class="heat dn"><div class="s">XLI</div><div class="p">-0.29%</div></div>
+  <div class="heat dn"><div class="s">XLRE</div><div class="p">-0.49%</div></div>
+  <div class="heat dn"><div class="s">XLU</div><div class="p">-1.13%</div></div>
+</div>
+</section>
+
+<div class="analysis">
+<h3>TERMINAL ANALYSIS — SWING</h3>
+<p>Composite ripped to <b>74.10 (+10.10 DoD)</b> — the biggest one-day jump in weeks and a clean regime flip from <b>RISK OFF / DEFLATION</b> to <b>RISK ON / GOLDILOCKS</b>. VIX collapsed -1.20 to <b>16.20 COMPLACENT</b>, MMFI advanced to <b>HEALTHY 61.10 (+2.10) and is rising above its MAs</b>, and the offensive regime share lifted from 19% to <b>67% (G:30 R:37 I:15 D:19)</b>. Sector tape confirms: XLV +1.40, XLK +1.31 lead — that is growth + tech, not defensives — while XLU -1.13 and XLF/XLI/XLRE all red. This is a real risk-on rotation, not a fakeout.</p>
+<p>The yellow flags that keep this in <b>CAUTION</b>, not YES: (1) <b>52W position 100.10% EUPHORIC, -0.20% from ATH</b> — Euphoria Cap is active and the asymmetry of chasing here is unfavorable; (2) <b>Breadth still flat at 49.10</b> with no breadth thrust in 31 sessions — index gains are narrow, not deep; (3) <b>ImplCorr 1.20 still rising</b> — when everything moves together at ATH, a single negative print drags the whole tape. SPY in POWER TREND with HTF BULLISH means the trend is your friend, but the entry is bad.</p>
+<p><b>Verdict: half-size adds OK on quality, NOT full chase.</b> Add to existing winners on first pullback to rising 8/21 EMA, not on green candles at ATH. If a name shows distribution (gap up + close red on volume), trim. Stay above 60 composite = stay long with discipline. The next 5-point composite move decides — &gt;80 means full risk-on green light; &lt;65 means the regime flip was a head-fake.</p>
+</div>
+
+</div><!-- /swing -->
+
+<!-- ========== DAY TRADE MODE ========== -->
+<div id="mode-day" class="hidden">
+
+<div class="hero">
+  <div class="hero-decision">
+    <div class="label">DAY TRADE DECISION</div>
+    <div class="verdict yes">YES</div>
+    <div class="sub">VIX 16.20 in 15-25 sweet spot • 5× EP 80+ setups • Earnings-driven mega-cap leadership (DELL +33%, MASK +18%, NTAP, PD) + retail tape blazing (PLTR +8%, SOFI +5%, COIN +5%)</div>
+  </div>
+  <div class="gauge">
+    <div class="gauge-score">YES</div>
+    <div class="gauge-bar"><div class="gauge-fill" style="width:90%"></div></div>
+    <div class="gauge-label">EP TAPE STRENGTH</div>
+  </div>
+</div>
+
+<section>
+<h2>RETAIL WATCHLIST — INTRADAY ACTIVITY</h2>
+<table>
+<thead><tr><th>TICKER</th><th>PRICE</th><th>CHANGE %</th><th>GAP %</th><th>DAY RANGE</th><th>VOLUME</th></tr></thead>
+<tbody>
+<tr><td><b>PLTR</b></td><td>143.34</td><td class="bias-long">+8.17%</td><td><span class="bias-long">+0.49%</span></td><td>133.00 – 145.00</td><td>52.09M</td></tr>
+<tr><td><b>SOFI</b></td><td>16.97</td><td class="bias-long">+4.95%</td><td><span class="bias-short">-0.93%</span></td><td>15.82 – 17.08</td><td>69.77M</td></tr>
+<tr><td><b>COIN</b></td><td>182.25</td><td class="bias-long">+4.87%</td><td><span class="bias-short">-1.90%</span></td><td>169.17 – 182.65</td><td>9.04M</td></tr>
+<tr><td><b>AMD</b></td><td>518.09</td><td class="bias-long">+4.55%</td><td><span class="bias-long">+0.70%</span></td><td>493.52 – 527.20</td><td>31.44M</td></tr>
+<tr><td><b>SNDK</b></td><td>1641.64</td><td class="bias-long">+3.25%</td><td><span class="bias-long">+0.40%</span></td><td>1560.18 – 1697.96</td><td>10.00M</td></tr>
+<tr><td><b>AMZN</b></td><td>274.00</td><td class="bias-long">+0.79%</td><td><span class="bias-long">+0.15%</span></td><td>267.44 – 274.50</td><td>40.63M</td></tr>
+<tr><td><b>NVDA</b></td><td>214.25</td><td class="bias-long">+0.78%</td><td><span class="bias-short">-0.62%</span></td><td>211.22 – 215.52</td><td>144.00M</td></tr>
+<tr><td><b>TSLA</b></td><td>442.10</td><td class="bias-long">+0.40%</td><td><span class="bias-short">-0.62%</span></td><td>436.30 – 443.96</td><td>32.43M</td></tr>
+<tr><td><b>META</b></td><td>635.29</td><td class="bias-long">+0.01%</td><td><span class="bias-long">+0.67%</span></td><td>629.31 – 643.00</td><td>16.77M</td></tr>
+<tr><td><b>MARA</b></td><td>14.07</td><td class="bias-short">-1.81%</td><td><span class="bias-short">-2.70%</span></td><td>13.58 – 14.22</td><td>37.64M</td></tr>
+</tbody>
+</table>
+</section>
+
+<section>
+<h2>EP WATCHLIST — PRE-MARKET GAINERS (PRICE &gt; $1, RANKED BY EP SCORE)</h2>
+<table>
+<thead><tr><th>EP</th><th>TICKER</th><th>GAP %</th><th>LAST</th><th>VOL</th><th>CATALYST</th><th>WHEN</th><th>BIAS</th></tr></thead>
+<tbody>
+<tr class="top"><td><b>85</b></td><td><b>DELL</b></td><td class="bias-long">+33.56%</td><td>$423.46</td><td>3.34M</td><td>Q1 beat, bullish analyst views</td><td>5/29 8:47AM</td><td class="bias-long">LONG</td></tr>
+<tr class="top"><td><b>85</b></td><td><b>MASK</b></td><td class="bias-long">+18.89%</td><td>$4.91</td><td>8.83M</td><td>Earnings print (EPS -$0.37, rev positive react)</td><td>5/28 9:06AM</td><td class="bias-long">LONG</td></tr>
+<tr class="top"><td><b>83</b></td><td><b>REPL</b></td><td class="bias-long">+72.22%</td><td>$8.06</td><td>11.88M</td><td>Resubmitting lead drug for FDA review</td><td>5/29 8:22AM</td><td class="bias-long">LONG</td></tr>
+<tr><td>83</td><td>CLIK</td><td class="bias-long">+18.55%</td><td>$2.17</td><td>6.90M</td><td>HR-tech acquisition announced</td><td>5/29 12:49PM</td><td class="bias-long">LONG</td></tr>
+<tr><td>83</td><td>CMND</td><td class="bias-long">+69.39%</td><td>$4.15</td><td>13.86M</td><td>Johns Hopkins trial approval (3-day-old, still moving)</td><td>5/26 12:57PM</td><td class="bias-long">LONG</td></tr>
+<tr><td>75</td><td>STG</td><td class="bias-long">+100.00%</td><td>$5.44</td><td>16.01M</td><td>GAAP EPS $1.66 / $63.9M rev (stale, 3d old)</td><td>5/26 4:50AM</td><td class="bias-long">LONG</td></tr>
+<tr><td>75</td><td>GMEX</td><td class="bias-long">+34.46%</td><td>$2.38</td><td>26.88M</td><td>2026 AI cooking-robot rollout</td><td>5/28 12:30PM</td><td class="bias-long">LONG</td></tr>
+<tr><td>65</td><td>PRFX</td><td class="bias-long">+227.75%</td><td>$4.49</td><td>22.09M</td><td>(no specific PR — price-action article)</td><td>5/29 5:55AM</td><td class="bias-long">LONG</td></tr>
+<tr><td>65</td><td>OLOX</td><td class="bias-long">+112.62%</td><td>$10.46</td><td>16.72M</td><td>(no specific PR — overnight surge)</td><td>5/29 7:12AM</td><td class="bias-long">LONG</td></tr>
+<tr><td>65</td><td>IOTR</td><td class="bias-long">+37.50%</td><td>$3.85</td><td>3.98M</td><td>(no headline)</td><td>—</td><td class="bias-long">LONG</td></tr>
+<tr><td>65</td><td>NEXR</td><td class="bias-long">+36.21%</td><td>$1.58</td><td>8.41M</td><td>Software stocks theme article</td><td>5/28 5:55PM</td><td class="bias-long">LONG</td></tr>
+<tr><td>65</td><td>WNW</td><td class="bias-long">+33.86%</td><td>$4.23</td><td>7.89M</td><td>Generic "Morning Market Movers"</td><td>5/29 12:03PM</td><td class="bias-long">LONG</td></tr>
+<tr><td>65</td><td>QTEX</td><td class="bias-long">+13.00%</td><td>$3.39</td><td>34.59M</td><td>Quantum theme article</td><td>5/28 3:48PM</td><td class="bias-long">LONG</td></tr>
+<tr><td>63</td><td>HPE</td><td class="bias-long">+12.01%</td><td>$42.80</td><td>2.23M</td><td>Sympathy to Dell beat</td><td>5/28 10:05PM</td><td class="bias-long">LONG</td></tr>
+<tr><td>55</td><td>ASTC</td><td class="bias-long">+23.30%</td><td>$36.30</td><td>2.07M</td><td>Continuation from prior day's NASA pop</td><td>5/27 4:15PM</td><td class="bias-long">LONG</td></tr>
+<tr><td>55</td><td>NTAP</td><td class="bias-long">+19.79%</td><td>$170.58</td><td>0.11M</td><td>Q4 results — Wall Street impressed</td><td>5/29 7:31AM</td><td class="bias-long">LONG</td></tr>
+<tr><td>55</td><td>PD</td><td class="bias-long">+21.64%</td><td>$9.05</td><td>0.16M</td><td>Q2 results + guidance</td><td>5/28 5:03PM</td><td class="bias-long">LONG</td></tr>
+<tr><td>53</td><td>MX</td><td class="bias-long">+20.03%</td><td>$8.15</td><td>0.90M</td><td>29-month high momentum</td><td>5/29 10:51AM</td><td class="bias-long">LONG</td></tr>
+<tr><td>53</td><td>QURE</td><td class="bias-long">+16.70%</td><td>$29.00</td><td>0.45M</td><td>Sympathy to Replimune FDA news</td><td>5/29 12:11PM</td><td class="bias-long">LONG</td></tr>
+<tr><td>45</td><td>TSSI</td><td class="bias-long">+16.03%</td><td>$15.71</td><td>0.59M</td><td>SEC Form 144 filing</td><td>5/29 1:42AM</td><td class="bias-long">LONG</td></tr>
+</tbody>
+</table>
+</section>
+
+<section>
+<h2>EP WATCHLIST — PRE-MARKET LOSERS (PRICE &gt; $1, RANKED BY EP SCORE)</h2>
+<table>
+<thead><tr><th>EP</th><th>TICKER</th><th>GAP %</th><th>LAST</th><th>VOL</th><th>CATALYST</th><th>WHEN</th><th>BIAS</th></tr></thead>
+<tbody>
+<tr class="top"><td><b>70</b></td><td><b>ASTS</b></td><td class="bias-short">-12.10%</td><td>$116.99</td><td>4.56M</td><td>Blue Origin rocket explosion — space basket hit</td><td>5/29 11:28AM</td><td class="bias-short">SHORT</td></tr>
+<tr class="top"><td><b>63</b></td><td><b>NCPL</b></td><td class="bias-short">-26.26%</td><td>$1.32</td><td>0.91M</td><td>Sell-the-news on AI Agent acquisition</td><td>5/28 4:14PM</td><td class="bias-short">SHORT</td></tr>
+<tr class="top"><td><b>60</b></td><td><b>S</b></td><td class="bias-short">-15.37%</td><td>$15.25</td><td>1.39M</td><td>SentinelOne — Wall Street concerns</td><td>5/29 7:55AM</td><td class="bias-short">SHORT</td></tr>
+<tr><td>55</td><td>GAP</td><td class="bias-short">-15.00%</td><td>$21.25</td><td>0.41M</td><td>Soft comp sales + cautious outlook</td><td>5/28 5:14PM</td><td class="bias-short">SHORT</td></tr>
+<tr><td>55</td><td>AEO</td><td class="bias-short">-14.62%</td><td>$15.30</td><td>0.23M</td><td>Soft comparable store sales</td><td>5/28 4:35PM</td><td class="bias-short">SHORT</td></tr>
+<tr><td>53</td><td>CLIR</td><td class="bias-short">-10.75%</td><td>$4.07</td><td>0.01M</td><td>$3.37M public stock offering (dilution)</td><td>5/29 8:49AM</td><td class="bias-short">SHORT</td></tr>
+<tr><td>53</td><td>LTRX</td><td class="bias-short">-9.14%</td><td>$7.68</td><td>0.15M</td><td>$30M common stock offering (dilution)</td><td>5/29 8:47AM</td><td class="bias-short">SHORT</td></tr>
+<tr><td>53</td><td>AIRJ</td><td class="bias-short">-8.14%</td><td>$4.40</td><td>0.17M</td><td>$15M registered direct (dilution)</td><td>5/29 2:25AM</td><td class="bias-short">SHORT</td></tr>
+<tr><td>45</td><td>SNGX</td><td class="bias-short">-8.51%</td><td>$0.89</td><td>1.99M</td><td>(under $1 — filtered)</td><td>5/28 9:21PM</td><td class="bias-short">SHORT</td></tr>
+<tr><td>43</td><td>IHRT</td><td class="bias-short">-12.37%</td><td>$4.25</td><td>0.15M</td><td>Sirius talks reported stalled</td><td>5/29 8:46AM</td><td class="bias-short">SHORT</td></tr>
+<tr><td>35</td><td>SUGP</td><td class="bias-short">-26.85%</td><td>$1.09</td><td>0.22M</td><td>(no headline)</td><td>—</td><td class="bias-short">SHORT</td></tr>
+<tr><td>35</td><td>NCT</td><td class="bias-short">-13.40%</td><td>$3.36</td><td>0.14M</td><td>"Which stocks are gapping" generic</td><td>5/28 2:30PM</td><td class="bias-short">SHORT</td></tr>
+</tbody>
+</table>
+</section>
+
+<div class="standout">
+<h3>STANDOUT SETUPS — TOP ACTIONABLE EP TRADES</h3>
+
+<div class="setup">
+  <div class="head"><span class="tk">DELL — LONG</span><span class="sc">EP 85</span></div>
+  <div class="body"><b>Setup:</b> Mega-cap Q1 beat with bullish analyst chorus — +33.56% gap on 3.34M PM volume. This is institutional, not retail-led. Sympathy already lifted HPE +12.01% overnight, confirming the read. <b>Plan:</b> Buy first 5-min pullback to PM-VWAP after open confirmation, NOT the gap chase. Stop under PM low. Trim 1/3 into +5% intraday, trail rest on rising 8 EMA. Tightest stop on the board because the gap is large — any close back inside PM range = exit.</div>
+</div>
+
+<div class="setup">
+  <div class="head"><span class="tk">REPL — LONG</span><span class="sc">EP 83</span></div>
+  <div class="body"><b>Setup:</b> FDA BLA resubmission for lead drug — a clean binary catalyst. +72.22% gap on 11.88M PM volume = significant institutional positioning. Spillover to QURE +16.70% confirms a real FDA-day sentiment shift in oncology biotech. <b>Plan:</b> Wait 10-15 min after open for first base. Long the breakout from PM-VWAP consolidation. Stop under PM low. Trim 1/2 into +10% intraday — biotechs that gap this hard often round-trip 30-50% in week 1. Avoid if it gaps higher into open and immediately fades on volume.</div>
+</div>
+
+<div class="setup">
+  <div class="head"><span class="tk">ASTS — SHORT</span><span class="sc">EP 70</span></div>
+  <div class="body"><b>Setup:</b> Blue Origin rocket explosion = negative external catalyst for entire space basket. ASTS -12.10% on 4.56M PM = real sellers, not noise. This is a sentiment shock, not a fundamental issue — which makes it a clean front-side fade. <b>Plan:</b> Stalk failed bounce into PM-VWAP rejection or first 5-min red after 9:45 confirmation. Stop above PM high tight. Cover into -18% to -22% intraday (typical exhaustion zone for sentiment-driven gap-downs). Do NOT swing — space names mean-revert hard once the news fade kicks in 2-3 sessions later.</div>
+</div>
+
+</div>
+
+<div class="analysis">
+<h3>TERMINAL ANALYSIS — DAY TRADE</h3>
+<p>EP tape is <b>STRONG</b> — the strongest setup density of the week. <b>5 setups score EP 80+</b> (DELL 85, MASK 85, REPL 83, CLIK 83, CMND 83) plus shorts ASTS 70 / NCPL 63 / S 60 as counterweights. <b>DELL is the cleanest single trade on the board</b>: mega-cap, real earnings, sector sympathy already confirming the read via HPE. The PRFX/OLOX category (+227%/+112% with no specific PR) is pure low-float momentum — tradeable for scalpers ONLY, never plan a swing on them.</p>
+<p>Environment is fully supportive: <b>VIX 16.20 (-1.20) in the 15-25 sweet spot</b>, MCC composite jumped to <b>74.10 RISK ON / GOLDILOCKS</b>, SPY POWER TREND. Retail tape is hot — <b>PLTR +8.17%, SOFI +4.95%, COIN +4.87%, AMD +4.55%</b> — all moving on respectable volume. NVDA flat, META flat, TSLA flat means the rally is mid-cap rotation, not mega-cap-led — perfect for day-trade EPs that need single-name volatility.</p>
+<p><b>Rules for the session:</b> (1) Take only EP 65+ setups today — there are enough quality ones, no need to reach. (2) DELL + REPL on the long side, ASTS on the short side = your three core trades, max two open at any time. (3) Hard stops on every entry — composite jumped 10 points DoD, regimes that flip fast can flip back fast. (4) If green by 11:00 ET, halve size for the afternoon and ride the lunch chop with smaller risk. This is a day to capture the move, not push to maximum gross.</p>
+</div>
+
+</div><!-- /day -->
+
+</div><!-- /container -->
+
+<footer>
+  Generated 2026-05-29 • Sources: TradingView Desktop (Macro Command Center v2.3/v4.0, quotes), thestockcatalyst.com (EP movers) • Data is one-time snapshot, not live • No auto-refresh
+</footer>
+
+<script>
+function setMode(m){
+  document.getElementById('mode-swing').classList.toggle('hidden', m!=='swing');
+  document.getElementById('mode-day').classList.toggle('hidden', m!=='day');
+  document.getElementById('b-swing').classList.toggle('active', m==='swing');
+  document.getElementById('b-day').classList.toggle('active', m==='day');
+}
+</script>
+
+</body>
+</html>
