@@ -1,0 +1,793 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gap Attribution — June 1, 2026 | v7.3 ETF-First</title>
+<style>
+  :root {
+    --bg: #0d1117;
+    --bg2: #161b22;
+    --bg3: #21262d;
+    --border: #30363d;
+    --text: #e6edf3;
+    --muted: #8b949e;
+    --green: #3fb950;
+    --green-dim: #1a4a1e;
+    --red: #f85149;
+    --red-dim: #4a1a1a;
+    --amber: #d29922;
+    --amber-dim: #3d2e0a;
+    --purple: #a371f7;
+    --purple-dim: #2d1a4a;
+    --cyan: #39d353;
+    --cyan-alt: #79c0ff;
+    --cyan-dim: #0d2b1e;
+    --orange: #f0883e;
+    --orange-dim: #3d200a;
+    --blue: #58a6ff;
+    --blue-dim: #0d2149;
+    --white: #ffffff;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif; font-size: 14px; line-height: 1.6; }
+  .header { background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-bottom: 2px solid var(--border); padding: 20px 24px 16px; position: sticky; top: 0; z-index: 100; }
+  .header h1 { font-size: 20px; font-weight: 700; color: var(--white); letter-spacing: -0.5px; }
+  .header .meta { color: var(--muted); font-size: 12px; margin-top: 4px; }
+  .header .meta span { color: var(--amber); font-weight: 600; }
+  .filter-bar { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+  .filter-btn { padding: 5px 14px; border-radius: 20px; border: 1px solid var(--border); background: var(--bg3); color: var(--muted); font-size: 12px; font-weight: 600; cursor: pointer; transition: all 0.2s; text-transform: uppercase; letter-spacing: 0.5px; }
+  .filter-btn:hover { border-color: var(--cyan-alt); color: var(--cyan-alt); }
+  .filter-btn.active { background: var(--blue-dim); border-color: var(--blue); color: var(--blue); }
+  .filter-btn.t0 { border-color: var(--cyan-alt); color: var(--cyan-alt); }
+  .filter-btn.t1 { border-color: var(--white); color: var(--white); }
+  .filter-btn.t2 { border-color: var(--green); color: var(--green); }
+  .filter-btn.t3 { border-color: var(--cyan-alt); }
+  .filter-btn.t4 { border-color: var(--purple); color: var(--purple); }
+  .filter-btn.t5 { border-color: var(--blue); color: var(--blue); }
+  .filter-btn.t6 { border-color: var(--orange); color: var(--orange); }
+  .filter-btn.t7 { border-color: var(--amber); color: var(--amber); }
+  .filter-btn.t8 { border-color: var(--green); color: var(--green); }
+  .container { max-width: 1280px; margin: 0 auto; padding: 20px 24px 60px; }
+  .section { margin-bottom: 28px; border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
+  .section-header { padding: 12px 16px; display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 13px; text-transform: uppercase; letter-spacing: 0.8px; }
+  .section-header.etf-sweep { background: rgba(121,192,255,0.1); color: var(--cyan-alt); border-bottom: 1px solid rgba(121,192,255,0.2); }
+  .section-header.tier1 { background: rgba(255,255,255,0.05); color: var(--white); border-bottom: 1px solid var(--border); }
+  .section-header.tier2 { background: rgba(63,185,80,0.1); color: var(--green); border-bottom: 1px solid rgba(63,185,80,0.2); }
+  .section-header.tier3 { background: rgba(121,192,255,0.07); color: var(--cyan-alt); border-bottom: 1px solid rgba(121,192,255,0.15); }
+  .section-header.tier4 { background: rgba(163,113,247,0.1); color: var(--purple); border-bottom: 1px solid rgba(163,113,247,0.2); }
+  .section-header.options { background: rgba(88,166,255,0.1); color: var(--blue); border-bottom: 1px solid rgba(88,166,255,0.2); }
+  .section-header.scoops { background: rgba(240,136,62,0.1); color: var(--orange); border-bottom: 1px solid rgba(240,136,62,0.2); }
+  .section-header.earnings { background: rgba(210,153,34,0.1); color: var(--amber); border-bottom: 1px solid rgba(210,153,34,0.2); }
+  .section-header.synthesis { background: rgba(63,185,80,0.12); color: var(--green); border-bottom: 1px solid rgba(63,185,80,0.2); }
+  .section-header.audit { background: rgba(163,113,247,0.07); color: var(--purple); border-bottom: 1px solid rgba(163,113,247,0.15); }
+  .section-body { padding: 16px; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th { color: var(--muted); font-weight: 600; text-align: left; padding: 6px 10px; border-bottom: 1px solid var(--border); font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; }
+  td { padding: 8px 10px; border-bottom: 1px solid rgba(48,54,61,0.5); vertical-align: top; }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: rgba(255,255,255,0.02); }
+  .bull { color: var(--green); font-weight: 700; }
+  .bear { color: var(--red); font-weight: 700; }
+  .neutral { color: var(--amber); font-weight: 600; }
+  .macro { color: var(--purple); font-weight: 600; }
+  .emerging { color: var(--cyan-alt); font-weight: 600; }
+  .options-clr { color: var(--blue); font-weight: 600; }
+  .wire { color: var(--orange); font-weight: 600; }
+  .tag { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+  .tag-green { background: var(--green-dim); color: var(--green); }
+  .tag-red { background: var(--red-dim); color: var(--red); }
+  .tag-amber { background: var(--amber-dim); color: var(--amber); }
+  .tag-purple { background: var(--purple-dim); color: var(--purple); }
+  .tag-blue { background: var(--blue-dim); color: var(--blue); }
+  .tag-orange { background: var(--orange-dim); color: var(--orange); }
+  .tag-cyan { background: var(--cyan-dim); color: #00d4aa; }
+  .etf-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px; margin-bottom: 12px; }
+  .etf-card:last-child { margin-bottom: 0; }
+  .etf-card-header { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; flex-wrap: wrap; }
+  .etf-ticker { font-size: 18px; font-weight: 800; color: var(--white); letter-spacing: -0.5px; }
+  .etf-theme { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; }
+  .etf-move { font-size: 16px; font-weight: 700; margin-left: auto; }
+  .etf-card p { font-size: 13px; color: var(--text); margin-bottom: 6px; }
+  .etf-card .setup-row { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--border); font-size: 12px; }
+  .setup-row span { color: var(--muted); }
+  .setup-row strong { color: var(--text); }
+  .card-sub { background: var(--bg3); border-radius: 6px; padding: 10px 12px; margin-top: 8px; font-size: 12px; color: var(--muted); }
+  .card-sub strong { color: var(--text); }
+  .macro-block { background: var(--bg2); border-left: 3px solid var(--purple); border-radius: 0 8px 8px 0; padding: 12px 16px; margin-bottom: 12px; }
+  .macro-block.red { border-left-color: var(--red); }
+  .macro-block.amber { border-left-color: var(--amber); }
+  .macro-block.orange { border-left-color: var(--orange); }
+  .macro-block h4 { color: var(--purple); font-size: 13px; margin-bottom: 6px; }
+  .macro-block.red h4 { color: var(--red); }
+  .macro-block.amber h4 { color: var(--amber); }
+  .macro-block.orange h4 { color: var(--orange); }
+  .macro-block p { font-size: 13px; color: var(--text); margin-bottom: 4px; }
+  .macro-block .src { font-size: 11px; color: var(--muted); }
+  .macro-block .src a { color: var(--blue); text-decoration: none; }
+  .macro-block .src a:hover { text-decoration: underline; }
+  .regime-box { background: linear-gradient(135deg, var(--bg2), var(--bg3)); border: 1px solid var(--amber); border-radius: 8px; padding: 16px; margin-bottom: 16px; }
+  .regime-box h3 { color: var(--amber); font-size: 14px; margin-bottom: 8px; }
+  .regime-box p { color: var(--text); font-size: 13px; }
+  .briefing-box { background: linear-gradient(135deg, #161b22, #1a2030); border: 1px solid var(--cyan-alt); border-radius: 10px; padding: 20px; margin-bottom: 16px; }
+  .briefing-box h3 { color: var(--cyan-alt); font-size: 14px; margin-bottom: 10px; }
+  .briefing-box p { color: var(--text); font-size: 14px; line-height: 1.7; }
+  .gap-candidate { background: var(--bg2); border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px; margin-bottom: 12px; border-left: 4px solid var(--green); }
+  .gap-candidate.fade { border-left-color: var(--red); }
+  .gap-candidate.neutral { border-left-color: var(--amber); }
+  .gap-candidate .rank { font-size: 22px; font-weight: 900; color: var(--muted); margin-right: 10px; }
+  .gap-candidate .header-row { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+  .gap-candidate h3 { font-size: 16px; font-weight: 700; color: var(--white); }
+  .gap-candidate p { font-size: 13px; color: var(--text); margin-bottom: 6px; }
+  .gap-candidate .meta-row { display: flex; gap: 16px; flex-wrap: wrap; margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--border); font-size: 12px; }
+  .gap-candidate .meta-row span { color: var(--muted); }
+  .gap-candidate .meta-row strong { color: var(--text); }
+  .theme-of-night { background: linear-gradient(135deg, #1a1e2e, #1e2438); border: 2px solid var(--green); border-radius: 10px; padding: 18px; margin-bottom: 16px; }
+  .theme-of-night h3 { color: var(--green); font-size: 16px; margin-bottom: 8px; }
+  .theme-of-night p { font-size: 13px; color: var(--text); line-height: 1.6; }
+  .flag-item { padding: 8px 12px; border-radius: 6px; margin-bottom: 6px; font-size: 13px; }
+  .flag-item.bull-flag { background: var(--green-dim); border-left: 3px solid var(--green); }
+  .flag-item.bear-flag { background: var(--red-dim); border-left: 3px solid var(--red); }
+  .flag-item.warn-flag { background: var(--amber-dim); border-left: 3px solid var(--amber); }
+  .sub-section-title { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: var(--muted); padding: 12px 0 8px; border-bottom: 1px solid var(--border); margin-bottom: 12px; }
+  .sub-section-title.bull { color: var(--green); border-color: rgba(63,185,80,0.3); }
+  .sub-section-title.bear { color: var(--red); border-color: rgba(248,81,73,0.3); }
+  .sub-section-title.neutral { color: var(--amber); border-color: rgba(210,153,34,0.3); }
+  a { color: var(--blue); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  .hidden { display: none !important; }
+  .scoop-row { background: var(--bg2); border-left: 3px solid var(--orange); border-radius: 0 8px 8px 0; padding: 10px 14px; margin-bottom: 10px; }
+  .scoop-row h4 { color: var(--orange); font-size: 13px; font-weight: 700; margin-bottom: 4px; }
+  .scoop-row p { font-size: 12px; color: var(--muted); }
+  .scoop-row .tickers { font-size: 11px; color: var(--text); margin-top: 4px; }
+  .audit-row { display: flex; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--border); }
+  .audit-row:last-child { border-bottom: none; }
+  .audit-assumption { flex: 3; font-size: 13px; color: var(--text); }
+  .audit-wrong { flex: 3; font-size: 12px; color: var(--muted); }
+  .audit-impact { flex: 2; font-size: 12px; color: var(--amber); }
+  .alert-banner { background: linear-gradient(90deg, rgba(248,81,73,0.15), rgba(248,81,73,0.05)); border: 1px solid var(--red); border-radius: 8px; padding: 12px 16px; margin-bottom: 16px; display: flex; align-items: center; gap: 10px; }
+  .alert-banner .alert-icon { font-size: 20px; }
+  .alert-banner .alert-text { font-size: 13px; color: var(--text); }
+  .alert-banner .alert-text strong { color: var(--red); }
+  @media (max-width: 768px) {
+    .container { padding: 12px 16px 40px; }
+    .audit-row { flex-direction: column; gap: 4px; }
+    .etf-move { margin-left: 0; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>🌃 Gap Attribution — <span style="color:var(--cyan-alt)">June 1, 2026</span> &nbsp;<span style="font-size:13px;color:var(--muted);font-weight:400">v7.3 ETF-First</span></h1>
+  <div class="meta">Generated: After-Hours Nightly Scan &nbsp;|&nbsp; <span>REGIME: BIFURCATED / EVENT-DRIVEN</span> &nbsp;|&nbsp; Theme: <span style="color:var(--green)">AI Server Trifecta + Computex Launch + Hormuz Oil Shock</span></div>
+  <div class="filter-bar">
+    <button class="filter-btn t0 active" onclick="filterSection('all',this)">ALL</button>
+    <button class="filter-btn t0" onclick="filterSection('s0',this)">ETF Sweep</button>
+    <button class="filter-btn t1" onclick="filterSection('s1',this)">Tier 1</button>
+    <button class="filter-btn t2" onclick="filterSection('s2',this)">Tier 2</button>
+    <button class="filter-btn t3" onclick="filterSection('s3',this)">Tier 3</button>
+    <button class="filter-btn t4" onclick="filterSection('s4',this)">Macro</button>
+    <button class="filter-btn t5" onclick="filterSection('s5',this)">Options</button>
+    <button class="filter-btn t6" onclick="filterSection('s6',this)">Scoops</button>
+    <button class="filter-btn t7" onclick="filterSection('s7',this)">Earnings</button>
+    <button class="filter-btn t8" onclick="filterSection('s8',this)">Synthesis</button>
+    <button class="filter-btn" onclick="filterSection('s9',this)" style="border-color:var(--purple);color:var(--purple)">Audit</button>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- ALERT BANNER -->
+  <div class="alert-banner">
+    <div class="alert-icon">🚨</div>
+    <div class="alert-text"><strong>IRAN ESCALATION:</strong> Iran halts all US nuclear talks + threatens full Strait of Hormuz closure. WTI +7.69% → $94.08. Trump: "I don't care if negotiations are over." Binary risk for tomorrow — oil bull / broad equity bear tail.</div>
+  </div>
+
+  <!-- STEP 0 — ETF SWEEP -->
+  <div class="section s0">
+    <div class="section-header etf-sweep">📡 Step 0 — ETF After-Hours Sweep (Discovery Engine)</div>
+    <div class="section-body">
+      <p style="font-size:12px;color:var(--muted);margin-bottom:12px;">TV MCP connected. Quote_get returning USI index data (chart locked to USI:ATHI.US) — web-sourced AH price discovery used. SMH confirmed AH $603.93 vs close $598.93 (+0.83% ETF-level; constituent moves much larger).</p>
+      <table>
+        <thead><tr><th>ETF</th><th>Theme</th><th>Expected AH Move</th><th>Top Holdings Driving</th><th>Catalyst Hypothesis</th></tr></thead>
+        <tbody>
+          <tr><td><strong>SMH</strong></td><td>Semiconductors</td><td class="bull">+2–4% 🟢</td><td>NVDA +2%, TSM +4.73%, HPE +36.4% AH</td><td>HPE server record + NVDA Computex RTX Spark + TSM 3nm pricing</td></tr>
+          <tr><td><strong>SOXX</strong></td><td>Semiconductors</td><td class="bull">+2–4% 🟢</td><td>NVDA, TSM, AVGO (Jun 3 setup)</td><td>Same as SMH + AVGO pre-positioning</td></tr>
+          <tr><td><strong>BOTZ</strong></td><td>AI Robotics/Infra</td><td class="bull">+3–5% 🟢</td><td>HPE +36.4%, DELL +2.88% AH, SMCI +6.02% AH</td><td>HPE Q2 monster beat = 3rd AI server confirmation</td></tr>
+          <tr><td><strong>AIQ</strong></td><td>AI &amp; Technology</td><td class="bull">+2–4% 🟢</td><td>IBM +7%, HPE +36.4%, NVDA +2%</td><td>Diversified AI infrastructure + quantum catalyst</td></tr>
+          <tr><td><strong>XLE</strong></td><td>Energy</td><td class="bull">+3–5% 🟢</td><td>XOM, CVX, COP</td><td>Iran halts talks + Hormuz threat + WTI +7.69% → $94.08</td></tr>
+          <tr><td><strong>XOP</strong></td><td>Oil E&amp;P</td><td class="bull">+4–6% 🟢</td><td>E&amp;P names</td><td>Most leveraged to WTI spike; $94 = max E&amp;P benefit</td></tr>
+          <tr><td><strong>OIH</strong></td><td>Oil Services</td><td class="bull">+3–5% 🟢</td><td>SLB, HAL, BKR</td><td>Iran risk premium lifts drilling/services</td></tr>
+          <tr><td><strong>ITA</strong></td><td>Defense</td><td class="neutral">+2–3% 🟡</td><td>RTX, LMT, NOC</td><td>US-Iran active military conflict escalation</td></tr>
+          <tr><td><strong>QTUM</strong></td><td>Quantum</td><td class="neutral">MIXED ±1% 🟡</td><td>IBM +7% (positive); IONQ/RGTI selling off</td><td>Quantum trade rotating into IBM; pure-plays fading</td></tr>
+          <tr><td><strong>BITO/IBIT</strong></td><td>Bitcoin</td><td class="bear">-2% 🔴</td><td>BTC ~$71,400 (-1.4%)</td><td>Record 10-session outflow streak ($2.97B) + oil inflation</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- STEP 1 — TIER 1 -->
+  <div class="section s1">
+    <div class="section-header tier1">⭐ Step 1 — Tier 1: Always Report</div>
+    <div class="section-body">
+
+      <div class="sub-section-title">A) MAG7 / Hyperscalers</div>
+      <table>
+        <thead><tr><th>Ticker</th><th>AH Move</th><th>Catalyst</th><th>Source</th></tr></thead>
+        <tbody>
+          <tr><td><strong>NVDA</strong></td><td class="bull">+~2% 🟢</td><td>RTX Spark (N1X) ARM-based AI PC chip — Computex 2026. Partners: MSFT, DELL, HP, ASUS, Lenovo, MSI. "Reinvention of the computer as big as the smartphone" — Jensen Huang.</td><td><a href="https://www.cnbc.com/2026/05/31/nvidias-new-chip-to-power-fresh-line-of-windows-laptops-by-dell-hp.html">CNBC</a></td></tr>
+          <tr><td><strong>MSFT</strong></td><td class="neutral">🟡 UNCONFIRMED</td><td>Partner on NVDA RTX Spark (indirect positive). Investigate manually.</td><td>—</td></tr>
+          <tr><td><strong>GOOGL/META/AMZN/AAPL/TSLA</strong></td><td class="neutral">🟡 UNCONFIRMED</td><td>Catalyst unconfirmed — investigate manually. AAPL: NVDA entering PC = competitive signal.</td><td>—</td></tr>
+        </tbody>
+      </table>
+
+      <div class="sub-section-title bull" style="margin-top:16px;">B) Semis Bellwethers</div>
+      <table>
+        <thead><tr><th>Ticker</th><th>Move</th><th>Catalyst</th><th>Source</th></tr></thead>
+        <tbody>
+          <tr><td><strong>TSM</strong></td><td class="bull">+4.73% 🟢</td><td>NVDA partnership; 3nm pricing +15% H2 2026; Intel CEO visiting TSMC; 52-week high.</td><td><a href="https://www.benzinga.com/markets/tech/26/06/52898080/whats-going-on-with-taiwan-semiconductor-stock-monday-2">Benzinga</a></td></tr>
+          <tr><td><strong>NVDA</strong></td><td class="bull">+~2% 🟢</td><td>RTX Spark launch at Computex. See above.</td><td><a href="https://www.cnbc.com/2026/05/31/nvidias-new-chip-to-power-fresh-line-of-windows-laptops-by-dell-hp.html">CNBC</a></td></tr>
+          <tr><td><strong>AVGO</strong></td><td class="neutral">🟡 Reporting Jun 3 AMC</td><td>AI chip rev $10.7B (+140% YoY) expected. Rev $22.12B (+47% YoY). HPE+DELL beats = very bullish setup.</td><td><a href="https://moneymorning.com/2026/05/30/broadcom-avgo-q2-2026-earnings-preview-ai-revenue-june">MoneyMorning</a></td></tr>
+          <tr><td><strong>IBM</strong></td><td class="bull">+7% 🟢</td><td>Barclays "Overweight" $350 (bull $449). IBM $10B+ quantum investment. US gov $1B funding → Anderon spinout. Commercial quantum 2029. <span class="tag tag-amber">QUANTUM ROTATION</span></td><td><a href="https://www.cnbc.com/2026/06/01/barclays-says-ibm-is-mimicking-nvidias-playbook-in-quantum-market.html">CNBC</a></td></tr>
+          <tr><td><strong>AMD/MU/ASML</strong></td><td class="neutral">🟡 UNCONFIRMED</td><td>Catalyst unconfirmed — investigate manually.</td><td>—</td></tr>
+        </tbody>
+      </table>
+
+      <div class="sub-section-title" style="margin-top:16px;">C) Macro Proxies</div>
+      <table>
+        <thead><tr><th>Ticker</th><th>Expected Move</th><th>Catalyst</th></tr></thead>
+        <tbody>
+          <tr><td><strong>XOM / CVX</strong></td><td class="bull">+3–5% est 🟢</td><td>Iran halts US talks + Hormuz closure threat → WTI +7.69% to $94.08. ~20% of global oil at risk.</td></tr>
+          <tr><td><strong>JPM / GS / BAC</strong></td><td class="neutral">🟡 MIXED</td><td>May NFP Friday + 46% Dec rate hike probability = uncertainty. Oil inflation → rate hike risk.</td></tr>
+          <tr><td><strong>CAT / DE</strong></td><td class="neutral">🟡 UNCONFIRMED</td><td>Catalyst unconfirmed — investigate manually.</td></tr>
+        </tbody>
+      </table>
+
+      <div class="sub-section-title bear" style="margin-top:16px;">D) Names &gt;10% AH Move</div>
+      <table>
+        <thead><tr><th>Ticker</th><th>AH Move</th><th>Catalyst</th><th>Type</th><th>Source</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><strong style="font-size:15px;">HPE</strong></td>
+            <td><span class="bull" style="font-size:16px;">+36.4%</span> → $64.11</td>
+            <td>Q2 FY2026 MASSIVE BEAT. EPS $0.79 vs $0.53e (+49%). Rev $10.68B vs $9.79Be (+9.1%). Server rev $5.45B vs $4.66Be. Q3 guide $11.5–12.1B. FY26 EPS raised $3.35–$3.45. <strong>Biggest beat since Feb 2018.</strong></td>
+            <td><span class="tag tag-green">EARNINGS</span></td>
+            <td><a href="https://www.cnbc.com/2026/06/01/hpe-stock-earnings-q2.html">CNBC</a></td>
+          </tr>
+          <tr>
+            <td><strong>FULC</strong></td>
+            <td><span class="bear">-49.5%</span> → $3.24</td>
+            <td>Program discontinuation: pociredir (PRC2 inhibitor / sickle cell). FDA: ALL PRC2 class carries secondary malignancy risk. Company initiating strategic review. $333M cash.</td>
+            <td><span class="tag tag-red">REGULATORY</span></td>
+            <td><a href="https://www.investing.com/news/stock-market-news/fulcrum-therapeutics-stock-plunges-30-on-program-discontinuation-93CH-4720206">Investing.com</a></td>
+          </tr>
+          <tr>
+            <td><strong>ABVX</strong></td>
+            <td><span class="bear">-25.4%</span> → $96.71</td>
+            <td>Phase 3 ABTECT (UC) MET primary endpoint (remission 50.8% vs 10.4% placebo). CRASHED despite positive results = profit-taking + $45M ADS offering dilution overhang.</td>
+            <td><span class="tag tag-amber">SELL THE NEWS</span></td>
+            <td><a href="https://www.quiverquant.com/news/Abivax+slides+as+traders+digest+recent+trial+updates+and+potential+selling+from+a+fresh+ADS+deal">QuiverQuant</a></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="sub-section-title" style="margin-top:16px;">E) Material 8-K Filings June 1, 2026</div>
+      <table>
+        <thead><tr><th>Company</th><th>Item</th><th>Key Event</th><th>Source</th></tr></thead>
+        <tbody>
+          <tr><td><strong>HPE</strong></td><td>Earnings 8-K</td><td>Q2 FY2026 record results — primary market event tonight</td><td>Filing pending (AH)</td></tr>
+          <tr><td><strong>D-Wave Quantum (QBTS)</strong></td><td>Investor Day</td><td>D-Wave Investor Day materials released</td><td><a href="https://www.sec.gov/Archives/edgar/data/0001907982/000190798226000078/d-waveinvestorday_fullda.htm">SEC</a></td></tr>
+          <tr><td><strong>Star Equity Holdings (HSON)</strong></td><td>Investor Presentation</td><td>Business and operations presentation as of March 31, 2026</td><td><a href="https://www.sec.gov/Archives/edgar/data/0001210708/000121070826000065/hson-20260601.htm">SEC</a></td></tr>
+          <tr><td><strong>EDAP TMS SA</strong></td><td>Investor Day</td><td>FocalTherics Investor Day presentation</td><td><a href="https://www.sec.gov/Archives/edgar/data/0001041934/000117184326003840/f8k_060126.htm">SEC</a></td></tr>
+          <tr><td><strong>NJ Resources Corp</strong></td><td>Regulatory</td><td>Base rate case filing with NJ BPU</td><td><a href="https://www.sec.gov/Archives/edgar/data/0000356309/000114036126023560/ef20075084_8k.htm">SEC</a></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- STEP 2 — TIER 2 -->
+  <div class="section s2">
+    <div class="section-header tier2">🎯 Step 2 — Tier 2: Theme-Aligned Movers (ETF-First)</div>
+    <div class="section-body">
+
+      <div class="sub-section-title bull">🖥️ AI Infrastructure / Servers | Parent ETFs: BOTZ, AIQ, SMH, SOXX — 🟢 HIGH CONVICTION — TRIFECTA</div>
+      <div class="etf-card">
+        <div class="etf-card-header">
+          <div>
+            <div class="etf-ticker">BOTZ / SMH</div>
+            <div class="etf-theme">AI Infra / Semiconductors — Parent ETFs</div>
+          </div>
+          <div class="etf-move bull">+3–5% / +2–4% AH</div>
+        </div>
+        <p>🏆 <strong>HPE (NYSE:HPE) — HEADLINE MOVER | +36.4% AH → $64.11</strong></p>
+        <div class="card-sub">
+          EPS: $0.79 vs $0.53e (+49% beat) &nbsp;|&nbsp; Revenue: $10.68B vs $9.79Be (+9.1% beat) &nbsp;|&nbsp; Server revenue: $5.45B vs $4.66Be (+17% beat) &nbsp;|&nbsp; Q3 guide: $11.5–12.1B vs $10.88Be &nbsp;|&nbsp; FY26 EPS raised $3.35–$3.45<br>
+          <strong>Biggest EPS beat since February 2018.</strong> CEO Neri: "exceptional quarter with record-breaking revenue — AI infrastructure demand." <span class="tag tag-green">EARNINGS</span><br>
+          Source: <a href="https://www.cnbc.com/2026/06/01/hpe-stock-earnings-q2.html">CNBC</a> | <a href="https://www.fxleaders.com/news/2026/06/01/hpe-stock-surges-36-after-hours-on-q2-earnings-beat-and-upgraded-outlook/">FX Leaders</a> | <a href="https://247wallst.com/investing/2026/06/01/hpe-skyrockets-30-on-biggest-earnings-beat-since-2018/">24/7 Wall St</a>
+        </div>
+        <p style="margin-top:8px;"><strong>DELL (NYSE:DELL)</strong> — AH +2.88% (sympathy; already +33% May 29 + +10.72% today). AI server read-through confirmed.</p>
+        <p><strong>SMCI (NASDAQ:SMCI)</strong> — AH +6.02% sympathy. <a href="https://www.benzinga.com/trading-ideas/movers/26/06/52927061/smci-dell-catch-a-bid-after-hours-as-hpe-stock-soars-after-q2-report">Benzinga</a></p>
+        <div class="card-sub"><strong>PATTERN:</strong> NVDA Q1 FY27 (May 20) → DELL Q1 FY27 (May 29) → HPE Q2 FY26 (June 1) = THREE consecutive AI infrastructure blowouts in 12 days. This is not a one-off — this is structural AI capex cycle confirmation.</div>
+        <div class="setup-row">
+          <div><span>Setup</span> <strong class="bull">GAP-AND-GO</strong></div>
+          <div><span>Entry</span> <strong>Gap above prior high → VWAP hold 15 min</strong></div>
+          <div><span>Stop</span> <strong>Below prior close</strong></div>
+          <div><span>Conviction</span> <strong class="bull">🟢 HIGH</strong></div>
+        </div>
+      </div>
+
+      <div class="sub-section-title bull" style="margin-top:16px;">💻 AI PC / Computex 2026 | Parent ETFs: SOXX, SMH (NVDA-heavy) — 🟡 MEDIUM — NEW CATALYST</div>
+      <div class="etf-card">
+        <div class="etf-card-header">
+          <div>
+            <div class="etf-ticker">SOXX / SMH</div>
+            <div class="etf-theme">AI PC — Computex 2026 Theme</div>
+          </div>
+          <div class="etf-move bull">+2% NVDA | +4.73% TSM</div>
+        </div>
+        <p><strong>NVDA RTX Spark (N1X):</strong> Jensen Huang unveiled ARM-based AI PC superchip at Computex 2026 (Taipei). Debuting Fall 2026 on laptops from MSFT, DELL, HP, ASUS, Lenovo, MSI. Entering Intel/AMD/Qualcomm PC territory. <span class="tag tag-blue">PRODUCT LAUNCH</span></p>
+        <p><strong>TSM +4.73%:</strong> NVDA partnership + 3nm pricing power +15% H2 2026 + Intel CEO Lip-Bu Tan visiting TSMC + 52-week high. Multiple simultaneous catalysts.</p>
+        <div class="card-sub"><strong>NEXT CATALYST:</strong> Intel CEO Lip-Bu Tan keynote at Computex — June 2, 1:30 PM Taiwan (1:30 AM ET). "Silicon innovation" agenda: Nova Lake CPU, Xeon 6+ (288 E-cores), AI PC. This is the second leg of the Computex AI PC theme. Source: <a href="https://newsroom.intel.com/client-computing/intel-at-computex-2026-the-next-era-of-ai-driven-computing">Intel Newsroom</a></div>
+        <div class="setup-row">
+          <div><span>Setup</span> <strong class="neutral">TREND CONTINUATION</strong></div>
+          <div><span>Next catalyst</span> <strong>Intel keynote June 2 AM</strong></div>
+          <div><span>Conviction</span> <strong class="neutral">🟡 MEDIUM</strong></div>
+        </div>
+      </div>
+
+      <div class="sub-section-title neutral" style="margin-top:16px;">⚛️ Quantum | Parent ETF: QTUM — 🟡 MIXED — IBM CONCENTRATING THE TRADE</div>
+      <div class="etf-card">
+        <div class="etf-card-header">
+          <div>
+            <div class="etf-ticker">QTUM</div>
+            <div class="etf-theme">Quantum Computing ETF — Mixed Signal</div>
+          </div>
+          <div class="etf-move neutral">±1% 🟡</div>
+        </div>
+        <p><strong>IBM +7%:</strong> Barclays "Overweight" $350 (bull case $449). $10B+ quantum investment over 5 years. US gov $1B funding → Anderon quantum spinout (wafer fab). Commercial quantum system by 2029. Barclays: "IBM mimicking Nvidia's playbook in quantum." <span class="tag tag-purple">ANALYST + POLICY</span></p>
+        <p class="bear"><strong>CRITICAL:</strong> "IBM Jumps 7%; IonQ, Rigetti Sell Off as Quantum Trade Concentrates" — <a href="https://247wallst.com/investing/2026/06/01/ibm-jumps-9-ionq-rigetti-sell-off-as-quantum-trade-concentrates/">24/7 Wall St</a>. Pure-play quantum (IONQ, RGTI, QBTS, QUBT) rotating INTO IBM.</p>
+        <p><strong>D-Wave (QBTS):</strong> Investor Day 8-K filed June 1 — watch for dilution/hype narrative after IBM commitment. <a href="https://www.sec.gov/Archives/edgar/data/0001907982/000190798226000078/d-waveinvestorday_fullda.htm">SEC</a></p>
+        <div class="setup-row">
+          <div><span>IBM Setup</span> <strong class="bull">🟢 GAP-AND-GO (IBM stock)</strong></div>
+          <div><span>IONQ/RGTI Setup</span> <strong class="bear">🔴 FADE / CHOP</strong></div>
+          <div><span>QTUM ETF</span> <strong class="neutral">🟡 MIXED (IBM +, pure-plays -)</strong></div>
+        </div>
+      </div>
+
+      <div class="sub-section-title bear" style="margin-top:16px;">₿ BTC Miners → AI | Parent ETFs: BITO, IBIT — 🔴 BEARISH</div>
+      <div class="etf-card" style="border-left:3px solid var(--red)">
+        <div class="etf-card-header">
+          <div><div class="etf-ticker" style="color:var(--red)">BITO / IBIT</div><div class="etf-theme">Bitcoin ETFs — Risk-Off</div></div>
+          <div class="etf-move bear">-2% 🔴</div>
+        </div>
+        <p>BTC ~$71,400–$73,000, -1.4% on day. <strong>$2.97B outflow over 10 consecutive sessions — LONGEST OUTFLOW STREAK ON RECORD.</strong></p>
+        <p>Drivers: Iran oil shock → inflation → Fed hawkish → crypto triple headwind. Source: <a href="https://www.coindesk.com/daybook-us/2026/06/01/bitcoin-remains-under-pressure-as-etf-outflows-higher-oil-prices-weigh-on-crypto-markets">CoinDesk</a></p>
+        <div class="setup-row">
+          <div><span>Setup</span> <strong class="bear">FADE</strong></div>
+          <div><span>Conviction</span> <strong class="bear">🔴 HIGH CONFIDENCE BEARISH</strong></div>
+        </div>
+      </div>
+
+      <div class="card-sub" style="margin-top:12px;">
+        <strong>Nuclear / Rare Earth / Space:</strong> No fresh primary-source catalysts confirmed tonight for OKLO, SMR, NNE, CCJ, MP, USAR, RKLB, ASTS. Monitor: Iran oil shock indirectly bullish for nuclear narrative; USAR CHIPS funding still pending; SpaceX IPO June 12 halo still active. Conviction: 🟡 NARRATIVE ONLY.
+      </div>
+
+    </div>
+  </div>
+
+  <!-- STEP 3 — TIER 3 -->
+  <div class="section s3">
+    <div class="section-header tier3">🔭 Step 3 — Tier 3: Emerging Theme Radar</div>
+    <div class="section-body">
+
+      <div class="flag-item warn-flag" style="margin-bottom:12px;">
+        <strong class="emerging">🧬 BIOTECH PRC2 CLASS RISK — WATCH FOR CONTAGION</strong><br>
+        <span style="font-size:12px;">FULC -49.5% AH: FDA concluded ALL PRC2 inhibitors carry equivalent secondary malignancy risk. Any EZH2 inhibitor developer faces re-pricing. Catalyst Type: REGULATORY. Source: <a href="https://www.investing.com/news/stock-market-news/fulcrum-therapeutics-stock-plunges-30-on-program-discontinuation-93CH-4720206">Investing.com</a>. Affected ETFs: IBB, XBI. Cluster: 1 name tonight — not yet cluster pattern. Watch for class-wide contagion June 2.</span>
+      </div>
+
+      <div class="flag-item warn-flag">
+        <strong class="emerging">💊 "SELL THE NEWS" BIOTECH PATTERN</strong><br>
+        <span style="font-size:12px;">ABVX -25.4% despite Phase 3 ABTECT MET primary endpoint (UC remission 50.8% vs 10.4% placebo). Crash = profit-taking + $45M ADS offering dilution. Catalyst Type: CLINICAL + OFFERING. Source: <a href="https://www.quiverquant.com/news/Abivax+slides+as+traders+digest+recent+trial+updates+and+potential+selling+from+a+fresh+ADS+deal">QuiverQuant</a>. Single occurrence — pattern to watch.</span>
+      </div>
+
+      <div class="flag-item warn-flag" style="margin-top:6px;">
+        <strong class="emerging">🔋 LAC +17.6% AH — CATALYST UNCONFIRMED</strong><br>
+        <span style="font-size:12px;">Lithium Americas +17.6% AH to $6.48. No primary source found. Thacker Pass (Nevada) news possible. Action: INVESTIGATE MANUALLY via LAC IR and EDGAR before trading. ETF: LIT. Conviction: DO NOT TRADE until confirmed.</span>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- STEP 4 — TIER 4 MACRO -->
+  <div class="section s4">
+    <div class="section-header tier4">🌐 Step 4 — Tier 4: Macro / Exogenous</div>
+    <div class="section-body">
+
+      <div class="macro-block red">
+        <h4>🚨 IRAN-HORMUZ CRISIS — BINARY RISK (CRITICAL)</h4>
+        <p><strong>Event:</strong> Iran suspended ALL indirect talks with US. Tehran vowed to FULLY CLOSE the Strait of Hormuz and open the Bab el-Mandeb front. Trump on CNBC: "I don't care if Iran negotiations are over."</p>
+        <p><strong>Context:</strong> Part of 2026 Iran conflict (Operation Epic Fury, Feb 28 launch). Strait partially disrupted since March 4. June 1 = escalation to FULL closure threat.</p>
+        <p><strong>Oil:</strong> WTI +7.69% → $94.08 &nbsp;|&nbsp; Brent +6.43% → $97.07. Analysts: $120+ if Hormuz fully closed. ~20% of global oil trade transits Hormuz.</p>
+        <p><strong>Market Implication:</strong> XLE/XOM/CVX 🟢 STRONGLY BULLISH &nbsp;|&nbsp; ITA (defense) 🟢 &nbsp;|&nbsp; TLT 🔴 (inflation) &nbsp;|&nbsp; BITO/IBIT 🔴 &nbsp;|&nbsp; Broad market: risk-off overlay</p>
+        <p><strong>Tomorrow's Regime:</strong> EVENT-DRIVEN (binary on Iran headline)</p>
+        <p class="src">Sources: <a href="https://www.cnbc.com/2026/06/01/oil-prices-wti-brent-crude-israel-lebanon-hezbollah-iran-trump-us.html">CNBC</a> | <a href="https://www.euronews.com/business/2026/06/01/oil-prices-climb-as-israel-expands-military-operation-in-lebanon">Euronews</a> | <a href="https://en.wikipedia.org/wiki/2026_Strait_of_Hormuz_crisis">Wikipedia — 2026 Hormuz Crisis</a></p>
+      </div>
+
+      <div class="macro-block amber">
+        <h4>🏦 Federal Reserve / Rates</h4>
+        <p>Kevin Warsh is Fed Chair (sworn in May 26). Powell warning about Fed independence under political pressure. 10Y yield ~4.45% (near 3-week lows but +7bps for month). Fed unchanged through year-end; 46% probability of December rate hike. Oil at $94 pushes inflation expectations higher → Dec hike probability rising.</p>
+        <p>Upcoming: JOLTS Job Openings Tuesday June 2 &nbsp;|&nbsp; May NFP Friday June 6 (dominant Fed event this week)</p>
+        <p class="src">Source: <a href="https://www.federalreserve.gov/releases/h15/">Fed H.15</a> | <a href="https://www.cnbc.com/2026/04/29/treasury-yields-fed-decision-powell-warsh-mpc.html">CNBC</a></p>
+      </div>
+
+      <div class="macro-block" style="border-left-color:var(--red)">
+        <h4 style="color:var(--red)">₿ Bitcoin / Crypto — Risk-Off</h4>
+        <p>BTC ~$71,400–$73,000, -1.4%. <strong>$2.97B outflow over 10 consecutive sessions — LONGEST RECORD STREAK.</strong> Oil inflation → Fed hawkish → crypto triple headwind.</p>
+        <p class="src">Sources: <a href="https://www.coindesk.com/daybook-us/2026/06/01/bitcoin-remains-under-pressure-as-etf-outflows-higher-oil-prices-weigh-on-crypto-markets">CoinDesk</a> | <a href="https://fortune.com/article/price-of-bitcoin-06-01-2026/">Fortune</a></p>
+      </div>
+
+      <div class="macro-block orange">
+        <h4 style="color:var(--orange)">🛢️ Oil / Commodities — Bullish Energy / Risk-Off Macro</h4>
+        <p>WTI $94.08 (+7.69%) &nbsp;|&nbsp; Brent $97.07 (+6.43%). Hormuz: ~20% global oil at risk. Israel expanding military in Lebanon. Oil >$90 sustained = Fed more likely to hike = negative for growth stock multiples.</p>
+        <p class="src">Sources: <a href="https://www.cnbc.com/2026/06/01/oil-prices-wti-brent-crude-israel-lebanon-hezbollah-iran-trump-us.html">CNBC</a> | <a href="https://www.euronews.com/business/2026/06/01/oil-prices-climb-as-israel-expands-military-operation-in-lebanon">Euronews</a></p>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- STEP 5 — OPTIONS -->
+  <div class="section s5">
+    <div class="section-header options">🔵 Step 5 — After-Hours Options Flow</div>
+    <div class="section-body">
+      <p style="color:var(--amber);font-size:12px;margin-bottom:12px;">⚠️ Unusual Whales live feed not accessible for AH window. All flow commentary INFERRED from price action — INVESTIGATE MANUALLY via unusualwhales.com morning of June 2 before open.</p>
+      <table>
+        <thead><tr><th>Ticker/ETF</th><th>Inferred Flow</th><th>Rationale</th><th>Confidence</th></tr></thead>
+        <tbody>
+          <tr><td><strong>HPE</strong></td><td class="bull">Massive call sweep expected</td><td>+36.4% AH = massive call activity. Pre-earnings call positioning likely from intraday ($47 close)</td><td class="neutral">INFERRED</td></tr>
+          <tr><td><strong>DELL</strong></td><td class="bull">Call activity (sympathy)</td><td>Already heavily positioned from May 29 gap; AH +2.88% confirms continuation</td><td class="neutral">INFERRED</td></tr>
+          <tr><td><strong>SMCI</strong></td><td class="bull">Call activity (sympathy)</td><td>+6.02% AH sympathy play on HPE</td><td class="neutral">INFERRED</td></tr>
+          <tr><td><strong>XLE</strong></td><td class="bull">Call sweep on Iran news</td><td>Energy calls typically spike on geopolitical oil shocks. WTI +7.69%</td><td class="neutral">INFERRED</td></tr>
+          <tr><td><strong>AVGO</strong></td><td class="bull">Pre-earnings call positioning</td><td>Jun 3 AMC earnings; HPE+DELL beats = bullish setup. 10%+ implied move likely</td><td class="neutral">INFERRED</td></tr>
+          <tr><td><strong>SPY/QQQ</strong></td><td class="neutral">Mixed — elevated skew</td><td>Tech bulls vs Iran geopolitical bears. Short-dated next-day expiry skew elevated</td><td class="neutral">INFERRED</td></tr>
+          <tr><td><strong>BITO/IBIT</strong></td><td class="bear">Put activity implied</td><td>10-session outflow streak → structural put activity expected on BTC weakness</td><td class="neutral">INFERRED</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- STEP 6 — WIRE SCOOPS -->
+  <div class="section s6">
+    <div class="section-header scoops">📰 Step 6 — Wire Service Scoops (4 PM – 8 PM)</div>
+    <div class="section-body">
+
+      <div class="scoop-row">
+        <h4>🟢 CNBC — "HPE skyrockets 30% on biggest earnings beat since 2018"</h4>
+        <p>Q2 FY2026 EPS $0.79 vs $0.53e. Server revenue $5.45B vs $4.66Be. AI infrastructure demand record. Published after close June 1.</p>
+        <div class="tickers">Affected: HPE +36.4%, DELL +2.88% AH, SMCI +6.02% AH, BOTZ, SMH &nbsp;|&nbsp; Direction: 🟢 STRONGLY BULLISH &nbsp;|&nbsp; <a href="https://www.cnbc.com/2026/06/01/hpe-stock-earnings-q2.html">CNBC</a></div>
+      </div>
+
+      <div class="scoop-row" style="border-left-color:var(--red)">
+        <h4 style="color:var(--red)">🔴 CNBC — "Oil jumps more than 4% as Trump tells CNBC he doesn't care if Iran negotiations are over"</h4>
+        <p>Trump: "I don't care if Iran negotiations are over." Iran halts US talks, threatens Hormuz. WTI +7.69% to $94.08.</p>
+        <div class="tickers">Affected: XLE, XOP, OIH, ITA, TLT (bearish) &nbsp;|&nbsp; Direction: 🔴 RISK-OFF / ENERGY BULLISH &nbsp;|&nbsp; <a href="https://www.cnbc.com/2026/06/01/oil-prices-wti-brent-crude-israel-lebanon-hezbollah-iran-trump-us.html">CNBC</a></div>
+      </div>
+
+      <div class="scoop-row">
+        <h4>🟢 CNBC — "Nvidia jumps into PCs with new Arm-based chip debuting in laptops from Microsoft, Dell, HP"</h4>
+        <p>NVDA RTX Spark (N1X) ARM-based AI PC superchip unveiled at Computex 2026. Fall 2026 launch. "Reinvention of the computer as big as the smartphone."</p>
+        <div class="tickers">Affected: NVDA, SOXX, SMH, DELL, MSFT, HP &nbsp;|&nbsp; Direction: 🟢 BULLISH AI PC &nbsp;|&nbsp; <a href="https://www.cnbc.com/2026/05/31/nvidias-new-chip-to-power-fresh-line-of-windows-laptops-by-dell-hp.html">CNBC</a></div>
+      </div>
+
+      <div class="scoop-row">
+        <h4>🟢 CNBC — "Barclays says IBM is mimicking Nvidia's playbook in quantum market. How the stock could gain 50%"</h4>
+        <p>Barclays initiates IBM "Overweight" $350 (bull $449). IBM commits $10B+ quantum over 5 years. US gov $1B funding → Anderon spinout.</p>
+        <div class="tickers">Affected: IBM +7%, QTUM (mixed — IBM up, pure-plays down) &nbsp;|&nbsp; Direction: 🟢 BULLISH IBM / 🔴 BEARISH IONQ/RGTI &nbsp;|&nbsp; <a href="https://www.cnbc.com/2026/06/01/barclays-says-ibm-is-mimicking-nvidias-playbook-in-quantum-market.html">CNBC</a></div>
+      </div>
+
+      <div class="scoop-row" style="border-left-color:var(--amber)">
+        <h4 style="color:var(--amber)">🟡 24/7 Wall St — "IBM Jumps 7%; IonQ, Rigetti Sell Off as Quantum Trade Concentrates"</h4>
+        <p>Quantum trade rotating from pure-play small caps (IONQ, RGTI, QBTS) into IBM. Concentration risk for QTUM ETF.</p>
+        <div class="tickers">Affected: IBM (bullish), IONQ/RGTI (bearish), QTUM (mixed) &nbsp;|&nbsp; <a href="https://247wallst.com/investing/2026/06/01/ibm-jumps-9-ionq-rigetti-sell-off-as-quantum-trade-concentrates/">24/7 Wall St</a></div>
+      </div>
+
+      <div class="scoop-row">
+        <h4>🟢 Benzinga — "SMCI, Dell Catch a Bid After Hours as HPE Stock Soars After Q2 Report"</h4>
+        <p>"Hyperscalers continuing to pour capital into data center buildouts, making server makers prime beneficiaries heading into H2 2026."</p>
+        <div class="tickers">Affected: SMCI +6.02% AH, DELL +2.88% AH, BOTZ, HPE &nbsp;|&nbsp; Direction: 🟢 BULLISH &nbsp;|&nbsp; <a href="https://www.benzinga.com/trading-ideas/movers/26/06/52927061/smci-dell-catch-a-bid-after-hours-as-hpe-stock-soars-after-q2-report">Benzinga</a></div>
+      </div>
+
+      <div class="scoop-row" style="border-left-color:var(--red)">
+        <h4 style="color:var(--red)">🔴 Euronews / Reuters — "Oil prices rally on Iran's US talks freeze and Strait of Hormuz threat"</h4>
+        <p>Iran completely stops indirect talks. Bab el-Mandeb also threatened. Oil and defense sectors primary beneficiaries.</p>
+        <div class="tickers">Affected: XLE, XOP, UCO, ITA &nbsp;|&nbsp; Direction: 🔴 RISK-OFF / GEOPOLITICAL &nbsp;|&nbsp; <a href="https://www.euronews.com/business/2026/06/01/oil-prices-climb-as-israel-expands-military-operation-in-lebanon">Euronews</a></div>
+      </div>
+
+      <p style="color:var(--muted);font-size:12px;margin-top:12px;">🏛️ No government equity portfolio names or active policy stakes identified tonight. Monitor USAR (CHIPS funding) and nuclear policy names for any policy action.</p>
+    </div>
+  </div>
+
+  <!-- STEP 7 — EARNINGS -->
+  <div class="section s7">
+    <div class="section-header earnings">📅 Step 7 — Tomorrow's Earnings Preview</div>
+    <div class="section-body">
+      <p style="color:var(--muted);font-size:12px;margin-bottom:12px;">26 earnings scheduled June 2 per Earnings Whispers. No major theme names (>$1B mkt cap in tracked themes) confirmed for June 2 BMO/AMC. Intel CEO keynote (not earnings) is the primary June 2 catalyst.</p>
+
+      <div class="etf-card" style="border-left:3px solid var(--cyan-alt)">
+        <div class="etf-card-header">
+          <div><div class="etf-ticker">INTC</div><div class="etf-theme">Intel CEO Keynote — Computex 2026 (June 2)</div></div>
+          <div style="font-size:13px;color:var(--cyan-alt);margin-left:auto;">Not earnings — PRODUCT CATALYST</div>
+        </div>
+        <p>Intel CEO Lip-Bu Tan delivers Computex keynote June 2, 1:30 PM Taiwan time (1:30 AM ET). Agenda: "silicon innovation" — Nova Lake CPU, Xeon 6+ (up to 288 E-cores for AI data centers), AI PC push, x86 architecture for AI. Intel stock surged 200% under Tan — this keynote is the first major product showcase since the AI PC theme ignited.</p>
+        <p>Affected ETFs: SOXX, SMH (semi exposure), BOTZ (AI infra). Source: <a href="https://newsroom.intel.com/client-computing/intel-at-computex-2026-the-next-era-of-ai-driven-computing">Intel Newsroom</a></p>
+      </div>
+
+      <div class="etf-card" style="border-left:3px solid var(--green);margin-top:12px;">
+        <div class="etf-card-header">
+          <div><div class="etf-ticker">AVGO</div><div class="etf-theme">Broadcom — June 3 AMC — HIGH CONVICTION UPCOMING EVENT</div></div>
+          <div class="etf-move bull">~10%+ implied move</div>
+        </div>
+        <p><strong>Consensus:</strong> EPS $1.73 &nbsp;|&nbsp; Revenue $22.12B (+47% YoY) &nbsp;|&nbsp; AI chip revenue $10.7B (+140% YoY)</p>
+        <p><strong>Setup Context:</strong> NVDA beat (May 20) → DELL beat (May 29) → HPE beat (June 1) → ALL confirming AI capex cycle → AVGO is the final confirmation in the AI hardware chain. Customers: Google, Meta, Anthropic, OpenAI (custom ASICs). Line of sight to $100B AI chip revenue 2027.</p>
+        <p><strong>Historical gap tendency:</strong> AVGO historically beats and guides up in AI cycle. Very high historical beat rate in this environment.</p>
+        <p><strong>Options positioning:</strong> Likely bullish call skew given sector momentum. Check AVGO options IV Tuesday for pre-positioning clues.</p>
+        <div class="card-sub">Sources: <a href="https://moneymorning.com/2026/05/30/broadcom-avgo-q2-2026-earnings-preview-ai-revenue-june">MoneyMorning</a> | <a href="https://www.tradingkey.com/analysis/stocks/us-stocks/261937612-broadcom-avgp-q2-google-meta-anthropic-openai-chip-asic-tradingkey">TradingKey</a> | <a href="https://www.fool.com/investing/2026/05/31/broadcom-reports-earnings-june-3-time-to-buy/">Motley Fool</a></div>
+        <div class="setup-row">
+          <div><span>Sector Read-Through</span> <strong>SMH, SOXX, BOTZ, AIQ</strong></div>
+          <div><span>Conviction (setup)</span> <strong class="bull">🟢 VERY BULLISH SETUP</strong></div>
+          <div><span>Risk</span> <strong class="neutral">If guides down despite beat → sharp reversal</strong></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 8 — SYNTHESIS -->
+  <div class="section s8">
+    <div class="section-header synthesis">🗺️ Step 8 — Synthesis: Tomorrow's Gap Map</div>
+    <div class="section-body">
+
+      <div class="theme-of-night">
+        <h3>🌟 THEME OF THE NIGHT</h3>
+        <p><strong>AI Server Confirmation Trifecta + Computex 2026 Launch Cycle</strong> — June 1, 2026 completes the most powerful AI infrastructure confirmation sequence in recent memory: NVIDIA Q1 FY27 record (May 20) → Dell $16.1B AI server beat (May 29) → HPE biggest EPS beat since 2018 (June 1). Three independent data points from chip-to-server-to-integration all confirming the AI capex supercycle is real and accelerating. Simultaneously, NVIDIA's RTX Spark at Computex signals the AI PC frontier — AI moving from data center to edge. Secondary theme: Iran/Hormuz oil shock creates bifurcated market — technology infrastructure bullish, energy bullish, broad market bifurcated by geopolitical binary risk.</p>
+      </div>
+
+      <div class="regime-box">
+        <h3>⚖️ REGIME READ — BIFURCATED / EVENT-DRIVEN</h3>
+        <p>🟢 <strong>AI Infrastructure:</strong> STRONG RISK-ON — multi-catalyst trifecta confirmation &nbsp;|&nbsp; 🟢 <strong>Energy:</strong> RISK-ON (Iran shock) &nbsp;|&nbsp; 🔴 <strong>Geopolitical:</strong> RISK-OFF overlay (Hormuz binary) &nbsp;|&nbsp; 🔴 <strong>Crypto:</strong> RISK-OFF (record outflow streak) &nbsp;|&nbsp; 🟡 <strong>Macro:</strong> MIXED (oil inflation → rate hike risk; jobs data Friday) &nbsp;|&nbsp; <strong>Overall lean: Tech-positive with geopolitical tail risk.</strong></p>
+      </div>
+
+      <div class="sub-section-title bull">A) Top 5 ETF Gap-Up Candidates</div>
+
+      <div class="gap-candidate">
+        <div class="header-row">
+          <div class="rank">#1</div>
+          <h3>SMH — VanEck Semiconductor ETF</h3>
+          <span class="tag tag-green" style="margin-left:auto;">🟢 HIGH</span>
+        </div>
+        <p><strong>Catalyst:</strong> NVDA +2% (RTX Spark/N1X Computex launch) + TSM +4.73% (NVDA partnership, 3nm pricing, 52-week high) + HPE +36.4% AH (AI server demand confirmation, 3rd beat) + AVGO June 3 pre-positioning. AH confirmed: $603.93 vs close $598.93.</p>
+        <p><strong>Constituent leaders:</strong> NVDA (~19% weight), TSM (~10%), AVGO (~6.7%). HPE adjacent but reads through to semiconductor demand.</p>
+        <div class="meta-row">
+          <div><span>AH ETF Move</span> <strong class="bull">+0.83% confirmed ($603.93)</strong></div>
+          <div><span>Entry</span> <strong>Gap above 5-day high on volume</strong></div>
+          <div><span>Stop</span> <strong>Below today's close</strong></div>
+          <div><span>Theme</span> <strong>AI INFRA + COMPUTEX + AVGO PRE</strong></div>
+        </div>
+      </div>
+
+      <div class="gap-candidate">
+        <div class="header-row">
+          <div class="rank">#2</div>
+          <h3>BOTZ — Global X Robotics &amp; AI ETF</h3>
+          <span class="tag tag-green" style="margin-left:auto;">🟢 HIGH</span>
+        </div>
+        <p><strong>Catalyst:</strong> HPE Q2 monster beat (+36.4% AH) = AI server/infra trifecta complete. DELL +2.88% AH and SMCI +6.02% AH = full sector bid. This is the 3rd consecutive AI infrastructure blowout in 12 days. Pattern is structural, not one-off.</p>
+        <p><strong>Constituent leaders:</strong> HPE, DELL, SMCI, NVDA all moving in the same direction.</p>
+        <div class="meta-row">
+          <div><span>AH est</span> <strong class="bull">+3–5%</strong></div>
+          <div><span>Entry</span> <strong>Gap above prior day high → VWAP hold 15 min</strong></div>
+          <div><span>Stop</span> <strong>Below prior day close</strong></div>
+          <div><span>Theme</span> <strong>AI INFRASTRUCTURE TRIFECTA</strong></div>
+        </div>
+      </div>
+
+      <div class="gap-candidate">
+        <div class="header-row">
+          <div class="rank">#3</div>
+          <h3>XLE — Energy Select Sector SPDR ETF</h3>
+          <span class="tag tag-green" style="margin-left:auto;">🟢 HIGH</span>
+        </div>
+        <p><strong>Catalyst:</strong> Iran halts all US talks + vows full Hormuz closure + Trump "I don't care" → WTI +7.69% to $94.08, Brent +6.43% to $97.07. XLE trading at $56.29 close; +32% YTD. Oil at $94 = max bullish for XOM, CVX, COP.</p>
+        <p>⚠️ <strong>BINARY CAVEAT:</strong> If Iran de-escalates overnight, oil reverses sharply. Set tight stops. This is a geopolitical premium play, not fundamental.</p>
+        <div class="meta-row">
+          <div><span>AH est</span> <strong class="bull">+3–5%</strong></div>
+          <div><span>Entry</span> <strong>Gap + oil holds $92+ at open</strong></div>
+          <div><span>Stop</span> <strong>Oil drop below $89 → immediate exit</strong></div>
+          <div><span>Theme</span> <strong>IRAN/HORMUZ OIL SHOCK</strong></div>
+        </div>
+      </div>
+
+      <div class="gap-candidate">
+        <div class="header-row">
+          <div class="rank">#4</div>
+          <h3>XOP — S&amp;P Oil &amp; Gas E&amp;P ETF</h3>
+          <span class="tag tag-green" style="margin-left:auto;">🟢 HIGH</span>
+        </div>
+        <p><strong>Catalyst:</strong> Same as XLE but more leveraged to WTI spot price. E&P names benefit most from $94+ oil vs integrated majors. Higher beta to oil than XLE.</p>
+        <p>⚠️ Same binary caveat as XLE — set tight stops.</p>
+        <div class="meta-row">
+          <div><span>AH est</span> <strong class="bull">+4–6%</strong></div>
+          <div><span>Entry</span> <strong>Same as XLE; oil holding above $90</strong></div>
+          <div><span>Stop</span> <strong>Oil drop below $88 = immediate exit</strong></div>
+          <div><span>Theme</span> <strong>IRAN OIL SHOCK (LEVERAGED)</strong></div>
+        </div>
+      </div>
+
+      <div class="gap-candidate" style="border-left-color:var(--amber)">
+        <div class="header-row">
+          <div class="rank">#5</div>
+          <h3>AIQ — Global X Artificial Intelligence &amp; Technology ETF</h3>
+          <span class="tag tag-amber" style="margin-left:auto;">🟡 MEDIUM</span>
+        </div>
+        <p><strong>Catalyst:</strong> Diversified AI coverage: IBM +7% (quantum/AI), HPE +36.4% (AI server), NVDA +2% (AI PC), TSM +4.73% (AI chips). Broader than SMH/BOTZ but balanced across the full AI infrastructure theme tonight.</p>
+        <div class="meta-row">
+          <div><span>AH est</span> <strong class="bull">+2–3%</strong></div>
+          <div><span>Entry</span> <strong>Gap above prior high → volume</strong></div>
+          <div><span>Stop</span> <strong>Below prior close</strong></div>
+          <div><span>Theme</span> <strong>BROAD AI INFRASTRUCTURE</strong></div>
+        </div>
+      </div>
+
+      <div class="sub-section-title bear" style="margin-top:20px;">B) Top 3 ETF Gap-Down / Fade Risks</div>
+
+      <div class="gap-candidate fade">
+        <div class="header-row">
+          <div class="rank">#1</div>
+          <h3>BITO / IBIT — Bitcoin ETFs</h3>
+          <span class="tag tag-red" style="margin-left:auto;">🔴 HIGH</span>
+        </div>
+        <p>BTC -1.4% to $71,400. Record 10-session outflow streak ($2.97B). Oil inflation → Fed hawkish → crypto triple headwind. No near-term catalyst to reverse. Source: <a href="https://www.coindesk.com/daybook-us/2026/06/01/bitcoin-remains-under-pressure-as-etf-outflows-higher-oil-prices-weigh-on-crypto-markets">CoinDesk</a></p>
+        <div class="meta-row"><div><span>Setup</span> <strong class="bear">FADE</strong></div><div><span>Conviction</span> <strong class="bear">🔴 HIGH CONFIDENCE BEARISH</strong></div></div>
+      </div>
+
+      <div class="gap-candidate fade">
+        <div class="header-row">
+          <div class="rank">#2</div>
+          <h3>ARKK — ARK Innovation ETF</h3>
+          <span class="tag tag-red" style="margin-left:auto;">🔴 MEDIUM</span>
+        </div>
+        <p>BTC exposure + Iran risk-off reduces speculative growth appetite. No ARKK-specific catalyst tonight. Geopolitical risk-off overlay is a headwind.</p>
+        <div class="meta-row"><div><span>Setup</span> <strong class="bear">FADE</strong></div><div><span>Conviction</span> <strong class="bear">🔴</strong></div></div>
+      </div>
+
+      <div class="gap-candidate fade" style="border-left-color:var(--amber)">
+        <div class="header-row">
+          <div class="rank">#3</div>
+          <h3>IBB / XBI — Biotech ETFs</h3>
+          <span class="tag tag-amber" style="margin-left:auto;">🟡 WATCH</span>
+        </div>
+        <p>FULC -49.5% AH on PRC2 class-wide FDA safety concern. If FDA's "all PRC2 inhibitors = equivalent malignancy risk" view spreads, other EZH2 inhibitor developers face re-pricing. Monitor for class-wide contagion June 2.</p>
+        <div class="meta-row"><div><span>Setup</span> <strong class="neutral">CHOP/SELECTIVE FADE</strong></div><div><span>Conviction</span> <strong class="neutral">🟡 (verify class impact first)</strong></div></div>
+      </div>
+
+      <div class="sub-section-title neutral" style="margin-top:20px;">E) EOD ETF Entry Candidates — 3–5 Day Holds (Stockbee/Qullamaggie)</div>
+      <table>
+        <thead><tr><th>ETF</th><th>Pattern</th><th>Entry Trigger</th><th>Hold</th><th>Stop</th></tr></thead>
+        <tbody>
+          <tr><td><strong>SMH</strong></td><td>3rd confirmation gap</td><td>Morning VWAP hold through noon</td><td>3–5 days (AVGO Jun 3 is next leg)</td><td>Below gap open</td></tr>
+          <tr><td><strong>XLE</strong></td><td>Geopolitical oil premium</td><td>Oil holds $90+ at 10 AM ET</td><td>2–3 days (binary)</td><td>Oil drops &lt;$88</td></tr>
+          <tr><td><strong>BOTZ</strong></td><td>AI server trifecta momentum</td><td>15-min VWAP hold post-open</td><td>3–5 days</td><td>Below prior close</td></tr>
+        </tbody>
+      </table>
+
+      <div class="briefing-box" style="margin-top:20px;">
+        <h3>☀️ OVERNIGHT BRIEFING — 30-Second Read for Tomorrow Morning</h3>
+        <p>The June 1 night is defined by two headline forces pulling in opposite directions. <strong>HPE's Q2 earnings report (+36.4% AH) completed the AI infrastructure trifecta</strong> — NVDA, Dell, and now HPE all showing explosive AI server demand, with HPE posting its biggest EPS beat since 2018 on server revenue of $5.45B versus $4.66B expected. Simultaneously, NVIDIA unveiled the RTX Spark at Computex, entering the AI PC market for the first time. These tech catalysts point to a strong gap-up in SMH, BOTZ, and AI-adjacent ETFs at tomorrow's open. However, <strong>Iran abruptly halted nuclear talks and threatened to fully close the Strait of Hormuz</strong> — sending crude to $94+ (+7.7%), which should drive a strong gap-up in XLE and XOP. The binary risk: if Iran follows through on Hormuz closure, oil spikes toward $120 and inflation expectations spike, potentially triggering a Fed hawkish response that pressures tech multiples. Intel CEO keynotes at Computex June 2 — the AI PC theme gets a second catalyst leg. <strong>Broadcom (AVGO) reports June 3 AMC</strong> — the most important upcoming AI semiconductor event of the week; setup is very bullish given the HPE/Dell/NVDA beats, with $10.7B AI chip revenue (+140% YoY) expected. Tomorrow morning: check oil price first (binary risk), then verify HPE/SMCI pre-market volume to gauge AI server gap sustainability.</p>
+      </div>
+
+      <div class="sub-section-title" style="margin-top:20px;">G) Individual Constituents Watch (Context Only)</div>
+      <table>
+        <thead><tr><th>Ticker</th><th>Theme</th><th>AH Move</th><th>Watch Level</th></tr></thead>
+        <tbody>
+          <tr><td><strong>HPE</strong></td><td>AI Servers</td><td class="bull">+36.4%</td><td>Gap sustainability above $60; watch AH close $64.11</td></tr>
+          <tr><td><strong>TSM</strong></td><td>Semis/AI</td><td class="bull">+4.73% day</td><td>52-week high breakout — watch $200 area</td></tr>
+          <tr><td><strong>IBM</strong></td><td>Quantum</td><td class="bull">+7% day</td><td>Watch $320 resistance on open</td></tr>
+          <tr><td><strong>DELL</strong></td><td>AI Servers</td><td class="bull">+2.88% AH</td><td>Already ran — watch consolidation above $420</td></tr>
+          <tr><td><strong>SMCI</strong></td><td>AI Servers</td><td class="bull">+6.02% AH</td><td>Sympathy volatile — watch VWAP discipline</td></tr>
+          <tr><td><strong>NVDA</strong></td><td>AI PC / Infra</td><td class="bull">+~2%</td><td>Computex catalyst — watch $195–200</td></tr>
+          <tr><td><strong>IONQ / RGTI</strong></td><td>Quantum</td><td class="bear">Selling off</td><td>IBM rotation headwind — avoid</td></tr>
+          <tr><td><strong>XOM / CVX</strong></td><td>Energy</td><td class="bull">Expected +3–5%</td><td>Iran oil proxy — monitor WTI $94 hold</td></tr>
+          <tr><td><strong>BTC</strong></td><td>Crypto</td><td class="bear">-1.4%</td><td>Record outflow streak — avoid long exposure</td></tr>
+          <tr><td><strong>FULC</strong></td><td>Biotech</td><td class="bear">-49.5%</td><td>Strategic review — dead money. Watch PRC2 class contagion.</td></tr>
+          <tr><td><strong>LAC</strong></td><td>Lithium</td><td class="neutral">+17.6% UNCONFIRMED</td><td>Do NOT trade until catalyst confirmed</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- STEP 9 — AUDIT -->
+  <div class="section s9">
+    <div class="section-header audit">🔍 Step 9 — Assumption Audit</div>
+    <div class="section-body">
+      <div style="display:flex;gap:12px;padding:8px 0;border-bottom:1px solid var(--border);font-size:11px;color:var(--muted);">
+        <div style="flex:3;font-weight:700;">ASSUMPTION</div>
+        <div style="flex:3;font-weight:700;">IF WRONG</div>
+        <div style="flex:2;font-weight:700;">IMPACT ON TRADE</div>
+      </div>
+      <div class="audit-row">
+        <div class="audit-assumption">TV MCP returning USI index data for all symbol lookups — web-sourced AH prices used throughout</div>
+        <div class="audit-wrong">Actual ETF AH moves may differ slightly; TV chart not showing individual names</div>
+        <div class="audit-impact">SMH $603.93 AH verified from web. Constituent moves verified independently. Low impact.</div>
+      </div>
+      <div class="audit-row">
+        <div class="audit-assumption">HPE AH volume "elevated" — no exact primary source for volume figure</div>
+        <div class="audit-wrong">Volume could be lower than peak; would slow gap sustainability</div>
+        <div class="audit-impact">Check pre-open volume trend 9:00–9:30 AM ET on June 2 before entry</div>
+      </div>
+      <div class="audit-row">
+        <div class="audit-assumption">IBM "+7%" is intraday day move — not confirmed AH hold</div>
+        <div class="audit-wrong">IBM may have given back gains after close; could be +3–5% at open</div>
+        <div class="audit-impact">Verify IBM AH price on Yahoo Finance morning June 2</div>
+      </div>
+      <div class="audit-row">
+        <div class="audit-assumption">IONQ/RGTI "selling off" — magnitude not confirmed (single headline source)</div>
+        <div class="audit-wrong">Pure-play quantum could recover overnight; headline may be overstated</div>
+        <div class="audit-impact">Check IONQ, RGTI AH prices before open; adjust QTUM conviction accordingly</div>
+      </div>
+      <div class="audit-row">
+        <div class="audit-assumption">Oil price: WTI $94.08 (+7.69%) — slight variation across sources ($92.54–$94.08)</div>
+        <div class="audit-wrong">WTI could be $2–3 lower at $92; still bullish for XLE</div>
+        <div class="audit-impact">XLE thesis holds above $88 WTI. Check oil at 9:30 AM ET open.</div>
+      </div>
+      <div class="audit-row">
+        <div class="audit-assumption">LAC +17.6% AH — CATALYST UNCONFIRMED</div>
+        <div class="audit-wrong">Catalyst could be technical/short squeeze vs fundamental event</div>
+        <div class="audit-impact">DO NOT trade LAC until primary source confirmed. Check LAC IR and EDGAR June 2 AM.</div>
+      </div>
+      <div class="audit-row">
+        <div class="audit-assumption">ABVX -25.4% — sources conflict (initial +20% then -40%, or -25.4% straight)</div>
+        <div class="audit-wrong">Intraday volatility extreme; final AH price highly uncertain</div>
+        <div class="audit-impact">ABVX is tiny float biotech — avoid entirely. Volatility makes precise data unreliable.</div>
+      </div>
+      <div class="audit-row">
+        <div class="audit-assumption">All options flow commentary is INFERRED — Unusual Whales not accessible</div>
+        <div class="audit-wrong">Unusual Whales may show completely different positioning; dark pool could be bearish</div>
+        <div class="audit-impact">MUST CHECK unusualwhales.com pre-open June 2 before making options-based decisions</div>
+      </div>
+      <div class="audit-row">
+        <div class="audit-assumption">Iran "full Hormuz closure" is a THREAT — not confirmed execution</div>
+        <div class="audit-wrong">If bluster, oil reverses sharply; XLE/XOP give up gains very quickly</div>
+        <div class="audit-impact">BINARY RISK — set tight stops on energy positions. Oil drop below $88 = immediate exit.</div>
+      </div>
+      <div class="audit-row">
+        <div class="audit-assumption">AVGO June 3 setup "very bullish" — consensus $22.12B / +140% AI rev</div>
+        <div class="audit-wrong">AVGO could guide down despite beating; gross margin compression; China policy headwind</div>
+        <div class="audit-impact">Monitor AVGO options implied vol June 2 for pre-positioning clues. Check any AVGO-specific news Tuesday.</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  function filterSection(filter, btn) {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    const sections = document.querySelectorAll('.section');
+    if (filter === 'all') {
+      sections.forEach(s => s.classList.remove('hidden'));
+      document.querySelector('.alert-banner').classList.remove('hidden');
+    } else {
+      document.querySelector('.alert-banner').classList.add('hidden');
+      sections.forEach(s => {
+        if (s.classList.contains(filter)) {
+          s.classList.remove('hidden');
+        } else {
+          s.classList.add('hidden');
+        }
+      });
+    }
+  }
+</script>
+
+</body>
+</html>
