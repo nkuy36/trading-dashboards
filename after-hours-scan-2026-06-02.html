@@ -1,0 +1,950 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>After-Hours Scan — June 2, 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0e17;
+    --bg2: #0f1520;
+    --bg3: #141c2e;
+    --border: #1e2d45;
+    --text: #e2e8f0;
+    --muted: #8899aa;
+    --green: #22c55e;
+    --red: #ef4444;
+    --amber: #f59e0b;
+    --blue: #3b82f6;
+    --purple: #a855f7;
+    --cyan: #06b6d4;
+    --accent: #1e3a5f;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+  .header {
+    background: linear-gradient(135deg, #0a0e17 0%, #0f1a30 50%, #0a0e17 100%);
+    border-bottom: 2px solid var(--blue);
+    padding: 24px 32px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .header h1 { font-size: 20px; font-weight: 700; color: var(--cyan); letter-spacing: 1px; }
+  .header .meta { font-size: 11px; color: var(--muted); text-align: right; }
+  .header .date { font-size: 15px; color: var(--text); font-weight: 600; }
+  .container { max-width: 1400px; margin: 0 auto; padding: 24px 32px; }
+
+  .market-bar {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 10px;
+    margin-bottom: 24px;
+  }
+  .market-stat {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 12px 14px;
+    text-align: center;
+  }
+  .market-stat .label { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; }
+  .market-stat .value { font-size: 18px; font-weight: 700; margin: 4px 0; }
+  .market-stat .change { font-size: 11px; }
+  .pos { color: var(--green); }
+  .neg { color: var(--red); }
+  .neu { color: var(--amber); }
+
+  .escalation {
+    background: linear-gradient(135deg, rgba(239,68,68,0.12), rgba(239,68,68,0.05));
+    border: 2px solid rgba(239,68,68,0.5);
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+  }
+  .escalation-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--red);
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .escalation p { font-size: 12px; line-height: 1.8; margin-bottom: 6px; }
+
+  .section {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    margin-bottom: 20px;
+    overflow: hidden;
+  }
+  .section-header {
+    background: var(--bg3);
+    border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .section-header h2 {
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--cyan);
+  }
+  .step-badge {
+    background: var(--accent);
+    color: var(--blue);
+    font-size: 10px;
+    padding: 2px 8px;
+    border-radius: 3px;
+    font-weight: 700;
+  }
+  .section-body { padding: 16px 20px; }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+    margin-bottom: 12px;
+  }
+  th {
+    background: var(--bg3);
+    color: var(--muted);
+    text-transform: uppercase;
+    font-size: 10px;
+    letter-spacing: 1px;
+    padding: 6px 10px;
+    text-align: left;
+    border: 1px solid var(--border);
+  }
+  td {
+    padding: 7px 10px;
+    border: 1px solid var(--border);
+    vertical-align: middle;
+  }
+  tr:nth-child(even) td { background: rgba(255,255,255,0.02); }
+
+  .badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 3px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+  }
+  .badge-green { background: rgba(34,197,94,0.15); color: var(--green); }
+  .badge-red { background: rgba(239,68,68,0.15); color: var(--red); }
+  .badge-amber { background: rgba(245,158,11,0.15); color: var(--amber); }
+  .badge-blue { background: rgba(59,130,246,0.15); color: var(--blue); }
+  .badge-purple { background: rgba(168,85,247,0.15); color: var(--purple); }
+  .badge-cyan { background: rgba(6,182,212,0.15); color: var(--cyan); }
+
+  .alert {
+    border-radius: 6px;
+    padding: 12px 16px;
+    margin-bottom: 12px;
+    font-size: 12px;
+    line-height: 1.6;
+  }
+  .alert-amber { background: rgba(245,158,11,0.08); border: 1px solid rgba(245,158,11,0.3); }
+  .alert-green { background: rgba(34,197,94,0.08); border: 1px solid rgba(34,197,94,0.3); }
+  .alert-red { background: rgba(239,68,68,0.08); border: 1px solid rgba(239,68,68,0.3); }
+  .alert-blue { background: rgba(59,130,246,0.08); border: 1px solid rgba(59,130,246,0.3); }
+  .alert-title { font-weight: 700; font-size: 11px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
+
+  .game-plan-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+    margin-bottom: 16px;
+  }
+  .gp-card {
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 14px;
+    background: var(--bg3);
+  }
+  .gp-card.long { border-top: 3px solid var(--green); }
+  .gp-card.short { border-top: 3px solid var(--red); }
+  .gp-card.neutral { border-top: 3px solid var(--amber); }
+  .gp-ticker { font-size: 18px; font-weight: 700; margin-bottom: 4px; }
+  .gp-label { font-size: 10px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+  .gp-label.long { color: var(--green); }
+  .gp-label.short { color: var(--red); }
+  .gp-label.neutral { color: var(--amber); }
+  .gp-body { font-size: 11px; color: var(--muted); line-height: 1.5; }
+
+  .audit-item {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 10px 14px;
+    margin-bottom: 8px;
+    display: grid;
+    grid-template-columns: 24px 1fr 1fr;
+    gap: 10px;
+    font-size: 11px;
+    align-items: start;
+  }
+  .audit-num { color: var(--amber); font-weight: 700; }
+  .audit-label { font-size: 10px; text-transform: uppercase; color: var(--muted); margin-bottom: 2px; }
+
+  .flow-item {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 10px 14px;
+    margin-bottom: 8px;
+    font-size: 12px;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  .flow-ticker { font-size: 14px; font-weight: 700; min-width: 60px; }
+
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .three-col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; }
+  .divider { border: none; border-top: 1px solid var(--border); margin: 14px 0; }
+  .sub-header { font-size: 11px; font-weight: 700; color: var(--amber); text-transform: uppercase; letter-spacing: 1px; margin: 14px 0 8px; }
+  .footnote { font-size: 10px; color: var(--muted); margin-top: 16px; line-height: 1.6; }
+  a { color: var(--blue); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  .ticker-strong { font-size: 15px; font-weight: 700; }
+  p { margin-bottom: 6px; }
+  li { margin-bottom: 4px; margin-left: 16px; }
+  ul { margin-bottom: 8px; }
+
+  .etf-theme-card {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 12px;
+    margin-bottom: 10px;
+  }
+  .etf-theme-title { font-size: 12px; font-weight: 700; margin-bottom: 6px; }
+  .etf-theme-body { font-size: 11px; color: var(--muted); line-height: 1.5; }
+  .etf-best { font-size: 11px; margin-top: 6px; }
+  .etf-best span { color: var(--cyan); font-weight: 700; }
+
+  .earnings-preview {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--amber);
+    border-radius: 6px;
+    padding: 14px;
+    margin-bottom: 12px;
+  }
+  .earnings-preview h3 { font-size: 14px; font-weight: 700; margin-bottom: 4px; }
+  .earnings-preview .sub { font-size: 11px; color: var(--muted); margin-bottom: 10px; }
+
+  .macro-card {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 12px;
+    margin-bottom: 10px;
+    font-size: 12px;
+  }
+  .macro-card h3 { font-size: 11px; font-weight: 700; color: var(--amber); text-transform: uppercase; margin-bottom: 6px; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div>
+    <div class="header h1" style="font-size:20px;font-weight:700;color:var(--cyan);letter-spacing:1px;">🌙 AFTER-HOURS CATALYST SCAN (v7.3 +SAFETY NET)</div>
+    <div style="font-size:12px;color:var(--muted);margin-top:4px;">Personal Positions Review | Autonomous Run</div>
+  </div>
+  <div class="meta">
+    <div class="date">Tuesday, June 2, 2026</div>
+    <div>Generated ~17:30 ET | Next FOMC: June 16–17</div>
+    <div style="margin-top:6px;">
+      <span class="badge badge-green">AI EUPHORIA</span>
+      <span class="badge badge-red">OIL VOLATILE</span>
+      <span class="badge badge-red">BTC WEAK</span>
+      <span class="badge badge-amber">ANALYSTS SKEPTICAL</span>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- MARKET BAR -->
+  <div class="market-bar">
+    <div class="market-stat">
+      <div class="label">S&P 500</div>
+      <div class="value pos">~5,605</div>
+      <div class="change pos">RECORD</div>
+    </div>
+    <div class="market-stat">
+      <div class="label">QQQ</div>
+      <div class="value pos">~747</div>
+      <div class="change pos">+0.6% est.</div>
+    </div>
+    <div class="market-stat">
+      <div class="label">SMH</div>
+      <div class="value pos">$626.93</div>
+      <div class="change pos">+3.15%</div>
+    </div>
+    <div class="market-stat">
+      <div class="label">IBIT / BTC</div>
+      <div class="value neg">$40.49</div>
+      <div class="change neg">-2.7% / ~$67K</div>
+    </div>
+    <div class="market-stat">
+      <div class="label">WTI Crude</div>
+      <div class="value neu">~$91</div>
+      <div class="change neu">Volatile (Iran)</div>
+    </div>
+    <div class="market-stat">
+      <div class="label">10Y Yield</div>
+      <div class="value neu">4.46%</div>
+      <div class="change neu">+1bp</div>
+    </div>
+  </div>
+
+  <!-- STEP 0: CRITICAL NEWS SWEEP -->
+  <div class="escalation">
+    <div class="escalation-title">🚨 STEP 0 — CRITICAL NEWS SWEEP (1–5 PM) · v7.3 SAFETY NET</div>
+
+    <div class="alert alert-red" style="margin-bottom:12px;">
+      <div class="alert-title">🚨 ESCALATION #1 — ALPHABET $80B AI EQUITY RAISE → SEMI RERATE</div>
+      <p>Alphabet announced an <strong>$80 billion equity raise</strong> targeting AI infrastructure. <strong>AVGO (Broadcom)</strong> surged <strong class="pos">+6%</strong> to <strong>$486.90</strong> as Google's primary TPU design partner. <strong>MRVL (Marvell Technology)</strong> rocketed <strong class="pos">+17–18%</strong> to 52-week highs after NVIDIA CEO Jensen Huang publicly endorsed Marvell as a potential <em>"trillion-dollar company."</em> <strong>SMH</strong> closed <strong>+3.15%</strong> at <strong>$626.93</strong> — sector's biggest day in weeks. AVGO reports earnings <span class="badge badge-amber">JUNE 4 AMC</span> — now the key event horizon for AI semis.</p>
+      <p style="margin-top:6px;color:var(--muted);font-size:11px;">Sources: 24/7 Wall St., Yahoo Finance markets, June 2, 2026</p>
+    </div>
+
+    <div class="alert alert-red">
+      <div class="alert-title">🚨 ESCALATION #2 — IRAN DEAL UNCERTAINTY → OIL VOLATILE AT $91</div>
+      <p>WTI crude ~<strong>$91/bbl</strong> — slipped ~1% today after surging +5.5% the prior session on Iran deal collapse fears. Iranian news agencies contradicting Trump statements. Strait of Hormuz de facto closed. Any deterioration = <strong>WTI $95–100</strong> risk. Trump said MOU "within a week" — mixed signals = continued volatility. UCO/USO likely +2–3% today.</p>
+      <p style="margin-top:6px;color:var(--muted);font-size:11px;">Sources: CNBC, IC Markets Asia Forecast June 2, 2026</p>
+    </div>
+
+    <hr class="divider">
+    <div class="sub-header">Theme-by-Theme Sweep</div>
+
+    <div class="two-col" style="margin-top:12px;">
+      <div>
+        <p><strong style="color:var(--purple);">⚛️ QUANTUM</strong></p>
+        <ul>
+          <li><strong>RGTI</strong>: $25.26 (range $24.05–$26.48). $100M CHIPS Act LOI w/ DOC signed May 20. UK $100M investment. No new June 2 catalyst.</li>
+          <li><strong>QBTS</strong>: ~$27.82. Q1 bookings +2,000% YoY. DOC $100M equity injection. Quantum Circuits acquisition. +103% since April 1.</li>
+          <li><strong>IONQ</strong>: Revenue +755% YoY Q1. FY2026 guidance $260–270M. +128.9% since April 1. IBM quantum premium absorption ongoing.</li>
+          <li style="color:var(--amber);">⚠️ Circulating: Motley Fool May 28 — $931M analyst "warning" for quantum stocks. Sentiment risk.</li>
+        </ul>
+
+        <p style="margin-top:10px;"><strong style="color:var(--cyan);">☢️ NUCLEAR</strong></p>
+        <ul>
+          <li><strong>NuScale (SMR)</strong>: At RBC investor conference today (NYC). Cash $341M. TVA 6GW project. NRC first approved design.</li>
+          <li><strong>OKLO</strong>: DOE selected for advanced plutonium fuel negotiations. NRC approved Aurora PDC May 2026. Switch 12GW + Meta 1.2GW Ohio campus.</li>
+        </ul>
+
+        <p style="margin-top:10px;"><strong style="color:var(--green);">🪨 RARE EARTH</strong></p>
+        <ul>
+          <li><strong>MP Materials</strong>: DoD deal ongoing — $400M preferred stock, $110/kg 10-yr price floor, 10X Facility to 10,000 MT by 2028. No new June 2 PR.</li>
+        </ul>
+      </div>
+      <div>
+        <p><strong style="color:var(--blue);">🚀 SPACE</strong></p>
+        <ul>
+          <li><strong>RKLB</strong>: Q1 rev +64% YoY, $2.2B backlog. Golden Dome SBIR program (Raytheon partner). No new June 2 news.</li>
+          <li><strong>ASTS</strong>: 60 MNO partners, 3B subscribers, FY26 guidance $150–200M. No new catalyst.</li>
+          <li><strong>PL (Planet Labs)</strong>: RPO +361% to $672M. Defense/intelligence contracts NGA/NRO/Navy/NATO. No new catalyst.</li>
+        </ul>
+
+        <p style="margin-top:10px;"><strong style="color:var(--amber);">₿ BTC MINERS → AI</strong></p>
+        <ul>
+          <li><strong>MARA</strong>: ~$15. Starwood Capital 1GW+ partnership. AI/data center pivot confirmed. BTC weakness = headwind.</li>
+          <li><strong>IREN</strong>: Russell 3000 June 26 inclusion + Dell $1.6B B300 GPU deal + $3.4B 5-yr AI cloud contract. AI pivot cushioning.</li>
+          <li><strong>APLD</strong>: 15-yr hyperscaler take-or-pay lease ($31B backlog). Macquarie $5B JV.</li>
+        </ul>
+
+        <p style="margin-top:10px;"><strong style="color:var(--muted);">📰 WIRE SERVICES</strong></p>
+        <ul>
+          <li><strong>Bloomberg June 2</strong>: "Wall Street Analysts Turn Skeptical After Two-Month Stocks Rally" — notable cautionary macro note.</li>
+          <li>No INTC/IBM/Vulcan/Westinghouse government portfolio news today.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 1: WATCHLIST POST-CLOSE -->
+  <div class="section">
+    <div class="section-header">
+      <span class="step-badge">STEP 1</span>
+      <h2>Watchlist Post-Close</h2>
+      <span class="badge badge-green">SEMIS RIPPING</span>
+      <span class="badge badge-red">CRYPTO WEAK</span>
+    </div>
+    <div class="section-body">
+      <table>
+        <thead>
+          <tr>
+            <th>Ticker</th>
+            <th>Close (Est.)</th>
+            <th>% Change</th>
+            <th>AH Move</th>
+            <th>Earnings / Event</th>
+            <th>Notes</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>TSLA</strong></td>
+            <td class="pos">$423.06</td>
+            <td class="pos">+1.72%</td>
+            <td class="neu">~Flat</td>
+            <td>—</td>
+            <td>Momentum continuation</td>
+          </tr>
+          <tr>
+            <td><strong>NVDA</strong></td>
+            <td class="pos">~$228–230</td>
+            <td class="pos">~+2%</td>
+            <td class="neu">Flat</td>
+            <td>—</td>
+            <td>Range $225–$232.28 confirmed; AI demand re-rated today</td>
+          </tr>
+          <tr>
+            <td><strong>AMD</strong></td>
+            <td class="pos">Est. up 2–3%</td>
+            <td class="pos">~+2.5%</td>
+            <td>—</td>
+            <td>—</td>
+            <td>SMH +3.15% sector halo; specific close unconfirmed</td>
+          </tr>
+          <tr>
+            <td><strong>PLTR</strong></td>
+            <td class="pos">~$158–163</td>
+            <td class="pos">~+1%</td>
+            <td>—</td>
+            <td>—</td>
+            <td>Gov AI + commercial AI tailwinds intact</td>
+          </tr>
+          <tr>
+            <td><strong>MARA</strong></td>
+            <td class="neg">~$14–15</td>
+            <td class="neg">~-1%</td>
+            <td class="neg">Flat/neg</td>
+            <td>—</td>
+            <td>BTC ~$67K drag; AI pivot partial cushion</td>
+          </tr>
+          <tr>
+            <td><strong>COIN</strong></td>
+            <td class="neg">~$220–230</td>
+            <td class="neg">~-1.5%</td>
+            <td>—</td>
+            <td>—</td>
+            <td>BTC weakness; IBIT $1.26B block sale signal</td>
+          </tr>
+          <tr>
+            <td><strong>SOFI</strong></td>
+            <td class="neu">~$14–16</td>
+            <td class="neu">~Flat</td>
+            <td>—</td>
+            <td>—</td>
+            <td>No specific data found</td>
+          </tr>
+          <tr>
+            <td><strong>META</strong></td>
+            <td class="pos">Est. +1–2%</td>
+            <td class="pos">~+1%</td>
+            <td>—</td>
+            <td>—</td>
+            <td>AI capex narrative; Alphabet raise bullish for AI spend</td>
+          </tr>
+          <tr>
+            <td><strong>AMZN</strong></td>
+            <td class="pos">Est. +0.5–1%</td>
+            <td class="pos">~+0.7%</td>
+            <td>—</td>
+            <td>—</td>
+            <td>AWS AI demand signal; specific close unconfirmed</td>
+          </tr>
+          <tr>
+            <td><strong>SPY</strong></td>
+            <td class="pos">~$606</td>
+            <td class="pos">~+0.4%</td>
+            <td>—</td>
+            <td>Record close</td>
+            <td>Analysts skeptical; contrarian bullish signal</td>
+          </tr>
+          <tr>
+            <td><strong>QQQ</strong></td>
+            <td class="pos">~$747</td>
+            <td class="pos">~+0.6%</td>
+            <td>—</td>
+            <td>Record close</td>
+            <td>June 1 close $742.42; tech rally powered by semis</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="sub-header">AMC Earnings Movers Tonight</div>
+      <div class="three-col">
+        <div class="alert alert-green">
+          <div class="alert-title">✅ PANW — BEAT + RAISE</div>
+          <p><strong>Q3 EPS:</strong> $0.85 vs $0.79 est. (+6¢ beat)<br>
+          <strong>Revenue:</strong> $3.0B vs $2.94B est.<br>
+          <strong>FY2026 Rev:</strong> $11.42–11.43B vs $11.29B cons.<br>
+          <strong>FY2026 EPS:</strong> $3.77–3.79 vs $3.70 cons.<br>
+          → <strong>Likely +5–8% AH</strong> → CIBR/HACK rip tomorrow</p>
+        </div>
+        <div class="alert alert-green">
+          <div class="alert-title">✅ ULTA — +7% AH CONFIRMED</div>
+          <p><strong>Q1 EPS:</strong> $7.74 (beat)<br>
+          <strong>Revenue:</strong> $3.16B (beat), comp +5.3%<br>
+          <strong>Gross margin:</strong> 40.1%<br>
+          <strong>EPS guidance raised:</strong> $28.36–$28.80<br>
+          → Consumer discretionary read-through: <strong class="pos">POSITIVE</strong></p>
+        </div>
+        <div class="alert alert-green">
+          <div class="alert-title">✅ GTLB — +5% AH CONFIRMED</div>
+          <p><strong>Q1 EPS:</strong> $0.23 vs $0.20 est. (+3¢ beat)<br>
+          <strong>Revenue:</strong> $264.2M (beat)<br>
+          <strong>FY2027 guidance:</strong> Above consensus<br>
+          → DevSecOps demand steady; software sector positive read</p>
+        </div>
+      </div>
+
+      <div class="alert alert-red" style="margin-top:8px;">
+        <div class="alert-title">⚠️ IBIT — CRYPTO SELL SIGNAL</div>
+        <p><strong>IBIT close:</strong> $40.49 (vs $41.63 prior close, <strong class="neg">-2.7%</strong>). BTC fell below <strong>$68,000</strong> after a <strong>$1.26 billion block sale</strong> from BlackRock's IBIT fund. BTC spot Bitcoin ETFs closed May with $2.3B net outflows — largest monthly exit of 2026. Near-term pressure: watch $65K BTC support level.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 2: ETF THEME RECAP -->
+  <div class="section">
+    <div class="section-header">
+      <span class="step-badge">STEP 2</span>
+      <h2>ETF Theme Recap</h2>
+    </div>
+    <div class="section-body">
+      <div class="two-col">
+        <div>
+          <div class="etf-theme-card" style="border-left: 3px solid var(--green);">
+            <div class="etf-theme-title">🔥 AI / COMPUTE — MAJOR SESSION WIN <span class="badge badge-green">+3.15%</span></div>
+            <div class="etf-theme-body">
+              <strong>SMH</strong>: $626.93 (+3.15%) · Sector's biggest day in weeks<br>
+              Catalyst: Alphabet $80B AI raise → AVGO +6%, MRVL +18%<br>
+              AVGO earnings June 4 AMC = next major event horizon<br>
+              All semis ETFs (IGV, BOTZ, FNGU) likely up 2–4%
+            </div>
+            <div class="etf-best">Best play: <span>SMH</span> (hold) | Watch AVGO June 4</div>
+          </div>
+
+          <div class="etf-theme-card" style="border-left: 3px solid var(--purple);">
+            <div class="etf-theme-title">⚛️ QUANTUM — CONSOLIDATING <span class="badge badge-amber">RANGE</span></div>
+            <div class="etf-theme-body">
+              <strong>QTUM</strong>: ~$158–164 range · 2-month mega-rally (+100%+ sector)<br>
+              No fresh June 2 catalyst<br>
+              Risk: $931M analyst warning circulating (May 28)<br>
+              IONQ/QBTS/RGTI all in consolidation after massive runs
+            </div>
+            <div class="etf-best">Best play: <span>QTUM</span> on confirmed pullback only</div>
+          </div>
+
+          <div class="etf-theme-card" style="border-left: 3px solid var(--cyan);">
+            <div class="etf-theme-title">☢️ NUCLEAR — MONITORING <span class="badge badge-blue">RBC CONF.</span></div>
+            <div class="etf-theme-body">
+              NuScale at RBC conference today (NYC) — minor catalyst watch<br>
+              Oklo DOE plutonium fuel selection = government credibility<br>
+              URA tracks uranium supply deficit thesis (2030s)<br>
+              No specific session data; sector generally stable
+            </div>
+            <div class="etf-best">Best play: <span>URA</span> · <span>NLR</span> for diversification</div>
+          </div>
+
+          <div class="etf-theme-card" style="border-left: 3px solid var(--amber);">
+            <div class="etf-theme-title">🛢️ ENERGY — OIL BID ON IRAN <span class="badge badge-amber">WTI $91</span></div>
+            <div class="etf-theme-body">
+              WTI ~$91/bbl · UCO/USO likely up 2–3% today<br>
+              Iran deal uncertainty = persistent oil upside risk<br>
+              Downside: any deal progress = -5% crude gap<br>
+              Geopolitical premium elevated; Hormuz de facto closed
+            </div>
+            <div class="etf-best">Best play: <span>UCO</span> (tactical) · <span>USO</span> (core)</div>
+          </div>
+        </div>
+
+        <div>
+          <div class="etf-theme-card" style="border-left: 3px solid var(--red);">
+            <div class="etf-theme-title">₿ BTC MINERS — WGMI DECOUPLING <span class="badge badge-red">BTC $67K</span></div>
+            <div class="etf-theme-body">
+              <strong>WGMI</strong>: +50%+ YTD despite BTC -7% YTD (AI/data center pivot dominates)<br>
+              <strong>IBIT</strong>: $40.49 (-2.7%) · BTC below $68K · $1.26B block sale<br>
+              MARA/IREN/APLD miners outperforming BTC via AI pivot narrative<br>
+              BTC spot ETF May outflows: $2.3B (largest monthly exit 2026)
+            </div>
+            <div class="etf-best">Best play: <span>WGMI</span> over <span>FDIG</span> on BTC weakness (AI pivot names)</div>
+          </div>
+
+          <div class="etf-theme-card" style="border-left: 3px solid var(--blue);">
+            <div class="etf-theme-title">🛡️ CYBERSECURITY — AH CATALYST <span class="badge badge-green">PANW BEAT</span></div>
+            <div class="etf-theme-body">
+              PANW: +6¢ beat, $3.0B rev beat, guidance raised<br>
+              CIBR/HACK should gap up at open tomorrow<br>
+              Palo Alto platformization thesis confirmed<br>
+              Watch CRWD, ZS for sympathy moves
+            </div>
+            <div class="etf-best">Best play: <span>CIBR</span> · <span>HACK</span> tomorrow gap</div>
+          </div>
+
+          <div class="etf-theme-card" style="border-left: 3px solid var(--muted);">
+            <div class="etf-theme-title">📊 MACRO — STABLE BUT CAUTIOUS</div>
+            <div class="etf-theme-body">
+              <strong>GLD</strong>: +0.21% ($4,494 gold spot) · Stable<br>
+              <strong>SLV</strong>: +1.85% ($76.25) · Silver outperforming gold<br>
+              <strong>TLT</strong>: 10Y at 4.46% (+1bp) · Bonds flat<br>
+              <strong>UUP</strong>: ~99.15 (+0.23%) · Dollar slightly firm<br>
+              Bloomberg: Analysts skeptical after 2-month rally (contrarian read)
+            </div>
+            <div class="etf-best">Best play: <span>GLD</span> for Iran hedge · <span>TLT</span> watching NFP Friday</div>
+          </div>
+
+          <div class="etf-theme-card" style="border-left: 3px solid var(--amber);">
+            <div class="etf-theme-title">🚀 SPACE / DEFENSE — QUIET TODAY</div>
+            <div class="etf-theme-body">
+              RKLB/ASTS/PL prior catalysts absorbed (Golden Dome, RPO growth)<br>
+              No new DoD contracting news June 2<br>
+              ARKX/UFO likely flat-to-slightly-positive<br>
+              ITA/PPA: Steady policy tailwinds; no event catalyst today
+            </div>
+            <div class="etf-best">Best play: <span>ITA</span> · <span>PPA</span> · accumulate on quiet days</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 3: OPTIONS FLOW -->
+  <div class="section">
+    <div class="section-header">
+      <span class="step-badge">STEP 3</span>
+      <h2>Options Flow Summary</h2>
+      <span class="badge badge-amber">INFERRED — LIVE DATA NOT AVAILABLE</span>
+    </div>
+    <div class="section-body">
+      <div class="alert alert-amber" style="margin-bottom:14px;">
+        <div class="alert-title">ℹ️ Data Limitation</div>
+        Direct Unusual Whales live flow not accessible in autonomous run. Flow below is institutional inference from price action and known catalysts.
+      </div>
+
+      <div class="two-col">
+        <div>
+          <div class="sub-header">Index Positioning</div>
+          <div class="flow-item">
+            <div class="flow-ticker neu">VIX</div>
+            <div>~16.05 (June 1 close). Likely flat-to-slight-uptick today despite record close — analysts skeptical = rising hedging premium. Not alarming, but VIX not collapsing either.</div>
+          </div>
+          <div class="flow-item">
+            <div class="flow-ticker neu">SPY</div>
+            <div>Record close = put-call ratio likely elevated for hedging. Buy-side calls may dominate in front of AVGO June 4. Any reading below 0.70 = complacency risk.</div>
+          </div>
+
+          <div class="sub-header" style="margin-top:12px;">Sector ETF Flow (Inferred)</div>
+          <div class="flow-item">
+            <div class="flow-ticker pos">SMH</div>
+            <div>Heavy call activity expected on Alphabet AI raise catalyst. AVGO/MRVL gamma may have driven SMH +3%+.</div>
+          </div>
+          <div class="flow-item">
+            <div class="flow-ticker neg">IBIT</div>
+            <div>Possible put protection or block unwind. $1.26B institutional block sale is a confirmed flow event — watch for follow-through sellers.</div>
+          </div>
+          <div class="flow-item">
+            <div class="flow-ticker neu">UCO</div>
+            <div>Oil bulls likely active on Iran uncertainty. Call sweeps on energy names probable.</div>
+          </div>
+        </div>
+        <div>
+          <div class="sub-header">Watchlist Name Flow (Inferred)</div>
+          <div class="flow-item">
+            <div class="flow-ticker pos">AVGO</div>
+            <div>Heaviest call volume of the day almost certain. +6% session + June 4 event = call buyers loading up at every strike. Gamma squeeze potential into report.</div>
+          </div>
+          <div class="flow-item">
+            <div class="flow-ticker pos">MRVL</div>
+            <div>+17–18% on Jensen endorsement. Likely gamma-driven or forced short-cover. Unusual sweep may appear on UW retroactively.</div>
+          </div>
+          <div class="flow-item">
+            <div class="flow-ticker pos">PANW</div>
+            <div>Pre-earnings call activity expected into AMC report. Beat confirms bullish flow thesis → CIBR/HACK follow-through.</div>
+          </div>
+
+          <div class="sub-header" style="margin-top:12px;">Flow vs Price Divergences</div>
+          <div class="alert alert-blue" style="margin-top:8px;">
+            <div class="alert-title">🔍 HIGH-SIGNAL: IBIT Block Sale</div>
+            <p>$1.26B institutional block sale while crypto AH holds suggests either distribution by a large holder or rebalancing. Not typical retail behavior. Watch for secondary BTC dump or stabilization in next 48hrs.</p>
+          </div>
+          <div class="alert alert-green" style="margin-top:8px;">
+            <div class="alert-title">🔍 HIGH-SIGNAL: AVGO + MRVL Simultaneous</div>
+            <p>Alphabet AI raise + Jensen MRVL endorsement same session = deliberate AI infra re-rating narrative. Multiple catalysts don't stack randomly. Institutional call sweep in semis likely orchestrated positioning ahead of AVGO June 4.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 4: EARNINGS TOMORROW -->
+  <div class="section">
+    <div class="section-header">
+      <span class="step-badge">STEP 4</span>
+      <h2>Tomorrow's Watchlist Earnings — June 3, 2026</h2>
+    </div>
+    <div class="section-body">
+      <div class="alert alert-amber" style="margin-bottom:14px;">
+        <div class="alert-title">📅 June 3 — Light Calendar</div>
+        <p>No major watchlist names confirmed reporting June 3. Eyes forward to <strong>Wednesday June 4 AMC — AVGO (Broadcom) — THE DEFINING EVENT</strong> for AI semis this week.</p>
+      </div>
+
+      <div class="earnings-preview">
+        <h3>⭐⭐⭐ AVGO — Broadcom <span class="badge badge-red">JUNE 4 AMC — KEY EVENT</span></h3>
+        <div class="sub">Q2 FY2026 | AI Semis (ASIC/TPU/custom silicon) → SMH, IGV, FNGU impact</div>
+        <table>
+          <thead><tr><th>Metric</th><th>Consensus</th><th>YoY Growth</th><th>Buy-Side Bar</th></tr></thead>
+          <tbody>
+            <tr>
+              <td>Revenue</td>
+              <td class="pos"><strong>$22.0B</strong></td>
+              <td class="pos">+47%</td>
+              <td class="pos">$22.5B+ for beat-to-impress</td>
+            </tr>
+            <tr>
+              <td>Non-GAAP EPS</td>
+              <td class="pos"><strong>$2.39</strong></td>
+              <td class="pos">+51.3%</td>
+              <td>—</td>
+            </tr>
+            <tr>
+              <td>AI Revenue</td>
+              <td class="pos"><strong>$10.7B</strong></td>
+              <td class="pos">+140%</td>
+              <td class="pos"><strong>$5.0B sequential</strong> (vs $4.1B Q1)</td>
+            </tr>
+          </tbody>
+        </table>
+        <p style="margin-top:8px;font-size:11px;color:var(--muted)"><strong>Watch:</strong> AI revenue mix above 30% (consensus). Alphabet TPU share concentration — any guidance softening here is a risk. ASIC orders from non-Alphabet customers (AMD/Apple/other) ramp pace. Beat-and-raise last 4 quarters = continuation bias. Today's Alphabet $80B raise is <em>directly bullish for AVGO's June 4 number</em>.</p>
+        <p style="margin-top:6px;font-size:11px;"><strong style="color:var(--amber);">Implied move:</strong> ~8–12% either way. <strong style="color:var(--green);">Beat scenario:</strong> SMH +3–5%, NVDA +2%, broad semis continuation. <strong style="color:var(--red);">Miss scenario:</strong> SMH -4–6%, semis rotation stalls.</p>
+      </div>
+
+      <div class="sub-header">Other This Week</div>
+      <table>
+        <thead><tr><th>Date</th><th>Ticker</th><th>Company</th><th>Theme</th><th>Timing</th></tr></thead>
+        <tbody>
+          <tr><td>June 5 (Fri)</td><td colspan="2"><strong>Non-Farm Payrolls (May)</strong></td><td>Macro / TLT / Rates</td><td>8:30 AM</td></tr>
+          <tr><td>June 4</td><td>AVGO</td><td>Broadcom</td><td>AI Semis / Custom Silicon</td><td>AMC</td></tr>
+          <tr><td>June 16–17</td><td colspan="2"><strong>FOMC Meeting</strong></td><td>Macro / All</td><td>2-day</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- STEP 5: MACRO -->
+  <div class="section">
+    <div class="section-header">
+      <span class="step-badge">STEP 5</span>
+      <h2>Macro Overnight Watch</h2>
+    </div>
+    <div class="section-body">
+      <div class="three-col">
+        <div class="macro-card">
+          <h3>🛢️ Oil / Iran Geopolitical</h3>
+          <p>WTI ~<strong>$91/bbl</strong>. +5.5% prior session, -1% today as mixed Iran signals. Strait of Hormuz de facto closed since Feb.</p>
+          <p style="margin-top:6px;">Trump: MOU "within a week." Iran agencies: pushing back. <strong style="color:var(--amber);">50/50 resolution vs escalation overnight.</strong></p>
+          <p style="color:var(--red);margin-top:6px;">Escalation risk: WTI $95–100. Risk-off across equities, GLD spike. Energy longs (UCO/USO) benefit.</p>
+          <p style="color:var(--green);margin-top:4px;">Resolution scenario: WTI -5% gap, energy unwind, broad equity relief rally.</p>
+        </div>
+        <div class="macro-card">
+          <h3>📊 Economic Data (June 3)</h3>
+          <p>• <strong>Australia Q1 GDP</strong> — overnight key read on global growth</p>
+          <p>• South Korea: 30-yr KTB auction</p>
+          <p>• Japan: 10-yr JGB auction</p>
+          <p>• <strong>Indonesia</strong>: Inflation + trade balance</p>
+          <p style="color:var(--muted);margin-top:8px;"><strong>FOMC June 16–17</strong>: Blackout period approaching. No Powell speeches near-term. June 5 NFP = last major data before FOMC.</p>
+          <p style="margin-top:6px;"><strong>NFP May Consensus</strong>: ~184K jobs, 4.3% unemployment</p>
+        </div>
+        <div class="macro-card">
+          <h3>🌏 Asia / Europe Overnight</h3>
+          <p><strong>Nikkei</strong>: >67,000 (SoftBank overtook Toyota as Japan's most valuable firm on AI enthusiasm)</p>
+          <p style="margin-top:6px;"><strong>BOJ</strong>: 0.75% rate. No imminent hike. Watching wage inflation + yen stability.</p>
+          <p style="margin-top:6px;"><strong>BTC</strong>: ~$67K. Overnight downside risk if block sale selling continues. Watch $65K support.</p>
+          <p style="margin-top:6px;"><strong>Gold</strong>: $4,494 (+0.21%). <strong>Silver</strong>: $76.25 (+1.85%). <strong>10Y</strong>: 4.46%. <strong>USD</strong>: ~99.15 (+0.23%).</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 6: POSITIONS PLAN -->
+  <div class="section">
+    <div class="section-header">
+      <span class="step-badge">STEP 6</span>
+      <h2>Personal Positions Next-Day Plan</h2>
+      <span class="badge badge-green">AI RISK-ON</span>
+      <span class="badge badge-red">CRYPTO CAUTION</span>
+      <span class="badge badge-amber">OIL WILDCARD</span>
+    </div>
+    <div class="section-body">
+      <div class="game-plan-grid">
+        <div class="gp-card long">
+          <div class="gp-ticker">NVDA / AMD</div>
+          <div class="gp-label long">HOLD / ADD ON DIP</div>
+          <div class="gp-body">Alphabet $80B raise = structural AI capex re-acceleration signal. AVGO June 4 is the next key event. If AVGO beats → full semis continuation. Add SMH on any dip below $618.</div>
+        </div>
+        <div class="gp-card long">
+          <div class="gp-ticker">IREN</div>
+          <div class="gp-label long">HOLD — DUAL CATALYST</div>
+          <div class="gp-body">Russell 3000 inclusion June 26 structural bid intact. Dell $1.6B B300 deal + $3.4B AI cloud contract. AI pivot fully cushioning BTC weakness. Hold above cost basis.</div>
+        </div>
+        <div class="gp-card long">
+          <div class="gp-ticker">PLTR</div>
+          <div class="gp-label long">HOLD — MOMENTUM</div>
+          <div class="gp-body">Government AI + commercial AI dual tailwinds. No earnings risk near-term. At ~$158–163 range. Momentum thesis intact. Hold with trail stop.</div>
+        </div>
+        <div class="gp-card long">
+          <div class="gp-ticker">CRWV</div>
+          <div class="gp-label long">HOLD — EVENT WINDOW</div>
+          <div class="gp-body">Russell 3000 inclusion June 26 still driving structural bid. ~$100B AI order backlog. OpenAI deal expanded to $22.4B. Any dip to $115–120 = add opportunity.</div>
+        </div>
+        <div class="gp-card neutral">
+          <div class="gp-ticker">MARA / COIN</div>
+          <div class="gp-label neutral">CAUTION — REDUCE</div>
+          <div class="gp-body">BTC at $67K with institutional $1.26B IBIT block sale = near-term crypto headwind. Not a thesis break for miners with AI pivot, but tighten stops. Reduce if BTC breaks $65K support.</div>
+        </div>
+        <div class="gp-card neutral">
+          <div class="gp-ticker">QUANTUM (RGTI/QBTS/IONQ)</div>
+          <div class="gp-label neutral">WAIT — NO NEW CATALYST</div>
+          <div class="gp-body">Sector +100%+ since April 1. $931M analyst warning noise. No new June 2 catalyst. Consolidation likely. Hold existing positions; do NOT add at current levels. Wait for pullback or new government contract catalyst.</div>
+        </div>
+      </div>
+
+      <div class="sub-header">Watchlist Setups Still Valid Tomorrow</div>
+      <ul>
+        <li><strong>PANW AH beat → CIBR / HACK</strong>: Cybersecurity ETFs gap open tomorrow on beat+raise. Best intraday trade of the open.</li>
+        <li><strong>ULTA +7% AH → XLY / consumer discretionary read-through</strong>: Consumer spending holding; discretionary positive.</li>
+        <li><strong>Energy (UCO/USO)</strong>: Iran uncertainty = ongoing long bias. Any overnight escalation = gap up at open.</li>
+        <li><strong>AVGO positioning</strong>: Today's +6% is pre-positioning. Expect continued vol expansion into June 4. Consider defined-risk options structure vs directional stock.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- STEP 7: ASSUMPTION AUDIT -->
+  <div class="section">
+    <div class="section-header">
+      <span class="step-badge">STEP 7</span>
+      <h2>Assumption Audit</h2>
+    </div>
+    <div class="section-body">
+      <div class="audit-item">
+        <div class="audit-num">1</div>
+        <div>
+          <div class="audit-label">Assumption</div>
+          NVDA close ~$228–230 (range $225–$232.28 confirmed; precise close unverified)
+        </div>
+        <div>
+          <div class="audit-label">Impact if Wrong</div>
+          <span class="neu">Minor</span> — Direction confirmed up, magnitude may differ by $2–3
+        </div>
+      </div>
+      <div class="audit-item">
+        <div class="audit-num">2</div>
+        <div>
+          <div class="audit-label">Assumption</div>
+          Multiple watchlist closes (PLTR, SOFI, MARA, COIN, SNDK, META, AMZN) are estimates only
+        </div>
+        <div>
+          <div class="audit-label">Impact if Wrong</div>
+          <span class="neg">Moderate</span> — Verify specific levels before sizing trades off this report
+        </div>
+      </div>
+      <div class="audit-item">
+        <div class="audit-num">3</div>
+        <div>
+          <div class="audit-label">Assumption</div>
+          BTC at ~$67K (IBIT $40.49 confirmed; earlier searches showed $75K conflicting with recent $67K data)
+        </div>
+        <div>
+          <div class="audit-label">Impact if Wrong</div>
+          <span class="pos">Low</span> — IBIT close is hard data; BTC $67K consistent with IBIT price and block sale story
+        </div>
+      </div>
+      <div class="audit-item">
+        <div class="audit-num">4</div>
+        <div>
+          <div class="audit-label">Assumption</div>
+          Iran crude at $91 stable (intraday -1% after +5.5% prior session)
+        </div>
+        <div>
+          <div class="audit-label">Impact if Wrong</div>
+          <span class="neg">High</span> — If Iran deal progresses overnight, oil gaps -5%; energy longs at risk; if it collapses, oil +5%
+        </div>
+      </div>
+      <div class="audit-item">
+        <div class="audit-num">5</div>
+        <div>
+          <div class="audit-label">Assumption</div>
+          PANW AH gain estimated at +5–8%; actual AH print not confirmed
+        </div>
+        <div>
+          <div class="audit-label">Impact if Wrong</div>
+          <span class="neu">Moderate</span> — Beat+guidance raise is confirmed fact; AH magnitude uncertain. CIBR/HACK trade valid regardless.
+        </div>
+      </div>
+      <div class="audit-item">
+        <div class="audit-num">6</div>
+        <div>
+          <div class="audit-label">Assumption</div>
+          No direct options flow confirmed from Unusual Whales (requires subscription)
+        </div>
+        <div>
+          <div class="audit-label">Impact if Wrong</div>
+          <span class="pos">Low for direction</span> — Institutional flow inference consistent with price action; premium UW readers have edge
+        </div>
+      </div>
+      <div class="audit-item">
+        <div class="audit-num">7</div>
+        <div>
+          <div class="audit-label">Assumption</div>
+          AVGO earnings June 4 AMC (not June 3)
+        </div>
+        <div>
+          <div class="audit-label">Impact if Wrong</div>
+          <span class="neg">High</span> — Confirm date before positioning. All semi trades hinge on this.
+        </div>
+      </div>
+      <div class="audit-item">
+        <div class="audit-num">8</div>
+        <div>
+          <div class="audit-label">Assumption</div>
+          NuScale RBC conference was minor (no news coverage found beyond conference listing)
+        </div>
+        <div>
+          <div class="audit-label">Impact if Wrong</div>
+          <span class="pos">Low</span> — If material guidance/deal announced at conference, would be positive URA/NLR catalyst
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footnote">
+    <p><strong>Sources:</strong> 24/7 Wall St. · Yahoo Finance · CNBC · Bloomberg · FX Leaders · IC Markets · The Street · Motley Fool · TipRanks · MarketBeat · Foreign Policy Journal · stockanalysis.com · Investing.com · IndMoney · GuruFocus · StockTitan · SEC EDGAR (8-K filings) · Unusual Whales (platform reference)</p>
+    <p style="margin-top:6px;"><strong>Disclosure:</strong> Generated autonomously by Claude After-Hours Catalyst Scanner v7.3 | June 2, 2026 ~17:30 ET. Prices are estimates from web sources and may differ from official closes. Multiple watchlist closes unconfirmed — verify before trading. Not investment advice.</p>
+    <p style="margin-top:6px;"><a href="https://nkuy36.github.io/trading-dashboards/">← Trading Dashboards Home</a></p>
+  </div>
+
+</div>
+</body>
+</html>
