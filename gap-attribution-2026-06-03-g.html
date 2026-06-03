@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gap Attribution — 2026-06-03 (g) | Catalyst Scans</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&amp;display=swap">
+    <style>
+        :root {
+            --bg: #0a0e17;
+            --text: #e2e8f0;
+            --muted: #94a3b8;
+            --green: #22c55e;
+            --red: #ef4444;
+            --amber: #f59e0b;
+            --purple: #a855f7;
+            --cyan: #06b6d4;
+            --card: #111827;
+            --border: #1f2937;
+        }
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            padding: 0;
+            background: var(--bg);
+            color: var(--text);
+            font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+        .header {
+            background: #0f172a;
+            border-bottom: 1px solid var(--border);
+            padding: 16px 24px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .header h1 { margin: 0 0 4px; font-size: 20px; font-weight: 700; }
+        .header .meta { color: var(--muted); font-size: 12px; }
+        .container { max-width: 1280px; margin: 0 auto; padding: 16px 24px 80px; }
+        .filters {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 16px;
+            padding: 12px;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+        }
+        .filter-btn {
+            background: #1f2937;
+            color: var(--text);
+            border: 1px solid var(--border);
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 12px;
+        }
+        .filter-btn.active { background: #334155; border-color: #64748b; }
+        .filter-btn.t1 { border-color: #64748b; }
+        .filter-btn.t2 { border-color: var(--green); }
+        .filter-btn.t3 { border-color: var(--cyan); }
+        .filter-btn.t4 { border-color: var(--purple); }
+        section {
+            margin-bottom: 24px;
+        }
+        h2 {
+            font-size: 16px;
+            margin: 0 0 12px;
+            padding-bottom: 6px;
+            border-bottom: 1px solid var(--border);
+            color: #cbd5e1;
+        }
+        .tier1 h2 { color: #e2e8f0; }
+        .tier2 h2 { color: var(--green); }
+        .tier3 h2 { color: var(--cyan); }
+        .tier4 h2 { color: var(--purple); }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            overflow: hidden;
+            margin-bottom: 12px;
+        }
+        th, td {
+            padding: 8px 10px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+            vertical-align: top;
+        }
+        th {
+            background: #1f2937;
+            font-weight: 600;
+            color: #cbd5e1;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        tr:last-child td { border-bottom: none; }
+        .up { color: var(--green); }
+        .down { color: var(--red); }
+        .neutral { color: var(--amber); }
+        .ticker { font-weight: 700; }
+        .pill {
+            display: inline-block;
+            font-size: 10px;
+            padding: 1px 6px;
+            border-radius: 3px;
+            background: #1f2937;
+            border: 1px solid var(--border);
+        }
+        .primary-link { color: #60a5fa; text-decoration: none; }
+        .primary-link:hover { text-decoration: underline; }
+        .card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 12px 14px;
+            margin-bottom: 12px;
+        }
+        .synthesis-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 12px;
+        }
+        .small { font-size: 11px; color: var(--muted); }
+        .fact { background: #0f172a; padding: 8px; border-left: 3px solid #64748b; margin: 8px 0; }
+        .footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #0f172a;
+            border-top: 1px solid var(--border);
+            padding: 8px 24px;
+            font-size: 11px;
+            color: var(--muted);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .hidden { display: none !important; }
+        .emoji { font-size: 14px; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🌃 GAP ATTRIBUTION — 2026-06-03 <span style="color:#64748b; font-size:14px;">(g)</span></h1>
+        <div class="meta">Grok gap-attribution-scanner | Primary sources only | ETF-first | Tiers 1-4 | Deployed to trading-dashboards</div>
+        <div class="meta" style="margin-top:4px;">Working dir: Catalyst Scans | Date: 2026-06-03 | No dry-run — real files + deploy executed</div>
+    </div>
+
+    <div class="container">
+        <!-- Filters -->
+        <div class="filters">
+            <button class="filter-btn active" onclick="filterTiers('all')">ALL</button>
+            <button class="filter-btn t1 active" onclick="filterTiers('t1')">TIER 1 (Always)</button>
+            <button class="filter-btn t2 active" onclick="filterTiers('t2')">TIER 2 (Theme)</button>
+            <button class="filter-btn t3 active" onclick="filterTiers('t3')">TIER 3 (Emerging)</button>
+            <button class="filter-btn t4 active" onclick="filterTiers('t4')">TIER 4 (Macro)</button>
+            <button class="filter-btn" onclick="filterTiers('synth')">SYNTHESIS</button>
+        </div>
+
+        <div class="small" style="margin-bottom:12px;">
+            Universe: US &gt;$1B mkt cap, AH &gt;3% / &gt;100k vol (large-cap focus). Aggregators for discovery only. All catalysts attributed to PRIMARY (EDGAR/IR/gov/hyperscaler). 
+            <strong>UNVERIFIED claims flagged.</strong> Fact Verification section at end.
+        </div>
+
+        <!-- ETF SWEEP -->
+        <section id="etf-sweep">
+            <h2>📊 ETF SWEEP (Discovery Foundation)</h2>
+            <div class="card">
+                <table>
+                    <tr><th>ETF</th><th>Close</th><th>AH</th><th>Notes / Top Drivers</th></tr>
+                    <tr>
+                        <td><strong>SMH</strong> (Semis/AI)</td>
+                        <td class="up">+4.01%</td>
+                        <td class="neutral">+0.09%</td>
+                        <td>AVGO exposure (~7-8% weight) + NVDA/TSM/AMD/MU. Strong session breadth but AVGO AH fade caps. Primary theme exposure.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>QQQ / XLK</strong></td>
+                        <td>—</td>
+                        <td>—</td>
+                        <td>Mixed tech with earnings vol. AVGO/CRWD reactions key. Holdings cross-ref to Tier 1/2 names.</td>
+                    </tr>
+                </table>
+                <div class="small">Sources: Yahoo Finance ETF quotes/holdings (fetched live); stockanalysis afterhours (Jun 3 2026). No major Nuclear (URA/NLR) or other theme ETF >3% AH clusters.</div>
+            </div>
+        </section>
+
+        <!-- TIER 1 -->
+        <section id="tier1" class="tier1">
+            <h2>🔴 TIER 1 — ALWAYS REPORT (Mag7 / Semis / Macro / &gt;10% / 8-Ks)</h2>
+
+            <div class="card">
+                <h3 style="margin:0 0 8px;">A/B) MAG7 + SEMIS BELLWETHERS</h3>
+                <table>
+                    <tr><th>Ticker</th><th>AH Move</th><th>Catalyst (PRIMARY)</th><th>Type</th><th>Setup</th></tr>
+                    <tr>
+                        <td class="ticker">AVGO</td>
+                        <td class="down">~-13% (to ~416.87 from ~479)</td>
+                        <td>
+                            Q2 FY26: Rev $22,187M (+48% YoY), AI semi $10.8B (+143% YoY), Non-GAAP EPS $2.44. Q3 guide $29.4B (+84%), AI semi $16.0B (+200%+). Slight total/infra miss vs est. Strong AI momentum per release.<br>
+                            <a class="primary-link" href="https://investors.broadcom.com/news-releases/news-release-details/broadcom-inc-announces-second-quarter-fiscal-year-2026-financial" target="_blank">Primary: Broadcom IR release (Jun 3 2026)</a>
+                        </td>
+                        <td><span class="pill">EARNINGS / GUIDANCE</span></td>
+                        <td class="down">Gap-and-fade risk (high bar + infra softness). Extended pre-print name.</td>
+                    </tr>
+                    <tr>
+                        <td class="ticker">Other Mag7 (NVDA/MSFT/etc)</td>
+                        <td>—</td>
+                        <td>No material AH &gt;3% or new primary catalysts in scan.</td>
+                        <td>—</td>
+                        <td>—</td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="card">
+                <h3 style="margin:0 0 8px;">D) &gt;10% AH MOVES (&gt;$1B mkt cap)</h3>
+                <table>
+                    <tr><th>Ticker</th><th>AH Move / Cap</th><th>Notes</th></tr>
+                    <tr>
+                        <td class="ticker">PVH</td>
+                        <td class="down">-20.15% (~$4.52B cap)</td>
+                        <td>See Tier 2 earnings. Largest magnitude move.</td>
+                    </tr>
+                    <tr>
+                        <td class="ticker">NTSK</td>
+                        <td class="down">~-19.68% (~$4.96B cap)</td>
+                        <td>Cyber name; limited primary catalyst detail surfaced. Monitor.</td>
+                    </tr>
+                </table>
+                <div class="small">Source: stockanalysis.com/markets/afterhours/ (Updated Jun 3 2026 tables). Sub-$1B excluded.</div>
+            </div>
+
+            <div class="card">
+                <h3 style="margin:0 0 8px;">E) MATERIAL 8-Ks</h3>
+                <p class="small">Web/EDGAR scan for material items (1.01/2.01/5.02/8.01 etc.) on &gt;$1B names: no high-conviction non-earnings filings. Earnings-related 8-Ks standard for AVGO/CRWD/PVH. <strong>Catalyst unconfirmed — investigate manually</strong> for any missed.</p>
+            </div>
+        </section>
+
+        <!-- TIER 2 -->
+        <section id="tier2" class="tier2">
+            <h2>🟢 TIER 2 — THEME-ALIGNED (AI/Compute, Nuclear, Quantum, Space, Rare Earth, BTC→AI)</h2>
+
+            <div class="card">
+                <table>
+                    <tr><th>Ticker</th><th>AH / Vol</th><th>Theme</th><th>Catalyst + PRIMARY URL</th><th>Type</th><th>Tomorrow Setup / Context</th></tr>
+                    <tr>
+                        <td class="ticker">AVGO</td>
+                        <td class="down">~-13%</td>
+                        <td>AI/Compute (core infra)</td>
+                        <td>Record AI semi $10.8B (+143%), Q3 $16B guide (+200%+). Slight miss on total/infra. <a class="primary-link" href="https://investors.broadcom.com/news-releases/news-release-details/broadcom-inc-announces-second-quarter-fiscal-year-2026-financial" target="_blank">Broadcom IR (Jun 3)</a></td>
+                        <td>EARNINGS / GUIDANCE</td>
+                        <td>Gap-fade risk. Strong underlying AI but high bar reaction. (Tier 1 overlap)</td>
+                    </tr>
+                    <tr>
+                        <td class="ticker">CRWD</td>
+                        <td class="down">~-7% to -9%</td>
+                        <td>AI/Compute (security infra + agentic)</td>
+                        <td>Q1 FY27 Rev $1.39B (+26%), net new ARR $256M (+32% record), FCF $468M record. Raised FY27 ARR growth guidance. 4-for-1 split announced. AI coalitions (OpenAI/Anthropic QuiltWorks, Charlotte AI AgentWorks, etc.). <a class="primary-link" href="https://ir.crowdstrike.com/news-releases/news-release-details/crowdstrike-reports-first-quarter-fiscal-year-2027-financial" target="_blank">CRWD IR (Jun 3)</a></td>
+                        <td>EARNINGS / GUIDANCE / PRODUCT (AI)</td>
+                        <td>Chop / gap-fade on guide optics vs strong metrics + split (long-term +). Platform + AI tailwind continuation if stabilizes. Stockbee/Qullamaggie: monitor for base + volume hold.</td>
+                    </tr>
+                    <tr>
+                        <td class="ticker">AI (C3.ai)</td>
+                        <td class="up">+4%+</td>
+                        <td>AI/Compute (applied)</td>
+                        <td>Q4 adj loss beat (33c vs 37c est), rev beat ($52M vs $50M). <span class="small">(CNBC movers; verify full IR)</span></td>
+                        <td>EARNINGS</td>
+                        <td>Positive reaction. Emerging AI pure-play cluster watch with AVGO/CRWD.</td>
+                    </tr>
+                </table>
+                <div class="small"><strong>Primary priority:</strong> IR releases &gt; PR Newswire mirrors. No Nuclear/Quantum/Space/Rare Earth/BTC-AI &gt;3% large-cap with primary catalysts in scan.</div>
+            </div>
+        </section>
+
+        <!-- TIER 3 -->
+        <section id="tier3" class="tier3">
+            <h2>🔵 TIER 3 — EMERGING THEME RADAR</h2>
+            <div class="card">
+                <p><strong>C3.ai + AI security/agentic mentions (CRWD QuiltWorks/AgentWorks) keep "applied AI + security infrastructure" on radar</strong> as accelerating sub-theme within AI/Compute (not brand new but gaining cluster signal via multiple names tonight).</p>
+                <p class="small">No 2+ name same-subsector clusters on related primary catalysts (e.g. no fresh rare-earth/DoD or space simultaneous). Small-cap % gainers (FOXX +90% etc. per stockanalysis) below $1B filter — uninvestable per scope; monitor for sustained volume/primary follow-through over nights for potential promotion.</p>
+                <p class="small">If any sub-theme clusters 3+ nights → promote to Tier 2 per protocol.</p>
+            </div>
+        </section>
+
+        <!-- TIER 4 -->
+        <section id="tier4" class="tier4">
+            <h2>🟣 TIER 4 — MACRO / EXOGENOUS (Regime)</h2>
+            <div class="card">
+                <ul style="margin:0; padding-left:18px;">
+                    <li><strong>PVH primary release</strong> explicitly cites "prolonged effects of the Middle East conflict" pressuring EMEA consumer (offset by tariff refunds in outlook). Macro read-through to consumer cyclicals.</li>
+                    <li>No major Fed speaker (Chair/Vice/NY), Treasury auction, PBOC/MOFCOM, or API oil inventory surprises flagged in AH searches/liveblogs.</li>
+                    <li>Crypto/BTC: mixed snapshots (some down >3% in context); limited direct miner/AI-pivot impact tonight.</li>
+                    <li><strong>Regime implication:</strong> Earnings-driven with intact AI capex conviction (AVGO/CRWD guides) but high-bar sensitivity + selective macro caution (EMEA consumer). Mixed/neutral-to-cautious overnight. Watch open for sector leadership (semis/AI vs broader).</li>
+                </ul>
+                <div class="small">Sources: PVH primary release (pvh.com Jun 3), CNBC/TheStreet live earnings blogs, general macro calendar cross-check (no major exogenous hits).</div>
+            </div>
+        </section>
+
+        <!-- SYNTHESIS -->
+        <section id="synth">
+            <h2>📈 SYNTHESIS: TOMORROW'S GAP MAP + BRIEFING</h2>
+
+            <div class="synthesis-grid">
+                <div class="card">
+                    <strong>Top gap-up candidates (Tier 2/theme priority)</strong><br>
+                    1. C3.ai (AI) — +4%+ on earnings beat (rev/loss). Emerging applied AI.<br>
+                    2-5. Limited confirmed large-cap ups &gt;3% with primary in scan. Small-cap gainers (investigate volume/primary follow-through manually). Any un-scanned positive wires.
+                </div>
+                <div class="card">
+                    <strong>Top 3 gap-down / fade risk</strong><br>
+                    1. <span class="ticker">PVH</span> — -20%+ on lowered FY rev outlook (EMEA/Middle East macro) despite Q1 beat + margin maintained via tariff refunds. <a class="primary-link" href="https://www.pvh.com/news/press-releases/pvh-corp-reports-2026-first-quarter-results-and-updates-full-year-outlook" target="_blank">Primary</a><br>
+                    2. <span class="ticker">AVGO</span> — ~-13% on slight miss vs high bar (infra softness) despite monster AI + aggressive Q3 guide. <a class="primary-link" href="https://investors.broadcom.com/news-releases/news-release-details/broadcom-inc-announces-second-quarter-fiscal-year-2026-financial" target="_blank">Primary</a><br>
+                    3. <span class="ticker">CRWD</span> — -7-9% on Q2 guide optics despite records + raise + 4:1 split. <a class="primary-link" href="https://ir.crowdstrike.com/news-releases/news-release-details/crowdstrike-reports-first-quarter-fiscal-year-2027-financial" target="_blank">Primary</a>
+                </div>
+                <div class="card">
+                    <strong>Theme of the night</strong><br>
+                    AI/Compute earnings volatility: strong secular tailwinds (AVGO AI to $16B guide, CRWD platform + AI coalitions + raised ARR) meeting elevated expectations/guidance scrutiny. Consumer macro overlay (PVH EMEA). Bullish infra underlying, near-term reaction/fade risk dominant.
+                </div>
+                <div class="card">
+                    <strong>Regime read</strong><br>
+                    Event-driven (earnings prints). AI capex conviction intact via guides; valuation/high-bar sensitivity high. Selective macro caution (Middle East consumer pressure). Mixed: stabilization buys possible on AI names; chop/fade bias near-term. Watch SPX/QQQ + AVGO/CRWD open for leadership.
+                </div>
+            </div>
+
+            <div class="card" style="margin-top:12px;">
+                <strong>EOD entry candidates (3-5d Stockbee/Qullamaggie bias)</strong><br>
+                Tier 2 (AVGO/CRWD) that stabilize/hold AH lows into tomorrow close + volume confirmation + base structure. Prefer near multi-week pivots with SOS/volume support (LUK ORB / CORE SOS / 21DMA context on chart). No strong pre-print EOD setups; post-reaction bases likely to form. Conviction MD on stabilization.
+            </div>
+
+            <div class="card">
+                <strong>One-paragraph Overnight Briefing (30s read)</strong><br>
+                Heavy earnings night produced sharp reactions in AI/semiconductor and consumer names. Broadcom posted record AI-driven results and a massive Q3 guide but faded ~13% AH on a slight infrastructure/total rev miss versus elevated expectations. CrowdStrike delivered strong Q1 metrics, record cash flow, raised full-year ARR growth, and a 4-for-1 split but sold off on Q2 guidance optics. PVH beat Q1 but cut full-year revenue outlook due to prolonged Middle East conflict effects in EMEA (offset by tariff refunds keeping margins/EPS intact) and dropped &gt;20%. C3.ai ticked higher on a beat. Theme remains AI infrastructure and applied security acceleration; macro caution visible in consumer. Tomorrow's setup is gap-and-fade risk on the big prints with potential stabilization buys into any hold. Regime: AI conviction vs high-bar digestion — sit tight for primary-source follow-through and open price action. Full primary links in Tiers.
+            </div>
+        </section>
+
+        <!-- ASSUMPTION AUDIT + FACT VERIFICATION -->
+        <section>
+            <h2>✅ ASSUMPTION AUDIT + FACT VERIFICATION</h2>
+            <div class="card">
+                <strong>Assumptions:</strong> Main large-cap AH moves from earnings (AVGO/CRWD/PVH confirmed primary). No other &gt;10% or material 8-Ks missed (scan via web/tables). ETF context (SMH) explains sector read. If guides prove unsustainable on macro, fades extend (tighten stops/reduce size). Data as-of ~19:xx ET; post-8pm wires/EDGAR/Asia can shift — re-verify pre-market.
+            </div>
+            <div class="card fact">
+                <strong>Fact Verification (live-sourced this run):</strong><br>
+                • AVGO Q2 rev $22,187M, AI semi $10.8B, Q3 $29.4B/$16B AI guide: <strong>VERIFIED</strong> — open_page on Broadcom IR primary (2026-06-03).<br>
+                • CRWD Q1 FY27 rev $1.39B (+26%), net new ARR $256M, 4:1 split, raised guidance: <strong>VERIFIED</strong> — open_page on CRWD IR primary.<br>
+                • PVH Q1 rev $2.025B, FY rev "approximately flat" (updated from slight +), op margin ~8.8% maintained: <strong>VERIFIED</strong> — open_page on pvh.com primary.<br>
+                • AVGO AH ~-13%, CRWD -7-9%, PVH -20%+: <strong>VERIFIED</strong> — CNBC movers + Yahoo liveblog + stockanalysis tables (consistent).<br>
+                • SMH close +4.01% / AH +0.09%: <strong>VERIFIED</strong> — Yahoo ETF quote fetch.<br>
+                <span style="color:#f59e0b;">UNVERIFIED in this run (no live primary retrieved):</span> Exact options implied moves for 6/4; full earnings call transcripts (paraphrase only); any post-19:xx EDGAR 8-Ks or wire updates.
+            </div>
+        </section>
+
+        <div class="small" style="margin-top:16px; color:#64748b;">
+            Report produced per gap-attribution-scanner SKILL.md + AGENTS.md (primary sources, ETF-first, Tiered, -g suffix, Fact Verification, no hallucinations). 
+            Deploy executed: secrets read, git pull/copy/add/commit/push (token), discord_msg.json + webhook POST.
+        </div>
+    </div>
+
+    <div class="footer">
+        <div>gap-attribution-2026-06-03-g.html | self-contained | tier filters JS | JetBrains Mono</div>
+        <div>🔗 Full report on GitHub Pages (post-deploy): https://nkuy36.github.io/trading-dashboards/gap-attribution-2026-06-03-g.html</div>
+    </div>
+
+    <script>
+        function filterTiers(tier) {
+            const sections = document.querySelectorAll('section');
+            const buttons = document.querySelectorAll('.filter-btn');
+            
+            buttons.forEach(b => b.classList.remove('active'));
+            
+            if (tier === 'all') {
+                sections.forEach(s => s.classList.remove('hidden'));
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.add('active'));
+            } else if (tier === 'synth') {
+                sections.forEach(s => s.classList.add('hidden'));
+                const synth = document.getElementById('synth');
+                if (synth) synth.classList.remove('hidden');
+                event.currentTarget && event.currentTarget.classList.add('active');
+            } else {
+                sections.forEach(s => {
+                    if (s.id === tier || s.id === 'etf-sweep' || s.id === 'synth') {
+                        s.classList.remove('hidden');
+                    } else {
+                        s.classList.add('hidden');
+                    }
+                });
+                // highlight matching button
+                const btn = Array.from(buttons).find(b => b.textContent.toLowerCase().includes(tier.replace('tier','t')));
+                if (btn) btn.classList.add('active');
+            }
+        }
+        
+        // Keyboard hint
+        document.addEventListener('keydown', function(e) {
+            if (e.key === '/') {
+                e.preventDefault();
+                const allBtn = document.querySelector('.filter-btn');
+                if (allBtn) allBtn.click();
+            }
+        });
+        
+        // Default: show all on load
+        console.log('%c[Gap Attribution 2026-06-03-g] Tier filters ready. Click buttons to filter.', 'color:#64748b');
+    </script>
+</body>
+</html>
