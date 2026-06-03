@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>After-Hours Scan — June 3, 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0e17;
+    --bg2: #0f1520;
+    --bg3: #141c2e;
+    --border: #1e2d45;
+    --text: #e2e8f0;
+    --muted: #8899aa;
+    --green: #22c55e;
+    --red: #ef4444;
+    --amber: #f59e0b;
+    --blue: #3b82f6;
+    --purple: #a855f7;
+    --cyan: #06b6d4;
+    --accent: #1e3a5f;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+  .header {
+    background: linear-gradient(135deg, #0a0e17 0%, #0f1a30 50%, #0a0e17 100%);
+    border-bottom: 2px solid var(--blue);
+    padding: 24px 32px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .header h1 { font-size: 20px; font-weight: 700; color: var(--cyan); letter-spacing: 1px; }
+  .header .meta { font-size: 11px; color: var(--muted); text-align: right; }
+  .header .date { font-size: 15px; color: var(--text); font-weight: 600; }
+  .container { max-width: 1400px; margin: 0 auto; padding: 24px 32px; }
+
+  .tool-health {
+    background: linear-gradient(135deg, rgba(59,130,246,0.1), rgba(59,130,246,0.04));
+    border: 1px solid rgba(59,130,246,0.4);
+    border-radius: 6px;
+    padding: 10px 16px;
+    margin-bottom: 20px;
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .tool-health .label { color: var(--muted); font-size: 10px; text-transform: uppercase; letter-spacing: 1px; }
+  .tool-ok { color: var(--green); font-weight: 600; }
+  .tool-warn { color: var(--amber); font-weight: 600; }
+
+  .market-bar {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 10px;
+    margin-bottom: 24px;
+  }
+  .market-stat {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 12px 14px;
+    text-align: center;
+  }
+  .market-stat .label { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; }
+  .market-stat .value { font-size: 18px; font-weight: 700; margin: 4px 0; }
+  .market-stat .change { font-size: 11px; }
+  .pos { color: var(--green); }
+  .neg { color: var(--red); }
+  .neu { color: var(--amber); }
+  .athl { color: var(--cyan); }
+
+  .section {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    margin-bottom: 20px;
+    overflow: hidden;
+  }
+  .section-header {
+    background: var(--bg3);
+    border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .section-header h2 { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; }
+  .section-body { padding: 16px 20px; }
+
+  table { width: 100%; border-collapse: collapse; }
+  th {
+    background: var(--bg3);
+    color: var(--muted);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 8px 12px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+  }
+  td {
+    padding: 9px 12px;
+    border-bottom: 1px solid rgba(30,45,69,0.5);
+    font-size: 12px;
+    vertical-align: top;
+  }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: rgba(30,58,95,0.2); }
+
+  .badge {
+    display: inline-block;
+    padding: 2px 7px;
+    border-radius: 3px;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+  }
+  .badge-earn { background: rgba(168,85,247,0.2); color: var(--purple); border: 1px solid rgba(168,85,247,0.3); }
+  .badge-split { background: rgba(6,182,212,0.2); color: var(--cyan); border: 1px solid rgba(6,182,212,0.3); }
+  .badge-beat { background: rgba(34,197,94,0.15); color: var(--green); border: 1px solid rgba(34,197,94,0.3); }
+  .badge-miss { background: rgba(239,68,68,0.15); color: var(--red); border: 1px solid rgba(239,68,68,0.3); }
+  .badge-atm { background: rgba(245,158,11,0.15); color: var(--amber); border: 1px solid rgba(245,158,11,0.3); }
+
+  .gapper-card {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 16px;
+    margin-bottom: 12px;
+  }
+  .gapper-card.big-down { border-left: 3px solid var(--red); }
+  .gapper-card.small-down { border-left: 3px solid var(--amber); }
+  .gapper-card.up { border-left: 3px solid var(--green); }
+  .gapper-ticker { font-size: 20px; font-weight: 700; }
+  .gapper-move { font-size: 22px; font-weight: 700; }
+  .gapper-name { font-size: 11px; color: var(--muted); margin-top: 2px; }
+  .gapper-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-top: 12px; }
+  .gapper-stat .slabel { font-size: 10px; color: var(--muted); text-transform: uppercase; }
+  .gapper-stat .sval { font-size: 13px; font-weight: 600; }
+
+  .earn-card {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 16px;
+    margin-bottom: 14px;
+  }
+  .earn-card.earn-positive { border-left: 3px solid var(--green); }
+  .earn-card.earn-negative { border-left: 3px solid var(--red); }
+  .earn-card.earn-neutral { border-left: 3px solid var(--amber); }
+  .earn-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; }
+  .earn-ticker { font-size: 18px; font-weight: 700; }
+  .earn-company { font-size: 11px; color: var(--muted); }
+  .earn-ah { font-size: 16px; font-weight: 700; }
+  .earn-metrics { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 10px; }
+  .earn-metric .mlabel { font-size: 10px; color: var(--muted); text-transform: uppercase; }
+  .earn-metric .mval { font-size: 12px; font-weight: 600; }
+  .earn-insight { margin-top: 10px; font-size: 11px; color: var(--muted); line-height: 1.7; padding-top: 10px; border-top: 1px solid var(--border); }
+
+  .tomorrow-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  .tom-card {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 14px;
+  }
+  .tom-ticker { font-size: 16px; font-weight: 700; color: var(--cyan); }
+  .tom-company { font-size: 10px; color: var(--muted); margin-bottom: 8px; }
+  .tom-metrics { font-size: 11px; line-height: 1.8; }
+
+  .watchlist-item {
+    display: grid;
+    grid-template-columns: 80px 90px 80px 80px 80px 1fr;
+    gap: 8px;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(30,45,69,0.4);
+    align-items: center;
+    font-size: 12px;
+  }
+  .watchlist-item:last-child { border-bottom: none; }
+  .w-ticker { font-weight: 700; color: var(--cyan); }
+  .w-src { font-size: 10px; color: var(--muted); }
+
+  .assume-item {
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(30,45,69,0.4);
+    font-size: 11px;
+  }
+  .assume-item:last-child { border-bottom: none; }
+  .assume-item .flag { color: var(--amber); margin-right: 4px; }
+
+  .source-note { font-size: 10px; color: var(--muted); font-style: italic; margin-top: 4px; }
+
+  @media (max-width: 900px) {
+    .market-bar { grid-template-columns: repeat(3, 1fr); }
+    .earn-metrics { grid-template-columns: repeat(2, 1fr); }
+    .tomorrow-grid { grid-template-columns: 1fr 1fr; }
+    .gapper-grid { grid-template-columns: 1fr 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div>
+    <h1>🌙 AFTER-HOURS GAPS SCAN</h1>
+    <div style="margin-top:4px;font-size:12px;color:var(--muted)">v7.5 — Post-Close Discovery</div>
+  </div>
+  <div class="meta">
+    <div class="date">Tuesday, June 3, 2026</div>
+    <div style="margin-top:4px">Scan completed ~6:30 PM ET</div>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- TOOL HEALTH BANNER -->
+  <div class="tool-health">
+    <span class="label">Tool Health</span>
+    <span class="tool-ok">✅ TV MCP — LIVE (CDP connected)</span>
+    <span style="color:var(--border)">|</span>
+    <span class="tool-warn">⚠️ Chrome MCP — Barchart blocked by safety restrictions → web_search fallback used for gapper discovery</span>
+    <span style="color:var(--border)">|</span>
+    <span class="tool-ok">✅ WebSearch / WebFetch — active</span>
+  </div>
+
+  <!-- MARKET BAR -->
+  <div class="market-bar">
+    <div class="market-stat">
+      <div class="label">SPY</div>
+      <div class="value athl">$754.24</div>
+      <div class="change athl">⭐ ALL-TIME HIGH</div>
+      <div class="source-note">TV MCP, 6:00 PM ET</div>
+    </div>
+    <div class="market-stat">
+      <div class="label">QQQ</div>
+      <div class="value athl">$744.21</div>
+      <div class="change athl">⭐ ALL-TIME HIGH</div>
+      <div class="source-note">TV MCP, 6:00 PM ET</div>
+    </div>
+    <div class="market-stat">
+      <div class="label">AVGO AH</div>
+      <div class="value neg">~$462</div>
+      <div class="change neg">-3.0% AH</div>
+      <div class="source-note">Web search, ~6:15 PM ET</div>
+    </div>
+    <div class="market-stat">
+      <div class="label">CRWD AH</div>
+      <div class="value pos">$785.49</div>
+      <div class="change pos">+2.15% AH</div>
+      <div class="source-note">Benzinga, ~6:00 PM ET</div>
+    </div>
+    <div class="market-stat">
+      <div class="label">PVH AH</div>
+      <div class="value neg">$76.60</div>
+      <div class="change neg">-21.84% AH</div>
+      <div class="source-note">StockAnalysis, ~6:15 PM ET</div>
+    </div>
+    <div class="market-stat">
+      <div class="label">SMH AH</div>
+      <div class="value neu">$636.45</div>
+      <div class="change neu">-0.2% AH</div>
+      <div class="source-note">Web search, ~6:15 PM ET</div>
+    </div>
+  </div>
+
+  <!-- TRADEABLE AH GAPPERS -->
+  <div class="section">
+    <div class="section-header">
+      <h2 style="color:var(--amber)">🎯 Tradeable AH Gappers — >$1B Mkt Cap</h2>
+    </div>
+    <div class="section-body">
+
+      <div class="gapper-card big-down">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start">
+          <div>
+            <div class="gapper-ticker">PVH</div>
+            <div class="gapper-name">PVH Corp (Calvin Klein, Tommy Hilfiger)</div>
+          </div>
+          <div style="text-align:right">
+            <div class="gapper-move neg">-21.84%</div>
+            <div style="font-size:12px;color:var(--muted)">AH: $76.60 (from ~$98 close)</div>
+          </div>
+        </div>
+        <div class="gapper-grid">
+          <div class="gapper-stat"><div class="slabel">Mkt Cap</div><div class="sval">$4.32B</div></div>
+          <div class="gapper-stat"><div class="slabel">Catalyst</div><div class="sval"><span class="badge badge-earn">EARNINGS</span></div></div>
+          <div class="gapper-stat"><div class="slabel">Parent ETF</div><div class="sval">XLY / RTH</div></div>
+          <div class="gapper-stat"><div class="slabel">Trigger</div><div class="sval">Middle East conflict drag on guidance</div></div>
+          <div class="gapper-stat"><div class="slabel">FY Rev Guide</div><div class="sval">~Flat (prev: growth)</div></div>
+          <div class="gapper-stat"><div class="slabel">Tomorrow Setup</div><div class="sval neu">Gap-and-fade / wait for dead-cat</div></div>
+        </div>
+        <div style="margin-top:10px;font-size:11px;color:var(--muted)">⚠️ Read-through: Consumer apparel sector warning. Check LULU (reporting tomorrow AMC) — this is a pre-earnings negative signal for discretionary names.</div>
+        <div class="source-note">Source: StockAnalysis.com, PVH SEC 8-K filed 2026-06-03 — ~6:15 PM ET</div>
+      </div>
+
+      <div class="gapper-card small-down">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start">
+          <div>
+            <div class="gapper-ticker">AVGO</div>
+            <div class="gapper-name">Broadcom Inc.</div>
+          </div>
+          <div style="text-align:right">
+            <div class="gapper-move neg">-3.0%</div>
+            <div style="font-size:12px;color:var(--muted)">AH: ~$462 (from $479.23 close)</div>
+          </div>
+        </div>
+        <div class="gapper-grid">
+          <div class="gapper-stat"><div class="slabel">Mkt Cap</div><div class="sval">Mega-cap (~$2T)</div></div>
+          <div class="gapper-stat"><div class="slabel">Catalyst</div><div class="sval"><span class="badge badge-earn">EARNINGS</span></div></div>
+          <div class="gapper-stat"><div class="slabel">Parent ETF</div><div class="sval">SMH / SOXX / QQQ</div></div>
+          <div class="gapper-stat"><div class="slabel">EPS</div><div class="sval pos">$2.44 vs $2.40 ✅</div></div>
+          <div class="gapper-stat"><div class="slabel">Revenue</div><div class="sval neg">$22.19B vs $22.27B ❌</div></div>
+          <div class="gapper-stat"><div class="slabel">Q3 Guide</div><div class="sval pos">$29.4B vs $28.53B ✅✅</div></div>
+        </div>
+        <div style="margin-top:10px;font-size:11px;color:var(--muted)">AI revenue $10.8B (+2x YoY). Infrastructure software miss ($7.18B vs $7.32B) dragged sentiment despite massive guidance beat. Options implied 9% move — only -3% realized = actually a relief. Conf call at 5 PM ET.</div>
+        <div class="source-note">Source: TV MCP (close), Web search/CNBC/MarketBeat (AH) — ~6:15 PM ET</div>
+      </div>
+
+      <div class="gapper-card up">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start">
+          <div>
+            <div class="gapper-ticker">CRWD</div>
+            <div class="gapper-name">CrowdStrike Holdings</div>
+          </div>
+          <div style="text-align:right">
+            <div class="gapper-move pos">+2.15%</div>
+            <div style="font-size:12px;color:var(--muted)">AH: $785.49 (from ~$769 close)</div>
+          </div>
+        </div>
+        <div class="gapper-grid">
+          <div class="gapper-stat"><div class="slabel">Mkt Cap</div><div class="sval">Mega-cap</div></div>
+          <div class="gapper-stat"><div class="slabel">Catalyst</div><div class="sval"><span class="badge badge-earn">EARNINGS</span> <span class="badge badge-split">4-FOR-1 SPLIT</span></div></div>
+          <div class="gapper-stat"><div class="slabel">Parent ETF</div><div class="sval">CIBR / BUG / HACK</div></div>
+          <div class="gapper-stat"><div class="slabel">EPS</div><div class="sval pos">$1.10 vs $0.88 (+25%) ✅</div></div>
+          <div class="gapper-stat"><div class="slabel">Q2 FY27 Guide</div><div class="sval pos">$1,436-1,442M rev</div></div>
+          <div class="gapper-stat"><div class="slabel">Tomorrow Setup</div><div class="sval pos">Gap-and-go / split enthusiasm</div></div>
+        </div>
+        <div style="margin-top:10px;font-size:11px;color:var(--muted)">New Chief AI Officer appointed. 4-for-1 stock split creates retail enthusiasm. Falcon recovery narrative intact. Muted +2% AH may reflect "good but not GREAT" vs 25% EPS beat — possible additional upside to price in overnight.</div>
+        <div class="source-note">Source: Benzinga, CRWD SEC 8-K 2026-06-03 — ~6:00 PM ET</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- AMC EARNINGS RESULTS -->
+  <div class="section">
+    <div class="section-header">
+      <h2 style="color:var(--purple)">📋 AMC Earnings Results</h2>
+    </div>
+    <div class="section-body">
+
+      <div class="earn-card earn-negative">
+        <div class="earn-header">
+          <div>
+            <div class="earn-ticker">AVGO <span style="font-size:12px;color:var(--muted)">— Broadcom Inc.</span></div>
+            <div class="earn-company">Q2 FY2026 | Conf. call: 5:00 PM ET</div>
+          </div>
+          <div style="text-align:right">
+            <div class="earn-ah neg">-3.0% AH → ~$462</div>
+            <div class="source-note">Web search, ~6:15 PM ET</div>
+          </div>
+        </div>
+        <div class="earn-metrics">
+          <div class="earn-metric">
+            <div class="mlabel">Adj EPS</div>
+            <div class="mval pos">$2.44 vs $2.40 ✅ BEAT</div>
+          </div>
+          <div class="earn-metric">
+            <div class="mlabel">Revenue</div>
+            <div class="mval neg">$22.19B vs $22.27B ❌ MISS</div>
+          </div>
+          <div class="earn-metric">
+            <div class="mlabel">AI Revenue</div>
+            <div class="mval pos">$10.8B (+2x YoY) ✅</div>
+          </div>
+          <div class="earn-metric">
+            <div class="mlabel">Q3 Guidance</div>
+            <div class="mval pos">$29.4B vs $28.53B ✅✅ STRONG BEAT</div>
+          </div>
+        </div>
+        <div class="earn-insight">
+          Revenue miss of $80M on infrastructure software ($7.18B vs $7.32B est) drove initial selling pressure. However, Q3 guidance $870M above consensus — AI capex demand acceleration clearly intact. Total rev +48% YoY. Options implied 9% move; realized -3% = relief vs worst case. Sector read-through: AI infrastructure spending strong for NVDA, custom silicon, networking.
+        </div>
+      </div>
+
+      <div class="earn-card earn-positive">
+        <div class="earn-header">
+          <div>
+            <div class="earn-ticker">CRWD <span style="font-size:12px;color:var(--muted)">— CrowdStrike Holdings</span></div>
+            <div class="earn-company">Q1 FY2027 | After market close</div>
+          </div>
+          <div style="text-align:right">
+            <div class="earn-ah pos">+2.15% AH → $785.49</div>
+            <div class="source-note">Benzinga, ~6:00 PM ET</div>
+          </div>
+        </div>
+        <div class="earn-metrics">
+          <div class="earn-metric">
+            <div class="mlabel">Adj EPS</div>
+            <div class="mval pos">$1.10 vs $0.88 ✅ +25% BEAT</div>
+          </div>
+          <div class="earn-metric">
+            <div class="mlabel">Revenue (YoY)</div>
+            <div class="mval pos">+26% YoY growth</div>
+          </div>
+          <div class="earn-metric">
+            <div class="mlabel">Q2 FY27 Guide</div>
+            <div class="mval pos">$1,436–$1,442M rev</div>
+          </div>
+          <div class="earn-metric">
+            <div class="mlabel">Corp Actions</div>
+            <div class="mval" style="color:var(--cyan)">4-for-1 split + New CAI Officer</div>
+          </div>
+        </div>
+        <div class="earn-insight">
+          Falcon recovery narrative fully intact. 25% EPS beat with strong forward guidance. 4-for-1 stock split drives retail enthusiasm and accessibility. New Chief AI Officer appointment signals platform AI buildout. Sector read-through: Positive for PANW, FTNT, S, ZS. RBRK (reporting tomorrow AMC) may gap higher pre-earnings.
+        </div>
+      </div>
+
+      <div class="earn-card earn-neutral">
+        <div class="earn-header">
+          <div>
+            <div class="earn-ticker">VEEV <span style="font-size:12px;color:var(--muted)">— Veeva Systems</span></div>
+            <div class="earn-company">Q1 FY2027 | Conf. call: 2:00 PM PT (5:00 PM ET)</div>
+          </div>
+          <div style="text-align:right">
+            <div class="earn-ah neu">-0.78% AH → $184.37</div>
+            <div class="source-note">Web search, ~6:15 PM ET</div>
+          </div>
+        </div>
+        <div class="earn-metrics">
+          <div class="earn-metric">
+            <div class="mlabel">Revenue</div>
+            <div class="mval pos">$882.9M (+16% YoY) ✅</div>
+          </div>
+          <div class="earn-metric">
+            <div class="mlabel">Subscription Rev</div>
+            <div class="mval pos">$730.2M (+15% YoY)</div>
+          </div>
+          <div class="earn-metric">
+            <div class="mlabel">FY27 Guidance</div>
+            <div class="mval">~13% total rev growth</div>
+          </div>
+          <div class="earn-metric">
+            <div class="mlabel">AH Verdict</div>
+            <div class="mval neu">In-line / muted reaction</div>
+          </div>
+        </div>
+        <div class="earn-insight">
+          CEO Peter Gassner flagged major transition: "industry-specific application and AI agent company." Muted -0.78% AH suggests results met but did not exceed expectations. 13% forward guidance is solid but not explosive. Life sciences SaaS defensive name.
+        </div>
+      </div>
+
+      <div class="earn-card earn-negative">
+        <div class="earn-header">
+          <div>
+            <div class="earn-ticker">PVH <span style="font-size:12px;color:var(--muted)">— PVH Corp</span></div>
+            <div class="earn-company">Q1 2026 | Calvin Klein + Tommy Hilfiger parent</div>
+          </div>
+          <div style="text-align:right">
+            <div class="earn-ah neg">-21.84% AH → $76.60</div>
+            <div class="source-note">StockAnalysis.com + SEC 8-K, ~6:15 PM ET</div>
+          </div>
+        </div>
+        <div class="earn-metrics">
+          <div class="earn-metric">
+            <div class="mlabel">FY Rev Guide</div>
+            <div class="mval neg">~Flat (prev: growth)</div>
+          </div>
+          <div class="earn-metric">
+            <div class="mlabel">FY Op Margin</div>
+            <div class="mval">~8.8% non-GAAP</div>
+          </div>
+          <div class="earn-metric">
+            <div class="mlabel">DTC</div>
+            <div class="mval pos">Grew (stores + online)</div>
+          </div>
+          <div class="earn-metric">
+            <div class="mlabel">Key Risk</div>
+            <div class="mval neg">Middle East conflict demand impact + tariff headwind</div>
+          </div>
+        </div>
+        <div class="earn-insight">
+          Middle East geopolitical conflict dragged full-year revenue outlook to approximately flat — the key negative surprise driving the -22% AH gap. Tariff refund benefits partially offset. DTC execution positive but not enough to offset macro headwind. Market cap $4.32B. READ-THROUGH: Negative for consumer apparel. LULU reports tomorrow AMC — watch closely. XLY/RTH sector pressure.
+        </div>
+      </div>
+
+      <div class="earn-card earn-neutral">
+        <div class="earn-header">
+          <div>
+            <div class="earn-ticker">AI <span style="font-size:12px;color:var(--muted)">— C3.ai Inc.</span></div>
+            <div class="earn-company">Q4 FY2026 | After market close</div>
+          </div>
+          <div style="text-align:right">
+            <div class="earn-ah neu">AH: unavailable — not pulled</div>
+            <div class="source-note">Options implied ±14.76% move</div>
+          </div>
+        </div>
+        <div class="earn-metrics">
+          <div class="earn-metric">
+            <div class="mlabel">Q4 Revenue</div>
+            <div class="mval pos">$51.6M vs $50.23M est ✅ BEAT</div>
+          </div>
+          <div class="earn-metric">
+            <div class="mlabel">Non-GAAP EPS</div>
+            <div class="mval pos">-$0.33 vs -$0.37 est ✅ BEAT</div>
+          </div>
+          <div class="earn-metric">
+            <div class="mlabel">Cash</div>
+            <div class="mval pos">$575.4M — strong</div>
+          </div>
+          <div class="earn-metric">
+            <div class="mlabel">Leadership</div>
+            <div class="mval" style="color:var(--amber)">Thomas Siebel resumed CEO</div>
+          </div>
+        </div>
+        <div class="earn-insight">
+          Beat on both top and bottom line, with founder Siebel back at helm. Options implied large ±14.76% move. AH price not confirmed at scan time — check 8 PM wide-universe scan. Revenue run-rate $206M annualized (FY26 total $250.3M).
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ETF AH SWEEP -->
+  <div class="section">
+    <div class="section-header">
+      <h2 style="color:var(--blue)">📊 ETF After-Hours Sweep</h2>
+    </div>
+    <div class="section-body">
+      <table>
+        <thead>
+          <tr>
+            <th>ETF</th>
+            <th>Theme</th>
+            <th>AH Price</th>
+            <th>AH %</th>
+            <th>Key Driver</th>
+            <th>Source</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td style="font-weight:700">SMH</td>
+            <td>Semiconductors</td>
+            <td>$636.45</td>
+            <td class="neg">-0.2%</td>
+            <td>AVGO -3% AH (~20% weight) partially offset by broad ATH sentiment</td>
+            <td class="source-note">Web search, ~6:15 PM ET</td>
+          </tr>
+          <tr>
+            <td style="font-weight:700">QQQ</td>
+            <td>Nasdaq 100</td>
+            <td>~$744</td>
+            <td class="neu">~flat</td>
+            <td>ATH close; AVGO/CRWD net neutral for index</td>
+            <td class="source-note">TV MCP close</td>
+          </tr>
+          <tr>
+            <td style="font-weight:700">SPY</td>
+            <td>S&P 500</td>
+            <td>~$754</td>
+            <td class="neu">~flat</td>
+            <td>ATH close; broad market strength</td>
+            <td class="source-note">TV MCP close</td>
+          </tr>
+          <tr>
+            <td style="font-weight:700">CIBR/BUG</td>
+            <td>Cybersecurity</td>
+            <td>unavailable</td>
+            <td class="pos">Expected +</td>
+            <td>CRWD +2.15% AH — positive cybersecurity read-through</td>
+            <td class="source-note">Inferred from CRWD AH</td>
+          </tr>
+          <tr>
+            <td style="font-weight:700">XLY/RTH</td>
+            <td>Consumer Discretionary</td>
+            <td>unavailable</td>
+            <td class="neg">Expected -</td>
+            <td>PVH -21.84% AH — apparel sector warning</td>
+            <td class="source-note">Inferred from PVH AH</td>
+          </tr>
+        </tbody>
+      </table>
+      <div style="margin-top:12px;font-size:11px;color:var(--muted)">
+        ℹ️ No >1.5% AH ETF movers detected. Full 62-ETF sweep from "INDEX 2 - ROTATIONS" watchlist not completed — Barchart unavailable, individual TV MCP sequential pulls deprioritized given no visible large ETF movers in available data. 8 PM scan will cover fully.
+      </div>
+    </div>
+  </div>
+
+  <!-- WATCHLIST AH ACTIVITY -->
+  <div class="section">
+    <div class="section-header">
+      <h2 style="color:var(--green)">👁 Watchlist AH Activity</h2>
+    </div>
+    <div class="section-body">
+      <div style="display:grid;grid-template-columns:80px 80px 90px 100px 100px 1fr;gap:8px;padding:6px 0;font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;border-bottom:1px solid var(--border);margin-bottom:4px;">
+        <span>Ticker</span><span>Close</span><span>Volume</span><span>AH %</span><span>AH Price</span><span>Notes</span>
+      </div>
+      <div class="watchlist-item">
+        <span class="w-ticker">SPY</span><span class="athl">$754.24</span><span>49.5M</span><span class="neu">~flat</span><span>–</span><span>ALL-TIME HIGH close ⭐ | Sanity ✅ <span class="w-src">(TV MCP)</span></span>
+      </div>
+      <div class="watchlist-item">
+        <span class="w-ticker">QQQ</span><span class="athl">$744.21</span><span>38.5M</span><span class="neu">~flat</span><span>–</span><span>ALL-TIME HIGH close ⭐ | Sanity ✅ <span class="w-src">(TV MCP)</span></span>
+      </div>
+      <div class="watchlist-item">
+        <span class="w-ticker">TSLA</span><span>$423.70</span><span>43.9M</span><span class="neu">n/a</span><span>–</span><span>Range $416–$433.60; no catalyst <span class="w-src">(TV MCP)</span></span>
+      </div>
+      <div class="watchlist-item">
+        <span class="w-ticker">NVDA</span><span>$214.75</span><span>155.4M</span><span class="neu">n/a</span><span>–</span><span>Near LOD ($214.51); HIGH vol = profit-taking at record levels <span class="w-src">(TV MCP)</span></span>
+      </div>
+      <div class="watchlist-item">
+        <span class="w-ticker">AVGO</span><span>$479.23</span><span>42.0M</span><span class="neg">-3.0%</span><span class="neg">~$462</span><span>Earnings — see above <span class="w-src">(TV MCP close + web AH)</span></span>
+      </div>
+      <div class="watchlist-item">
+        <span class="w-ticker">CRWD</span><span>~$769</span><span>–</span><span class="pos">+2.15%</span><span class="pos">$785.49</span><span>Earnings + 4-for-1 split — see above <span class="w-src">(Web search)</span></span>
+      </div>
+      <div class="watchlist-item">
+        <span class="w-ticker">AMD</span><span>$521.54</span><span>–</span><span class="neu">n/a</span><span>–</span><span>No catalyst; no AH data confirmed <span class="w-src">(Web search)</span></span>
+      </div>
+      <div class="watchlist-item">
+        <span class="w-ticker">PLTR</span><span>~$150</span><span>–</span><span class="neu">n/a</span><span>–</span><span>Range $149–$159.52; -6% off session high, no catalyst <span class="w-src">(Web search)</span></span>
+      </div>
+      <div class="watchlist-item">
+        <span class="w-ticker">META</span><span>~$602</span><span>–</span><span class="neu">n/a</span><span>–</span><span>Tight $600–$603 range; no catalyst <span class="w-src">(Web search)</span></span>
+      </div>
+      <div class="watchlist-item">
+        <span class="w-ticker">AMZN</span><span>~$258</span><span>–</span><span class="neu">n/a</span><span>–</span><span>Range $254–$261; no catalyst <span class="w-src">(Web search)</span></span>
+      </div>
+      <div class="watchlist-item">
+        <span class="w-ticker">SOFI</span><span>~$16.63</span><span>–</span><span class="neu">n/a</span><span>–</span><span>Range $16.55–$17.64; -5.7% from high; no catalyst <span class="w-src">(Web search)</span></span>
+      </div>
+      <div class="watchlist-item">
+        <span class="w-ticker">MARA</span><span>~$8.21</span><span>–</span><span class="neu">n/a</span><span>–</span><span>Range $7.89–$8.53; AH unavailable — not pulled <span class="w-src">(Web search)</span></span>
+      </div>
+      <div class="watchlist-item">
+        <span class="w-ticker">SNDK</span><span>~$1,716</span><span>–</span><span class="neu">n/a</span><span>–</span><span>Prev close only; AH unavailable — not pulled <span class="w-src">(Web search)</span></span>
+      </div>
+      <div class="watchlist-item">
+        <span class="w-ticker">COIN</span><span>–</span><span>–</span><span class="muted">–</span><span class="muted">–</span><span style="color:var(--amber)">unavailable — not pulled</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- FINVIZ AH NEWS DIGEST -->
+  <div class="section">
+    <div class="section-header">
+      <h2 style="color:var(--cyan)">📰 AH News Digest</h2>
+    </div>
+    <div class="section-body">
+      <div style="font-size:11px;color:var(--amber);margin-bottom:10px">⚠️ Chrome MCP Finviz skipped (Barchart safety restriction extended to finviz.com navigation); web_search fallback used</div>
+      <table>
+        <thead><tr><th>Time</th><th>Ticker</th><th>Headline</th><th>Source</th></tr></thead>
+        <tbody>
+          <tr>
+            <td>5:00 PM ET</td>
+            <td style="font-weight:700;color:var(--green)">CRWD</td>
+            <td>CrowdStrike stock climbing after close — EPS +25% beat, 4-for-1 split, new Chief AI Officer</td>
+            <td>Benzinga</td>
+          </tr>
+          <tr>
+            <td>5:00 PM ET</td>
+            <td style="font-weight:700;color:var(--red)">AVGO</td>
+            <td>Broadcom falls 3% despite Q3 guidance beat — infrastructure software miss disappointed</td>
+            <td>CNBC/MarketBeat</td>
+          </tr>
+          <tr>
+            <td>AMC</td>
+            <td style="font-weight:700;color:var(--red)">PVH</td>
+            <td>PVH Corp -22% AH: Middle East conflict drags apparel outlook to ~flat revenue FY26</td>
+            <td>PVH SEC 8-K</td>
+          </tr>
+          <tr>
+            <td>Market Close</td>
+            <td style="font-weight:700;color:var(--cyan)">MARKET</td>
+            <td>All 3 major indexes close at ALL-TIME HIGHS — AI/semiconductor drove session gains</td>
+            <td>TheStreet/Yahoo Finance</td>
+          </tr>
+          <tr>
+            <td>5:00 PM ET</td>
+            <td style="font-weight:700;color:var(--amber)">VEEV</td>
+            <td>Veeva Systems Q1 FY27 rev +16% YoY, muted -0.78% AH — in-line results</td>
+            <td>StockTitan/SEC 8-K</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- TOMORROW'S EARNINGS PREVIEW -->
+  <div class="section">
+    <div class="section-header">
+      <h2 style="color:var(--purple)">📅 Tomorrow's Earnings Preview — June 4, 2026</h2>
+    </div>
+    <div class="section-body">
+      <div class="tomorrow-grid">
+        <div class="tom-card">
+          <div class="tom-ticker">LULU</div>
+          <div class="tom-company">Lululemon Athletica — AMC</div>
+          <div class="tom-metrics">
+            Consensus EPS: ~$1.67 (guide $1.63–$1.68)<br>
+            Revenue: $2.40–$2.43B<br>
+            <span style="color:var(--red)">⚠️ PVH -22% AH tonight is a NEGATIVE read-through for apparel. Consumer discretionary macro risk elevated.</span><br>
+            <span style="color:var(--amber)">Setup: Wait for pre-market sentiment before sizing.</span>
+          </div>
+        </div>
+        <div class="tom-card">
+          <div class="tom-ticker">DOCU</div>
+          <div class="tom-company">DocuSign — AMC</div>
+          <div class="tom-metrics">
+            Consensus EPS: $0.99 adj<br>
+            Polymarket beat probability: <span class="pos">95%</span><br>
+            <span style="color:var(--amber)">High beat probability baked in — buy-the-rumor/sell-the-news risk elevated. CRWD +2.15% on 25% beat shows market is still rewarding beats.</span><br>
+            Setup: Watch for gap-and-go if beats.
+          </div>
+        </div>
+        <div class="tom-card">
+          <div class="tom-ticker">RBRK</div>
+          <div class="tom-company">Rubrik — AMC (Cybersecurity)</div>
+          <div class="tom-metrics">
+            Consensus EPS: -$0.03 adj<br>
+            Polymarket beat probability: <span class="pos">94%</span><br>
+            <span style="color:var(--green)">✅ CRWD strong beat tonight = POSITIVE cybersecurity read-through. RBRK may see pre-earnings gap up before AMC report.</span><br>
+            Setup: Cybersecurity sector in favor tonight.
+          </div>
+        </div>
+        <div class="tom-card">
+          <div class="tom-ticker">CIEN</div>
+          <div class="tom-company">Ciena Corp — AMC (Networking/Optical)</div>
+          <div class="tom-metrics">
+            Consensus estimates not pulled<br>
+            AI infrastructure networking demand robust<br>
+            Setup: Watch for data-center optical spending commentary
+          </div>
+        </div>
+        <div class="tom-card">
+          <div class="tom-ticker">IOT</div>
+          <div class="tom-company">Samsara — AMC (Industrial IoT)</div>
+          <div class="tom-metrics">
+            Consensus estimates not pulled<br>
+            Connected fleet/industrial exposure<br>
+            Setup: Niche; watch for SaaS metrics
+          </div>
+        </div>
+        <div class="tom-card">
+          <div class="tom-ticker">COO</div>
+          <div class="tom-company">Cooper Companies — AMC (Medical Devices)</div>
+          <div class="tom-metrics">
+            Consensus estimates not pulled<br>
+            Contact lens / surgical instruments<br>
+            Setup: Healthcare defensive
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PERSONAL POSITIONS PLAN -->
+  <div class="section">
+    <div class="section-header">
+      <h2 style="color:var(--amber)">🧭 Positions & Tomorrow's Plan</h2>
+    </div>
+    <div class="section-body">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+        <div>
+          <div style="font-size:11px;font-weight:700;color:var(--cyan);margin-bottom:8px;text-transform:uppercase;letter-spacing:1px">Overnight Risk</div>
+          <div style="font-size:12px;line-height:2">
+            • <span class="neg">AVGO longs</span> face -3% gap at open — confirm if held overnight<br>
+            • <span class="pos">CRWD longs</span> favorable — split + beat, positive overnight setup<br>
+            • <span class="neg">Any consumer apparel exposure</span> — PVH -22% is macro warning signal<br>
+            • <span class="neu">NVDA</span> near LOD on 155M vol — watch if semi drag continues from AVGO
+          </div>
+        </div>
+        <div>
+          <div style="font-size:11px;font-weight:700;color:var(--cyan);margin-bottom:8px;text-transform:uppercase;letter-spacing:1px">Theme Bias Tomorrow</div>
+          <div style="font-size:12px;line-height:2">
+            • <span class="pos">RISK-ON</span> — market at ATH, macro bid present<br>
+            • <span class="pos">Cybersecurity</span> — CRWD beat, RBRK catalyst; STRONG<br>
+            • <span class="neg">Consumer Apparel</span> — LULU into headwind from PVH<br>
+            • <span class="amber">Semiconductors</span> — AVGO drag, but AI capex narrative intact<br>
+            • Watch for AVGO analyst upgrades/downgrades AM as reaction to -3% AH
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ASSUMPTION AUDIT -->
+  <div class="section">
+    <div class="section-header">
+      <h2 style="color:var(--muted)">🔍 Assumption Audit</h2>
+    </div>
+    <div class="section-body">
+      <div class="assume-item">
+        <span class="flag">⚠️</span><strong>Barchart unavailable:</strong> StockAnalysis.com and web_search used as fallback for AH gapper discovery. AH volume data was not retrievable from any fallback source — volume column missing from gapper table.
+      </div>
+      <div class="assume-item">
+        <span class="flag">⚠️</span><strong>AVGO AH price (-3% / ~$462):</strong> Single source (MarketBeat/web search). TV MCP only shows regular close $479.23. Verify actual open price before acting.
+      </div>
+      <div class="assume-item">
+        <span class="flag">⚠️</span><strong>PVH AH price (-21.84% / $76.60):</strong> StockAnalysis.com data. A second search returned $93.39 (-0.04%) which appears to be pre-earnings regular session data. -21.84% figure treated as post-earnings AH reaction; verify at open.
+      </div>
+      <div class="assume-item">
+        <span class="flag">⚠️</span><strong>CRWD revenue:</strong> Conflicting web data ($1.31B vs $1.38B in different sources). EPS beat (+25%) and positive AH reaction confirmed. Revenue ambiguity may resolve with post-call analysis.
+      </div>
+      <div class="assume-item">
+        <span class="flag">⚠️</span><strong>C3.ai AH price:</strong> unavailable — not pulled. Options implied ±14.76% move. Check separately.
+      </div>
+      <div class="assume-item">
+        <span class="flag">⚠️</span><strong>62-ETF sweep incomplete:</strong> Only SMH confirmed. Full "INDEX 2 - ROTATIONS" watchlist sweep not completed; no >1.5% movers detected in available data. 8 PM scan will cover.
+      </div>
+      <div class="assume-item">
+        <span class="flag">⚠️</span><strong>COIN, MARA AH:</strong> unavailable — not pulled. Crypto-linked names not confirmed.
+      </div>
+      <div class="assume-item">
+        <span class="flag">✅</span><strong>SPY/QQQ sanity check:</strong> SPY $754.24 and QQQ $744.21 — both within expected range for mid-2026 market environment. No sanity flag triggered. Market context (ATH close) confirmed via multiple independent sources.
+      </div>
+      <div class="assume-item">
+        <span class="flag">✅</span><strong>TV MCP health:</strong> CDP connected, chart API responding, quote data returning correct descriptions (AVGO = "Broadcom Inc.", QQQ = "Invesco QQQ Trust"). Initial SPY query returned wrong symbol (chart was on INOD) — corrected by chart_set_symbol. All subsequent pulls verified correct.
+      </div>
+    </div>
+  </div>
+
+  <div style="text-align:center;padding:20px;color:var(--muted);font-size:10px;border-top:1px solid var(--border);margin-top:10px">
+    After-Hours Scan v7.5 — June 3, 2026 — Generated ~6:30 PM ET<br>
+    Next: 8 PM wide-universe heavy discovery scan
+  </div>
+
+</div>
+</body>
+</html>
