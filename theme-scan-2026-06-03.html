@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Daily Theme Scanner — 2026-06-03</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: #0a0e17;
+    color: #e2e8f0;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    line-height: 1.7;
+    padding: 0 0 60px 0;
+  }
+  .header {
+    background: linear-gradient(135deg, #0d1526 0%, #111827 100%);
+    border-bottom: 1px solid #1e2a3d;
+    padding: 32px 48px 24px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .header h1 {
+    font-size: 22px;
+    font-weight: 700;
+    color: #e2e8f0;
+    letter-spacing: -0.5px;
+  }
+  .header .subtitle {
+    color: #64748b;
+    font-size: 11px;
+    margin-top: 4px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+  .header .badge {
+    display: inline-block;
+    background: #10b981;
+    color: #0a0e17;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 3px;
+    margin-left: 12px;
+    letter-spacing: 1px;
+    vertical-align: middle;
+  }
+  .container { max-width: 1100px; margin: 0 auto; padding: 40px 48px; }
+  .section-header {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: #475569;
+    margin: 48px 0 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #1e2a3d;
+  }
+  .section-header:first-child { margin-top: 0; }
+
+  /* Cards */
+  .card {
+    background: #0d1526;
+    border: 1px solid #1e2a3d;
+    border-radius: 6px;
+    padding: 24px 28px;
+    margin-bottom: 16px;
+    position: relative;
+    overflow: hidden;
+  }
+  .card::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 3px;
+  }
+  .card.high::before { background: #10b981; }
+  .card.medium::before { background: #f59e0b; }
+  .card.low::before { background: #ef4444; }
+  .card.strong::before { background: #10b981; }
+  .card.moderate::before { background: #f59e0b; }
+  .card.weak::before { background: #ef4444; }
+
+  .card-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: #e2e8f0;
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .card-num {
+    color: #334155;
+    font-size: 12px;
+    margin-right: 4px;
+  }
+  .badge-conviction, .badge-stage, .badge-strength, .badge-type {
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 3px;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+  }
+  .badge-conviction.HIGH { background: rgba(16,185,129,0.15); color: #10b981; border: 1px solid rgba(16,185,129,0.3); }
+  .badge-conviction.MEDIUM { background: rgba(245,158,11,0.15); color: #f59e0b; border: 1px solid rgba(245,158,11,0.3); }
+  .badge-conviction.LOW { background: rgba(239,68,68,0.15); color: #ef4444; border: 1px solid rgba(239,68,68,0.3); }
+  .badge-stage {
+    background: rgba(100,116,139,0.15); color: #94a3b8; border: 1px solid rgba(100,116,139,0.2);
+    font-weight: 500;
+  }
+  .badge-strength.STRONG { background: rgba(16,185,129,0.15); color: #10b981; border: 1px solid rgba(16,185,129,0.3); }
+  .badge-strength.MODERATE { background: rgba(245,158,11,0.15); color: #f59e0b; border: 1px solid rgba(245,158,11,0.3); }
+  .badge-strength.WEAK { background: rgba(239,68,68,0.15); color: #ef4444; border: 1px solid rgba(239,68,68,0.3); }
+  .badge-type {
+    background: rgba(99,102,241,0.15); color: #a5b4fc; border: 1px solid rgba(99,102,241,0.2);
+    font-weight: 500;
+  }
+  .badge-hot {
+    background: rgba(239,68,68,0.15); color: #f87171; border: 1px solid rgba(239,68,68,0.3);
+    font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 3px; letter-spacing: 0.8px;
+  }
+
+  .meta-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px 24px;
+    margin-bottom: 16px;
+    font-size: 12px;
+  }
+  .meta-item label {
+    color: #475569;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    display: block;
+    margin-bottom: 3px;
+  }
+  .meta-item .tickers {
+    color: #60a5fa;
+    font-weight: 600;
+  }
+  .meta-item .losers {
+    color: #f87171;
+  }
+  .meta-item .timeline {
+    color: #94a3b8;
+  }
+
+  .evidence-list {
+    margin: 14px 0;
+    padding: 14px 16px;
+    background: rgba(30,42,61,0.5);
+    border-radius: 4px;
+    border-left: 2px solid #1e2a3d;
+  }
+  .evidence-list .ev-label {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #475569;
+    margin-bottom: 10px;
+    font-weight: 700;
+  }
+  .evidence-item {
+    margin-bottom: 8px;
+    font-size: 12px;
+    color: #cbd5e1;
+    padding-left: 12px;
+    position: relative;
+  }
+  .evidence-item::before {
+    content: '›';
+    position: absolute;
+    left: 0;
+    color: #334155;
+  }
+  .evidence-item a {
+    color: #60a5fa;
+    text-decoration: none;
+    font-size: 10px;
+    opacity: 0.7;
+  }
+  .evidence-item a:hover { opacity: 1; }
+
+  .summary {
+    font-size: 12.5px;
+    color: #94a3b8;
+    line-height: 1.8;
+    margin-top: 14px;
+    padding-top: 14px;
+    border-top: 1px solid #1e2a3d;
+  }
+
+  /* Trade idea */
+  .trade-idea {
+    margin-top: 10px;
+    padding: 10px 14px;
+    background: rgba(99,102,241,0.08);
+    border: 1px solid rgba(99,102,241,0.2);
+    border-radius: 4px;
+    font-size: 12px;
+    color: #a5b4fc;
+  }
+  .trade-idea::before {
+    content: '💡 TRADE IDEA: ';
+    font-weight: 700;
+    font-size: 10px;
+    letter-spacing: 0.8px;
+  }
+
+  /* Catalyst cards */
+  .catalyst-dates {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-bottom: 14px;
+  }
+  .date-box {
+    background: rgba(30,42,61,0.8);
+    border: 1px solid #1e2a3d;
+    border-radius: 4px;
+    padding: 8px 14px;
+    font-size: 11px;
+  }
+  .date-box label { color: #475569; font-size: 10px; display: block; text-transform: uppercase; letter-spacing: 0.8px; }
+  .date-box span { color: #e2e8f0; font-weight: 600; }
+
+  .surprise-box {
+    background: rgba(239,68,68,0.06);
+    border: 1px solid rgba(239,68,68,0.2);
+    border-radius: 4px;
+    padding: 10px 14px;
+    font-size: 12px;
+    color: #fca5a5;
+    margin-top: 10px;
+  }
+  .surprise-box::before {
+    content: '⚡ SURPRISE SCENARIO: ';
+    font-weight: 700;
+    font-size: 10px;
+    letter-spacing: 0.8px;
+    color: #ef4444;
+  }
+
+  /* Action Items */
+  .action-section {
+    background: #0d1526;
+    border: 1px solid #10b981;
+    border-radius: 6px;
+    padding: 24px 28px;
+    margin-top: 48px;
+  }
+  .action-section h2 {
+    font-size: 13px;
+    font-weight: 700;
+    color: #10b981;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+  }
+  .action-col-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 20px;
+  }
+  .action-col h3 {
+    font-size: 10px;
+    font-weight: 700;
+    color: #475569;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 12px;
+  }
+  .ticker-highlight {
+    display: inline-block;
+    background: rgba(96,165,250,0.1);
+    color: #60a5fa;
+    font-weight: 700;
+    padding: 1px 6px;
+    border-radius: 3px;
+    border: 1px solid rgba(96,165,250,0.2);
+    font-size: 12px;
+  }
+  .action-item {
+    margin-bottom: 10px;
+    font-size: 12px;
+    color: #94a3b8;
+    padding-left: 14px;
+    position: relative;
+  }
+  .action-item::before { content: '▸'; position: absolute; left: 0; color: #10b981; }
+  .date-item {
+    margin-bottom: 8px;
+    font-size: 12px;
+    color: #94a3b8;
+    padding-left: 14px;
+    position: relative;
+  }
+  .date-item::before { content: '◉'; position: absolute; left: 0; color: #f59e0b; }
+  .date-item strong { color: #e2e8f0; }
+
+  footer {
+    text-align: center;
+    font-size: 10px;
+    color: #334155;
+    padding: 32px 48px 0;
+    letter-spacing: 0.5px;
+  }
+
+  @media (max-width: 768px) {
+    .container { padding: 20px 16px; }
+    .header { padding: 20px 16px; }
+    .meta-grid { grid-template-columns: 1fr; }
+    .action-col-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>📊 Daily Theme Scanner <span class="badge">LIVE</span></h1>
+  <div class="subtitle">2026-06-03 &nbsp;|&nbsp; Pre-Market Intelligence &nbsp;|&nbsp; Hedge Fund Research</div>
+</div>
+
+<div class="container">
+
+<!-- ═══ EMERGING NARRATIVES ═══ -->
+<div class="section-header">Emerging Narratives</div>
+
+<!-- Narrative 1 -->
+<div class="card high">
+  <div class="card-title">
+    <span class="card-num">01</span>
+    AI Custom Silicon Acceleration
+    <span class="badge-conviction HIGH">HIGH</span>
+    <span class="badge-stage">DEVELOPING</span>
+  </div>
+  <div class="meta-grid">
+    <div class="meta-item">
+      <label>Primary Beneficiaries</label>
+      <span class="tickers">AVGO &nbsp;MRVL &nbsp;HPE &nbsp;SMCI &nbsp;ANET</span>
+    </div>
+    <div class="meta-item">
+      <label>Secondary Beneficiaries</label>
+      <span class="tickers" style="color:#93c5fd;">AMD &nbsp;DELL &nbsp;NTAP &nbsp;KEYS &nbsp;COHU</span>
+    </div>
+    <div class="meta-item">
+      <label>Losers / Disrupted</label>
+      <span class="losers">NVDA (relative), legacy server ODMs</span>
+    </div>
+    <div class="meta-item">
+      <label>Earnings Impact Timeline</label>
+      <span class="timeline">Immediate — AVGO tonight; 2-4 weeks for peers</span>
+    </div>
+  </div>
+  <div class="evidence-list">
+    <div class="ev-label">Evidence</div>
+    <div class="evidence-item">HPE surged 25–36% on June 1 after Q2 FY2026 revenue of $10.68B (+40% YoY), AI orders of $2.1B, and a 75% FCF guidance upgrade. SMCI +5% as read-through. <a href="https://247wallst.com/investing/2026/06/02/hewlett-packard-enterprise-rockets-25-super-micro-computer-climbs-5-as-ai-server-demand-lights-up-q2-earnings/">[Source]</a></div>
+    <div class="evidence-item">STMicroelectronics raised its 2026 data center revenue target to ~$1B on June 2, nearly doubling prior guidance. TXN and ADI both reported ~90% YoY data center revenue growth in Q1 2026. <a href="https://www.globenewswire.com/news-release/2026/06/02/3304851/0/en/STMicroelectronics-raises-its-revenue-ambition-for-Data-Centers-amidst-continued-strong-demand-for-AI-infrastructure.html">[Source]</a></div>
+    <div class="evidence-item">Hyperscalers guiding $600–690B combined capex for 2026. Semiconductors account for &gt;95% of a leading AI server rack's content value. Custom ASICs displacing GPU spend. <a href="https://www.semiconductors.org/new-report-finds-semiconductors-account-for-95-of-an-ai-data-server-racks-value-encompassing-the-full-stack-of-chip-technologies/">[Source]</a></div>
+  </div>
+  <div class="summary">The AI infrastructure buildout has shifted from a hyperscaler narrative to a broad-based semiconductor supply chain story. HPE's surge and STM's guidance doubling confirm demand is flowing well beyond GPU suppliers. Broadcom reports Q2 FY2026 tonight — management guided $10.7B in AI semiconductor revenue (+140% YoY) with 40% from networking. A beat or raised FY guidance could re-rate the entire custom-silicon complex. The consensus has underpriced the breadth of this cycle.</div>
+</div>
+
+<!-- Narrative 2 -->
+<div class="card high">
+  <div class="card-title">
+    <span class="card-num">02</span>
+    Section 122 Tariff Cliff / Trade Policy Succession
+    <span class="badge-conviction HIGH">HIGH</span>
+    <span class="badge-stage">EARLY</span>
+  </div>
+  <div class="meta-grid">
+    <div class="meta-item">
+      <label>Primary Beneficiaries</label>
+      <span class="tickers">CAT &nbsp;DE &nbsp;URI &nbsp;NUE &nbsp;LMT &nbsp;RTX &nbsp;NOC</span>
+    </div>
+    <div class="meta-item">
+      <label>Secondary Beneficiaries</label>
+      <span class="tickers" style="color:#93c5fd;">REXR &nbsp;PLD &nbsp;Mexico/Vietnam EMs</span>
+    </div>
+    <div class="meta-item">
+      <label>Losers / Disrupted</label>
+      <span class="losers">WMT &nbsp;TGT &nbsp;AMZN &nbsp;AAPL supply chain &nbsp;NKE</span>
+    </div>
+    <div class="meta-item">
+      <label>Earnings Impact Timeline</label>
+      <span class="timeline">4–6 weeks; tariff decisions likely before July 24</span>
+    </div>
+  </div>
+  <div class="evidence-list">
+    <div class="ev-label">Evidence</div>
+    <div class="evidence-item">US Court of International Trade struck down Section 122 tariffs on May 7, 2026 (2-1 ruling), but CAFC administrative stay keeps them in effect. Tariffs still being collected. <a href="https://www.skadden.com/insights/publications/2026/05/us-trade-court-strikes-down-section-122-tariffs">[Source]</a></div>
+    <div class="evidence-item">Section 122 surcharge expires July 24, 2026. Administration has initiated wide-ranging Section 301 investigations intended to conclude before the July 24 expiry. <a href="https://gingercontrol.com/blog/section-122-tariffs-explained">[Source]</a></div>
+    <div class="evidence-item">Markets pricing July 24 as a relief event. Section 301 successor could produce permanent, differentiated tariffs. Yale Budget Lab estimates all 2026 tariffs increase prices ~0.6% short-run. <a href="https://tax.thomsonreuters.com/blog/the-150-day-clock-is-ticking-how-trade-professionals-can-turn-tariff-uncertainty-into-strategic-advantage/">[Source]</a></div>
+  </div>
+  <div class="summary">The consensus trade on tariffs is "relief by July 24 expiry" — but the real risk is the Section 301 successor investigations quietly advancing. Section 301 tariffs are permanent, require no congressional action, and can be differentiated by country and product. The market is misreading this as a sunset when it may be a transition to a more permanent regime. Import-heavy retailers and consumer electronics supply chains are the most exposed to a negative surprise. Domestic manufacturers are the asymmetric longs.</div>
+</div>
+
+<!-- Narrative 3 -->
+<div class="card medium">
+  <div class="card-title">
+    <span class="card-num">03</span>
+    Warsh Fed Hawkish Language Pivot
+    <span class="badge-conviction MEDIUM">MEDIUM</span>
+    <span class="badge-stage">EARLY</span>
+  </div>
+  <div class="meta-grid">
+    <div class="meta-item">
+      <label>Primary Beneficiaries</label>
+      <span class="tickers">JPM &nbsp;BAC &nbsp;GS &nbsp;Short-duration bonds</span>
+    </div>
+    <div class="meta-item">
+      <label>Secondary Beneficiaries</label>
+      <span class="tickers" style="color:#93c5fd;">UUP &nbsp;Energy exporters</span>
+    </div>
+    <div class="meta-item">
+      <label>Losers / Disrupted</label>
+      <span class="losers">VNQ &nbsp;XLU &nbsp;TLT &nbsp;Rate-sensitive growth tech</span>
+    </div>
+    <div class="meta-item">
+      <label>Earnings Impact Timeline</label>
+      <span class="timeline">June 16-17 FOMC; repricing over 4-6 weeks</span>
+    </div>
+  </div>
+  <div class="evidence-list">
+    <div class="ev-label">Evidence</div>
+    <div class="evidence-item">Kevin Warsh confirmed as Fed Chair May 13, sworn in May 22. June 16-17 is his first meeting with press conference + dot plot (SEP). <a href="https://finance.yahoo.com/economy/policy/articles/fed-chair-kevin-warshs-first-080500738.html">[Source]</a></div>
+    <div class="evidence-item">April 2026 CPI at 3.8% YoY — highest since mid-2023. Fed funds rate 3.50-3.75%. 97% market probability of hold, but Yardeni warns Warsh Fed may need to hike in July to appease bond vigilantes. <a href="https://www.cnbc.com/2026/05/18/the-fed-will-have-to-raise-interest-rates-in-july-to-appease-bond-vigilantes-yardeni-says.html">[Source]</a></div>
+    <div class="evidence-item">April FOMC saw 4 dissents — highest since 1992. Warsh known for skepticism of forward guidance; could remove dovish language from post-meeting statement. <a href="https://www.gomarkets.com/en/articles/us-market-drivers-june-2026">[Source]</a></div>
+  </div>
+  <div class="summary">The market is treating the June FOMC as a non-event (97% hold probability), but this ignores the language shift risk under Warsh. If the new chair removes the implicit dovish bias or signals a July hike is possible, rate-sensitive sectors will re-price sharply. REITs and utilities, which have priced in continued rate stability, carry the highest downside risk. The first Warsh press conference is an asymmetric event that options markets are not fully pricing.</div>
+</div>
+
+<!-- Narrative 4 -->
+<div class="card high">
+  <div class="card-title">
+    <span class="card-num">04</span>
+    Energy Security / Non-Gulf Producer Repricing
+    <span class="badge-conviction HIGH">HIGH</span>
+    <span class="badge-stage">MATURING</span>
+  </div>
+  <div class="meta-grid">
+    <div class="meta-item">
+      <label>Primary Beneficiaries</label>
+      <span class="tickers">XOM &nbsp;CVX &nbsp;OXY &nbsp;SLB &nbsp;COP &nbsp;LNG &nbsp;TELL</span>
+    </div>
+    <div class="meta-item">
+      <label>Secondary Beneficiaries</label>
+      <span class="tickers" style="color:#93c5fd;">LMT &nbsp;RTX &nbsp;HII &nbsp;CCJ &nbsp;LEU</span>
+    </div>
+    <div class="meta-item">
+      <label>Losers / Disrupted</label>
+      <span class="losers">DAL &nbsp;UAL &nbsp;SAVE &nbsp;Consumer discretionary &nbsp;Import-dependent EMs</span>
+    </div>
+    <div class="meta-item">
+      <label>Earnings Impact Timeline</label>
+      <span class="timeline">Already in Q2 results; fully in FY2026 guidance</span>
+    </div>
+  </div>
+  <div class="evidence-list">
+    <div class="ev-label">Evidence</div>
+    <div class="evidence-item">Strait of Hormuz largely blocked since Feb 28, 2026 following US-Israeli strikes on Iran. WTI from ~$55 at year-open to $105 in late May; peaked above $119 in March. Brent above $100. <a href="https://en.wikipedia.org/wiki/2026_Strait_of_Hormuz_crisis">[Source]</a></div>
+    <div class="evidence-item">IEA characterized the disruption as "the largest supply disruption in the history of the global oil market." Non-Gulf producers (US shale, Canada, Norway, Brazil) have become strategically critical. <a href="https://www.stimson.org/2026/global-markets-and-the-strait-of-hormuz-the-economic-shockwaves-of-the-iran-war/">[Source]</a></div>
+    <div class="evidence-item">EMs in Asia and Africa face the sharpest pain — weaker trade balances, currency pressure, reduced central bank room to support growth. <a href="https://www.imf.org/en/blogs/articles/2026/03/30/how-the-war-in-the-middle-east-is-affecting-energy-trade-and-finance">[Source]</a></div>
+  </div>
+  <div class="summary">This narrative is maturing — the oil spike is widely known — but the second-order repricing is incomplete. Non-Gulf producers are being structurally re-rated as reliable supply alternatives, and LNG exporters see sustained demand. The "loser" side is underpriced: airlines carrying $100+ crude without adequate hedging, and import-dependent EMs facing simultaneous currency pressure and fuel costs. The narrative also feeds into the inflation problem complicating the Warsh Fed. Watch Q2 earnings from oil majors (late July) to confirm FCF acceleration.</div>
+</div>
+
+<!-- Narrative 5 -->
+<div class="card medium">
+  <div class="card-title">
+    <span class="card-num">05</span>
+    Small Cap / Market Broadening Late-Cycle Rotation
+    <span class="badge-conviction MEDIUM">MEDIUM</span>
+    <span class="badge-stage">MATURING</span>
+  </div>
+  <div class="meta-grid">
+    <div class="meta-item">
+      <label>Primary Beneficiaries</label>
+      <span class="tickers">IWM &nbsp;VTWO &nbsp;KRE &nbsp;XLI &nbsp;XLV</span>
+    </div>
+    <div class="meta-item">
+      <label>Secondary Beneficiaries</label>
+      <span class="tickers" style="color:#93c5fd;">RSP &nbsp;KBE &nbsp;VTV</span>
+    </div>
+    <div class="meta-item">
+      <label>Losers / Disrupted</label>
+      <span class="losers">Mag 7 relative outperformance; QQQ overweight</span>
+    </div>
+    <div class="meta-item">
+      <label>Earnings Impact Timeline</label>
+      <span class="timeline">Already underway; sector churn in H2 2026</span>
+    </div>
+  </div>
+  <div class="evidence-list">
+    <div class="ev-label">Evidence</div>
+    <div class="evidence-item">Russell 2000 outperformed S&P 500 for 14 consecutive trading days in January 2026 — longest such streak since 1996. Russell 2000 +12% YTD vs S&P 500 +1.5% through late March. <a href="https://markets.financialcontent.com/stocks/article/marketminute-2026-3-17-the-great-rotation-small-caps-surge-as-magnificent-7-leadership-fades-in-a-broadening-market">[Source]</a></div>
+    <div class="evidence-item">Small caps at 18x forward P/E vs S&P 500 at 24x — 22% discount near historic low. Fed funds rate stable at 3.50-3.75% has materially reduced floating-rate debt burden. <a href="https://www.fxcm.com/markets/insights/the-2026-market-rotation-suggests-a-quiet-shift-with-loud-implications/">[Source]</a></div>
+    <div class="evidence-item">Q1 2026 S&P blended EPS growth: 28.6% — highest since Q4 2021. "S&P 493" contributed 9.4% to EPS growth vs Mag 7's 4.1%. 65-69% of S&P 500 components outperformed the index in February. <a href="https://www.cnbc.com/2026/05/29/stock-market-next-week-outlook-for-june-1-5-2026.html">[Source]</a></div>
+  </div>
+  <div class="summary">This rotation is real but approaching consensus — which means it's moving from alpha to beta. The valuation gap (18x vs 24x) remains compelling, but the easy money has been made. The next phase is "sector churn" between financials, energy, and healthcare rather than blanket small-cap outperformance. The Warsh hawkish risk (Narrative #3) could temporarily interrupt this rotation if rates spike. Focus on quality small/mid-cap names with limited floating-rate debt exposure.</div>
+</div>
+
+<!-- ═══ EARNINGS SIGNALS ═══ -->
+<div class="section-header">Earnings Signals</div>
+
+<!-- Signal 1 -->
+<div class="card strong">
+  <div class="card-title">
+    <span class="card-num">01</span>
+    AI Server Demand Broadening Beyond GPUs
+    <span class="badge-strength STRONG">STRONG</span>
+    <span class="badge-type">SECTOR READ-THROUGH</span>
+  </div>
+  <div class="meta-grid">
+    <div class="meta-item">
+      <label>Companies Involved</label>
+      <span class="tickers">HPE &nbsp;SMCI &nbsp;STM &nbsp;TXN &nbsp;ADI &nbsp;MRVL</span>
+    </div>
+    <div class="meta-item">
+      <label>Broader Implication</label>
+      <span class="timeline">AI infrastructure demand diffused across full semiconductor supply chain</span>
+    </div>
+  </div>
+  <div class="trade-idea">Long ANET (networking is 40% of AVGO AI revenue); long SMCI (AI server systems). Cautious on NVDA near-term as custom ASIC share grows.</div>
+  <div class="summary">HPE's 25-36% post-earnings surge on June 1 after reporting $10.68B in Q2 revenue (+40% YoY) and $2.1B in AI orders is the clearest confirmation that enterprise demand for AI servers is broad and durable. The simultaneous +5% move in SMCI as a read-through, and STM's June 2 guidance doubling, indicate the supply chain is repricing in real-time. The key signal from HPE: AI orders grew faster than revenue, implying a backlog supporting future quarters. Beat + raised guidance + orders > revenue = the template to watch in other AI infrastructure names.</div>
+</div>
+
+<!-- Signal 2 -->
+<div class="card strong">
+  <div class="card-title">
+    <span class="card-num">02</span>
+    Broadcom Q2 FY2026 — Custom ASIC Inflection Point
+    <span class="badge-strength STRONG">STRONG</span>
+    <span class="badge-type">GUIDANCE / LANGUAGE SHIFT</span>
+    <span class="badge-hot">TONIGHT AH</span>
+  </div>
+  <div class="meta-grid">
+    <div class="meta-item">
+      <label>Companies Involved</label>
+      <span class="tickers">AVGO &nbsp;NVDA &nbsp;MRVL &nbsp;AMD &nbsp;ANET</span>
+    </div>
+    <div class="meta-item">
+      <label>Hyperscalers Exposed</label>
+      <span class="tickers" style="color:#93c5fd;">MSFT &nbsp;GOOGL &nbsp;AMZN &nbsp;META</span>
+    </div>
+  </div>
+  <div class="trade-idea">Watch for "XPU" or "custom silicon scaling" language. Any mention of 3rd/4th hyperscaler customer beyond Google and Meta (Apple rumored) is a major new catalyst.</div>
+  <div class="summary">Broadcom reports Q2 FY2026 after market close today (June 3). Consensus: $22.1B revenue (+47% YoY), $10.7B AI semiconductor revenue (+140% YoY). The market is focused on custom ASIC demand from Google (TPU) and Meta (MTIA). Key watch: (1) New hyperscaler ASIC customer confirmation; (2) Networking revenue trajectory — 40% of AI revenue and ANET read-through; (3) FY2026 AI revenue guidance raise; (4) Custom silicon pricing power. A confirmed beat-and-raise could re-rate the custom-silicon complex immediately.</div>
+</div>
+
+<!-- Signal 3 -->
+<div class="card moderate">
+  <div class="card-title">
+    <span class="card-num">03</span>
+    CrowdStrike Falcon Flex Validation Signal
+    <span class="badge-strength MODERATE">MODERATE</span>
+    <span class="badge-type">LANGUAGE SHIFT / RECOVERY</span>
+    <span class="badge-hot">TONIGHT AH</span>
+  </div>
+  <div class="meta-grid">
+    <div class="meta-item">
+      <label>Companies Involved</label>
+      <span class="tickers">CRWD &nbsp;PANW &nbsp;ZS &nbsp;S &nbsp;FTNT</span>
+    </div>
+    <div class="meta-item">
+      <label>Implication</label>
+      <span class="timeline">Sets tone for enterprise cybersecurity spending outlook</span>
+    </div>
+  </div>
+  <div class="trade-idea">Long PANW as beneficiary if CRWD disappoints — PANW has been taking share during CRWD's post-incident recovery period.</div>
+  <div class="summary">CrowdStrike reports Q1 FY2027 tonight. Consensus: $1.11B revenue (+20.5% YoY), EPS $0.66 (-29% YoY). This is the first print since management framed Falcon Flex as the FY2027 acceleration engine — a platform pricing model bundling multiple modules. Geopolitical tensions have increased enterprise cybersecurity spend. Risk: weak ARR growth or Falcon Flex adoption metrics weak → stock retests post-incident lows. Read-through for PANW (share gainer during CRWD recovery).</div>
+</div>
+
+<!-- Signal 4 -->
+<div class="card moderate">
+  <div class="card-title">
+    <span class="card-num">04</span>
+    Credo Technology -12% Despite Beat — Guidance Ceiling Signal
+    <span class="badge-strength MODERATE">MODERATE</span>
+    <span class="badge-type">PRICE ACTION ANOMALY</span>
+  </div>
+  <div class="meta-grid">
+    <div class="meta-item">
+      <label>Companies Involved</label>
+      <span class="tickers">CRDO &nbsp;MRVL &nbsp;ANET &nbsp;CSCO</span>
+    </div>
+    <div class="meta-item">
+      <label>Implication</label>
+      <span class="timeline">High-multiple AI networking names sold if guidance ceiling is visible</span>
+    </div>
+  </div>
+  <div class="trade-idea">Avoid chasing AI networking names post-beat without checking guidance headroom. Favor ANET for multi-year order backlog visibility.</div>
+  <div class="summary">Credo Technology (CRDO) fell 12% despite beating on revenue ($437M) and EPS ($1.16 adjusted) with guidance that beat consensus. The market had already priced in significant acceleration — lack of a dramatic upward revision was read as a ceiling signal. Key lesson: in the current environment, beats are necessary but not sufficient. The market needs an expanding TAM narrative or raised full-year guidance to sustain momentum. Sets a high bar for similar names like MRVL and CSCO in coming weeks.</div>
+</div>
+
+<!-- Signal 5 -->
+<div class="card moderate">
+  <div class="card-title">
+    <span class="card-num">05</span>
+    Microchip Technology +12% — Legacy Semi Data Center Read-Through
+    <span class="badge-strength MODERATE">MODERATE</span>
+    <span class="badge-type">SECTOR READ-THROUGH</span>
+  </div>
+  <div class="meta-grid">
+    <div class="meta-item">
+      <label>Companies Involved</label>
+      <span class="tickers">MCHP &nbsp;TXN &nbsp;ADI &nbsp;ON</span>
+    </div>
+    <div class="meta-item">
+      <label>Implication</label>
+      <span class="timeline">Legacy analog/mixed-signal semis getting second wind from data center power/thermal demand</span>
+    </div>
+  </div>
+  <div class="trade-idea">Long TXN and ADI — both at ~90% YoY data center revenue growth; significant valuation discounts vs pure-play AI semis remain.</div>
+  <div class="summary">Microchip Technology surged 12% after its data center solutions unit reported 62.9% YoY growth in Q1 2026 and guided for ~65% calendar year 2026 growth. TXN and ADI separately reported ~90% YoY data center growth driven by power management and optical portfolios. The AI data center's power/thermal management requirements are creating a new demand vector for mature-node chips — a broadening of the semiconductor bull thesis that is not yet consensus-priced. Significant valuation discounts vs pure-play AI semis.</div>
+</div>
+
+<!-- ═══ UPCOMING CATALYSTS ═══ -->
+<div class="section-header">Upcoming Catalysts</div>
+
+<!-- Catalyst 1 -->
+<div class="card medium">
+  <div class="card-title">
+    <span class="card-num">01</span>
+    May Nonfarm Payrolls Report
+    <span class="badge-conviction MEDIUM">MEDIUM</span>
+  </div>
+  <div class="catalyst-dates">
+    <div class="date-box"><label>Date</label><span>June 5–6, 2026</span></div>
+    <div class="date-box"><label>Consensus</label><span>~150K jobs added; unemployment ~4.3-4.4%</span></div>
+    <div class="date-box"><label>Exposed Tickers</label><span class="tickers">SPY &nbsp;QQQ &nbsp;IWM &nbsp;TLT &nbsp;GLD &nbsp;XLF</span></div>
+  </div>
+  <div class="surprise-box">Sub-100K print (recession signal, Fed cut bets revive, contradicts Warsh hawk thesis) OR +200K+ (inflation concern, bond vigilante narrative confirmed)</div>
+  <div class="summary">The May jobs report arrives with above-average sensitivity given the Warsh Fed transition. April payrolls came in at 115K (vs 55K consensus), showing labor market resilience. Capital Economics forecasts 150K for May. The downside surprise scenario — tariff-related demand destruction or energy cost squeeze on small businesses — would be more market-moving than a beat, reviving aggressive Fed cut pricing and directly contradicting the hawkish Warsh narrative. Watch initial claims and JOLTS as leading indicators heading into this release.</div>
+</div>
+
+<!-- Catalyst 2 -->
+<div class="card high">
+  <div class="card-title">
+    <span class="card-num">02</span>
+    May CPI Release
+    <span class="badge-conviction HIGH">HIGH</span>
+  </div>
+  <div class="catalyst-dates">
+    <div class="date-box"><label>Date</label><span>June 10, 2026</span></div>
+    <div class="date-box"><label>Consensus</label><span>Modest deceleration from 3.8% YoY; core ~2.8%</span></div>
+    <div class="date-box"><label>Exposed Tickers</label><span class="tickers">TLT &nbsp;TIPS &nbsp;XLU &nbsp;VNQ &nbsp;AAPL &nbsp;AMZN</span></div>
+  </div>
+  <div class="surprise-box">Re-acceleration above 4% (energy/tariff pass-through) validates July rate hike scenario. Sharp drop to ~3% signals demand destruction → recession risk. Neither is cleanly bullish for equities.</div>
+  <div class="summary">May CPI is the most critical near-term macro catalyst and the key input into the June 16-17 FOMC dot plot. April's 3.8% YoY — highest since mid-2023 — was driven by Hormuz-related energy spikes and tariff pass-through. If May shows further acceleration, it validates Yardeni's July rate hike scenario and is a direct threat to the broadening rally narrative, as small caps are disproportionately affected by tightening. This print will largely determine the tone of the first Warsh press conference.</div>
+</div>
+
+<!-- Catalyst 3 -->
+<div class="card high">
+  <div class="card-title">
+    <span class="card-num">03</span>
+    Warsh's First FOMC Meeting — Language Risk Event
+    <span class="badge-conviction HIGH">HIGH</span>
+  </div>
+  <div class="catalyst-dates">
+    <div class="date-box"><label>Date</label><span>June 16–17, 2026 (decision June 17)</span></div>
+    <div class="date-box"><label>Consensus</label><span>Hold at 3.50-3.75%; 97% probability</span></div>
+    <div class="date-box"><label>Exposed Tickers</label><span class="tickers">XLU &nbsp;VNQ &nbsp;TLT &nbsp;IEF &nbsp;JPM &nbsp;BAC &nbsp;GS</span></div>
+  </div>
+  <div class="surprise-box">Hawkish language shift — removal of dovish forward guidance OR explicit mention of July hike possibility in the dot plot. Market positioned for extended hold with next cut bias — not priced for Warsh hawkishness.</div>
+  <div class="summary">The consensus view is a non-event hold. This is likely correct on rate action — but wrong to dismiss entirely. Warsh is known for skepticism of forward guidance. If the median dot shifts to suggest no cuts in 2026 (currently 1-2 cuts priced by year-end), or post-statement language removes the "next move is cut" implicit bias, rate-sensitive sectors will reprice immediately. Utilities (XLU) and REITs (VNQ) carry most downside. Ed Yardeni's explicit call for a July hike signal is outlier but non-dismissible given the 3.8% CPI backdrop.</div>
+</div>
+
+<!-- Catalyst 4 -->
+<div class="card high">
+  <div class="card-title">
+    <span class="card-num">04</span>
+    Section 122 Tariff Expiry / Section 301 Succession Decision
+    <span class="badge-conviction HIGH">HIGH</span>
+  </div>
+  <div class="catalyst-dates">
+    <div class="date-box"><label>Statutory Expiry</label><span>July 24, 2026</span></div>
+    <div class="date-box"><label>Policy Announcements</label><span>~Late June 2026</span></div>
+    <div class="date-box"><label>Exposed Tickers</label><span class="tickers">WMT &nbsp;TGT &nbsp;AMZN &nbsp;AAPL &nbsp;NKE vs. CAT &nbsp;DE &nbsp;NUE</span></div>
+  </div>
+  <div class="surprise-box">Administration announces Section 301 successor tariffs — permanent, elevated, differentiated by country. Import-heavy consumer stocks have rallied on expiry expectations and would reprice sharply negative on this news.</div>
+  <div class="summary">The Section 122 tariff expiry on July 24 is being widely read as bullish for importers. This ignores the active Section 301 investigation program designed to produce a permanent successor regime before the deadline. Section 301 tariffs are permanent, require no congressional renewal, and can be applied asymmetrically by country and product. The Court of International Trade's May 7 ruling against Section 122 (currently stayed) adds legal urgency for the administration to lock in a 301 framework. Any late-June announcement of 301 tariff schedules would be sharply negative for the consumer sector.</div>
+</div>
+
+<!-- Catalyst 5 -->
+<div class="card high">
+  <div class="card-title">
+    <span class="card-num">05</span>
+    Broadcom Q2 FY2026 Earnings — Reporting Tonight
+    <span class="badge-conviction HIGH">HIGH</span>
+    <span class="badge-hot">TONIGHT AH</span>
+  </div>
+  <div class="catalyst-dates">
+    <div class="date-box"><label>Date</label><span>June 3, 2026 (AH)</span></div>
+    <div class="date-box"><label>Consensus</label><span>$22.1B rev (+47% YoY); $10.7B AI rev (+140% YoY)</span></div>
+    <div class="date-box"><label>Exposed Tickers</label><span class="tickers">AVGO &nbsp;NVDA &nbsp;MRVL &nbsp;AMD &nbsp;ANET &nbsp;MSFT &nbsp;GOOGL</span></div>
+  </div>
+  <div class="surprise-box">$23B+ revenue, 3rd/4th hyperscaler ASIC customer confirmed (Apple?), FY guidance raised significantly → could re-rate entire custom-silicon complex (MRVL, ANET, AMD) before they individually report.</div>
+  <div class="summary">Broadcom's Q2 FY2026 report is tonight's most critical catalyst and arguably the most important semi print of Q2. Management guided $10.7B in AI revenue (+140% YoY). Analysts at Motley Fool argued this print "matters more than any Magnificent Seven stock this quarter." Key watch items: (1) New hyperscaler ASIC customer beyond Google and Meta; (2) Networking revenue proportion — ANET direct beneficiary; (3) FY2026 AI revenue guidance raise; (4) Custom silicon pricing power. Options imply ~7% move post-earnings.</div>
+</div>
+
+<!-- ═══ ACTION ITEMS ═══ -->
+<div class="action-section">
+  <h2>⚡ Action Items</h2>
+  <div class="action-col-grid">
+    <div class="action-col">
+      <h3>🎯 Top Tickers to Research Today</h3>
+      <div class="action-item"><span class="ticker-highlight">AVGO</span> — Reports tonight. Most important semi print of Q2. Watch guidance and new customer disclosures. Options implying ~7% move.</div>
+      <div class="action-item"><span class="ticker-highlight">ANET</span> — Direct read-through from AVGO's networking segment (40% of AI revenue). Multi-quarter order backlog visibility. Re-rates tonight.</div>
+      <div class="action-item"><span class="ticker-highlight">TXN</span> — Analog semi data center read-through is underpriced. ~90% YoY data center revenue growth not yet in the consensus multiple. Significant discount to pure-play AI semis.</div>
+    </div>
+    <div class="action-col">
+      <h3>📊 Position Adjustments</h3>
+      <div class="action-item">Consider trimming rate-sensitive longs (<span class="ticker-highlight">XLU</span>, <span class="ticker-highlight">VNQ</span>) ahead of June 16-17 Warsh FOMC — language risk is underpriced by 97% hold consensus.</div>
+      <div class="action-item">Avoid chasing <span class="ticker-highlight">CRDO</span> and high-multiple AI networking names after the "sell the beat" pattern this week. Favor names with multi-year order visibility.</div>
+      <div class="action-item">Consumer staples and import-heavy retailers (<span class="ticker-highlight">WMT</span>, <span class="ticker-highlight">TGT</span>) face double threat: Section 301 tariff surprise + slowing labor market. Watch for late-June Commerce Dept announcements.</div>
+    </div>
+    <div class="action-col">
+      <h3>📅 Key Dates This Week</h3>
+      <div class="date-item"><strong>June 3 (AH)</strong> — AVGO + CRWD earnings. Both pivotal for AI infrastructure and cybersecurity themes.</div>
+      <div class="date-item"><strong>June 5–6</strong> — May Nonfarm Payrolls. Key macro read for Warsh Fed positioning.</div>
+      <div class="date-item"><strong>June 10</strong> — May CPI. Go/no-go for July rate hike narrative. Most critical macro event.</div>
+      <div class="date-item"><strong>June 16–17</strong> — First Warsh FOMC meeting. Language event risk — watch the dot plot and press conference.</div>
+      <div class="date-item"><strong>~Late June</strong> — Monitor for Section 301 tariff schedule announcements from Commerce Dept.</div>
+    </div>
+  </div>
+</div>
+
+</div><!-- /container -->
+
+<footer>
+  Daily Theme Scanner — 2026-06-03 &nbsp;|&nbsp; Sources: CNBC, Yahoo Finance, Motley Fool, MarketBeat, 247WallSt, GlobeNewswire, SIA, Skadden, GoMarkets, FinancialContent, TheStreet, Benzinga, IMF, Stimson Center, Wikipedia &nbsp;|&nbsp; For informational purposes only. Not investment advice.
+</footer>
+
+</body>
+</html>
