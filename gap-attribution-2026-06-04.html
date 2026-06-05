@@ -1,0 +1,843 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🌃 Gap Attribution — June 4, 2026 | v7.5 HYBRID</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0e17; --bg2: #111827; --bg3: #1a2035;
+    --border: #2a3550; --text: #e2e8f0; --muted: #7b8fad;
+    --green: #22c55e; --green-dim: #0f2e1a;
+    --red: #ef4444; --red-dim: #2e0f0f;
+    --amber: #f59e0b; --amber-dim: #2e1d00;
+    --purple: #a855f7; --purple-dim: #1e0a35;
+    --cyan: #06b6d4; --cyan-dim: #032030;
+    --orange: #f97316; --orange-dim: #2e1200;
+    --blue: #3b82f6; --blue-dim: #0a1a35;
+    --yellow: #eab308; --yellow-dim: #2d2200;
+    --white: #f8fafc;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: 'JetBrains Mono','Consolas',monospace; font-size: 13px; line-height: 1.6; }
+
+  .tool-banner { padding: 10px 20px; font-size: 12px; font-weight: 700; display: flex; gap: 16px; flex-wrap: wrap; align-items: center; border-bottom: 2px solid var(--border); background: var(--bg2); }
+  .tool-ok { color: var(--green); } .tool-warn { color: var(--amber); } .tool-skip { color: var(--muted); }
+
+  .header { background: linear-gradient(135deg,#0a0e17 0%,#0d1a2e 50%,#0a0e17 100%); border-bottom: 2px solid var(--border); padding: 20px 24px 16px; }
+  .header h1 { font-size: 19px; font-weight: 700; color: var(--white); }
+  .header .meta { color: var(--muted); font-size: 11px; margin-top: 6px; }
+  .header .regime { margin-top: 6px; font-size: 12px; font-weight: 700; color: var(--amber); }
+  .snapshot { display: flex; gap: 20px; flex-wrap: wrap; margin-top: 12px; }
+  .snap-item { font-size: 12px; } .snap-item .lbl { color: var(--muted); } .snap-item .val { font-weight: 700; }
+
+  .container { max-width: 1400px; margin: 0 auto; padding: 20px 24px 60px; }
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px; }
+  .three-col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-bottom: 16px; }
+
+  .briefing { background: linear-gradient(135deg,#0d1a2e,#0a1a35); border: 1px solid var(--cyan); border-radius: 10px; padding: 18px 20px; margin-bottom: 20px; }
+  .briefing h3 { color: var(--cyan); font-size: 11px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; }
+  .briefing p { font-size: 13px; line-height: 1.85; }
+
+  .section { margin-bottom: 18px; border: 1px solid var(--border); border-radius: 10px; overflow: hidden; background: var(--bg2); }
+  .sh { padding: 10px 16px; display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 11px; text-transform: uppercase; letter-spacing: 0.8px; cursor: pointer; user-select: none; border-bottom: 1px solid var(--border); }
+  .sh::after { content: '▼'; margin-left: auto; font-size: 10px; transition: transform 0.2s; }
+  .sh.collapsed::after { transform: rotate(-90deg); }
+  .sh-green { background: rgba(34,197,94,0.1); color: var(--green); }
+  .sh-red { background: rgba(239,68,68,0.1); color: var(--red); }
+  .sh-amber { background: rgba(245,158,11,0.1); color: var(--amber); }
+  .sh-purple { background: rgba(168,85,247,0.1); color: var(--purple); }
+  .sh-cyan { background: rgba(6,182,212,0.1); color: var(--cyan); }
+  .sh-orange { background: rgba(249,115,22,0.1); color: var(--orange); }
+  .sh-blue { background: rgba(59,130,246,0.1); color: var(--blue); }
+  .sh-yellow { background: rgba(234,179,8,0.1); color: var(--yellow); }
+  .sh-muted { background: rgba(123,143,173,0.06); color: var(--muted); }
+  .sb { padding: 16px 18px; }
+  .sb.hidden { display: none; }
+
+  table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  th { color: var(--muted); font-weight: 600; text-align: left; padding: 6px 10px; border-bottom: 1px solid var(--border); font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px; white-space: nowrap; }
+  td { padding: 7px 10px; border-bottom: 1px solid rgba(42,53,80,0.5); vertical-align: top; }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: rgba(255,255,255,0.015); }
+
+  .trade-card { background: var(--bg3); border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px; margin-bottom: 12px; }
+  .trade-card.bull { border-left: 4px solid var(--green); }
+  .trade-card.med { border-left: 4px solid var(--amber); }
+  .trade-card.low { border-left: 4px solid var(--red); }
+  .trade-card h3 { font-size: 15px; font-weight: 700; color: var(--white); margin-bottom: 4px; }
+  .trade-card .sub { font-size: 11px; color: var(--muted); margin-bottom: 8px; }
+  .trade-card p { font-size: 12px; margin-bottom: 4px; }
+  .meta-row { display: flex; gap: 16px; flex-wrap: wrap; margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--border); font-size: 11px; }
+  .meta-row span { color: var(--muted); } .meta-row strong { color: var(--text); }
+
+  .tag { display: inline-block; padding: 1px 7px; border-radius: 4px; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; margin: 1px; }
+  .tg { background: var(--green-dim); color: var(--green); }
+  .tr { background: var(--red-dim); color: var(--red); }
+  .ta { background: var(--amber-dim); color: var(--amber); }
+  .tp { background: var(--purple-dim); color: var(--purple); }
+  .tb { background: var(--blue-dim); color: var(--blue); }
+  .tc { background: var(--cyan-dim); color: var(--cyan); }
+  .to { background: var(--orange-dim); color: var(--orange); }
+  .ty { background: var(--yellow-dim); color: var(--yellow); }
+
+  .bull { color: var(--green); font-weight: 700; }
+  .bear { color: var(--red); font-weight: 700; }
+  .neu { color: var(--amber); font-weight: 600; }
+  .mcr { color: var(--purple); font-weight: 600; }
+  .wir { color: var(--orange); font-weight: 600; }
+  .optf { color: var(--blue); font-weight: 600; }
+  .muted { color: var(--muted); }
+
+  a { color: var(--blue); text-decoration: none; font-size: 11px; }
+  a:hover { text-decoration: underline; }
+  .na { color: var(--muted); font-style: italic; }
+
+  .alert { background: rgba(245,158,11,0.08); border: 1px solid var(--amber); border-radius: 6px; padding: 8px 12px; margin-bottom: 10px; font-size: 11px; color: var(--amber); }
+  .alert-red { background: rgba(239,68,68,0.08); border-color: var(--red); color: var(--red); }
+  .alert-green { background: rgba(34,197,94,0.08); border-color: var(--green); color: var(--green); }
+
+  .macro-block { background: var(--bg2); border-left: 3px solid var(--purple); border-radius: 0 6px 6px 0; padding: 10px 14px; margin-bottom: 8px; }
+  .macro-block.red { border-left-color: var(--red); }
+  .macro-block.green { border-left-color: var(--green); }
+  .macro-block.amber { border-left-color: var(--amber); }
+  .macro-block.orange { border-left-color: var(--orange); }
+  .macro-block h4 { font-size: 12px; margin-bottom: 4px; color: var(--purple); }
+  .macro-block.red h4 { color: var(--red); }
+  .macro-block.green h4 { color: var(--green); }
+  .macro-block.amber h4 { color: var(--amber); }
+  .macro-block.orange h4 { color: var(--orange); }
+
+  .sanity-box { background: rgba(34,197,94,0.07); border: 1px solid rgba(34,197,94,0.3); border-radius: 6px; padding: 8px 14px; margin-bottom: 12px; font-size: 12px; }
+  .sanity-box.warn { background: rgba(239,68,68,0.07); border-color: rgba(239,68,68,0.3); }
+
+  .audit-row { padding: 8px 0; border-bottom: 1px solid var(--border); display: flex; gap: 10px; font-size: 12px; }
+  .audit-row:last-child { border-bottom: none; }
+  .audit-row > div:first-child { flex: 3; }
+  .audit-row > div:nth-child(2) { flex: 3; color: var(--muted); font-size: 11px; }
+  .audit-row > div:last-child { flex: 2; color: var(--amber); font-size: 11px; }
+
+  .night-card { background: var(--bg3); border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px; margin-bottom: 12px; position: relative; }
+  .night-card.theme-semi { border-top: 3px solid var(--red); }
+  .night-card.theme-geo { border-top: 3px solid var(--purple); }
+  .night-card.theme-consumer { border-top: 3px solid var(--amber); }
+  .night-card.theme-cyber { border-top: 3px solid var(--cyan); }
+  .night-card.theme-energy { border-top: 3px solid var(--orange); }
+  .night-card.theme-gold { border-top: 3px solid var(--yellow); }
+  .night-card h4 { font-size: 14px; font-weight: 700; color: var(--white); margin-bottom: 4px; }
+  .night-card .nc-sub { font-size: 11px; color: var(--muted); margin-bottom: 8px; }
+
+  .conv-high { background: rgba(34,197,94,0.12); border: 1px solid var(--green); color: var(--green); padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 700; }
+  .conv-med { background: rgba(245,158,11,0.12); border: 1px solid var(--amber); color: var(--amber); padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 700; }
+  .conv-low { background: rgba(239,68,68,0.12); border: 1px solid var(--red); color: var(--red); padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 700; }
+
+  .wire-block { background: rgba(249,115,22,0.06); border: 1px solid rgba(249,115,22,0.3); border-radius: 6px; padding: 10px 14px; margin-bottom: 8px; }
+  .wire-block .wt { color: var(--orange); font-weight: 700; font-size: 12px; margin-bottom: 4px; }
+
+  .opt-block { background: rgba(59,130,246,0.06); border: 1px solid rgba(59,130,246,0.3); border-radius: 6px; padding: 10px 14px; margin-bottom: 8px; }
+  .opt-block .ot { color: var(--blue); font-weight: 700; font-size: 12px; margin-bottom: 4px; }
+
+  @media (max-width: 900px) { .two-col,.three-col { grid-template-columns: 1fr; } .container { padding: 12px 14px 40px; } }
+</style>
+</head>
+<body>
+
+<!-- TOOL HEALTH BANNER -->
+<div class="tool-banner">
+  <span>🛠 TOOL HEALTH:</span>
+  <span class="tool-ok">✅ TV MCP LIVE (CDP connected — AVGO close $418.91, SMH close $627.53 confirmed via data_get_ohlcv)</span>
+  <span class="tool-warn">⚠️ Chrome MCP — Barchart/Finviz/UW blocked by safety restrictions → web_search fallback throughout</span>
+  <span class="tool-ok">✅ WebSearch ACTIVE</span>
+  <span class="tool-skip">ℹ️ TV MCP quote_get returns chart-symbol data regardless of parameter — chart_set_symbol + data_get_ohlcv workaround used</span>
+</div>
+
+<!-- HEADER -->
+<div class="header">
+  <h1>🌃 Gap Attribution &nbsp;<span style="color:var(--cyan)">June 4, 2026</span> &nbsp;<span style="font-size:12px;color:var(--muted);font-weight:400">v7.5 HYBRID · ETF + Individual</span></h1>
+  <div class="meta">Generated: After-Hours Scan ~8:00–8:30 PM ET &nbsp;|&nbsp; Ref: <a href="premarket-catalyst-2026-06-04.html" target="_blank">premarket-catalyst-2026-06-04.html</a> &nbsp;|&nbsp; <a href="gap-attribution-2026-06-04-g.html" target="_blank">Grok confirmation (-g)</a></div>
+  <div class="regime">🌙 REGIME: AI EARNINGS GUIDE SENSITIVITY (CYCLE'S FIRST MISS) | IRAN HORMUZ ESCALATION — OIL REVERSAL | SELL-THE-NEWS BEAT CYCLE | GOLD + DEFENSE SAFE HAVEN</div>
+  <div class="snapshot">
+    <div class="snap-item"><span class="lbl">SPY </span><span class="val bear">~$757 (-0.30%)</span><span class="muted"> est, prev $759.57</span></div>
+    <div class="snap-item"><span class="lbl">QQQ </span><span class="val bear">~$739 (-0.66%)</span><span class="muted"> est, prev $744.21</span></div>
+    <div class="snap-item"><span class="lbl">SMH </span><span class="val bear">$627.53 (-1.63%)</span><span class="muted"> ✅ TV MCP</span></div>
+    <div class="snap-item"><span class="lbl">AVGO </span><span class="val bear">$418.91 (-12.59%)</span><span class="muted"> ✅ TV MCP · vol 80.97M</span></div>
+    <div class="snap-item"><span class="lbl">CRWD </span><span class="val bear">$719.09 (-3.81%)</span><span class="muted"> web_search</span></div>
+    <div class="snap-item"><span class="lbl">CIEN </span><span class="val bear">$498.96 (-19.6%)</span><span class="muted"> web_search</span></div>
+    <div class="snap-item"><span class="lbl">PLTR </span><span class="val bull">$143.50 (+0.9%)</span><span class="muted"> RS leader</span></div>
+    <div class="snap-item"><span class="lbl">WTI </span><span class="val bull">$95.17 (+2.57)</span><span class="muted"> Iran deal collapse</span></div>
+    <div class="snap-item"><span class="lbl">Gold </span><span class="val bull">+1.4%</span><span class="muted"> safe haven</span></div>
+  </div>
+</div>
+
+<div class="container">
+
+<!-- SANITY BOUNDS -->
+<div class="sanity-box">
+  ✅ <strong>SPY/QQQ SANITY BOUNDS PASS</strong> — SPY est. ~$757.28 (prev $759.57, -0.30%) | QQQ est. ~$739.30 (prev $744.21, -0.66%) — both within ±5% bounds. Sources: web_search session summary. TV MCP confirmed SMH close $627.53 (prev $637.90, -1.63%) — within bounds.
+</div>
+
+<div class="alert">
+  ⚠️ <strong>Chrome MCP blocked throughout.</strong> Barchart/Finviz/UW pages returned safety restriction errors. All price/volume data sourced from TV MCP (where chart-switch possible) or web_search (labeled per entry). A number flagged as "unavailable — not pulled" is correct; a confident fabricated number is a failure.
+</div>
+
+<!-- OVERNIGHT BRIEFING -->
+<div class="briefing">
+  <h3>🌃 Overnight Briefing — 30-Second Read</h3>
+  <p>
+    Tonight's dominant story is <strong style="color:var(--red)">AVGO closing at $418.91 (-12.59%)</strong> — confirmed via TV MCP — the <strong>first AI chip guide miss of the cycle</strong>. Broadcom beat Q2 EPS ($2.44 vs $2.32) and revenue ($22.19B +48% YoY) but Q3 AI revenue guide came in at <strong style="color:var(--red)">$16B vs $17.2B street estimate</strong>, shattering the "unstoppable AI demand" narrative. The key recovery story: <strong style="color:var(--amber)">SMH closed $627.53 (-1.63%)</strong> — well off the -3.6% premarket gap — dip buyers stepped in hard off the $604 low. <strong style="color:var(--amber)">CRWD recovered</strong> from -9.6% premarket to close $719.09 (-3.81%), with the 4-for-1 stock split (July 2 dividend) providing a retail catalyst floor. The surprise casualty: <strong style="color:var(--red)">CIEN -19.6% to $498.96</strong> despite a massive earnings beat (rev +40%, EPS $1.64 vs $1.45) — investors wanted a "more material beat and raise." Macro pivot: <strong style="color:var(--orange)">WTI bounced to $95.17</strong> from a $92.60 premarket low as Iran stopped nuclear negotiations and threatened full Hormuz closure — the morning's "Iran ceasefire" oil bear trade reversed. <strong style="color:var(--green)">PLTR held RS</strong> at $143.50. Tomorrow's key setups: GLD/XLE on Iran escalation, CRWD bounce on split support, FIVE gap-fill ($195 vs analyst PT $242).
+  </p>
+</div>
+
+<!-- TOP PICKS SIDE-BY-SIDE -->
+<div class="two-col">
+
+  <!-- TOP 5 ETF GAP-UPS -->
+  <div class="section">
+    <div class="sh sh-green" onclick="toggle(this)">📡 TOP 5 ETF GAP-UP CANDIDATES — TOMORROW</div>
+    <div class="sb">
+
+      <div class="trade-card med">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
+          <span style="font-size:22px;font-weight:900;color:var(--muted)">1</span>
+          <div>
+            <h3>GLD &nbsp;<span class="conv-med">🟡 MEDIUM</span></h3>
+            <div class="sub">SPDR Gold Trust — safe haven multi-driver</div>
+          </div>
+        </div>
+        <p>Catalyst: Iran escalation (deal broke down, Hormuz closure threat) + AI uncertainty (first guide miss = macro hedging demand) + two Fed members voting for rate hike (inflation hedge). Gold +1.4% premarket — held bid through day.</p>
+        <p>AUM $60B+ ✅ HIGH LIQUIDITY | Stage 2 uptrend | Source: <a href="https://www.cnbc.com/2026/06/01/iran-us-negotiations-strait-of-hormuz.html" target="_blank">CNBC Iran report</a></p>
+        <div class="meta-row">
+          <span>Entry:</span><strong>Open + vol / EOD hold above June 4 high</strong>
+          <span>Stop:</span><strong>Break below June 4 open</strong>
+          <span>Target:</span><strong class="bull">+3–5%, 3–5d hold</strong>
+        </div>
+        <div style="margin-top:8px"><span class="tag ty">SAFE HAVEN</span><span class="tag tp">GEOPOLITICAL</span><span class="tag ta">IRAN</span></div>
+      </div>
+
+      <div class="trade-card med">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
+          <span style="font-size:22px;font-weight:900;color:var(--muted)">2</span>
+          <div>
+            <h3>XLE &nbsp;<span class="conv-med">🟡 MEDIUM</span></h3>
+            <div class="sub">Energy Select SPDR — oil bounce / Hormuz risk</div>
+          </div>
+        </div>
+        <p>Catalyst: WTI bounced from $92.60 premarket to $95.17 evening as Iran stopped US negotiations and threatened full Hormuz closure. Morning's energy bear trade on "ceasefire hopes" is REVERSING. XOM/CVX benefit directly.</p>
+        <p>Source: <a href="https://en.wikipedia.org/wiki/2026_Strait_of_Hormuz_crisis" target="_blank">Hormuz Crisis Wikipedia</a> | AUM >$20B ✅</p>
+        <div class="meta-row">
+          <span>Entry:</span><strong>WTI hold above $94 + open strength</strong>
+          <span>Stop:</span><strong>WTI breaks back below $92</strong>
+          <span>Target:</span><strong class="bull">+4–6% on Hormuz escalation</strong>
+        </div>
+        <div style="margin-top:8px"><span class="tag to">ENERGY</span><span class="tag tp">IRAN RISK</span></div>
+      </div>
+
+      <div class="trade-card med">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
+          <span style="font-size:22px;font-weight:900;color:var(--muted)">3</span>
+          <div>
+            <h3>ITA &nbsp;<span class="conv-med">🟡 MEDIUM</span></h3>
+            <div class="sub">iShares US Aerospace & Defense — Hormuz blockade continuation</div>
+          </div>
+        </div>
+        <p>Catalyst: Iran Hormuz crisis ongoing. Trump declared naval blockade April 12. House war powers resolution 215-208 creating uncertainty but NOT stopping blockade. Defense spending secular theme intact — Iran conflict 4+ months old. RTX, LMT, GD constituents benefit.</p>
+        <p>AUM $5B+ ✅ | <span class="na">ITA price — unavailable not pulled</span> | Theme confirmed via geopolitical sources</p>
+        <div class="meta-row">
+          <span>Entry:</span><strong>Open continuation / above 20D SMA</strong>
+          <span>Stop:</span><strong>Iran peace deal confirmed</strong>
+          <span>Target:</span><strong class="bull">+4–6%</strong>
+        </div>
+        <div style="margin-top:8px"><span class="tag tp">DEFENSE</span><span class="tag to">IRAN BLOCKADE</span></div>
+      </div>
+
+      <div class="trade-card med">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
+          <span style="font-size:22px;font-weight:900;color:var(--muted)">4</span>
+          <div>
+            <h3>CIBR &nbsp;<span class="conv-med">🟡 MEDIUM</span> — CONDITIONAL</h3>
+            <div class="sub">First Trust Nasdaq Cybersecurity — CRWD stabilization play</div>
+          </div>
+        </div>
+        <p>Catalyst: CRWD recovered to $719.09 (-3.81%) from -9.6% premarket. Q1 beat + record FCF $468M + 4-for-1 split July 2 = retail accumulation signal. Billings decel is one quarter. AI security demand structurally intact. PANW NGS ARR +60% theme confirmed.</p>
+        <p>Source: <a href="https://ir.crowdstrike.com/news-releases/news-release-details/crowdstrike-reports-first-quarter-fiscal-year-2027-financial" target="_blank">CRWD IR 8-K</a> | AUM $6B+ ✅</p>
+        <div class="meta-row">
+          <span>Entry:</span><strong>CRWD reclaim $730+ with vol</strong>
+          <span>Stop:</span><strong>CRWD breaks $700</strong>
+          <span>Target:</span><strong class="bull">CRWD $747 reclaim, CIBR +4%</strong>
+        </div>
+        <div style="margin-top:8px"><span class="tag tg">CYBERSECURITY</span><span class="tag tc">AI SECURITY</span><span class="tag ta">SPLIT CATALYST</span></div>
+      </div>
+
+      <div class="trade-card low">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
+          <span style="font-size:22px;font-weight:900;color:var(--muted)">5</span>
+          <div>
+            <h3>SMH &nbsp;<span class="conv-low">🔴 LOW</span> — WATCH ONLY</h3>
+            <div class="sub">VanEck Semiconductor — recovery test ($627.53 close)</div>
+          </div>
+        </div>
+        <p>SMH closed $627.53 (-1.63%) ✅ TV MCP confirmed — recovered 2/3 of premarket -3.6% gap. Day range $604.61–$634.78. Dip buyers active but AI guide miss from AVGO is a near-term structural ceiling. Volume 10.45M (1.15x 20D avg = institutional but not euphoric).</p>
+        <p>AVGO close $418.91 confirmed ✅ TV MCP. $403 low held = potential base.</p>
+        <div class="meta-row">
+          <span>Entry:</span><strong>AVGO reclaim $426 high + tape positive</strong>
+          <span>Stop:</span><strong>AVGO breaks $403 low</strong>
+          <span>Target:</span><strong class="bull">SMH $640 gap fill only</strong>
+        </div>
+        <div style="margin-top:8px"><span class="tag tr">SEMI</span><span class="tag ta">WAIT FOR SIGNAL</span></div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- TOP 5 INDIVIDUAL STOCKS -->
+  <div class="section">
+    <div class="sh sh-green" onclick="toggle(this)">📈 TOP 5 INDIVIDUAL STOCK GAP-UP CANDIDATES</div>
+    <div class="sb">
+
+      <div class="trade-card med">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
+          <span style="font-size:22px;font-weight:900;color:var(--muted)">1</span>
+          <div>
+            <h3>PLTR &nbsp;<span class="conv-med">🟡 MEDIUM</span></h3>
+            <div class="sub">Palantir — AI analytics RS leader, defense adjacency</div>
+          </div>
+        </div>
+        <p>Closed $143.50 (range $140.01–$152.10), up from $142.20 prev close (web_search). Lone RS stock in watchlist — held positive on a broadly negative tape. AI software/analytics not chip-dependent. Iran war = gov AI demand tailwind (AIP contracts). Q1 revenue +85% YoY.</p>
+        <p>Proof: Stage 2 uptrend, above 20/50D. Firepower: $5B+ daily dollar vol ✅</p>
+        <div class="meta-row">
+          <span>Entry:</span><strong>Reclaim $145 premarket level + vol</strong>
+          <span>Stop:</span><strong>Below $140 (day low)</strong>
+          <span>Target:</span><strong class="bull">$152–$158 (3–5d)</strong>
+        </div>
+        <div style="margin-top:8px"><span class="tag tg">AI APPLIED</span><span class="tag tp">DEFENSE ADJACENT</span><span class="tag ta">RS LEADER</span></div>
+      </div>
+
+      <div class="trade-card med">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
+          <span style="font-size:22px;font-weight:900;color:var(--muted)">2</span>
+          <div>
+            <h3>CRWD &nbsp;<span class="conv-med">🟡 MEDIUM</span> — CONDITIONAL</h3>
+            <div class="sub">CrowdStrike — 4-for-1 split July 2, beat recovery</div>
+          </div>
+        </div>
+        <p>Closed $719.09 (-3.81%) from $747.61 — significantly recovered from -9.6% premarket. Q1 FY27: EPS $1.10 (+$0.03 beat), rev $1.39B (+26%), record FCF $468M. Billings $1.35B (+18%) miss is one quarter. 4-for-1 split July 2 = retail accumulation. Mizuho Outperform $700 note.</p>
+        <p>Source: <a href="https://ir.crowdstrike.com/news-releases/news-release-details/crowdstrike-reports-first-quarter-fiscal-year-2027-financial" target="_blank">CRWD IR</a></p>
+        <div class="meta-row">
+          <span>Entry:</span><strong>Reclaim $730 + vol</strong>
+          <span>Stop:</span><strong>Below $700</strong>
+          <span>Target:</span><strong class="bull">$747 prev close reclaim</strong>
+        </div>
+        <div style="margin-top:8px"><span class="tag tg">CYBERSECURITY</span><span class="tag ta">STOCK SPLIT</span></div>
+      </div>
+
+      <div class="trade-card med">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
+          <span style="font-size:22px;font-weight:900;color:var(--muted)">3</span>
+          <div>
+            <h3>FIVE &nbsp;<span class="conv-med">🟡 MEDIUM</span> — OVERSOLD</h3>
+            <div class="sub">Five Below — massive beat, sell-the-news overdone</div>
+          </div>
+        </div>
+        <p>Closed $195.20 (-12.42%). Q1 FY27: EPS $2.22 vs $1.69 est (+31.4%), rev $1.3B vs $1.2B (+8%), comp sales +23% (transactions +19%, avg ticket +4%). Wall Street consensus Buy, avg PT $242. At $195, stock is 24% below analyst targets. Sell-the-news gap potentially overdone.</p>
+        <p>Source: <a href="https://www.fool.com/earnings/call-transcripts/2026/06/04/five-below-five-q1-2026-earnings-transcript/" target="_blank">Motley Fool Transcript</a> | Market cap ~$10B ✅</p>
+        <div class="meta-row">
+          <span>Entry:</span><strong>$195 hold + analyst upgrade catalyst pre-open</strong>
+          <span>Stop:</span><strong>Below $189</strong>
+          <span>Target:</span><strong class="bull">$220–$242 analyst PT (3–5d)</strong>
+        </div>
+        <div style="margin-top:8px"><span class="tag ta">CONSUMER BEAT</span><span class="tag tg">OVERSOLD DIP</span></div>
+      </div>
+
+      <div class="trade-card med">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
+          <span style="font-size:22px;font-weight:900;color:var(--muted)">4</span>
+          <div>
+            <h3>XOM / CVX &nbsp;<span class="conv-med">🟡 MEDIUM</span></h3>
+            <div class="sub">Energy majors — WTI $95+ Iran Hormuz escalation</div>
+          </div>
+        </div>
+        <p>WTI bounced from $92.60 (morning low) to $95.17 (evening) as Iran stopped negotiations. Morning's "oil peace-deal" bear trade fully reversed. Hormuz blockade risk premium returning. XOM/CVX are primary beneficiaries. Session close: unavailable — not pulled (web_search confirms positive close direction).</p>
+        <p>Source: <a href="https://en.wikipedia.org/wiki/2026_Strait_of_Hormuz_crisis" target="_blank">Hormuz Crisis</a>, <a href="https://www.cnbc.com/2026/06/01/iran-us-negotiations-strait-of-hormuz.html" target="_blank">CNBC Iran</a></p>
+        <div class="meta-row">
+          <span>Entry:</span><strong>Open + WTI confirmation above $94</strong>
+          <span>Stop:</span><strong>WTI breaks $92 (Iran deal)</strong>
+          <span>Target:</span><strong class="bull">+4–6%</strong>
+        </div>
+        <div style="margin-top:8px"><span class="tag to">ENERGY</span><span class="tag tp">IRAN RISK</span></div>
+      </div>
+
+      <div class="trade-card low">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
+          <span style="font-size:22px;font-weight:900;color:var(--muted)">5</span>
+          <div>
+            <h3>AVGO &nbsp;<span class="conv-low">🔴 LOW</span> — DIP BUYER WATCH</h3>
+            <div class="sub">Broadcom — $403 low held, Q3 guide $29.4B (+84% YoY)</div>
+          </div>
+        </div>
+        <p>Close $418.91 (-12.59%) ✅ TV MCP confirmed. Day range $403.01–$426.48. Volume 80.97M (1.67x avg) — institutional dip buying visible. Q3 guide $29.4B (+84% YoY) still represents massive AI infrastructure demand; the miss vs street's $17.2B AI-specific sub-guide is the near-term narrative overhang. Structural bull case intact.</p>
+        <p>Proof: Exited multi-week base, now gap fill risk. Firepower: 80.97M shares = adequate. Source: <a href="https://www.chartmill.com/news/AVGO/Chartmill-49410-Broadcom-NASDAQAVGO-Stock-Drops-on-Q2-Earnings-After-Disappointing-Revenue-Miss-and-Outlook" target="_blank">ChartMill</a></p>
+        <div class="meta-row">
+          <span>Entry:</span><strong>AVGO reclaim $426 high + vol only</strong>
+          <span>Stop:</span><strong>Break $403 low</strong>
+          <span>Target:</span><strong class="bull">$445–$460 (3–5d)</strong>
+        </div>
+        <div style="margin-top:8px"><span class="tag tr">AI CHIP</span><span class="tag ta">DIP WATCH</span></div>
+      </div>
+
+    </div>
+  </div>
+
+</div><!-- end two-col -->
+
+<!-- BARCHART GAPPERS TABLE -->
+<div class="section">
+  <div class="sh sh-yellow" onclick="toggle(this)">📊 BARCHART POST-MARKET GAPPERS (⚠️ Chrome blocked — web_search fallback) — June 3 AMC</div>
+  <div class="sb">
+    <div class="alert">⚠️ Chrome MCP blocked. Barchart data via web_search synthesis. All values labeled with source. Session closes confirmed where TV MCP available.</div>
+    <table>
+      <thead><tr>
+        <th>Ticker</th><th>AH Move (J3)</th><th>June 4 Close</th><th>vs Prev Close</th><th>Volume</th><th>Market Cap</th><th>Catalyst</th><th>Source</th><th>Conv.</th>
+      </tr></thead>
+      <tbody>
+        <tr>
+          <td><strong>AVGO</strong></td>
+          <td class="bear">~-15% AH</td>
+          <td class="bear"><strong>$418.91 ✅ TV MCP</strong></td>
+          <td class="bear">-12.59%</td>
+          <td class="bull">80.97M (1.67x avg)</td>
+          <td>>$600B</td>
+          <td>Q3 AI guide $16B vs $17.2B est. Q2 rev $22.19B (+48%) beat, EPS $2.44 beat. First cycle AI guide miss.</td>
+          <td><a href="https://www.chartmill.com/news/AVGO/Chartmill-49410-Broadcom-NASDAQAVGO-Stock-Drops-on-Q2-Earnings-After-Disappointing-Revenue-Miss-and-Outlook" target="_blank">ChartMill</a></td>
+          <td><span class="conv-med">🟡 MED</span></td>
+        </tr>
+        <tr>
+          <td><strong>CIEN</strong></td>
+          <td class="bear">~-8% AH (pre-mkt est)</td>
+          <td class="bear"><strong>$498.96 (web_search)</strong></td>
+          <td class="bear">-19.6%</td>
+          <td>Elevated</td>
+          <td>~$25B</td>
+          <td>Q2 FY26 beat (rev +40%, EPS $1.64 vs $1.45) but sell-the-news. Investors wanted "more material beat and raise."</td>
+          <td><a href="https://investor.ciena.com/news/news-details/2026/Ciena-Reports-Fiscal-Second-Quarter-2026-Financial-Results/default.aspx" target="_blank">Ciena IR</a></td>
+          <td><span class="conv-low">🔴 LOW</span></td>
+        </tr>
+        <tr>
+          <td><strong>CRWD</strong></td>
+          <td class="bear">~-10% AH</td>
+          <td class="bear"><strong>$719.09 (web_search)</strong></td>
+          <td class="bear">-3.81%</td>
+          <td>Elevated</td>
+          <td>~$170B</td>
+          <td>Q1 FY27 beat (EPS $1.10, rev $1.39B +26%, FCF $468M). Billings $1.35B (+18%) miss. 4-for-1 split July 2.</td>
+          <td><a href="https://ir.crowdstrike.com/news-releases/news-release-details/crowdstrike-reports-first-quarter-fiscal-year-2027-financial" target="_blank">CRWD IR</a></td>
+          <td><span class="conv-med">🟡 MED</span></td>
+        </tr>
+        <tr>
+          <td><strong>FIVE</strong></td>
+          <td class="bear">~-11% AH</td>
+          <td class="bear"><strong>$195.20 (web_search)</strong></td>
+          <td class="bear">-12.42%</td>
+          <td>Elevated</td>
+          <td>~$10B</td>
+          <td>Q1 EPS $2.22 vs $1.69 (+31.4%), rev $1.3B vs $1.2B, comp +23%. Sell-the-news despite big beat.</td>
+          <td><a href="https://www.fool.com/investing/2026/06/04/why-five-below-stock-fell-today/" target="_blank">Motley Fool</a></td>
+          <td><span class="conv-med">🟡 MED</span></td>
+        </tr>
+        <tr>
+          <td><strong>WOOF</strong></td>
+          <td class="bear">-11%+ AH</td>
+          <td class="bear">~continued lower (web_search)</td>
+          <td class="bear">-11%+</td>
+          <td>>100K ✅</td>
+          <td>~$1.5B ✅</td>
+          <td>Q1 FY27 rev $1.497B vs $1.518B est. Comp +0.7%. Weak margins. Reaffirmed FY guidance.</td>
+          <td><a href="https://www.sec.gov/Archives/edgar/data/0001826470/000182647026000045/woof-ex99_1.htm" target="_blank">SEC 8-K</a></td>
+          <td><span class="conv-low">🔴 LOW</span></td>
+        </tr>
+        <tr>
+          <td><strong>PVH</strong></td>
+          <td class="bear">-22% AH</td>
+          <td class="bear">~-22% (web_search)</td>
+          <td class="bear">-22%</td>
+          <td>>100K ✅</td>
+          <td>~$5B ✅</td>
+          <td>EMEA pressure from ME conflict. Revenue miss on European weakness. Iran war impact on luxury/fashion.</td>
+          <td>web_search (premarket scan confirmed)</td>
+          <td><span class="conv-low">🔴 LOW</span></td>
+        </tr>
+        <tr>
+          <td><strong>NTSK</strong></td>
+          <td class="bear">-22% AH</td>
+          <td><span class="na">not pulled</span></td>
+          <td class="bear">est. -22%</td>
+          <td><span class="na">not pulled</span></td>
+          <td><$5B est. — ⚠️ verify filter</td>
+          <td>Q1 EPS -$0.06, rev $201.6M — beat; tepid outlook. Cybersecurity sector pressure (CRWD contagion).</td>
+          <td><a href="https://ng.investing.com/news/stock-market-news/afterhours-stock-movers-avgo-crwd-five-ai-tlys-ntsk-432SI-2542966" target="_blank">Investing.com</a></td>
+          <td><span class="conv-low">🔴 LOW</span></td>
+        </tr>
+        <tr>
+          <td><strong>AI (C3.ai)</strong></td>
+          <td class="bear">-0.81% AH</td>
+          <td class="bear">$11.09 (web_search)</td>
+          <td class="bear">-0.81%</td>
+          <td><span class="na">not pulled</span></td>
+          <td>~$1.3B ✅ (barely)</td>
+          <td>Q4 EPS -$0.33 vs -$0.38 est (beat). Rev $51.6M vs $50.1M. Rev -50% YoY structural decline. Tom Siebel return.</td>
+          <td><a href="https://www.dailypolitical.com/2026/06/04/c3-ai-nyseai-issues-earnings-results-beats-estimates-by-0-05-eps.html" target="_blank">Daily Political</a></td>
+          <td><span class="conv-low">🔴 LOW</span></td>
+        </tr>
+        <tr>
+          <td><strong>TLYS</strong></td>
+          <td class="bull">+25% AH</td>
+          <td class="bull">~+25% (web_search)</td>
+          <td class="bull">+25%</td>
+          <td><span class="na">not pulled</span></td>
+          <td>❌ <$1B (filtered out)</td>
+          <td>Q1 beat. EPS -$0.26 narrower than est. Rev $124.7M beat. Q2 guide: EPS $0.13–$0.20, rev $154–$160M.</td>
+          <td><a href="https://ng.investing.com/news/stock-market-news/afterhours-stock-movers-avgo-crwd-five-ai-tlys-ntsk-432SI-2542966" target="_blank">Investing.com</a></td>
+          <td>N/A — filtered</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ETF AH SWEEP -->
+<div class="section">
+  <div class="sh sh-cyan" onclick="toggle(this)">🔄 ETF AFTER-HOURS SWEEP (TV MCP + web_search)</div>
+  <div class="sb">
+    <div class="alert">TV MCP quote_get returns chart-symbol data regardless of parameter. Confirmed data via chart_set_symbol + data_get_ohlcv for SMH and AVGO only. All other ETFs: web_search or unavailable.</div>
+    <table>
+      <thead><tr><th>ETF</th><th>Theme</th><th>AH / Session</th><th>Source</th><th>Signal</th><th>Top Drivers</th></tr></thead>
+      <tbody>
+        <tr><td><strong>SMH</strong></td><td>Semiconductors</td><td class="bear"><strong>$627.53 (-1.63%) ✅ TV MCP</strong></td><td>TV MCP data_get_ohlcv ~8PM ET</td><td>⚠️ Recovery — day range $604.61–$634.78</td><td>AVGO -12.59%, NVDA dragged, TSM</td></tr>
+        <tr><td><strong>GLD</strong></td><td>Gold / Safe Haven</td><td class="bull">+1.4% (web_search, pre-mkt ref)</td><td>web_search</td><td>🟡 Multi-driver bid sustained</td><td>Iran escalation, macro hedging, Fed hawkish shift</td></tr>
+        <tr><td><strong>ITA</strong></td><td>Defense</td><td class="na">unavailable — not pulled</td><td>—</td><td>🟡 Est. positive (Hormuz theme)</td><td>RTX, LMT, GD, NOC, BA</td></tr>
+        <tr><td><strong>XLE</strong></td><td>Energy</td><td class="na">unavailable — not pulled</td><td>—</td><td>🟡 Oil $95.17 = positive</td><td>XOM, CVX, SLB, EOG</td></tr>
+        <tr><td><strong>CIBR</strong></td><td>Cybersecurity</td><td class="na">unavailable — not pulled</td><td>—</td><td>🔴 CRWD drag (conditional recovery)</td><td>CRWD, PANW, ZS, FTNT</td></tr>
+        <tr><td><strong>ARKK</strong></td><td>Innovation / Growth</td><td class="na">unavailable — not pulled</td><td>—</td><td>🔴 Rate hike risk + growth selloff</td><td>TSLA, CRSP, COIN</td></tr>
+        <tr><td><strong>XRT</strong></td><td>Retail</td><td class="na">unavailable — not pulled</td><td>—</td><td>⚠️ FIVE/WOOF mixed</td><td>FIVE, WOOF, TGT, WMT</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- TIER 1 / TIER 2 COMBINED -->
+<div class="two-col">
+
+  <div class="section">
+    <div class="sh sh-amber" onclick="toggle(this)">⭐ TIER 1 — MAG 7 / SEMIS / MACRO PROXIES</div>
+    <div class="sb">
+
+      <div style="color:var(--amber);font-size:11px;font-weight:700;text-transform:uppercase;margin-bottom:8px">Mag 7 / Hyperscalers</div>
+      <table style="margin-bottom:16px">
+        <thead><tr><th>Ticker</th><th>June 4 Data</th><th>Source</th><th>Note</th></tr></thead>
+        <tbody>
+          <tr><td><strong>AVGO</strong></td><td class="bear"><strong>$418.91</strong> (range $403–$426)</td><td class="bull">✅ TV MCP confirmed</td><td>-12.59%; 80.97M vol; $403 low held</td></tr>
+          <tr><td><strong>CRWD</strong></td><td class="bear">$719.09</td><td>web_search</td><td>-3.81%; recovered from -9.6% pre-mkt; split July 2</td></tr>
+          <tr><td><strong>NVDA</strong></td><td class="bear">$210.97–$216.80 range</td><td>web_search</td><td>Dragged by semi selloff; closed est. ~$214</td></tr>
+          <tr><td><strong>MSFT</strong></td><td>$429.87 (range $424–$443)</td><td>web_search</td><td>Holding up relatively well</td></tr>
+          <tr><td><strong>GOOGL/AMZN/META/AAPL</strong></td><td class="na">unavailable — not pulled</td><td>—</td><td>Consumer stocks reportedly rose; session summary</td></tr>
+          <tr><td><strong>TSLA</strong></td><td class="na">unavailable — not pulled</td><td>—</td><td>—</td></tr>
+        </tbody>
+      </table>
+
+      <div style="color:var(--amber);font-size:11px;font-weight:700;text-transform:uppercase;margin-bottom:8px">Semi Bellwethers</div>
+      <table style="margin-bottom:16px">
+        <thead><tr><th>Ticker</th><th>June 4</th><th>Note</th></tr></thead>
+        <tbody>
+          <tr><td>TSM</td><td class="na">unavailable — not pulled</td><td>Est. lower on AVGO guide contagion</td></tr>
+          <tr><td>ASML</td><td class="na">unavailable — not pulled</td><td>European hours; AI guide miss overhang</td></tr>
+          <tr><td>AMD</td><td class="na">unavailable — not pulled</td><td>Dragged by AVGO premarket, est. recovered</td></tr>
+          <tr><td>MU</td><td class="na">unavailable — not pulled</td><td>—</td></tr>
+        </tbody>
+      </table>
+
+      <div style="color:var(--amber);font-size:11px;font-weight:700;text-transform:uppercase;margin-bottom:8px">&gt;10% Moves (Magnitude Signal)</div>
+      <table>
+        <thead><tr><th>Ticker</th><th>Move</th><th>Catalyst</th></tr></thead>
+        <tbody>
+          <tr><td><strong>AVGO</strong></td><td class="bear">-12.59% ✅ TV MCP</td><td>AI guide miss Q3 $16B vs $17.2B est</td></tr>
+          <tr><td><strong>CIEN</strong></td><td class="bear">-19.6% (web_search)</td><td>Sell-the-news +40% rev beat</td></tr>
+          <tr><td><strong>FIVE</strong></td><td class="bear">-12.42% (web_search)</td><td>Sell-the-news +31% EPS beat</td></tr>
+          <tr><td><strong>PVH</strong></td><td class="bear">-22% (web_search)</td><td>EMEA ME conflict exposure</td></tr>
+          <tr><td><strong>NTSK</strong></td><td class="bear">-22% AH (web_search)</td><td>Tepid outlook; cyber sector drag</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="sh sh-cyan" onclick="toggle(this)">🎯 TIER 2 — THEME-ALIGNED MOVERS</div>
+    <div class="sb">
+
+      <div class="night-card theme-semi">
+        <h4>AI Semiconductors — AVGO Guide Miss 🔴</h4>
+        <div class="nc-sub">First AI chip guide miss of the cycle. Q3 AI guide $16B vs $17.2B street. Structural near-term ceiling.</div>
+        <p style="font-size:12px">SMH recovery to $627.53 is <strong>constructive</strong> but AI guide sensitivity means multiple compression risk until next quarter's confirmation. Dip buyers were active ($403 held). Tomorrow: watch AVGO $426 reclaim as the green-light signal.</p>
+        <div style="margin-top:8px"><span class="conv-med">🟡 SMH MEDIUM</span> <span class="conv-low">🔴 AVGO LOW</span></div>
+      </div>
+
+      <div class="night-card theme-cyber">
+        <h4>Cybersecurity — CRWD Recovery Underway 🟡</h4>
+        <div class="nc-sub">CRWD recovered to $719 (-3.81%) from -9.6% premarket. Split July 2. Billings miss one quarter.</div>
+        <p style="font-size:12px">Q1 FY27: rev $1.39B +26%, FCF $468M record, ARR $5.51B +24%. 4-for-1 split = retail accumulation catalyst. Mizuho Outperform $700 PT. NTSK -22% AH is sector drag but different competitive positioning. PANW/ZS not reported tonight.</p>
+        <div style="margin-top:8px"><span class="conv-med">🟡 CRWD MEDIUM</span> <span class="conv-low">🔴 NTSK LOW</span></div>
+      </div>
+
+      <div class="night-card theme-consumer">
+        <h4>Consumer — Sell-the-News Beat Cycle 🔴 Emerging</h4>
+        <div class="nc-sub">Three names this week: FIVE (-12% despite +31% EPS beat), WOOF (-11% on miss), PVH (-22%). Pattern emerging.</div>
+        <p style="font-size:12px">FIVE's Q1: EPS $2.22 vs $1.69 (+31%), comp +23%, rev $1.3B vs $1.2B. By any metric a strong beat. Yet -12.42%. Wall Street PT $242 vs $195 close = 24% implied upside. The selloff is mechanical (high bar, positioning unwind, EMEA sensitivity concerns) not fundamental. <span class="bull">Oversold dip candidate.</span></p>
+        <div style="margin-top:8px"><span class="conv-med">🟡 FIVE MEDIUM (dip)</span> <span class="conv-low">🔴 WOOF LOW</span> <span class="conv-low">🔴 PVH LOW</span></div>
+      </div>
+
+      <div class="night-card theme-energy">
+        <h4>AI Networking / Optical — CIEN Sell-the-News 🔴</h4>
+        <div class="nc-sub">CIEN -19.6% to $498.96 despite rev +40%, EPS $1.64 vs $1.45, FY raise to $6.3B (+32%). Brutal reaction.</div>
+        <p style="font-size:12px">CEO: "AI-driven demand." Results confirmed AI optical networking demand is accelerating — but investors wanted larger FY raise. $491 day low is the near-term floor. Structural AI infra theme intact; CIEN setup is WAIT — no entry until $520 reclaim with vol on volume.</p>
+        <div style="margin-top:8px"><span class="conv-low">🔴 CIEN LOW</span></div>
+      </div>
+
+      <div class="night-card theme-gold" style="border-top-color:var(--green)">
+        <h4>AI Applied / PLTR — RS Leader 🟡</h4>
+        <div class="nc-sub">PLTR $143.50 close, up from $142.20 prev. Day high $152.10. Only RS name in watchlist.</div>
+        <p style="font-size:12px">Outperformed QQQ (-0.66%) by ~+1.6pp on a broadly weak tape. AI analytics platform not chip-dependent — insulated from AVGO guide miss. Defense/gov AI tailwind from ongoing Iran conflict. Q1 rev +85% YoY. Tomorrow: above $145 = continuation signal.</p>
+        <div style="margin-top:8px"><span class="conv-med">🟡 MEDIUM</span></div>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+<!-- TIER 3 EMERGING -->
+<div class="section">
+  <div class="sh sh-cyan" onclick="toggle(this)">🔍 TIER 3 — EMERGING THEME RADAR</div>
+  <div class="sb">
+    <table>
+      <thead><tr><th>Ticker</th><th>Sector</th><th>AH Move</th><th>Catalyst (primary source)</th><th>Cluster?</th><th>Conv.</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>TLYS</td><td>Consumer Apparel</td><td class="bull">+25% AH (web_search)</td>
+          <td>Q1 EPS -$0.26 (narrower than est), rev $124.7M beat. Q2 guide $154–$160M. <a href="https://ng.investing.com/news/stock-market-news/afterhours-stock-movers-avgo-crwd-five-ai-tlys-ntsk-432SI-2542966" target="_blank">Investing.com</a> — but <$1B mkt cap, filtered</td>
+          <td>Isolated — small cap only</td><td><span class="conv-low">FILTERED</span></td>
+        </tr>
+        <tr>
+          <td>WOOF</td><td>Pet Retail</td><td class="bear">-11%+ (web_search)</td>
+          <td>Revenue miss. Pet care sector stressed. <a href="https://www.sec.gov/Archives/edgar/data/0001826470/000182647026000045/woof-ex99_1.htm" target="_blank">SEC 8-K</a></td>
+          <td>Consumer cluster (FIVE+WOOF+PVH = 3 nights) 🚨</td><td><span class="conv-low">🔴 LOW</span></td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="alert" style="margin-top:12px">
+      🚨 <strong>CONSUMER SELL-THE-NEWS CLUSTER DETECTED:</strong> FIVE, WOOF, PVH — 3 names across 2 nights, mixed beats/misses all selling off. This is 2/3 threshold for permanent Tier 2 addition. Monitor Friday + Monday. If cluster continues → add XRT/XLY to master ETF universe scan.
+    </div>
+  </div>
+</div>
+
+<!-- TIER 4 MACRO -->
+<div class="section">
+  <div class="sh sh-purple" onclick="toggle(this)">🏛️ TIER 4 — MACRO / EXOGENOUS</div>
+  <div class="sb">
+    <div class="three-col">
+      <div>
+        <div class="macro-block red">
+          <h4>🛢️ Iran / Hormuz Blockade — ESCALATING</h4>
+          <p style="font-size:12px">Trump naval blockade since April 12. Iran stopped negotiations June 1, threatened FULL Hormuz closure. House war powers 215-208 (limits Trump). Trump: deal possible "over next week." WTI: $92.60 (AM) → $95.17 (PM) — +$2.57. 25% world seaborne oil at risk.</p>
+          <p style="font-size:11px;margin-top:6px">Source: <a href="https://en.wikipedia.org/wiki/2026_Strait_of_Hormuz_crisis" target="_blank">Wikipedia Hormuz Crisis</a> | <a href="https://www.cnbc.com/2026/06/01/iran-us-negotiations-strait-of-hormuz.html" target="_blank">CNBC</a></p>
+          <p style="font-size:11px;margin-top:4px;color:var(--orange)">Implication: Oil +, ITA +, GLD +, Tech – (rate/uncertainty)</p>
+        </div>
+        <div class="macro-block amber">
+          <h4>🕊️ Israel-Lebanon Ceasefire — POSITIVE</h4>
+          <p style="font-size:12px">Israel and Lebanon agreed to a ceasefire. Reduces ME risk premium for European/consumer markets. Positive for XLY, travel, consumer discretionary in Europe.</p>
+          <p style="font-size:11px;margin-top:4px;color:var(--green)">Implication: EU consumer stocks +, reduces EMEA drag for PVH, luxury</p>
+        </div>
+      </div>
+      <div>
+        <div class="macro-block amber">
+          <h4>🏛️ Federal Reserve — Hawkish Tilt</h4>
+          <p style="font-size:12px">Two Fed board members voted for rate hike (hawkish shift). GDP and inflation forecasts raised. May jobs: 85,000 est. (light, third consecutive gain — positive for rate hold argument).</p>
+          <p style="font-size:11px;margin-top:4px;color:var(--amber)">Implication: Rate hike risk = duration risk-off, GLD inflation hedge bid, banks +</p>
+        </div>
+        <div class="macro-block orange">
+          <h4>🛢️ WTI Oil Reversal</h4>
+          <p style="font-size:12px">WTI premarket: $92.60 (Iran ceasefire hope). WTI evening: $95.17, Brent $96.70. Morning's oil bear trade reversed as Iran deal broke down. +$2.57 intraday move.</p>
+          <p style="font-size:11px;margin-top:4px;color:var(--orange)">Implication: XLE/OIH gap up tomorrow, CVX/XOM positive pre-open, energy sector rotation</p>
+        </div>
+      </div>
+      <div>
+        <div class="macro-block">
+          <h4>📉 House War Powers Resolution</h4>
+          <p style="font-size:12px">House voted 215-208 to direct Trump to withdraw US troops from Iran conflict unless Congress declares war. Senate fate uncertain. Trump likely to veto. Creates UNCERTAINTY but does NOT immediately stop blockade.</p>
+          <p style="font-size:11px;margin-top:4px">Implication: ITA two-way risk (peace resolution = sharp reversal)</p>
+        </div>
+        <div class="macro-block amber">
+          <h4>📊 May Jobs Preview (Friday?)</h4>
+          <p style="font-size:12px">Analysts expect 85,000 May jobs — historically light, down from 115K in April. Third consecutive gain. If light = rate hike odds fade → risk-on. If hot + inflation = rate hike fear resumes.</p>
+          <p style="font-size:11px;margin-top:4px;color:var(--amber)">Watch: 8:30 AM ET release. Key for QQQ direction Friday.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- WIRE SCOOPS -->
+<div class="section">
+  <div class="sh sh-orange" onclick="toggle(this)">📰 WIRE SCOOPS — 4 PM–8 PM ET</div>
+  <div class="sb">
+
+    <div class="wire-block">
+      <div class="wt">CNBC — June 3 PMC</div>
+      <p>"Stocks making the biggest moves after hours: AVGO, CRWD, PVH" — first disclosure of major AH moves. Established the narrative before June 4 open.</p>
+      <div style="margin-top:6px;font-size:11px"><span class="tag to">EARNINGS</span> Affected: AVGO 🔴, CRWD 🔴, PVH 🔴</div>
+    </div>
+
+    <div class="wire-block">
+      <div class="wt">CNBC — June 1, ongoing</div>
+      <p>"Iran stops negotiations with U.S., vows to 'completely' block Strait of Hormuz: State media" — key Iran escalation catalyst reversing oil trade. <a href="https://www.cnbc.com/2026/06/01/iran-us-negotiations-strait-of-hormuz.html" target="_blank">CNBC primary link</a></p>
+      <div style="margin-top:6px;font-size:11px"><span class="tag tp">GEOPOLITICAL</span> Affected: XLE 🟢, ITA 🟢, GLD 🟢, QQQ 🔴</div>
+    </div>
+
+    <div class="wire-block">
+      <div class="wt">EBC Financial Group / Multiple — June 4</div>
+      <p>"CrowdStrike 4-for-1 Stock Split: Why CRWD Slid Despite a Q1 Earnings Beat" — split story amplified by financial press, retail accumulation narrative building.</p>
+      <div style="margin-top:6px;font-size:11px"><span class="tag tg">SPLIT CATALYST</span> Affected: CRWD 🟡</div>
+    </div>
+
+    <div class="wire-block">
+      <div class="wt">Schwab Market Update — June 4</div>
+      <p>"Broadcom's Plunge Takes a Chip Out of Long Rally" — establishes narrative that semiconductor rally may be pausing; buy-the-dip narrative beginning. <a href="https://www.schwab.com/learn/story/stock-market-update-open" target="_blank">Schwab link</a></p>
+      <div style="margin-top:6px;font-size:11px"><span class="tag tr">SEMI PAUSE</span> Affected: SMH 🔴 short-term, 🟡 buy-dip narrative</div>
+    </div>
+
+    <p style="margin-top:12px;color:var(--muted);font-size:11px">⚠️ No new WSJ/Bloomberg/Reuters/FT exclusives found specifically in 4–8 PM tonight window via web_search. Paywalled scoops may exist — investigate manually if significant new AH moves appear overnight.</p>
+  </div>
+</div>
+
+<!-- OPTIONS FLOW -->
+<div class="section">
+  <div class="sh sh-blue" onclick="toggle(this)">🔵 OPTIONS FLOW — After-Hours</div>
+  <div class="sb">
+
+    <div class="opt-block">
+      <div class="ot">AVGO — Protective Puts + Dip Buyer Calls</div>
+      <p>June 5 $400 put = highest volume contract today (16,014 contracts) — institutional downside protection being bought even as dip buyers stepped in. Calls 3:2 vs puts overall — net bullish lean but with active hedging. The $400 put activity suggests risk managers are guarding against further breakdown below the $403 day low. <a href="https://fintel.io/sopt/us/avgo" target="_blank">Fintel options flow</a> (web_search reference)</p>
+    </div>
+
+    <div class="opt-block">
+      <div class="ot">CRWD — Put Activity Elevated, Fading Into Close</div>
+      <p>Put activity elevated during session as stock tried to hold $719. Recovery from -9.6% premarket to -3.81% close means many puts bought at open are losing. Roll-off of June puts may create positive feedback if stock holds $719 tomorrow. 4-for-1 split announcement may boost call positioning into July.</p>
+    </div>
+
+    <div class="opt-block">
+      <div class="ot">SPY/QQQ AH Positioning</div>
+      <p><span class="na">Unavailable — not pulled.</span> Chrome MCP blocked Unusual Whales and Yahoo Finance options pages. web_search did not surface specific SPY/QQQ next-day expiry skew data for tonight. Investigate manually: UW post-market flow, CheddarFlow, Benzinga unusual options recap.</p>
+    </div>
+
+  </div>
+</div>
+
+<!-- TOMORROW'S EARNINGS -->
+<div class="section">
+  <div class="sh sh-amber" onclick="toggle(this)">📅 TOMORROW'S EARNINGS — June 5, 2026 (Friday)</div>
+  <div class="sb">
+    <p style="color:var(--muted);font-size:12px">Light calendar — no major tracked-theme earnings found for June 5 via web_search. No >$1B AI-theme or watchlist names identified. Next major earnings wave: mid-June (semiconductor supply chain names will be watched for post-AVGO guidance read-through).</p>
+    <p style="margin-top:8px;font-size:12px"><strong>Key pre-open catalysts tomorrow:</strong> May Jobs report (est. 85K, 8:30 AM ET) — this is the most important data point for QQQ/SPY direction Friday.</p>
+  </div>
+</div>
+
+<!-- EOD ENTRY CANDIDATES -->
+<div class="section">
+  <div class="sh sh-green" onclick="toggle(this)">🎯 EOD ENTRY CANDIDATES — Tomorrow's Close (3–5 Day Hold)</div>
+  <div class="sb">
+    <div class="two-col" style="margin-bottom:0">
+      <div>
+        <strong style="color:var(--green);font-size:11px;text-transform:uppercase">ETF EOD Entries</strong>
+        <div class="trade-card med" style="margin-top:8px">
+          <h3>GLD — EOD if Iran headline stays hot</h3>
+          <p style="font-size:12px">Hold above June 4 session high → EOD entry. Pattern: Stockbee Stage 2 breakout, 3–5d hold. Geopolitical bid not reversing tonight. Multiple drivers converging.</p>
+          <div class="meta-row"><span>Entry:</span><strong>EOD June 5 if GLD holds session high</strong> <span>Hold:</span><strong>3–5d</strong></div>
+        </div>
+        <div class="trade-card med">
+          <h3>XLE — EOD if WTI holds $94+</h3>
+          <p style="font-size:12px">Oil bounce from $92.60 to $95.17. EOD energy accumulation if WTI holds $94 all day. Iran deal remains unresolved. 3–5 day oil thesis.</p>
+          <div class="meta-row"><span>Entry:</span><strong>EOD June 5 + WTI confirmation</strong> <span>Hold:</span><strong>3–5d</strong></div>
+        </div>
+      </div>
+      <div>
+        <strong style="color:var(--green);font-size:11px;text-transform:uppercase">Stock EOD Entries</strong>
+        <div class="trade-card med" style="margin-top:8px">
+          <h3>FIVE — Value EOD if $195 holds all day</h3>
+          <p style="font-size:12px">$195 vs analyst PT $242 avg = 24% implied upside. Massive Q1 beat. Sell-the-news move likely overdone. Qullamaggie-style: hold-of-gap-down at $195, EOD accumulation, 3–5d hold toward $220+.</p>
+          <div class="meta-row"><span>Entry:</span><strong>EOD June 5 if $195 holds as support</strong> <span>Target:</span><strong class="bull">$220–$242</strong></div>
+        </div>
+        <div class="trade-card med">
+          <h3>PLTR — EOD if RS continues</h3>
+          <p style="font-size:12px">If PLTR continues to outperform QQQ into close, EOD add. AI analytics RS in weak tape = relative strength breakout setup. Above $145 = entry trigger.</p>
+          <div class="meta-row"><span>Entry:</span><strong>EOD June 5 if $145+ holds</strong> <span>Target:</span><strong class="bull">$152–$158</strong></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FADE RISKS -->
+<div class="section">
+  <div class="sh sh-red" onclick="toggle(this)">🔴 FADE RISKS — ETF + STOCK</div>
+  <div class="sb">
+    <div class="two-col" style="margin-bottom:0">
+      <div>
+        <strong style="color:var(--red);font-size:11px;text-transform:uppercase">ETF Fades</strong>
+        <div class="macro-block red" style="margin-top:8px"><h4>CIBR — If CRWD breaks $700</h4><p style="font-size:12px">Cyber ETF re-accelerates lower. NTSK -22% is additional sector drag. Wait for clear CRWD stabilization.</p></div>
+        <div class="macro-block red"><h4>SMH — If AVGO breaks $403</h4><p style="font-size:12px">AI guide miss may weigh for multiple weeks. $403 low is the circuit breaker. Break = gap fill to $580s.</p></div>
+        <div class="macro-block red"><h4>ARKK — Rate hike risk</h4><p style="font-size:12px">2 Fed dissenters voting for hike. Growth/innovation ETFs most vulnerable in rate-rising regime.</p></div>
+      </div>
+      <div>
+        <strong style="color:var(--red);font-size:11px;text-transform:uppercase">Stock Fades</strong>
+        <div class="macro-block red" style="margin-top:8px"><h4>CIEN — No fundamental floor yet</h4><p style="font-size:12px">$498.96 close, low $491. Investors wanted MORE raise. No catalyst to bounce until next datapoint. Avoid.</p></div>
+        <div class="macro-block red"><h4>WOOF — Revenue miss + weak margins</h4><p style="font-size:12px">No catalyst for bounce. Consumer spending stress on pet care. Avoid until Q2 guide stabilizes.</p></div>
+        <div class="macro-block red"><h4>PVH — EMEA conflict exposure ongoing</h4><p style="font-size:12px">-22% with Iran conflict in 4th month. Israel-Lebanon ceasefire reduces one risk, not Iran. Structural EMEA headwind.</p></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ASSUMPTION AUDIT -->
+<div class="section">
+  <div class="sh sh-muted" onclick="toggle(this)">🔎 STEP 13 — ASSUMPTION AUDIT</div>
+  <div class="sb">
+    <table>
+      <thead><tr><th>Assumption</th><th>Status</th><th>Risk if Wrong</th><th>Severity</th></tr></thead>
+      <tbody>
+        <tr><td>AVGO close $418.91</td><td class="bull">✅ TV MCP confirmed — primary source</td><td>N/A</td><td style="color:var(--green)">LOW</td></tr>
+        <tr><td>SMH close $627.53</td><td class="bull">✅ TV MCP confirmed — primary source</td><td>N/A</td><td style="color:var(--green)">LOW</td></tr>
+        <tr><td>SPY ~$757 / QQQ ~$739</td><td class="neu">Estimated from session % move (web_search)</td><td>±$2–3 off; sanity check passes</td><td style="color:var(--amber)">LOW-MED</td></tr>
+        <tr><td>CRWD $719.09</td><td>web_search cross-ref (2 sources)</td><td>±2% possible</td><td style="color:var(--amber)">LOW</td></tr>
+        <tr><td>CIEN $498.96 (-19.6%)</td><td>web_search (gurufocus, stockanalysis)</td><td>Directionally confirmed</td><td style="color:var(--amber)">LOW</td></tr>
+        <tr><td>FIVE $195.20 (-12.42%)</td><td>web_search (Benzinga, Motley Fool)</td><td>Directionally confirmed</td><td style="color:var(--amber)">LOW</td></tr>
+        <tr><td>WTI $95.17</td><td>web_search (Schwab market update)</td><td>May have moved since pull (~8PM ET)</td><td style="color:var(--amber)">MEDIUM</td></tr>
+        <tr><td>AVGO $400 put 16,014 vol</td><td>web_search (fintel/trendspider reference)</td><td>Contract data approximate</td><td style="color:var(--amber)">MEDIUM</td></tr>
+        <tr><td>Barchart/Finviz/UW data</td><td class="bear">⚠️ Chrome MCP blocked — web_search fallback throughout</td><td>Volume data imprecise; some moves unconfirmed</td><td style="color:var(--orange)">MEDIUM</td></tr>
+        <tr><td>Iran deal timing "over next week"</td><td>Trump quote (web_search)</td><td>Deal closes → oil crash, ITA sharp reversal</td><td style="color:var(--red)">HIGH</td></tr>
+        <tr><td>No June 5 major earnings</td><td>web_search did not surface names</td><td>Minor coverage gap for smaller names</td><td style="color:var(--green)">LOW</td></tr>
+        <tr><td>NTSK mkt cap / universe filter</td><td>Estimated <$5B — verify independently</td><td>May not pass >$1B filter</td><td style="color:var(--amber)">MEDIUM</td></tr>
+        <tr><td>NVDA/MSFT/GOOGL/AMZN AH</td><td class="na">unavailable — not pulled live</td><td>Mag 7 section incomplete</td><td style="color:var(--orange)">MEDIUM</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+</div><!-- end container -->
+
+<script>
+function toggle(el){
+  el.classList.toggle('collapsed');
+  var sb = el.nextElementSibling;
+  if(sb) sb.classList.toggle('hidden');
+}
+</script>
+</body>
+</html>
