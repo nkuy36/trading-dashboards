@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>After-Hours Scan — June 5, 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0e17;
+    --bg2: #111827;
+    --bg3: #1a2236;
+    --border: #1e2d45;
+    --text: #e2e8f0;
+    --muted: #64748b;
+    --green: #22c55e;
+    --red: #ef4444;
+    --orange: #f97316;
+    --yellow: #eab308;
+    --blue: #3b82f6;
+    --purple: #a855f7;
+    --cyan: #06b6d4;
+    --accent: #0ea5e9;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    line-height: 1.6;
+    padding: 24px;
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+  h1 { font-size: 22px; font-weight: 700; color: var(--accent); margin-bottom: 6px; }
+  h2 { font-size: 14px; font-weight: 600; color: var(--cyan); text-transform: uppercase; letter-spacing: 0.08em; margin: 28px 0 12px; padding-bottom: 6px; border-bottom: 1px solid var(--border); }
+  h3 { font-size: 13px; font-weight: 600; color: #93c5fd; margin: 16px 0 8px; }
+  .subtitle { color: var(--muted); font-size: 12px; margin-bottom: 20px; }
+
+  .tool-health {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px 18px;
+    margin-bottom: 24px;
+    display: flex;
+    gap: 24px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .health-item { display: flex; align-items: center; gap: 8px; font-size: 12px; }
+  .badge { padding: 2px 8px; border-radius: 4px; font-weight: 600; font-size: 11px; }
+  .badge-ok { background: rgba(34,197,94,0.15); color: var(--green); border: 1px solid rgba(34,197,94,0.3); }
+  .badge-warn { background: rgba(234,179,8,0.15); color: var(--yellow); border: 1px solid rgba(234,179,8,0.3); }
+  .badge-err { background: rgba(239,68,68,0.15); color: var(--red); border: 1px solid rgba(239,68,68,0.3); }
+
+  .alert-box {
+    background: rgba(239,68,68,0.08);
+    border: 1px solid rgba(239,68,68,0.3);
+    border-radius: 8px;
+    padding: 14px 18px;
+    margin-bottom: 20px;
+    font-size: 12px;
+    color: #fca5a5;
+  }
+  .alert-box strong { color: var(--red); }
+
+  .market-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+  .market-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px;
+  }
+  .market-card .ticker { font-size: 16px; font-weight: 700; color: var(--text); }
+  .market-card .price { font-size: 20px; font-weight: 700; margin: 4px 0; }
+  .market-card .change { font-size: 13px; font-weight: 600; }
+  .market-card .meta { font-size: 11px; color: var(--muted); margin-top: 4px; }
+  .up { color: var(--green); }
+  .down { color: var(--red); }
+  .neutral { color: var(--muted); }
+
+  table { width: 100%; border-collapse: collapse; margin-bottom: 16px; }
+  thead tr { background: var(--bg3); }
+  th { text-align: left; padding: 8px 12px; font-size: 11px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; border-bottom: 1px solid var(--border); }
+  td { padding: 8px 12px; border-bottom: 1px solid rgba(30,45,69,0.5); font-size: 12px; }
+  tr:hover { background: rgba(255,255,255,0.02); }
+  .tbl-wrap { background: var(--bg2); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; margin-bottom: 20px; }
+
+  .section { margin-bottom: 32px; }
+  .note { background: var(--bg3); border-left: 3px solid var(--muted); padding: 10px 14px; border-radius: 0 6px 6px 0; font-size: 11px; color: var(--muted); margin: 10px 0; }
+  .note strong { color: var(--text); }
+
+  .catalyst-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 12px;
+  }
+  .catalyst-card .c-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; flex-wrap: wrap; gap: 8px; }
+  .catalyst-card .c-ticker { font-size: 18px; font-weight: 700; color: var(--text); }
+  .catalyst-card .c-type { font-size: 11px; padding: 2px 8px; border-radius: 4px; font-weight: 600; }
+  .type-earnings { background: rgba(59,130,246,0.15); color: var(--blue); border: 1px solid rgba(59,130,246,0.3); }
+  .type-policy { background: rgba(168,85,247,0.15); color: var(--purple); border: 1px solid rgba(168,85,247,0.3); }
+  .type-macro { background: rgba(234,179,8,0.15); color: var(--yellow); border: 1px solid rgba(234,179,8,0.3); }
+  .catalyst-card .c-move { font-size: 22px; font-weight: 700; }
+  .catalyst-card .c-desc { font-size: 12px; color: #cbd5e1; margin-top: 6px; }
+  .catalyst-card .c-etf { font-size: 11px; color: var(--muted); margin-top: 8px; }
+  .catalyst-card .c-setup { margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--border); font-size: 11px; }
+  .setup-label { color: var(--muted); }
+
+  .etf-breakdown { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 12px; }
+  .etf-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 8px; padding: 14px; }
+  .etf-card .e-ticker { font-weight: 700; font-size: 15px; }
+  .etf-card .e-name { font-size: 11px; color: var(--muted); }
+  .etf-card .e-move { font-size: 20px; font-weight: 700; margin: 6px 0; }
+  .etf-card .e-detail { font-size: 11px; color: #94a3b8; }
+
+  .watchlist-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px; }
+  .w-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 8px; padding: 12px; }
+  .w-card .w-ticker { font-weight: 700; font-size: 14px; }
+  .w-card .w-price { font-size: 18px; font-weight: 700; margin: 4px 0; }
+  .w-card .w-change { font-size: 12px; font-weight: 600; }
+  .w-card .w-meta { font-size: 10px; color: var(--muted); margin-top: 4px; }
+
+  .risk-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 12px; }
+  .risk-card { background: var(--bg2); border-radius: 8px; padding: 14px; }
+  .risk-high { border: 1px solid rgba(239,68,68,0.4); }
+  .risk-med { border: 1px solid rgba(234,179,8,0.4); }
+  .risk-low { border: 1px solid rgba(34,197,94,0.4); }
+  .risk-label { font-size: 10px; font-weight: 700; letter-spacing: 0.1em; margin-bottom: 6px; }
+  .risk-high .risk-label { color: var(--red); }
+  .risk-med .risk-label { color: var(--yellow); }
+  .risk-low .risk-label { color: var(--green); }
+
+  .assumption-table td:first-child { color: #93c5fd; width: 40%; }
+  .assumption-table td:last-child { color: var(--muted); }
+
+  .theme-banner {
+    background: linear-gradient(135deg, rgba(239,68,68,0.12) 0%, rgba(249,115,22,0.08) 100%);
+    border: 1px solid rgba(239,68,68,0.3);
+    border-radius: 10px;
+    padding: 18px 22px;
+    margin-bottom: 20px;
+  }
+  .theme-banner h3 { color: var(--red); font-size: 14px; margin: 0 0 8px; }
+  .theme-banner p { font-size: 12px; color: #fca5a5; }
+
+  .sources { font-size: 10px; color: var(--muted); margin-top: 32px; padding-top: 16px; border-top: 1px solid var(--border); }
+  .timestamp { font-size: 11px; color: var(--muted); margin-bottom: 4px; }
+
+  .pill { display: inline-block; padding: 1px 7px; border-radius: 99px; font-size: 10px; font-weight: 600; }
+  .pill-red { background: rgba(239,68,68,0.15); color: var(--red); }
+  .pill-green { background: rgba(34,197,94,0.15); color: var(--green); }
+  .pill-yellow { background: rgba(234,179,8,0.15); color: var(--yellow); }
+
+  .divider { border: none; border-top: 1px solid var(--border); margin: 28px 0; }
+</style>
+</head>
+<body>
+
+<!-- TOOL HEALTH -->
+<div class="tool-health">
+  <div style="font-weight:700; font-size:13px; color:var(--accent);">🌙 AFTER-HOURS GAPS (v7.5) — June 5, 2026</div>
+  <div class="health-item"><span class="badge badge-ok">TV MCP ✅ LIVE</span></div>
+  <div class="health-item"><span class="badge badge-warn">Chrome MCP ⚠️ PARTIAL</span> <span style="color:var(--muted);font-size:11px;">Barchart blocked → WebFetch fallback</span></div>
+  <div style="margin-left:auto;font-size:11px;color:var(--muted);">Generated ~4:40 PM ET | TV MCP pull time: ~4:30 PM ET</div>
+</div>
+
+<!-- MAJOR MARKET ALERT -->
+<div class="alert-box">
+  <strong>🚨 SEMICONDUCTOR WIPEOUT — $1 TRILLION ERASED</strong> &nbsp;|&nbsp;
+  Nasdaq -4.18% (worst since April 2025) &nbsp;|&nbsp; S&P 500 -2.64% &nbsp;|&nbsp;
+  Philly Semi Index: largest drop since March 2020 &nbsp;|&nbsp;
+  Trigger: AVGO didn't raise AI forecast + May jobs beat (172K, 2× est) → 10-yr yield 4.54%
+</div>
+
+<!-- INDEX OVERVIEW -->
+<h2>Market Overview</h2>
+<div class="market-grid">
+  <div class="market-card">
+    <div class="ticker">S&P 500</div>
+    <div class="price down">7,383.74</div>
+    <div class="change down">-2.64%</div>
+    <div class="meta">SPY: $737.55 ✅ Sanity</div>
+  </div>
+  <div class="market-card">
+    <div class="ticker">Nasdaq</div>
+    <div class="price down">25,709.43</div>
+    <div class="change down">-4.18%</div>
+    <div class="meta">QQQ: $705.06 ✅ Sanity | Worst since Apr 2025</div>
+  </div>
+  <div class="market-card">
+    <div class="ticker">Dow</div>
+    <div class="price down">50,866.78</div>
+    <div class="change down">-1.35%</div>
+    <div class="meta">-695 pts</div>
+  </div>
+  <div class="market-card">
+    <div class="ticker">10-Yr Yield</div>
+    <div class="price" style="color:var(--orange);">4.54%</div>
+    <div class="change" style="color:var(--orange);">↑ SPIKE</div>
+    <div class="meta">May jobs 172K (2× est)</div>
+  </div>
+  <div class="market-card">
+    <div class="ticker">Bitcoin</div>
+    <div class="price down">$62,624</div>
+    <div class="change down">-4.9% / 24hr</div>
+    <div class="meta">BTC ETF outflow: $4.4B (13-day record)</div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- TRADEABLE AH GAPPERS -->
+<h2>Tradeable AH Gappers (&gt;$1B | &gt;3% | &gt;100K vol)</h2>
+
+<div class="note">
+  <strong>⚠️ No clean post-close AH gappers above $1B this evening.</strong>
+  All AH screeners (StockAnalysis, MarketBeat, TradingView) show only micro-cap names (&lt;$300M). The large-cap action was a regular-session event (semis, META). AVGO and CRWD AH crashes were June 3, 2026 — already in price. META may have residual AH activity given the SEC S-3ASR filing posted post-close.
+</div>
+
+<!-- META -->
+<div class="catalyst-card">
+  <div class="c-header">
+    <div>
+      <span class="c-ticker">META</span>
+      <span style="font-size:12px; color:var(--muted); margin-left:10px;">Meta Platforms</span>
+    </div>
+    <span class="c-type type-policy">POLICY-STAKE / EQUITY ISSUANCE</span>
+    <div class="c-move down">-4.9% session · AH uncertain</div>
+  </div>
+  <div style="display:grid; grid-template-columns:repeat(auto-fill,minmax(160px,1fr)); gap:10px; margin-bottom:10px;">
+    <div><div style="color:var(--muted);font-size:10px;">CLOSE (TV MCP, 4:30 ET)</div><div style="font-size:17px;font-weight:700;color:var(--red);">$593.00</div></div>
+    <div><div style="color:var(--muted);font-size:10px;">OPEN</div><div style="font-size:15px;font-weight:600;">$623.46</div></div>
+    <div><div style="color:var(--muted);font-size:10px;">INTRADAY LOW</div><div style="font-size:15px;font-weight:600;color:var(--red);">$582.91</div></div>
+    <div><div style="color:var(--muted);font-size:10px;">VOLUME</div><div style="font-size:15px;font-weight:600;">29.4M</div></div>
+  </div>
+  <div class="c-desc">
+    Bloomberg/FT report: Meta studying Alphabet's $85B mandatory convertible structure to raise equity for AI infrastructure build-out. SEC S-3ASR shelf registration + 424B2 filed. Deal not final; no banks hired yet. Stock fell ~6.5% from open to low on the news; recovered partially to $593 close.
+  </div>
+  <div class="c-etf">Parent ETFs: XLC (Communications), QQQ, FDN | Mkt Cap: ~$1.5T</div>
+  <div class="c-setup">
+    <span class="setup-label">TOMORROW'S SETUP: </span>
+    <span class="pill pill-red">FADE</span>
+    Equity supply overhang unresolved. If deal confirmed → re-test $582 low or lower. If deal denied → gap-up relief. Binary event. Avoid unhedged longs. Primary source: <a href="https://www.bloomberg.com/news/articles/2026-06-05/meta-considers-raising-billions-in-share-sale-ft-reports" style="color:var(--accent);text-decoration:none;">Bloomberg June 5</a>
+  </div>
+</div>
+
+<!-- AVGO note -->
+<div class="catalyst-card" style="border-color:rgba(100,116,139,0.4);">
+  <div class="c-header">
+    <div>
+      <span class="c-ticker">AVGO</span>
+      <span style="font-size:12px; color:var(--muted); margin-left:10px;">Broadcom Inc.</span>
+    </div>
+    <span class="c-type type-earnings">EARNINGS (Jun 3 AMC)</span>
+    <div class="c-move down">Already in price</div>
+  </div>
+  <div style="display:grid; grid-template-columns:repeat(auto-fill,minmax(160px,1fr)); gap:10px; margin-bottom:10px;">
+    <div><div style="color:var(--muted);font-size:10px;">CLOSE (TV MCP)</div><div style="font-size:17px;font-weight:700;color:var(--red);">$385.73</div></div>
+    <div><div style="color:var(--muted);font-size:10px;">OPEN</div><div style="font-size:15px;font-weight:600;">$407.61</div></div>
+    <div><div style="color:var(--muted);font-size:10px;">SESSION LOW</div><div style="font-size:15px;font-weight:600;color:var(--red);">$385.59</div></div>
+    <div><div style="color:var(--muted);font-size:10px;">VOL</div><div style="font-size:15px;font-weight:600;">50.7M</div></div>
+    <div><div style="color:var(--muted);font-size:10px;">ORIGINAL AH (Jun 3)</div><div style="font-size:15px;font-weight:600;color:var(--red);">-14% (~$418 AH)</div></div>
+  </div>
+  <div class="c-desc">
+    Q2 Rev $22.2B (+48% YoY) ✅ | AI Rev $10.8B (+143%) ✅ | EPS $2.44 vs $2.32 est ✅ | Q3 Guide $29.4B (+84%) ✅
+    <br><strong style="color:var(--red);">MISS: CEO Hock Tan did NOT raise $100B full-year AI chip forecast</strong> → sold off -14% AH Jun 3 → continued lower June 4-5 regular sessions. June 5 closed AT session low.
+  </div>
+  <div class="c-etf">Parent ETFs: SMH (~12% weight), SOXX (6.11%), QQQ | Read-through: all semiconductor names</div>
+  <div class="c-setup">
+    <span class="setup-label">TOMORROW: </span>
+    <span class="pill pill-red">CHOP/FADE</span>
+    Closed at low, no recovery attempt. Need to see volume dry-up at $385 or hold above $380 to consider stabilization. Gap-and-go further downside risk if macro headlines worsen overnight.
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- SEMICONDUCTOR ETF SWEEP -->
+<h2>🚨 ETF AH Sweep — Semiconductor Theme Breakdown</h2>
+
+<div class="theme-banner">
+  <h3>🚨 THEME-WIDE BREAKDOWN: Semiconductors</h3>
+  <p>SMH and SOXX both closed AT or NEAR their session lows with no late-session recovery. This is a bearish structure — no dip buyers materialized after a -5.9% / -6.6% intraday collapse. Largest semi ETF drop since the March 2020 COVID crash.</p>
+</div>
+
+<div class="etf-breakdown">
+  <div class="etf-card" style="border-color:rgba(239,68,68,0.4);">
+    <div class="e-ticker">SMH</div>
+    <div class="e-name">VanEck Semiconductor ETF</div>
+    <div class="e-move down">$569.69</div>
+    <div class="e-detail">Open $605.09 → Close $569.69 | <strong style="color:var(--red);">-5.9%</strong> | Vol 21.8M</div>
+    <div class="e-detail" style="margin-top:4px;">⚠️ Closed AT session low ($569.69 = low exactly)</div>
+    <div class="e-detail" style="margin-top:4px;">Top holders: NVDA, TSM, AVGO (~38% combined)</div>
+  </div>
+  <div class="etf-card" style="border-color:rgba(239,68,68,0.4);">
+    <div class="e-ticker">SOXX</div>
+    <div class="e-name">iShares Semiconductor ETF</div>
+    <div class="e-move down">$539.77</div>
+    <div class="e-detail">Open $577.86 → Close $539.77 | <strong style="color:var(--red);">-6.6%</strong> | Vol 22.2M</div>
+    <div class="e-detail" style="margin-top:4px;">Near session low ($539.57 low) | AVGO = 6.11% weight</div>
+  </div>
+  <div class="etf-card">
+    <div class="e-ticker">QQQ</div>
+    <div class="e-name">Invesco Nasdaq-100</div>
+    <div class="e-move down">$705.06</div>
+    <div class="e-detail">Open $730.06 → Close $705.06 | <strong style="color:var(--red);">-3.4%</strong> | Vol 97.3M</div>
+    <div class="e-detail" style="margin-top:4px;">Near session low ($704.32 low)</div>
+  </div>
+  <div class="etf-card">
+    <div class="e-ticker">SPY</div>
+    <div class="e-name">SPDR S&P 500</div>
+    <div class="e-move down">$737.55</div>
+    <div class="e-detail">Open $752.31 → Close $737.55 | <strong style="color:var(--red);">-1.9%</strong> | Vol 90.8M</div>
+    <div class="e-detail" style="margin-top:4px;">✅ Sanity: SPX 7,383 ÷ 10 ≈ $738</div>
+  </div>
+</div>
+
+<div class="note" style="margin-top:12px;">
+  <strong>ETF sweep coverage:</strong> Only SMH and SOXX pulled via TV MCP. The 62-ETF "INDEX 2 - ROTATIONS" watchlist was inaccessible (TV watchlist returned 33 non-ETF names). Full ETF rotation sweep deferred to 8 PM discovery run.
+</div>
+
+<hr class="divider">
+
+<!-- AMC EARNINGS -->
+<h2>AMC Earnings Results</h2>
+
+<h3>AVGO — Broadcom Inc. (Reported June 3, 2026 AMC)</h3>
+<div class="tbl-wrap">
+  <table>
+    <thead><tr><th>Metric</th><th>Result</th><th>Estimate</th><th>Status</th></tr></thead>
+    <tbody>
+      <tr><td>Q2 Revenue</td><td>$22.2B (+48% YoY)</td><td>—</td><td class="up">✅ Beat</td></tr>
+      <tr><td>AI Semiconductor Revenue</td><td>$10.8B (+143% YoY)</td><td>—</td><td class="up">✅ Beat</td></tr>
+      <tr><td>Non-GAAP EPS</td><td>$2.44</td><td>~$2.32</td><td class="up">✅ +5%</td></tr>
+      <tr><td>Infrastructure Software Rev</td><td>$7.18B (+9% YoY)</td><td>$7.32B</td><td class="down">❌ Miss</td></tr>
+      <tr><td>Q3 Revenue Guidance</td><td>~$29.4B (+84% YoY)</td><td>—</td><td class="up">✅</td></tr>
+      <tr><td>Non-GAAP Op Margin (Q3)</td><td>67%</td><td>—</td><td class="up">✅</td></tr>
+      <tr><td>Full-Year AI Forecast Raised?</td><td>NO — held at $100B</td><td>Raise expected</td><td class="down">❌ KEY MISS</td></tr>
+    </tbody>
+  </table>
+</div>
+<div class="note">AH reaction June 3: -14% (~$418) | June 5 close: $385.73 (AT session low, -5.4% intraday) | Vol 50.7M | Read-through: <strong>all semiconductor names</strong></div>
+
+<h3>CRWD — CrowdStrike Holdings (Reported June 3, 2026 AMC)</h3>
+<div class="tbl-wrap">
+  <table>
+    <thead><tr><th>Metric</th><th>Result</th><th>Estimate</th><th>Status</th></tr></thead>
+    <tbody>
+      <tr><td>Q1 FY2027 Revenue</td><td>$1.39B (+26% YoY)</td><td>$1.36B</td><td class="up">✅ Beat</td></tr>
+      <tr><td>Non-GAAP EPS</td><td>$1.10</td><td>$1.07</td><td class="up">✅ Beat</td></tr>
+      <tr><td>FY2027 Revenue Guide</td><td>$5.915B–$5.959B (raised)</td><td>—</td><td class="up">✅</td></tr>
+      <tr><td>ARR Guidance</td><td>$6.532B–$6.556B</td><td>—</td><td class="up">✅</td></tr>
+      <tr><td>4-for-1 Stock Split</td><td>Announced (effective July 2, 2026)</td><td>—</td><td class="neutral">🔔</td></tr>
+    </tbody>
+  </table>
+</div>
+<div class="note">AH reaction June 3: -10.5% ($747.61 → ~$669 AH) | WHY: stock +50% YTD into print; "priced to perfection" | Cybersecurity read: watch PANW, FTNT, S</div>
+
+<h3>CRDO — Credo Technology (Reported June 1, 2026)</h3>
+<div class="tbl-wrap">
+  <table>
+    <thead><tr><th>Metric</th><th>Result</th><th>Estimate</th><th>Status</th></tr></thead>
+    <tbody>
+      <tr><td>Q4 Revenue</td><td>$437M (+157% YoY)</td><td>—</td><td class="up">✅ Beat</td></tr>
+      <tr><td>Non-GAAP EPS</td><td>$1.16</td><td>—</td><td class="up">✅ Beat</td></tr>
+      <tr><td>Q1 FY2027 Revenue Guide</td><td>$465M–$475M (mid $470M)</td><td>$470.4M</td><td class="neutral">⚠️ Inline → sold off</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<hr class="divider">
+
+<!-- FINVIZ NEWS DIGEST -->
+<h2>AH News Digest (June 5, 2026)</h2>
+<div class="tbl-wrap">
+  <table>
+    <thead><tr><th>Time</th><th>Ticker</th><th>Headline</th><th>Type</th></tr></thead>
+    <tbody>
+      <tr><td>Session/AH</td><td style="color:var(--blue);font-weight:700;">META</td><td>Bloomberg/FT: Meta studying Alphabet $85B convertible structure for equity raise to fund AI infra; SEC S-3ASR shelf + 424B2 filed</td><td><span class="pill pill-yellow">POLICY-STAKE</span></td></tr>
+      <tr><td>Open</td><td style="color:var(--red);">ALL</td><td>May jobs: 172K new jobs (2× est ~86K); unemployment 4.3%; 10-yr yield jumps to 4.54%</td><td><span class="pill pill-yellow">MACRO</span></td></tr>
+      <tr><td>Jun 3 AMC</td><td style="color:var(--blue);">AVGO</td><td>Q2 beat but CEO won't raise $100B AI forecast → -14% AH; semis cascade</td><td><span class="pill pill-red">EARNINGS</span></td></tr>
+      <tr><td>Jun 3 AMC</td><td style="color:var(--blue);">CRWD</td><td>Beat + raised + 4-for-1 split but -10.5% AH on valuation (50% YTD run)</td><td><span class="pill pill-red">EARNINGS</span></td></tr>
+      <tr><td>Jun 1</td><td style="color:var(--blue);">CRDO</td><td>Q4 +157% YoY beat but inline Q1 guide → sold off</td><td><span class="pill pill-red">EARNINGS</span></td></tr>
+    </tbody>
+  </table>
+</div>
+<div class="note">Chrome MCP: Connected but Barchart blocked by safety restrictions. Finviz Elite AH news feed not directly accessible. WebSearch + WebFetch used as fallback.</div>
+
+<hr class="divider">
+
+<!-- WATCHLIST AH ACTIVITY -->
+<h2>Watchlist AH Activity (TV MCP, ~4:30 PM ET)</h2>
+
+<div class="watchlist-grid">
+  <div class="w-card" style="border-color:rgba(239,68,68,0.4);">
+    <div class="w-ticker">NVDA</div>
+    <div class="w-price down">$205.10</div>
+    <div class="w-change down">-4.4% from open</div>
+    <div class="w-meta">Open $214.53 | Low $204.33 | Vol 216.8M (massive)<br>Largest co by mkt cap: -6.2% on the day</div>
+  </div>
+  <div class="w-card" style="border-color:rgba(239,68,68,0.4);">
+    <div class="w-ticker">TSLA</div>
+    <div class="w-price down">$391.00</div>
+    <div class="w-change down">-7.0% from open</div>
+    <div class="w-meta">Open $420.50 | Low $388.59 | Vol 61.9M<br>Near session low</div>
+  </div>
+  <div class="w-card" style="border-color:rgba(239,68,68,0.4);">
+    <div class="w-ticker">AMD</div>
+    <div class="w-price down">$466.38</div>
+    <div class="w-change down">-6.6% from open</div>
+    <div class="w-meta">Open $499.53 | Low $463.95 | Vol 46.5M<br>Cited -7.9% to -13.3% range in chip complex</div>
+  </div>
+  <div class="w-card" style="border-color:rgba(239,68,68,0.4);">
+    <div class="w-ticker">META</div>
+    <div class="w-price down">$593.00</div>
+    <div class="w-change down">-4.9% from open</div>
+    <div class="w-meta">Open $623.46 | Low $582.91 | Vol 29.4M<br>Bloomberg equity raise report</div>
+  </div>
+  <div class="w-card" style="border-color:rgba(239,68,68,0.4);">
+    <div class="w-ticker">AVGO</div>
+    <div class="w-price down">$385.73</div>
+    <div class="w-change down">-5.4% from open</div>
+    <div class="w-meta">Open $407.61 | Low $385.59 | Vol 50.7M<br>Closed AT session low</div>
+  </div>
+  <div class="w-card">
+    <div class="w-ticker">PLTR</div>
+    <div class="w-price down">$135.53</div>
+    <div class="w-change down">-3.4% from open</div>
+    <div class="w-meta">Open $140.33 | Low $134.03 | Vol 37.5M<br>Relative strength vs chip names</div>
+  </div>
+  <div class="w-card" style="border-color:rgba(239,68,68,0.3);">
+    <div class="w-ticker">COIN</div>
+    <div class="w-price down">$152.40</div>
+    <div class="w-change down">-4.0% from open</div>
+    <div class="w-meta">Open $158.70 | Low $147.88 | Vol 16.6M<br>Bitcoin $62K, -4.9%</div>
+  </div>
+  <div class="w-card" style="border-color:rgba(239,68,68,0.4);">
+    <div class="w-ticker">MARA</div>
+    <div class="w-price down">$12.32</div>
+    <div class="w-change down">-8.0% from open</div>
+    <div class="w-meta">Open $13.39 | Low $11.84 | Vol 40.9M<br>Holds 35,303 BTC; BTC ETF outflows $4.4B</div>
+  </div>
+  <div class="w-card">
+    <div class="w-ticker">SPY</div>
+    <div class="w-price down">$737.55</div>
+    <div class="w-change down">-1.9% from open</div>
+    <div class="w-meta">Open $752.31 | Vol 90.8M | ✅ Sanity: SPX/10 ≈ $738</div>
+  </div>
+  <div class="w-card">
+    <div class="w-ticker">QQQ</div>
+    <div class="w-price down">$705.06</div>
+    <div class="w-change down">-3.4% from open</div>
+    <div class="w-meta">Open $730.06 | Vol 97.3M | ✅ Sanity: NDX/36.5 ≈ $704</div>
+  </div>
+</div>
+<div class="note" style="margin-top:12px;"><strong>Not pulled:</strong> SOFI, AMZN, SNDK (TV MCP one-symbol-at-a-time constraint; time limited). SNDK last in watchlist at $1,559.32.</div>
+
+<hr class="divider">
+
+<!-- TOMORROW'S PREVIEW -->
+<h2>Tomorrow's Preview (June 6, 2026)</h2>
+<div class="note">No BMO/AMC earners identified for June 6 via search. Calendar data unavailable for this session. 8 PM discovery run should confirm.</div>
+
+<div class="tbl-wrap">
+  <table>
+    <thead><tr><th>Theme</th><th>Setup</th><th>Key Level / Catalyst to Watch</th></tr></thead>
+    <tbody>
+      <tr><td style="color:var(--red);">Semiconductors</td><td><span class="pill pill-red">HIGH RISK — gap down open possible</span></td><td>SMH $570 support (=session low); no late session bid today = continuation risk</td></tr>
+      <tr><td style="color:var(--purple);">META / Mega-Cap</td><td><span class="pill pill-yellow">BINARY</span></td><td>Watch for equity deal confirmation (re-test $582 low or lower) vs denial (gap-up relief)</td></tr>
+      <tr><td style="color:var(--orange);">Crypto/Miners</td><td><span class="pill pill-red">HIGH RISK</span></td><td>BTC $62K is key; if breaks → MARA/COIN/RIOT cascade -10–20%</td></tr>
+      <tr><td style="color:var(--blue);">Cybersecurity</td><td><span class="pill pill-yellow">WATCH</span></td><td>CRWD ~$670 post-earnings drift; split announcement may attract retail. Watch PANW sympathy</td></tr>
+      <tr><td style="color:var(--muted);">Macro</td><td><span class="pill pill-red">RISK-OFF</span></td><td>10-yr at 4.54% = growth headwind; monitor Fed speakers for reaction to jobs report</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<hr class="divider">
+
+<!-- PERSONAL POSITIONS -->
+<h2>Personal Positions Plan</h2>
+<div class="risk-grid">
+  <div class="risk-card risk-high">
+    <div class="risk-label">HIGH RISK — REDUCE</div>
+    <div style="font-weight:700;">Semi Longs (AVGO, AMD, NVDA)</div>
+    <div style="font-size:11px;color:#fca5a5;margin-top:6px;">All closed at/near session lows. No late-session bid. Sector in confirmed downtrend. Trim or hedge; no adds until stabilization signal.</div>
+  </div>
+  <div class="risk-card risk-high">
+    <div class="risk-label">HIGH RISK — WATCH STOP</div>
+    <div style="font-weight:700;">Crypto Miners (MARA, RIOT, CLSK)</div>
+    <div style="font-size:11px;color:#fca5a5;margin-top:6px;">BTC at $62K support. Outflows $4.4B (13-day record). If BTC loses $62K → miners -10–20% cascade. Tight stop or reduce.</div>
+  </div>
+  <div class="risk-card risk-high">
+    <div class="risk-label">HIGH RISK — AVOID</div>
+    <div style="font-weight:700;">META</div>
+    <div style="font-size:11px;color:#fca5a5;margin-top:6px;">Equity overhang unresolved. Binary setup: deal confirmed = lower, deal denied = relief rally. Avoid unhedged longs overnight.</div>
+  </div>
+  <div class="risk-card risk-med">
+    <div class="risk-label">MEDIUM — WATCH</div>
+    <div style="font-weight:700;">CRWD</div>
+    <div style="font-size:11px;color:#fde68a;margin-top:6px;">Post-earnings support buyers may emerge near $660–670 AH level. Split announcement (July 2) draws retail interest. Small position only.</div>
+  </div>
+  <div class="risk-card risk-med">
+    <div class="risk-label">MEDIUM — REDUCE</div>
+    <div style="font-weight:700;">COIN</div>
+    <div style="font-size:11px;color:#fde68a;margin-top:6px;">Follows BTC. Outflows accelerating. Small position ok; reduce if BTC loses $62K.</div>
+  </div>
+  <div class="risk-card risk-low">
+    <div class="risk-label">STRATEGIC OPPORTUNITY</div>
+    <div style="font-weight:700;">SMH/SOXX Puts</div>
+    <div style="font-size:11px;color:#86efac;margin-top:6px;">Both closed at lows with no recovery. Consider as hedge or directional short if macro headwind (10-yr) persists into June 6.</div>
+  </div>
+</div>
+
+<div style="margin-top:14px;background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:14px;">
+  <div style="font-weight:700;color:var(--orange);margin-bottom:6px;">Theme Bias for Tomorrow: RISK-OFF / DEFENSIVE</div>
+  <div style="font-size:12px;color:#cbd5e1;">Yields elevated → growth headwind | Semis at lows → gap risk | META binary | Crypto bleeding | No obvious catalyst for relief rally unless Fed speakers walk back rate concerns</div>
+</div>
+
+<hr class="divider">
+
+<!-- ASSUMPTION AUDIT -->
+<h2>Assumption Audit</h2>
+<div class="tbl-wrap">
+  <table class="assumption-table">
+    <thead><tr><th>Assumption</th><th>Risk / Note</th></tr></thead>
+    <tbody>
+      <tr><td>AVGO big AH was June 3 (not Jun 5)</td><td>The -14% AH was June 3/4. June 5 regular session continued lower. Verify if there's additional post-June-5-close AVGO AH move at 8 PM.</td></tr>
+      <tr><td>META move was intraday (Bloomberg during session)</td><td>If Bloomberg report broke after 4 PM, META has a clean post-close gap. The SEC S-3ASR filing suggests AH confirmation is possible.</td></tr>
+      <tr><td>No >$1B tradeable AH gappers post June 5 close</td><td>Possible miss if names outside StockAnalysis/TradingView universe moved. Barchart gap lists not directly fetched (safety restriction).</td></tr>
+      <tr><td>Chrome MCP Barchart: safety restriction</td><td>Barchart dedicated gap-up/gap-down pages NOT fetched. WebSearch/WebFetch fallback used. Some gap data may be missed.</td></tr>
+      <tr><td>ETF sweep: only SMH + SOXX pulled</td><td>62-ETF rotation universe NOT swept. TV watchlist returned 33 non-ETF names. Full sweep deferred to 8 PM run.</td></tr>
+      <tr><td>Bitcoin price from web_search (~$62K)</td><td>Not pulled via TV MCP (no BTC on chart). Treat as approximate ±2%. MARA/COIN moves corroborate.</td></tr>
+      <tr><td>SOFI, AMZN, SNDK: not pulled</td><td>TV MCP requires chart-switching per symbol. Time constraints limited to highest-priority names.</td></tr>
+      <tr><td>SPY/QQQ prior close not explicitly pulled</td><td>Sanity check used confirmed SPX/Nasdaq index levels (7,383.74 / 25,709.43) from web search. Ratio check passed ✅.</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- SOURCES -->
+<div class="sources">
+  <strong>Data Sources:</strong>
+  TV MCP (all price/volume data, pulled ~4:30 PM ET June 5, 2026) |
+  <a href="https://stockanalysis.com/markets/afterhours/" style="color:var(--accent);">StockAnalysis AH movers</a> |
+  <a href="https://www.marketbeat.com/after-hours-movers/" style="color:var(--accent);">MarketBeat AH movers</a> |
+  <a href="https://www.tradingview.com/markets/stocks-usa/market-movers-after-hours-losers/" style="color:var(--accent);">TradingView AH screeners</a> |
+  <a href="https://www.stocktitan.net/news/AVGO/broadcom-inc-announces-second-quarter-fiscal-year-2026-financial-if4yrbje8hq6.html" style="color:var(--accent);">StockTitan/AVGO earnings</a> |
+  <a href="https://www.bloomberg.com/news/articles/2026-06-05/meta-considers-raising-billions-in-share-sale-ft-reports" style="color:var(--accent);">Bloomberg/META equity raise</a> |
+  <a href="https://www.thestreet.com/stock-market-today/stock-market-today-dow-jones-sp-500-nasdaq-updates-june-05-2026" style="color:var(--accent);">TheStreet market summary</a> |
+  <a href="https://www.cnbc.com/2026/06/04/stock-market-today-live-updates.html" style="color:var(--accent);">CNBC Nasdaq -4%</a>
+  <br><br>
+  <em>⚠️ Chrome MCP partially degraded (Barchart safety restriction). Finviz Elite AH news not directly fetched. All large-cap price data from TV MCP live pulls only.</em>
+</div>
+
+</body>
+</html>
