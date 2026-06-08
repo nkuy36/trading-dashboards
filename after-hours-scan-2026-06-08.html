@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>After-Hours Scan — June 8, 2026</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0a0e17;
+      --bg2: #0d1220;
+      --bg3: #111827;
+      --border: #1e293b;
+      --text: #e2e8f0;
+      --muted: #64748b;
+      --accent: #3b82f6;
+      --green: #22c55e;
+      --red: #ef4444;
+      --yellow: #eab308;
+      --orange: #f97316;
+      --purple: #a855f7;
+      --teal: #14b8a6;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'JetBrains Mono', monospace;
+      background: var(--bg);
+      color: var(--text);
+      font-size: 13px;
+      line-height: 1.6;
+      padding: 24px;
+    }
+    .container { max-width: 1200px; margin: 0 auto; }
+
+    /* TOOL HEALTH BANNER */
+    .health-banner {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-left: 4px solid var(--yellow);
+      border-radius: 8px;
+      padding: 14px 20px;
+      margin-bottom: 28px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      align-items: center;
+    }
+    .health-banner .title {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text);
+      white-space: nowrap;
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 3px 10px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 600;
+    }
+    .badge.ok { background: rgba(34,197,94,0.12); color: var(--green); border: 1px solid rgba(34,197,94,0.25); }
+    .badge.warn { background: rgba(234,179,8,0.12); color: var(--yellow); border: 1px solid rgba(234,179,8,0.25); }
+    .badge.err { background: rgba(239,68,68,0.12); color: var(--red); border: 1px solid rgba(239,68,68,0.25); }
+
+    h1 {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 4px;
+    }
+    .subtitle {
+      color: var(--muted);
+      font-size: 12px;
+      margin-bottom: 32px;
+    }
+    h2 {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin: 32px 0 14px 0;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border);
+    }
+    h3 {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--teal);
+      margin: 20px 0 10px 0;
+    }
+
+    /* TABLES */
+    .table-wrap { overflow-x: auto; margin-bottom: 20px; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+    }
+    th {
+      background: var(--bg3);
+      color: var(--muted);
+      font-weight: 600;
+      text-transform: uppercase;
+      font-size: 10px;
+      letter-spacing: 0.06em;
+      padding: 8px 12px;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+    td {
+      padding: 9px 12px;
+      border-bottom: 1px solid rgba(30,41,59,0.5);
+      vertical-align: top;
+    }
+    tr:hover td { background: rgba(255,255,255,0.02); }
+    .up { color: var(--green); font-weight: 600; }
+    .dn { color: var(--red); font-weight: 600; }
+    .warn-text { color: var(--yellow); }
+    .muted { color: var(--muted); }
+    .ticker { font-weight: 700; color: var(--text); }
+    .cat-tag {
+      display: inline-block;
+      padding: 2px 7px;
+      border-radius: 3px;
+      font-size: 10px;
+      font-weight: 600;
+    }
+    .cat-contract { background: rgba(59,130,246,0.15); color: var(--accent); }
+    .cat-earnings { background: rgba(239,68,68,0.15); color: var(--red); }
+    .cat-offering { background: rgba(234,179,8,0.15); color: var(--yellow); }
+    .cat-ipo { background: rgba(168,85,247,0.15); color: var(--purple); }
+
+    /* CARDS */
+    .card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px 20px;
+      margin-bottom: 16px;
+    }
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+    .card-ticker { font-size: 16px; font-weight: 700; }
+    .card-move { font-size: 18px; font-weight: 700; }
+    .card-meta { color: var(--muted); font-size: 11px; }
+    .detail-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 10px;
+      margin: 12px 0;
+    }
+    .detail-item { }
+    .detail-label { color: var(--muted); font-size: 10px; text-transform: uppercase; letter-spacing: 0.05em; }
+    .detail-val { font-size: 13px; font-weight: 600; margin-top: 2px; }
+    .setup-box {
+      background: var(--bg3);
+      border-left: 3px solid var(--accent);
+      padding: 10px 14px;
+      border-radius: 0 6px 6px 0;
+      margin-top: 12px;
+      font-size: 12px;
+    }
+    .setup-label { color: var(--accent); font-size: 10px; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px; }
+
+    /* NEWS */
+    .news-item {
+      display: grid;
+      grid-template-columns: 90px 1fr;
+      gap: 10px;
+      padding: 8px 0;
+      border-bottom: 1px solid rgba(30,41,59,0.5);
+    }
+    .news-time { color: var(--muted); font-size: 11px; }
+    .news-source { color: var(--accent); font-size: 10px; font-weight: 700; text-transform: uppercase; }
+    .news-headline { font-size: 12px; }
+
+    /* WATCHLIST */
+    .watchlist-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 12px;
+    }
+    .wl-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 12px 14px;
+    }
+    .wl-ticker { font-size: 14px; font-weight: 700; margin-bottom: 4px; }
+    .wl-price { font-size: 18px; font-weight: 700; }
+    .wl-row { display: flex; justify-content: space-between; margin-top: 4px; }
+    .wl-label { color: var(--muted); font-size: 10px; }
+    .wl-val { font-size: 11px; font-weight: 600; }
+
+    .assumption-row { padding: 6px 0; border-bottom: 1px solid rgba(30,41,59,0.4); }
+    .assumption-row:last-child { border-bottom: none; }
+
+    footer {
+      margin-top: 40px;
+      padding-top: 16px;
+      border-top: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 11px;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+
+  <!-- HEADER -->
+  <h1>🌙 AFTER-HOURS GAPS SCAN (v7.5)</h1>
+  <div class="subtitle">Monday, June 8, 2026 · Generated ~6:00 PM ET</div>
+
+  <!-- TOOL HEALTH BANNER -->
+  <div class="health-banner">
+    <span class="title">TOOL HEALTH</span>
+    <span class="badge ok">✅ TV MCP: Connected</span>
+    <span class="badge warn">⚠️ TV MCP quote_get: Broken (returns SPY for all symbols)</span>
+    <span class="badge warn">⚠️ Chrome MCP: Barchart blocked — web_fetch fallbacks used</span>
+    <span class="badge ok">✅ SPY Sanity: 739.22 (+0.23% vs prior 737.55)</span>
+    <span class="badge warn">⚠️ QQQ: DATA SUSPECT — TV returned SPY data</span>
+  </div>
+
+  <!-- TRADEABLE AH GAPPERS -->
+  <h2>📊 Tradeable AH Gappers</h2>
+  <p class="muted" style="margin-bottom:12px;font-size:11px;">Filter: >$1B mkt cap | >3% AH gap | >100K AH volume · Source: TradingView markets page + StockAnalysis (web_fetch, ~5:30 PM ET)</p>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Ticker</th><th>Company</th><th>Close</th><th>AH Price</th><th>AH %</th><th>AH Vol</th><th>Mkt Cap</th><th>Catalyst</th><th>Setup</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="ticker">APLD</span></td>
+          <td>Applied Digital Corp</td>
+          <td>$40.95</td>
+          <td class="up">$44.49</td>
+          <td class="up">+8.66%</td>
+          <td>1.90M</td>
+          <td>$11.7B</td>
+          <td><span class="cat-tag cat-contract">CONTRACT</span></td>
+          <td>Gap-and-Go</td>
+        </tr>
+        <tr>
+          <td><span class="ticker">QNT</span></td>
+          <td>Quantinuum Inc</td>
+          <td>$58.40</td>
+          <td class="up">$60.49</td>
+          <td class="up">+3.58%</td>
+          <td>227K</td>
+          <td>$15.23B</td>
+          <td><span class="cat-tag cat-ipo">IPO MOMENTUM</span></td>
+          <td>Chop / Watch $60</td>
+        </tr>
+        <tr>
+          <td><span class="ticker">IDYA</span></td>
+          <td>IDEAYA Biosciences</td>
+          <td>$31.48</td>
+          <td class="dn">$29.00</td>
+          <td class="dn">-7.88%</td>
+          <td>228K</td>
+          <td>$2.77B</td>
+          <td><span class="cat-tag cat-offering">EQUITY OFFERING</span></td>
+          <td>Fade / Offering discount</td>
+        </tr>
+        <tr>
+          <td><span class="ticker">MTN</span></td>
+          <td>Vail Resorts Inc</td>
+          <td>$137.21</td>
+          <td class="dn">$130.70</td>
+          <td class="dn">-4.74%</td>
+          <td>186K</td>
+          <td>$4.89B</td>
+          <td><span class="cat-tag cat-earnings">EARNINGS</span></td>
+          <td>Fade / Watch analyst cuts</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p class="muted" style="font-size:11px; margin-bottom:8px;">⚠️ Near-threshold (excluded): ORKA -5.29% $60.67 | 88K vol (below 100K) | lock-up expiry catalyst</p>
+  <p class="muted" style="font-size:11px;">⚠️ CNXC excluded: TradingView shows -6.06% / StockAnalysis shows 0% AH at 4:29 PM — data discrepancy, no catalyst confirmed, earnings not until June 25.</p>
+
+  <!-- AMC EARNINGS -->
+  <h2>📋 AMC Earnings Results</h2>
+
+  <div class="card">
+    <div class="card-header">
+      <div>
+        <div class="card-ticker" style="color:#ef4444;">MTN — Vail Resorts Inc</div>
+        <div class="card-meta">Q3 FY2026 | AMC June 8 | $4.89B mkt cap | XLY sector</div>
+      </div>
+      <div class="card-move dn">-4.74% AH → $130.70</div>
+    </div>
+    <div class="detail-grid">
+      <div class="detail-item">
+        <div class="detail-label">EPS (Actual vs Est)</div>
+        <div class="detail-val dn">$8.81 vs $8.97E → MISS</div>
+      </div>
+      <div class="detail-item">
+        <div class="detail-label">Revenue</div>
+        <div class="detail-val">$1.21B vs $1.21B → In-line</div>
+      </div>
+      <div class="detail-item">
+        <div class="detail-label">EBITDA Guidance (New)</div>
+        <div class="detail-val dn">$735M–$755M (cut $10-22M)</div>
+      </div>
+      <div class="detail-item">
+        <div class="detail-label">Skier Visits</div>
+        <div class="detail-val dn">-14.9% North America</div>
+      </div>
+      <div class="detail-item">
+        <div class="detail-label">Season Pass Sales</div>
+        <div class="detail-val dn">-10% YoY</div>
+      </div>
+      <div class="detail-item">
+        <div class="detail-label">Root Cause</div>
+        <div class="detail-val warn-text">Historically low snowfall Rocky Mtns</div>
+      </div>
+    </div>
+    <div class="setup-box">
+      <div class="setup-label">Tomorrow's Setup</div>
+      FADE — multi-vector miss (EPS, guide cut, visits, passes). Watch pre-market for analyst downgrades. Likely opens $130-131. Potential bounce if broader market rally continues, but fundamentals are weak.
+    </div>
+  </div>
+
+  <div class="card" style="border-left: 3px solid var(--muted);">
+    <div class="card-header">
+      <div>
+        <div class="card-ticker" style="color:var(--muted);">CPB — Campbell's Company (BMO — not AH)</div>
+        <div class="card-meta">Q3 FY2026 | Reported BMO June 8 | Consumer Staples</div>
+      </div>
+    </div>
+    <div class="detail-grid">
+      <div class="detail-item">
+        <div class="detail-label">EPS</div><div class="detail-val up">$0.50 vs $0.48E → BEAT</div>
+      </div>
+      <div class="detail-item">
+        <div class="detail-label">Revenue</div><div class="detail-val dn">$2.37B vs $2.40B → MISS</div>
+      </div>
+      <div class="detail-item">
+        <div class="detail-label">Guidance</div><div class="detail-val">Full-year reaffirmed</div>
+      </div>
+    </div>
+    <p class="muted" style="font-size:11px;margin-top:8px;">No AH catalyst — BMO report; limited after-hours impact.</p>
+  </div>
+
+  <!-- CATALYST DETAIL -->
+  <h2>🔍 Catalyst Attribution</h2>
+
+  <div class="card">
+    <div class="card-header">
+      <div>
+        <div class="card-ticker">APLD — Applied Digital Corp</div>
+        <div class="card-meta">AI HPC Data Centers | NASDAQ | $11.7B mkt cap</div>
+      </div>
+      <div class="card-move up">+8.66% AH → $44.49</div>
+    </div>
+    <div class="detail-grid">
+      <div class="detail-item"><div class="detail-label">Catalyst</div><div class="detail-val">210 MW lease signed (Delta Forge 2) + $550M revolving credit facility</div></div>
+      <div class="detail-item"><div class="detail-label">Catalyst Type</div><div class="detail-val"><span class="cat-tag cat-contract">CONTRACT / FINANCING</span></div></div>
+      <div class="detail-item"><div class="detail-label">Milestone</div><div class="detail-val up">Surpassed 1 GW total contracted capacity</div></div>
+      <div class="detail-item"><div class="detail-label">AH Volume</div><div class="detail-val">1.90M (heavy)</div></div>
+      <div class="detail-item"><div class="detail-label">Analyst PT (avg)</div><div class="detail-val">$66.77 — Strong Buy (11 analysts)</div></div>
+      <div class="detail-item"><div class="detail-label">Parent ETF</div><div class="detail-val">CLOU, BOTZ, ROBO (AI infra)</div></div>
+    </div>
+    <div class="setup-box">
+      <div class="setup-label">Tomorrow's Setup: GAP-AND-GO</div>
+      Strong fundamental catalyst. 1 GW milestone is a major institutional narrative trigger. $725B hyperscaler capex in 2026 directly supports APLD's pipeline. Watch $44-45 resistance on open. Target range: $50-$67 (analyst PTs). Stop: back below $42 (prior close +3%).
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <div>
+        <div class="card-ticker">QNT — Quantinuum Inc</div>
+        <div class="card-meta">Quantum Computing | NASDAQ | $15.23B mkt cap | IPO June 4, 2026</div>
+      </div>
+      <div class="card-move up">+3.58% AH → $60.49</div>
+    </div>
+    <div class="detail-grid">
+      <div class="detail-item"><div class="detail-label">Catalyst</div><div class="detail-val">IPO momentum — recovering toward $60 IPO price after pulling back</div></div>
+      <div class="detail-item"><div class="detail-label">IPO Date</div><div class="detail-val">June 4, 2026 at $60/share</div></div>
+      <div class="detail-item"><div class="detail-label">IPO Open</div><div class="detail-val up">$68 (+13.3% pop)</div></div>
+      <div class="detail-item"><div class="detail-label">Revenue TTM</div><div class="detail-val">$17.08M (high speculative)</div></div>
+    </div>
+    <div class="setup-box">
+      <div class="setup-label">Tomorrow's Setup: CHOP — High Volatility</div>
+      Very fresh IPO (4 days old). $60 = IPO price = natural battleground. Lock-up expiry timing unknown. Quantum theme is hot but revenue only $17M. Watch for large blocks at $60 support/resistance. Don't chase — wait for post-IPO base formation.
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <div>
+        <div class="card-ticker">IDYA — IDEAYA Biosciences</div>
+        <div class="card-meta">Precision Oncology | NASDAQ | $2.77B mkt cap</div>
+      </div>
+      <div class="card-move dn">-7.88% AH → $29.00</div>
+    </div>
+    <div class="detail-grid">
+      <div class="detail-item"><div class="detail-label">Catalyst</div><div class="detail-val">$300M equity offering — common stock + pre-funded warrants</div></div>
+      <div class="detail-item"><div class="detail-label">Bookrunners</div><div class="detail-val">J.P. Morgan, Jefferies, TD Cowen, UBS, Cantor</div></div>
+      <div class="detail-item"><div class="detail-label">Day's Close Move</div><div class="detail-val up">+11.28% (ASCO oral slot news)</div></div>
+      <div class="detail-item"><div class="detail-label">52-Week Range</div><div class="detail-val">$20.50 – $39.28</div></div>
+      <div class="detail-item"><div class="detail-label">Pipeline</div><div class="detail-val">darovasertib NDA expedited review; IDE892 Roche collab</div></div>
+      <div class="detail-item"><div class="detail-label">Parent ETF</div><div class="detail-val">XBI, IBB</div></div>
+    </div>
+    <div class="setup-box">
+      <div class="setup-label">Tomorrow's Setup: FADE — Offering Overhang</div>
+      Offering priced tonight likely at discount to AH. Typical follow-on: 5-10% gap-down on open, then grind lower to offering price. Strong underlying story (OptimUM-02 NDA, 18 analysts "Strong Buy", PT $51.69) could support a bounce after pricing absorbed. Watch XBI for broader biotech read-through.
+    </div>
+  </div>
+
+  <!-- FINVIZ NEWS -->
+  <h2>📰 Finviz AH News Digest</h2>
+  <p class="muted" style="font-size:11px;margin-bottom:12px;">Source: finviz.com/news.ashx (web_fetch, ~5:45 PM ET)</p>
+
+  <div class="news-item">
+    <div class="news-time"><div class="news-source">MarketWatch</div>5:01 PM</div>
+    <div class="news-headline">Inflation Could Exceed 4% This Week; Bond Market Scrutinizes Fed Chair Warsh's Anti-Inflation Stance</div>
+  </div>
+  <div class="news-item">
+    <div class="news-time"><div class="news-source">MarketWatch</div>4:55 PM</div>
+    <div class="news-headline">Bond Market Demanding Proof That New Fed Chair Will Combat Rising Prices</div>
+  </div>
+  <div class="news-item">
+    <div class="news-time"><div class="news-source">Reuters</div>4:53 PM</div>
+    <div class="news-headline warn-text">S&amp;P 500, Nasdaq Rise as Tech and Chipmakers Rebound</div>
+  </div>
+  <div class="news-item">
+    <div class="news-time"><div class="news-source">Fox Business</div>4:49 PM</div>
+    <div class="news-headline">AI Remains Top Driver of U.S. Job Cuts; 97,000 Workers Laid Off in May</div>
+  </div>
+  <div class="news-item">
+    <div class="news-time"><div class="news-source">WSJ</div>4:22 PM</div>
+    <div class="news-headline warn-text">Chip Stocks Lead a Market Rebound</div>
+  </div>
+  <div class="news-item">
+    <div class="news-time"><div class="news-source">WSJ</div>4:06 PM</div>
+    <div class="news-headline">Stock Market Today: Nasdaq Closes Higher After Friday Selloff</div>
+  </div>
+
+  <!-- WATCHLIST AH ACTIVITY -->
+  <h2>👁 Watchlist AH Activity</h2>
+  <p class="muted" style="font-size:11px;margin-bottom:14px;">Source: StockAnalysis (web_fetch). TV MCP quote_get broken for individual symbols — all prices via web. Partial data only.</p>
+
+  <div class="watchlist-grid">
+    <div class="wl-card">
+      <div class="wl-ticker">TSLA</div>
+      <div class="wl-price">$408.95</div>
+      <div class="wl-row"><span class="wl-label">Day Close</span><span class="wl-val up">+4.59%</span></div>
+      <div class="wl-row"><span class="wl-label">AH</span><span class="wl-val dn">$407.93 (-0.25%)</span></div>
+      <div class="wl-row"><span class="wl-label">Mkt Cap</span><span class="wl-val">$1.54T</span></div>
+      <div class="wl-row" style="margin-top:6px;"><span style="font-size:10px;color:var(--muted);">Robotaxi AUS expansion; JPMorgan upgrade to neutral</span></div>
+    </div>
+    <div class="wl-card">
+      <div class="wl-ticker">NVDA</div>
+      <div class="wl-price">$208.64</div>
+      <div class="wl-row"><span class="wl-label">Day Close</span><span class="wl-val up">+1.73%</span></div>
+      <div class="wl-row"><span class="wl-label">AH</span><span class="wl-val dn">$208.18 (-0.22%)</span></div>
+      <div class="wl-row"><span class="wl-label">Mkt Cap</span><span class="wl-val">$5.05T</span></div>
+      <div class="wl-row" style="margin-top:6px;"><span style="font-size:10px;color:var(--muted);">Jensen: Friday selloff "a buying opportunity"; quiet AH</span></div>
+    </div>
+    <div class="wl-card">
+      <div class="wl-ticker">AMD</div>
+      <div class="wl-price">$490.33</div>
+      <div class="wl-row"><span class="wl-label">Day Close</span><span class="wl-val up">+5.14%</span></div>
+      <div class="wl-row"><span class="wl-label">AH</span><span class="wl-val up">$491.90 (+0.33%)</span></div>
+      <div class="wl-row"><span class="wl-label">Mkt Cap</span><span class="wl-val">$799.5B</span></div>
+      <div class="wl-row" style="margin-top:6px;"><span style="font-size:10px;color:var(--muted);">Recovered from ~11% Friday crash; UK AI investment</span></div>
+    </div>
+    <div class="wl-card">
+      <div class="wl-ticker">PLTR</div>
+      <div class="wl-price">$136.47</div>
+      <div class="wl-row"><span class="wl-label">Day Close</span><span class="wl-val up">+0.69%</span></div>
+      <div class="wl-row"><span class="wl-label">AH</span><span class="wl-val dn">$136.11 (-0.26%)</span></div>
+      <div class="wl-row"><span class="wl-label">Mkt Cap</span><span class="wl-val">$327.2B</span></div>
+      <div class="wl-row" style="margin-top:6px;"><span style="font-size:10px;color:var(--muted);">Google Cloud Gemini integration; enterprise expansion</span></div>
+    </div>
+    <div class="wl-card">
+      <div class="wl-ticker">SOFI</div>
+      <div class="wl-price">~$16.03</div>
+      <div class="wl-row"><span class="wl-label">Day Close</span><span class="wl-val muted">partial only</span></div>
+      <div class="wl-row"><span class="wl-label">AH</span><span class="wl-val muted">unavailable</span></div>
+      <div class="wl-row" style="margin-top:6px;"><span style="font-size:10px;color:var(--yellow);">⚠️ Partial web_search data only — not fully verified</span></div>
+    </div>
+    <div class="wl-card" style="opacity:0.5;">
+      <div class="wl-ticker">MARA / COIN / SNDK</div>
+      <div class="wl-row"><span class="wl-val muted">unavailable — not pulled</span></div>
+      <div class="wl-row" style="margin-top:6px;"><span style="font-size:10px;color:var(--muted);">TV MCP broken; web_fetch not attempted</span></div>
+    </div>
+    <div class="wl-card" style="opacity:0.5;">
+      <div class="wl-ticker">META / AMZN</div>
+      <div class="wl-row"><span class="wl-val muted">unavailable — not pulled</span></div>
+      <div class="wl-row" style="margin-top:6px;"><span style="font-size:10px;color:var(--muted);">TV MCP broken; web_fetch not attempted</span></div>
+    </div>
+  </div>
+
+  <!-- TOMORROW'S PREVIEW -->
+  <h2>📅 Tomorrow's Preview (June 9, 2026)</h2>
+
+  <div class="card">
+    <p style="color:var(--yellow);margin-bottom:8px;">⚠️ Earnings Whispers page blocked — specific companies for June 9 not retrieved. Noted for 8 PM scan investigation.</p>
+    <p>Key watch items heading into tomorrow:</p>
+    <ul style="margin:10px 0 0 16px;font-size:12px;line-height:2;">
+      <li>Analyst notes on <strong>MTN</strong> (expect downgrades/price target cuts pre-market)</li>
+      <li>IDYA offering pricing (likely pre-market) — XBI read-through</li>
+      <li>APLD continuation: open above $44.50 = gap-and-go signal</li>
+      <li>Semiconductor sector: monitor AVGO (still digesting June 3 miss); chips bounced today — follow-through?</li>
+      <li>Macro: CPI/inflation data potentially released this week; bond market Warsh watch</li>
+    </ul>
+  </div>
+
+  <!-- PERSONAL POSITIONS -->
+  <h2>🎯 Personal Positions Plan</h2>
+  <div class="card">
+    <h3 style="color:var(--red);margin-top:0;">Overnight Risk</h3>
+    <ul style="margin:0 0 12px 16px;font-size:12px;line-height:2;">
+      <li>Any IDYA long from today's +11.28% day: AH offering = risk. Trim or hedge overnight — dilution typically gaps stock 5-10% below offering price at open.</li>
+      <li>MTN short if held: gap-down confirmed; ride but set stop at $133+ if broader market rips.</li>
+      <li>Chip longs (AMD, NVDA, TSLA): AH activity quiet/positive. Rebound held; overnight risk LOW unless macro shock (CPI data).</li>
+    </ul>
+    <h3 style="color:var(--green);margin-top:0;">Theme Bias Tomorrow</h3>
+    <p style="font-size:12px;"><span class="up">AI DATA CENTER: BULLISH</span> — APLD 1GW milestone + hyperscaler capex $725B narrative intact<br>
+    <span class="warn-text">CHIPS BROAD: MIXED</span> — Rebound day but Warsh/inflation headwinds + AVGO overhang<br>
+    <span class="dn">CONSUMER DISC: CAUTIOUS</span> — MTN weather/macro weakness; consumer spending signals soft<br>
+    <span class="dn">BIOTECH XBI: CAUTIOUS</span> — IDYA secondary = sector overhang; watch XBI open</p>
+  </div>
+
+  <!-- ASSUMPTION AUDIT -->
+  <h2>🔎 Assumption Audit</h2>
+  <div class="card">
+    <div class="assumption-row warn-text">⚠️ TV MCP quote_get broken — all individual symbols returned SPY data. All watchlist/individual prices sourced from web_fetch. ETF sweep skipped.</div>
+    <div class="assumption-row warn-text">⚠️ CNXC excluded — TradingView showed -6.06% / StockAnalysis showed 0% AH at 4:29 PM. Data discrepancy, no catalyst found, next earnings June 25. Manual verify needed.</div>
+    <div class="assumption-row warn-text">⚠️ QQQ individual data suspect — TV MCP returned SPY values for QQQ. Not verified via web_fetch in this run.</div>
+    <div class="assumption-row muted">AH volumes pulled ~5:00-5:30 PM ET (early AH). Final AH session volumes (closes 8 PM ET) will be higher.</div>
+    <div class="assumption-row muted">ETF AH sweep (Step 2): SKIPPED — TV MCP watchlist empty + quote_get broken. Flagged for 8 PM scan.</div>
+    <div class="assumption-row muted">Tomorrow's earnings (June 9): NOT PULLED — Earnings Whispers page blocked. Flagged for 8 PM scan.</div>
+    <div class="assumption-row muted">SOFI, MARA, COIN, SNDK, META, AMZN: NOT PULLED. Mark as unavailable.</div>
+    <div class="assumption-row">MTN, IDYA, APLD, QNT catalysts: HIGH CONFIDENCE — confirmed via SEC filings / PR Newswire / StockAnalysis.</div>
+    <div class="assumption-row">SPY sanity check: PASSED — 739.22 vs prior 737.55 = +0.23% delta within ±5% bound.</div>
+  </div>
+
+  <footer>
+    After-Hours Gaps Scan v7.5 · June 8, 2026 · Sources: TradingView Markets (web_fetch), StockAnalysis (web_fetch), Finviz (web_fetch), PR Newswire, StockTitan, SEC EDGAR, WebSearch
+  </footer>
+
+</div>
+</body>
+</html>
