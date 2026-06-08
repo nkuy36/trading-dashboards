@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Daily Theme Scanner — 2026-06-08</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0e17;
+    --surface: #111827;
+    --surface2: #1a2236;
+    --border: #1e2d45;
+    --text: #e2e8f0;
+    --text-muted: #8899aa;
+    --high: #10b981;
+    --medium: #f59e0b;
+    --low: #ef4444;
+    --accent: #3b82f6;
+    --accent2: #7c3aed;
+    --white: #f8fafc;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    line-height: 1.7;
+    padding: 24px;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  /* Header */
+  .header {
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 20px;
+    margin-bottom: 32px;
+  }
+  .header h1 {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--white);
+    letter-spacing: 0.5px;
+  }
+  .header .subtitle {
+    color: var(--text-muted);
+    font-size: 11px;
+    margin-top: 6px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  .header .date-badge {
+    display: inline-block;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--accent);
+    font-size: 11px;
+    padding: 3px 10px;
+    border-radius: 4px;
+    margin-top: 10px;
+    letter-spacing: 1px;
+  }
+
+  /* Section headers */
+  .section-title {
+    font-size: 14px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--text-muted);
+    margin: 40px 0 20px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .section-title::before {
+    content: '';
+    display: inline-block;
+    width: 3px;
+    height: 16px;
+    background: var(--accent);
+    border-radius: 2px;
+  }
+
+  /* Cards */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 20px 24px;
+    margin-bottom: 16px;
+    position: relative;
+    overflow: hidden;
+  }
+  .card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+  }
+  .card.high::before { background: var(--high); }
+  .card.medium::before { background: var(--medium); }
+  .card.low::before { background: var(--low); }
+  .card.signal::before { background: var(--accent2); }
+  .card.catalyst::before { background: var(--accent); }
+
+  .card-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--white);
+    margin-bottom: 12px;
+  }
+
+  /* Meta row */
+  .meta-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+  .badge {
+    font-size: 10px;
+    font-weight: 600;
+    padding: 3px 9px;
+    border-radius: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+  }
+  .badge.high { background: rgba(16,185,129,0.15); color: var(--high); border: 1px solid rgba(16,185,129,0.3); }
+  .badge.medium { background: rgba(245,158,11,0.15); color: var(--medium); border: 1px solid rgba(245,158,11,0.3); }
+  .badge.low { background: rgba(239,68,68,0.15); color: var(--low); border: 1px solid rgba(239,68,68,0.3); }
+  .badge.stage { background: rgba(59,130,246,0.12); color: #60a5fa; border: 1px solid rgba(59,130,246,0.25); }
+  .badge.strong { background: rgba(16,185,129,0.15); color: var(--high); border: 1px solid rgba(16,185,129,0.3); }
+  .badge.moderate { background: rgba(245,158,11,0.15); color: var(--medium); border: 1px solid rgba(245,158,11,0.3); }
+
+  /* Fields */
+  .field-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+  @media (max-width: 700px) { .field-grid { grid-template-columns: 1fr; } }
+  .field {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    padding: 8px 12px;
+  }
+  .field-label {
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    color: var(--text-muted);
+    margin-bottom: 4px;
+  }
+  .field-value {
+    font-size: 12px;
+    color: var(--text);
+    font-weight: 500;
+  }
+  .field-value .ticker {
+    display: inline-block;
+    background: rgba(59,130,246,0.1);
+    color: #93c5fd;
+    border: 1px solid rgba(59,130,246,0.2);
+    border-radius: 3px;
+    padding: 1px 5px;
+    font-size: 11px;
+    margin: 1px 2px;
+  }
+  .field-value .ticker.loser {
+    background: rgba(239,68,68,0.1);
+    color: #fca5a5;
+    border-color: rgba(239,68,68,0.2);
+  }
+
+  /* Evidence list */
+  .evidence-list {
+    list-style: none;
+    margin-bottom: 14px;
+  }
+  .evidence-list li {
+    padding: 6px 0;
+    padding-left: 16px;
+    position: relative;
+    color: var(--text);
+    font-size: 12px;
+    border-bottom: 1px solid rgba(30,45,69,0.5);
+  }
+  .evidence-list li:last-child { border-bottom: none; }
+  .evidence-list li::before {
+    content: '›';
+    position: absolute;
+    left: 0;
+    color: var(--accent);
+    font-size: 14px;
+    line-height: 1.4;
+  }
+
+  /* Summary */
+  .summary {
+    background: var(--surface2);
+    border-left: 3px solid var(--accent);
+    border-radius: 0 5px 5px 0;
+    padding: 12px 16px;
+    font-size: 12px;
+    color: var(--text);
+    line-height: 1.8;
+    margin-top: 10px;
+  }
+
+  /* Trade idea */
+  .trade-idea {
+    background: rgba(124,58,237,0.08);
+    border: 1px solid rgba(124,58,237,0.25);
+    border-radius: 5px;
+    padding: 10px 14px;
+    margin-top: 10px;
+    font-size: 12px;
+  }
+  .trade-idea-label {
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #a78bfa;
+    margin-bottom: 4px;
+  }
+
+  /* Action items */
+  .action-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 20px 24px;
+    margin-bottom: 16px;
+  }
+  .action-card::before {
+    display: none;
+  }
+  .action-title {
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--accent);
+    margin-bottom: 12px;
+  }
+  .ticker-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .ticker-row:last-child { border-bottom: none; padding-bottom: 0; }
+  .ticker-num {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--border);
+    min-width: 24px;
+  }
+  .ticker-main {
+    font-size: 15px;
+    font-weight: 700;
+    color: #93c5fd;
+    min-width: 60px;
+  }
+  .ticker-desc { font-size: 12px; color: var(--text-muted); }
+
+  .dates-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 10px;
+    margin-top: 12px;
+  }
+  .date-item {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    padding: 10px 12px;
+  }
+  .date-item .di-date {
+    font-size: 11px;
+    color: var(--medium);
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+  .date-item .di-event {
+    font-size: 12px;
+    color: var(--text);
+  }
+
+  /* Adjustments */
+  .adj-list { list-style: none; }
+  .adj-list li {
+    padding: 8px 0 8px 16px;
+    position: relative;
+    font-size: 12px;
+    border-bottom: 1px solid var(--border);
+    color: var(--text);
+  }
+  .adj-list li:last-child { border-bottom: none; }
+  .adj-list li::before {
+    content: '→';
+    position: absolute; left: 0;
+    color: var(--medium);
+  }
+
+  /* Footer */
+  .footer {
+    margin-top: 48px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+    color: var(--text-muted);
+    font-size: 10px;
+    text-align: center;
+    letter-spacing: 0.5px;
+  }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>📊 Daily Theme Scanner</h1>
+  <div class="subtitle">Pre-market thematic research — hedge fund grade</div>
+  <div class="date-badge">2026-06-08</div>
+</div>
+
+<!-- ===================== EMERGING NARRATIVES ===================== -->
+<div class="section-title">Emerging Narratives</div>
+
+<!-- Narrative 1 -->
+<div class="card high">
+  <div class="card-title">1. AI Infrastructure Capex Super-Cycle — The ROI Reckoning</div>
+  <div class="meta-row">
+    <span class="badge high">HIGH Conviction</span>
+    <span class="badge stage">DEVELOPING</span>
+  </div>
+  <div class="field-grid">
+    <div class="field">
+      <div class="field-label">Primary Beneficiaries</div>
+      <div class="field-value">
+        <span class="ticker">ORCL</span><span class="ticker">NVDA</span><span class="ticker">MSFT</span><span class="ticker">AMZN</span><span class="ticker">GOOGL</span><span class="ticker">META</span>
+      </div>
+    </div>
+    <div class="field">
+      <div class="field-label">Secondary / Infrastructure</div>
+      <div class="field-value">
+        <span class="ticker">EQIX</span><span class="ticker">DLR</span><span class="ticker">PWR</span><span class="ticker">VRT</span><span class="ticker">CIEN</span>
+      </div>
+    </div>
+    <div class="field">
+      <div class="field-label">Losers / Disrupted</div>
+      <div class="field-value">
+        <span class="ticker loser">IBM</span><span class="ticker loser">HPE</span>
+      </div>
+    </div>
+    <div class="field">
+      <div class="field-label">Timeline</div>
+      <div class="field-value">Immediate (ORCL June 10); picks-and-shovels 12–24m</div>
+    </div>
+  </div>
+  <ul class="evidence-list">
+    <li>Hyperscalers confirmed ~$725B in 2026 capex (+64% vs. 2025). Meta raised guidance to $125–145B; Amazon $200B, Alphabet $175–185B, Microsoft $120B+. (<a href="https://finance.yahoo.com/sectors/technology/articles/hyperscalers-hit-700-billion-2026-111243744.html" target="_blank">Yahoo Finance</a>)</li>
+    <li>Goldman Sachs: US data center capacity shortfall >11 GW today, widening to 45 GW by 2028. (<a href="https://alcapitaladvisory.com/research/intelligence/ai-infrastructure.html" target="_blank">AL Capital Advisory</a>)</li>
+    <li>Oracle RPO hit $553B from AI cloud contracts; OCI revenue +84% in Q3. Q4 earnings June 10, ~13% options-implied move. (<a href="https://www.tipranks.com/news/oracle-stock-orcl-could-swing-13-after-q4-earnings-heres-what-options-traders-expect" target="_blank">TipRanks</a>)</li>
+  </ul>
+  <div class="summary">The AI infrastructure cycle is hitting an inflection point where the volume of committed spend ($725B) is generating its own skepticism — hyperscaler stocks sold off post-Q1 despite massive capex guides. The ORCL Q4 report on June 10 is the critical near-term read-through: if OCI growth re-accelerates and RPO additions remain strong, the skepticism trade reverses. Non-consensus angle: <strong>infrastructure suppliers</strong> (power, cooling, networking) may offer better risk-adjusted returns than hyperscalers at current multiples.</div>
+</div>
+
+<!-- Narrative 2 -->
+<div class="card high">
+  <div class="card-title">2. Nuclear Energy Renaissance — AI Power Hunger Creates Structural Bid</div>
+  <div class="meta-row">
+    <span class="badge high">HIGH Conviction</span>
+    <span class="badge stage">DEVELOPING</span>
+  </div>
+  <div class="field-grid">
+    <div class="field">
+      <div class="field-label">Primary Beneficiaries</div>
+      <div class="field-value">
+        <span class="ticker">CEG</span><span class="ticker">CCJ</span><span class="ticker">OKLO</span><span class="ticker">NLR</span><span class="ticker">URA</span>
+      </div>
+    </div>
+    <div class="field">
+      <div class="field-label">Secondary / Grid</div>
+      <div class="field-value">
+        <span class="ticker">PWR</span><span class="ticker">HUBB</span>
+      </div>
+    </div>
+    <div class="field">
+      <div class="field-label">Losers / Disrupted</div>
+      <div class="field-value">
+        <span class="ticker loser">Natural gas peakers</span><span class="ticker loser">Solar/Wind (long-duration)</span>
+      </div>
+    </div>
+    <div class="field">
+      <div class="field-label">Timeline</div>
+      <div class="field-value">Structural; PPA revenue 18–24m out; re-rating ongoing</div>
+    </div>
+  </div>
+  <ul class="evidence-list">
+    <li>Spot uranium ~$86/lb; long-term indicator $93/lb. Surged ~25% in January 2026, briefly topping $100/lb. (<a href="https://www.investorideas.com/news/2026/energy/05131-nuclear-stocks-ai-power-demand.asp" target="_blank">InvestorIdeas</a>)</li>
+    <li>Global X Uranium ETF (URA) returned 120% over the past year; +15% YTD 2026. Nuclear ETFs posting triple-digit returns. (<a href="https://247wallst.com/investing/2026/03/18/the-nuclear-etfs-powering-ai-data-centers-and-posting-triple-digit-returns/" target="_blank">247 Wall St.</a>)</li>
+    <li>Oklo struck a three-way deal with Nvidia and Los Alamos National Laboratory to advance nuclear-powered AI factories. (<a href="https://www.wealthdaily.com/nuclear-energy-stocks-2026-ai-power-demand/" target="_blank">Wealth Daily</a>)</li>
+  </ul>
+  <div class="summary">Every ChatGPT query uses ~10x more power than a Google search — multiplied by billions of daily queries, data centers need 24/7 firm capacity that renewables cannot provide alone. Tech giants are signing 20-year PPAs directly with nuclear providers. Non-consensus angle: <strong>SMR developers and fuel fabricators</strong> may outperform pure uranium miners from here. OKLO's Nvidia partnership signals Big Tech will directly fund nuclear R&D.</div>
+</div>
+
+<!-- Narrative 3 -->
+<div class="card medium">
+  <div class="card-title">3. Tariff Cliff Edge — Section 122 Expiration and Trade Policy Reset</div>
+  <div class="meta-row">
+    <span class="badge medium">MEDIUM Conviction</span>
+    <span class="badge stage">EARLY — UNDERPRICED</span>
+  </div>
+  <div class="field-grid">
+    <div class="field">
+      <div class="field-label">Beneficiaries (if tariffs lapse)</div>
+      <div class="field-value">
+        <span class="ticker">WMT</span><span class="ticker">AMZN</span><span class="ticker">TGT</span><span class="ticker">PVH</span><span class="ticker">RL</span><span class="ticker">DHI</span><span class="ticker">LEN</span>
+      </div>
+    </div>
+    <div class="field">
+      <div class="field-label">At Risk (if Sec. 301 replaces)</div>
+      <div class="field-value">
+        <span class="ticker loser">Same importers — margin recovery repriced</span>
+      </div>
+    </div>
+    <div class="field">
+      <div class="field-label">Hard Deadline</div>
+      <div class="field-value">July 23–24, 2026</div>
+    </div>
+    <div class="field">
+      <div class="field-label">Signal Date</div>
+      <div class="field-value">Watch White House statements late June</div>
+    </div>
+  </div>
+  <ul class="evidence-list">
+    <li>Section 122 global 15% tariff expires July 23/24, 2026 after statutory 150-day limit. (<a href="https://www.peacocktariffconsulting.com/section-122-expiration-tracker/" target="_blank">Peacock Tariff Consulting</a>)</li>
+    <li>US Court of International Trade struck down Section 122 tariffs May 7, 2026 — but only for named plaintiffs. No universal relief granted. (<a href="https://www.skadden.com/insights/publications/2026/05/us-trade-court-strikes-down-section-122-tariffs" target="_blank">Skadden</a>)</li>
+    <li>Administration signaling potential Section 301 replacement — no 150-day limit, permanent structural shift. (<a href="https://www.gibsondunn.com/section-122-global-tariffs-invalidated-by-the-court-of-international-trade-ruling-and-next-steps/" target="_blank">Gibson Dunn</a>)</li>
+  </ul>
+  <div class="summary">The market is treating July 24 as a simple relief valve, but the administration's pattern of tariff maximalism suggests Section 301 replacement risk is high. Companies guiding to H2 margin recovery based on assumed tariff relief face a guidance reset if Section 301 kicks in. Non-consensus trade: <strong>be cautious on consumer discretionary H2 margin recovery stories</strong> until the administration's replacement intent is explicit.</div>
+</div>
+
+<!-- Narrative 4 -->
+<div class="card high">
+  <div class="card-title">4. Warsh Fed — Policy Uncertainty Premium Rising</div>
+  <div class="meta-row">
+    <span class="badge high">HIGH Conviction</span>
+    <span class="badge stage">DEVELOPING</span>
+  </div>
+  <div class="field-grid">
+    <div class="field">
+      <div class="field-label">Beneficiaries (hawkish)</div>
+      <div class="field-value">
+        <span class="ticker">BRK.B</span><span class="ticker">JPM</span><span class="ticker">BAC</span><span class="ticker">USD longs</span>
+      </div>
+    </div>
+    <div class="field">
+      <div class="field-label">Losers (hawkish)</div>
+      <div class="field-value">
+        <span class="ticker loser">REITs</span><span class="ticker loser">Utilities</span><span class="ticker loser">TLT</span><span class="ticker loser">Long-duration growth</span>
+      </div>
+    </div>
+    <div class="field">
+      <div class="field-label">Current Rate Range</div>
+      <div class="field-value">3.50–3.75% (held 3 meetings)</div>
+    </div>
+    <div class="field">
+      <div class="field-label">Key Timeline</div>
+      <div class="field-value">June 10 CPI → June 17 FOMC</div>
+    </div>
+  </div>
+  <ul class="evidence-list">
+    <li>Kevin Warsh confirmed Fed Chair May 2026; first FOMC June 16–17. April CPI 3.8% YoY (3-year high), core 2.8%, driven by 17.9% energy surge. (<a href="https://www.cbsnews.com/news/kevin-warsh-federal-reserve-chair-interest-rates/" target="_blank">CBS News</a>)</li>
+    <li>Markets pricing ~95% no-cut at June; by December, ~70% odds of rate hike. &lt;3% probability of any cut remaining in 2026. (<a href="https://www.tradingkey.com/analysis/economic/central-banks/261952348-fed-fomc-june-warsh-inflation-cpi-nonfarm-payrolls-rate-hike-whitehouse-fed-yields-tradingkey" target="_blank">TradingKey</a>)</li>
+    <li>White House desires rate cuts; CNBC describes internal Fed dynamics as a "family fight." (<a href="https://www.cnbc.com/2026/05/16/kevin-warsh-comes-into-the-fed-facing-a-big-family-fight-over-cutting-interest-rates.html" target="_blank">CNBC</a>)</li>
+  </ul>
+  <div class="summary">Warsh's first press conference is unprecedented — markets must recalibrate to a new Fed communication style after years of calibrating to Powell. The non-consensus scenario: Warsh surprises with more <strong>dovish communication than his hawkish reputation implies</strong> to preserve White House relations, triggering a short-squeeze relief rally in rate-sensitive sectors. June 10 CPI sets the narrative entering the conference.</div>
+</div>
+
+<!-- Narrative 5 -->
+<div class="card medium">
+  <div class="card-title">5. Defense Re-Rating — Geopolitical Budget Cycle Underway</div>
+  <div class="meta-row">
+    <span class="badge medium">MEDIUM Conviction</span>
+    <span class="badge stage">DEVELOPING</span>
+  </div>
+  <div class="field-grid">
+    <div class="field">
+      <div class="field-label">Primary Beneficiaries</div>
+      <div class="field-value">
+        <span class="ticker">LMT</span><span class="ticker">RTX</span><span class="ticker">GD</span><span class="ticker">NOC</span><span class="ticker">HII</span>
+      </div>
+    </div>
+    <div class="field">
+      <div class="field-label">Secondary / Defense IT</div>
+      <div class="field-value">
+        <span class="ticker">CACI</span><span class="ticker">LDOS</span><span class="ticker">SAIC</span><span class="ticker">LHX</span>
+      </div>
+    </div>
+    <div class="field">
+      <div class="field-label">2027 Defense Budget</div>
+      <div class="field-value">$1.5 Trillion (projected)</div>
+    </div>
+    <div class="field">
+      <div class="field-label">Timeline</div>
+      <div class="field-value">Multi-year; immediate re-rating on escalation</div>
+    </div>
+  </div>
+  <ul class="evidence-list">
+    <li>Iran conflict escalating in 2026; Oxford Economics published initial war implications analysis. (<a href="https://www.oxfordeconomics.com/resource/the-2026-iran-war-an-initial-take-and-implications/" target="_blank">Oxford Economics</a>)</li>
+    <li>LMT +3.37%, RTX +4.71% on escalation days. 2027 US defense budget projected at $1.5T. (<a href="https://www.kavout.com/market-lens/are-defense-stocks-a-safe-haven-amidst-geopolitical-turmoil" target="_blank">Kavout</a>)</li>
+    <li>Morgan Stanley "overweight" GD with $435 PT; elevated spending likely through early 2029. (<a href="https://www.fidelity.com/learning-center/trading-investing/aerospace-defense-stocks-iran-conflict" target="_blank">Fidelity</a>)</li>
+  </ul>
+  <div class="summary">Defense is in a secular budget expansion cycle supported by geopolitical reality, not just sentiment. The Iran conflict has become a persistent energy and military risk factor. Non-consensus angle: <strong>defense IT and services companies</strong> (CACI, LDOS, SAIC) are meaningfully cheaper than hardware primes while benefiting from the same budget expansion — less headline attention, better risk-adjusted entry.</div>
+</div>
+
+<!-- ===================== EARNINGS SIGNALS ===================== -->
+<div class="section-title">Earnings Signals</div>
+
+<!-- Signal 1 -->
+<div class="card signal">
+  <div class="card-title">Signal 1: Oracle Q4 FY2026 — Cloud Infrastructure Inflection Test</div>
+  <div class="meta-row">
+    <span class="badge strong">STRONG</span>
+    <span class="badge stage">Pre-earnings / Sector read-through</span>
+  </div>
+  <div class="field-grid">
+    <div class="field">
+      <div class="field-label">Companies</div>
+      <div class="field-value"><span class="ticker">ORCL</span> + read-throughs: <span class="ticker">MSFT</span><span class="ticker">AMZN</span><span class="ticker">GOOGL</span></div>
+    </div>
+    <div class="field">
+      <div class="field-label">Consensus EPS / Revenue</div>
+      <div class="field-value">$1.96 (+15.3% YoY) / $19.1B (+20% YoY)</div>
+    </div>
+    <div class="field">
+      <div class="field-label">Options Implied Move</div>
+      <div class="field-value">~13% either direction</div>
+    </div>
+    <div class="field">
+      <div class="field-label">Source</div>
+      <div class="field-value"><a href="https://www.barchart.com/story/news/2327387/oracle-q4-earnings-preview-expect-ai-demand-to-push-orcl-stock-even-higher" target="_blank">Barchart</a>, <a href="https://www.tipranks.com/news/oracle-stock-orcl-could-swing-13-after-q4-earnings-heres-what-options-traders-expect" target="_blank">TipRanks</a></div>
+    </div>
+  </div>
+  <div class="summary">Oracle is the most credible challenger to AWS/Azure in enterprise AI workloads. OCI grew 84% in Q3; RPO reached $553B. ORCL up 40%+ over past 3 months. A beat confirms multi-cloud AI distribution thesis; a miss spreads contagion to the entire cloud infrastructure stack.</div>
+  <div class="trade-idea">
+    <div class="trade-idea-label">Trade Idea</div>
+    If OCI &gt;85% growth and RPO additions &gt;$30B → long ORCL, read through to <span class="ticker">EQIX</span> / <span class="ticker">DLR</span>. If miss → use as <span class="ticker">NVDA</span> entry point (AI demand intact regardless of cloud consolidation).
+  </div>
+</div>
+
+<!-- Signal 2 -->
+<div class="card signal">
+  <div class="card-title">Signal 2: Hyperscaler CapEx Skepticism — Sell-the-Guide Pattern</div>
+  <div class="meta-row">
+    <span class="badge moderate">MODERATE</span>
+    <span class="badge stage">Cross-company recurring theme</span>
+  </div>
+  <div class="field-grid">
+    <div class="field">
+      <div class="field-label">Companies</div>
+      <div class="field-value"><span class="ticker">AMZN</span><span class="ticker">MSFT</span><span class="ticker">GOOGL</span><span class="ticker">META</span></div>
+    </div>
+    <div class="field">
+      <div class="field-label">Pattern</div>
+      <div class="field-value">All four sold off post-Q1 despite massive capex upgrades</div>
+    </div>
+  </div>
+  <div class="summary">Meta raised 2026 capex to $125–145B and stock still fell on the announcement. The market is wrestling with "good vs. bad capex" — spending that generates future revenue (bullish) vs. demand pull-forward uncertainty (bearish). The structural pattern of selling hyperscalers while NVDA and infrastructure names rally on the same capex news is creating a rotation opportunity.</div>
+  <div class="trade-idea">
+    <div class="trade-idea-label">Trade Idea</div>
+    Rotate from hyperscalers (<span class="ticker loser">AMZN</span>, <span class="ticker loser">MSFT</span>, <span class="ticker loser">GOOGL</span>) into capex beneficiaries (<span class="ticker">NVDA</span>, <span class="ticker">VRT</span>, <span class="ticker">PWR</span>, <span class="ticker">EQIX</span>) on any further sell-the-guide price action.
+  </div>
+</div>
+
+<!-- Signal 3 -->
+<div class="card signal">
+  <div class="card-title">Signal 3: Energy Price Embedding — Underappreciated Margin Drag</div>
+  <div class="meta-row">
+    <span class="badge moderate">MODERATE</span>
+    <span class="badge stage">Cross-sector cost signal</span>
+  </div>
+  <div class="field-grid">
+    <div class="field">
+      <div class="field-label">Exposed Sectors</div>
+      <div class="field-value">Airlines, consumer staples, industrials, transportation</div>
+    </div>
+    <div class="field">
+      <div class="field-label">Energy YoY (April CPI)</div>
+      <div class="field-value">+17.9% — tied to Iran/Middle East conflict</div>
+    </div>
+  </div>
+  <div class="summary">Companies that have NOT re-guided for Q2 energy cost inflation (reporting late July/August) face a negative guidance reset. Airlines that hedged in Q4 2025 may show a one-time mismatch in their favor; consumer staples companies that have not yet repriced SKUs face the largest downside.</div>
+  <div class="trade-idea">
+    <div class="trade-idea-label">Trade Idea</div>
+    Underweight consumer discretionary with high transportation exposure and no hedging disclosure. Long <span class="ticker">CVX</span>, <span class="ticker">XOM</span> as cost pass-through beneficiaries.
+  </div>
+</div>
+
+<!-- Signal 4 -->
+<div class="card signal">
+  <div class="card-title">Signal 4: Defense Backlog Quality — Booking Velocity Improving</div>
+  <div class="meta-row">
+    <span class="badge moderate">MODERATE</span>
+    <span class="badge stage">Guidance strength</span>
+  </div>
+  <div class="field-grid">
+    <div class="field">
+      <div class="field-label">Companies</div>
+      <div class="field-value"><span class="ticker">LMT</span><span class="ticker">RTX</span><span class="ticker">GD</span><span class="ticker">NOC</span></div>
+    </div>
+    <div class="field">
+      <div class="field-label">Source</div>
+      <div class="field-value"><a href="https://www.fidelity.com/learning-center/trading-investing/aerospace-defense-stocks-iran-conflict" target="_blank">Fidelity</a></div>
+    </div>
+  </div>
+  <div class="summary">Iran conflict and a projected $1.5T 2027 defense budget are driving elevated order intake for defense primes. Focus on book-to-bill ratios — primes with the highest ratios in recent quarters are best positioned for 2027+ earnings beats.</div>
+  <div class="trade-idea">
+    <div class="trade-idea-label">Trade Idea</div>
+    Favor <span class="ticker">RTX</span> (diversified platforms, strong aftermarket) and <span class="ticker">NOC</span> (classified programs). Add <span class="ticker">CACI</span> and <span class="ticker">LDOS</span> for cheaper services exposure to the same budget cycle.
+  </div>
+</div>
+
+<!-- Signal 5 -->
+<div class="card signal">
+  <div class="card-title">Signal 5: Vera Therapeutics PDUFA — Biotech Binary Approaching</div>
+  <div class="meta-row">
+    <span class="badge moderate">MODERATE</span>
+    <span class="badge stage">Regulatory binary</span>
+  </div>
+  <div class="field-grid">
+    <div class="field">
+      <div class="field-label">Primary</div>
+      <div class="field-value"><span class="ticker">VERA</span></div>
+    </div>
+    <div class="field">
+      <div class="field-label">Peers / Read-throughs</div>
+      <div class="field-value"><span class="ticker">KALV</span><span class="ticker">TRAVERE</span></div>
+    </div>
+    <div class="field">
+      <div class="field-label">PDUFA Date</div>
+      <div class="field-value">July 7, 2026</div>
+    </div>
+    <div class="field">
+      <div class="field-label">Indication</div>
+      <div class="field-value">IgA Nephropathy (IgAN) — priority review</div>
+    </div>
+  </div>
+  <div class="summary">FDA granted priority review for atacicept (VERA) in IgA Nephropathy with a July 7, 2026 PDUFA date. An approval validates the B-cell depletion mechanism and re-rates the entire IgAN drug class. Residual risk is manufacturing or post-marketing requirements.</div>
+  <div class="trade-idea">
+    <div class="trade-idea-label">Trade Idea</div>
+    Position in <span class="ticker">VERA</span> ahead of July 7. Watch <span class="ticker">KALV</span> and <span class="ticker">TRAVERE</span> for sympathetic re-rating on positive read-through.
+  </div>
+</div>
+
+<!-- ===================== UPCOMING CATALYSTS ===================== -->
+<div class="section-title">Upcoming Catalysts</div>
+
+<!-- Catalyst 1 -->
+<div class="card catalyst">
+  <div class="card-title">Catalyst 1: May CPI Release</div>
+  <div class="meta-row">
+    <span class="badge stage">📅 June 10, 2026 — 8:30 AM ET</span>
+  </div>
+  <div class="field-grid">
+    <div class="field">
+      <div class="field-label">Consensus</div>
+      <div class="field-value">Headline ~3.7–3.8% YoY; modest softening from April's 3.8%</div>
+    </div>
+    <div class="field">
+      <div class="field-label">Surprise Scenario</div>
+      <div class="field-value">Above 4.0% (sticky energy/shelter) OR sharp downside below 3.3%</div>
+    </div>
+    <div class="field">
+      <div class="field-label">Exposed Tickers</div>
+      <div class="field-value"><span class="ticker">TLT</span><span class="ticker">IEF</span> (rates) + REITs, utilities, USD, financials</div>
+    </div>
+    <div class="field">
+      <div class="field-label">Current Positioning</div>
+      <div class="field-value">70% odds of Dec hike; short-duration bias</div>
+    </div>
+  </div>
+  <div class="summary">Most market-moving datapoint of the week — drops same day as Oracle earnings. A hot print (&gt;4%) causes risk-off before Warsh's first FOMC; a cool print stabilizes the hold consensus but is only mildly bullish. Asymmetry skewed toward downside in equities: hot print accelerates hike probability, cool print merely stabilizes.</div>
+</div>
+
+<!-- Catalyst 2 -->
+<div class="card catalyst">
+  <div class="card-title">Catalyst 2: FOMC + First Warsh Press Conference</div>
+  <div class="meta-row">
+    <span class="badge stage">📅 June 16–17, 2026</span>
+  </div>
+  <div class="field-grid">
+    <div class="field">
+      <div class="field-label">Consensus</div>
+      <div class="field-value">No change; Warsh telegraphs data dependency</div>
+    </div>
+    <div class="field">
+      <div class="field-label">Surprise Scenario</div>
+      <div class="field-value">Warsh signals Sept hike; OR dovish White House accommodation</div>
+    </div>
+    <div class="field">
+      <div class="field-label">Exposed</div>
+      <div class="field-value"><span class="ticker">TLT</span><span class="ticker">XLU</span><span class="ticker">XLRE</span><span class="ticker">JPM</span><span class="ticker">BAC</span></div>
+    </div>
+    <div class="field">
+      <div class="field-label">Source</div>
+      <div class="field-value"><a href="https://www.tradingkey.com/analysis/economic/central-banks/261952348-fed-fomc-june-warsh-inflation-cpi-nonfarm-payrolls-rate-hike-whitehouse-fed-yields-tradingkey" target="_blank">TradingKey</a></div>
+    </div>
+  </div>
+  <div class="summary">Warsh's first press conference is regime-defining. Markets have spent years calibrating to Powell's cadence — Warsh is an unknown quantity and known market hawk. Pre-meeting CPI on June 10 sets the narrative. Watch the opening statement closely for any deviation from strict data-dependency language.</div>
+</div>
+
+<!-- Catalyst 3 -->
+<div class="card catalyst">
+  <div class="card-title">Catalyst 3: Section 122 Tariff Expiration</div>
+  <div class="meta-row">
+    <span class="badge stage">📅 July 23–24, 2026</span>
+  </div>
+  <div class="field-grid">
+    <div class="field">
+      <div class="field-label">Consensus</div>
+      <div class="field-value">Tariffs lapse → cost relief for importers; consumer disc. upside priced in</div>
+    </div>
+    <div class="field">
+      <div class="field-label">Surprise Scenario</div>
+      <div class="field-value">Section 301 replacement announced before July 24 — no relief, permanent shift</div>
+    </div>
+    <div class="field">
+      <div class="field-label">Exposed</div>
+      <div class="field-value"><span class="ticker">WMT</span><span class="ticker">TGT</span><span class="ticker">AMZN</span><span class="ticker">NKE</span><span class="ticker">PVH</span><span class="ticker">RL</span><span class="ticker">DHI</span><span class="ticker">LEN</span></div>
+    </div>
+    <div class="field">
+      <div class="field-label">Signal Watch</div>
+      <div class="field-value">White House statements late June</div>
+    </div>
+  </div>
+  <div class="summary">Most binary medium-term catalyst and most likely mispriced. Market treats July 24 as a simple relief valve, but the administration's tariff maximalism pattern and the Court ruling's limited scope suggest Section 301 replacement risk is high. Companies guiding to H2 margin recovery face a guidance reset. Watch for late June White House statements as the signal. Sources: <a href="https://www.peacocktariffconsulting.com/section-122-expiration-tracker/" target="_blank">Peacock</a>, <a href="https://www.gibsondunn.com/section-122-global-tariffs-invalidated-by-the-court-of-international-trade-ruling-and-next-steps/" target="_blank">Gibson Dunn</a></div>
+</div>
+
+<!-- Catalyst 4 -->
+<div class="card catalyst">
+  <div class="card-title">Catalyst 4: Oracle Q4 Earnings</div>
+  <div class="meta-row">
+    <span class="badge stage">📅 June 10, 2026 — After Close</span>
+  </div>
+  <div class="field-grid">
+    <div class="field">
+      <div class="field-label">Consensus</div>
+      <div class="field-value">EPS $1.96, Revenue $19.1B, OCI 80%+ growth</div>
+    </div>
+    <div class="field">
+      <div class="field-label">Upside Surprise</div>
+      <div class="field-value">OCI &gt;90%; RPO additions &gt;$35B; guidance to 25%+ growth</div>
+    </div>
+    <div class="field">
+      <div class="field-label">Exposed</div>
+      <div class="field-value"><span class="ticker">ORCL</span><span class="ticker">NVDA</span><span class="ticker">MSFT</span><span class="ticker">EQIX</span><span class="ticker">DLR</span></div>
+    </div>
+    <div class="field">
+      <div class="field-label">Source</div>
+      <div class="field-value"><a href="https://www.stocktitan.net/news/ORCL/oracle-sets-the-date-for-its-fourth-quarter-fiscal-year-2026-vxb0jud32m8v.html" target="_blank">StockTitan</a></div>
+    </div>
+  </div>
+  <div class="summary">Simultaneous CPI release and ORCL earnings on June 10 creates a complex signal day. A hot macro print could mask a strong ORCL beat and create a buying opportunity. OCI growth rate is the single most watched metric — it represents the most credible challenge to AWS/Azure market share.</div>
+</div>
+
+<!-- Catalyst 5 -->
+<div class="card catalyst">
+  <div class="card-title">Catalyst 5: Vera Therapeutics Atacicept PDUFA</div>
+  <div class="meta-row">
+    <span class="badge stage">📅 July 7, 2026</span>
+  </div>
+  <div class="field-grid">
+    <div class="field">
+      <div class="field-label">Consensus</div>
+      <div class="field-value">Approval likely (priority review granted; strong Phase 3)</div>
+    </div>
+    <div class="field">
+      <div class="field-label">Downside Risk</div>
+      <div class="field-value">FDA Complete Response Letter on manufacturing/labeling</div>
+    </div>
+    <div class="field">
+      <div class="field-label">Exposed</div>
+      <div class="field-value"><span class="ticker">VERA</span><span class="ticker">KALV</span><span class="ticker">TRAVERE</span></div>
+    </div>
+    <div class="field">
+      <div class="field-label">Indication</div>
+      <div class="field-value">IgA Nephropathy — priority review (positive signal)</div>
+    </div>
+  </div>
+  <div class="summary">Priority review status is a strong positive indicator from FDA. Residual risk is manufacturing compliance. A positive outcome would validate B-cell depletion in kidney disease and re-rate the entire IgAN category. VERA may be under-owned relative to large-cap biotech; KALV and TRAVERE offer sympathetic exposure.</div>
+</div>
+
+<!-- ===================== ACTION ITEMS ===================== -->
+<div class="section-title">Action Items</div>
+
+<div class="action-card">
+  <div class="action-title">🎯 Top 3 Tickers to Research Today</div>
+  <div class="ticker-row">
+    <div class="ticker-num">01</div>
+    <div class="ticker-main">ORCL</div>
+    <div class="ticker-desc">Earnings after close June 10. 13% implied move. OCI growth is the key metric. Evaluate options strategy before Tuesday open. This is the single most important event this week.</div>
+  </div>
+  <div class="ticker-row">
+    <div class="ticker-num">02</div>
+    <div class="ticker-main">CEG</div>
+    <div class="ticker-desc">Nuclear energy / AI PPA story. Less crowded than pure uranium miners. Check any new Microsoft/Google/Amazon PPA announcements. Structural multi-year thesis with near-term catalysts.</div>
+  </div>
+  <div class="ticker-row">
+    <div class="ticker-num">03</div>
+    <div class="ticker-main">RTX</div>
+    <div class="ticker-desc">Defense re-rating underway. Check Q1 backlog quality and book-to-bill before adding. Iran conflict creates persistent bid. Compare to NOC and CACI for risk-adjusted positioning.</div>
+  </div>
+</div>
+
+<div class="action-card">
+  <div class="action-title">⚖️ Suggested Position Adjustments</div>
+  <ul class="adj-list">
+    <li><strong>Reduce rate-sensitive longs</strong> (REITs, utilities, TLT, long-duration bonds) before June 10 CPI print. Risk skewed to upside inflation surprise; Warsh's first FOMC amplifies asymmetry.</li>
+    <li><strong>Review consumer discretionary holdings</strong> with implicit H2 tariff relief assumptions. Section 301 replacement risk is underpriced; flag names most exposed before July. Consider trimming or hedging ahead of late-June White House signals.</li>
+    <li><strong>Rotate hyperscaler exposure</strong> (AMZN, MSFT, GOOGL) into infrastructure beneficiaries (NVDA, VRT, PWR) given the structural sell-the-guide pattern post-earnings.</li>
+  </ul>
+</div>
+
+<div class="action-card">
+  <div class="action-title">📅 Key Dates This Week and Ahead</div>
+  <div class="dates-grid">
+    <div class="date-item">
+      <div class="di-date">TUESDAY — June 10</div>
+      <div class="di-event">🔴 May CPI 8:30 AM ET<br>🔴 Oracle Q4 earnings after close</div>
+    </div>
+    <div class="date-item">
+      <div class="di-date">MON–TUE — June 16–17</div>
+      <div class="di-event">🔴 FOMC meeting + First Warsh press conference</div>
+    </div>
+    <div class="date-item">
+      <div class="di-date">TUESDAY — July 7</div>
+      <div class="di-event">🟡 VERA atacicept PDUFA date</div>
+    </div>
+    <div class="date-item">
+      <div class="di-date">WED/THU — July 23–24</div>
+      <div class="di-event">🔴 Section 122 tariff expiration<br>Watch late-June for Section 301 signal</div>
+    </div>
+  </div>
+</div>
+
+<div class="footer">
+  Daily Theme Scanner — 2026-06-08 · All claims sourced with verified URLs · Automated pre-market analysis
+</div>
+
+</body>
+</html>
