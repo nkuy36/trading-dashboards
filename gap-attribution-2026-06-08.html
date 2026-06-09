@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gap Attribution v7.5 — June 8, 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0e17;
+    --bg2: #0f1521;
+    --bg3: #141c2d;
+    --border: #1e2d45;
+    --text: #e2e8f0;
+    --muted: #64748b;
+    --bull: #22c55e;
+    --bull-dim: #166534;
+    --bear: #ef4444;
+    --bear-dim: #7f1d1d;
+    --amber: #f59e0b;
+    --amber-dim: #78350f;
+    --purple: #a855f7;
+    --purple-dim: #4c1d95;
+    --cyan: #06b6d4;
+    --cyan-dim: #164e63;
+    --orange: #f97316;
+    --orange-dim: #7c2d12;
+    --blue: #3b82f6;
+    --blue-dim: #1e3a5f;
+    --yellow: #eab308;
+    --yellow-dim: #713f12;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    line-height: 1.6;
+    padding: 16px;
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+  h1 { font-size: 20px; font-weight: 700; color: var(--bull); margin-bottom: 4px; }
+  h2 { font-size: 15px; font-weight: 600; color: var(--amber); margin: 20px 0 8px; padding: 6px 10px; background: var(--bg2); border-left: 3px solid var(--amber); border-radius: 3px; }
+  h3 { font-size: 13px; font-weight: 600; color: var(--cyan); margin: 14px 0 6px; }
+  a { color: var(--blue); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  .tool-health {
+    background: var(--bg2);
+    border: 1px solid var(--bull-dim);
+    border-radius: 6px;
+    padding: 10px 14px;
+    margin-bottom: 16px;
+  }
+  .tool-health .live { color: var(--bull); font-weight: 600; }
+  .tool-health .down { color: var(--bear); font-weight: 600; }
+  .briefing {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 14px;
+    margin-bottom: 16px;
+    color: var(--text);
+    line-height: 1.7;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 8px 0 12px;
+    font-size: 12px;
+  }
+  th {
+    background: var(--bg3);
+    color: var(--amber);
+    padding: 6px 8px;
+    text-align: left;
+    font-weight: 600;
+    border-bottom: 1px solid var(--border);
+  }
+  td {
+    padding: 5px 8px;
+    border-bottom: 1px solid var(--bg3);
+    vertical-align: top;
+  }
+  tr:hover td { background: var(--bg2); }
+  .bull { color: var(--bull); font-weight: 600; }
+  .bear { color: var(--bear); font-weight: 600; }
+  .amber { color: var(--amber); }
+  .cyan { color: var(--cyan); }
+  .purple { color: var(--purple); }
+  .orange { color: var(--orange); }
+  .blue { color: var(--blue); }
+  .yellow { color: var(--yellow); }
+  .muted { color: var(--muted); }
+  .badge-high { background: var(--bull-dim); color: var(--bull); padding: 1px 6px; border-radius: 3px; font-size: 11px; font-weight: 700; }
+  .badge-med { background: var(--amber-dim); color: var(--amber); padding: 1px 6px; border-radius: 3px; font-size: 11px; font-weight: 700; }
+  .badge-low { background: var(--bear-dim); color: var(--bear); padding: 1px 6px; border-radius: 3px; font-size: 11px; font-weight: 700; }
+  .badge-warn { background: var(--amber-dim); color: var(--amber); padding: 1px 6px; border-radius: 3px; font-size: 11px; }
+  .section {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 12px 14px;
+    margin-bottom: 12px;
+  }
+  .section-collapse summary {
+    cursor: pointer;
+    list-style: none;
+    padding: 8px 12px;
+    background: var(--bg3);
+    border-radius: 4px;
+    font-weight: 600;
+    color: var(--amber);
+    margin: -12px -14px 10px;
+  }
+  .section-collapse summary::-webkit-details-marker { display: none; }
+  .section-collapse summary::before { content: "▶ "; font-size: 10px; }
+  .section-collapse[open] summary::before { content: "▼ "; }
+  .top5-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+  @media (max-width: 900px) { .top5-grid { grid-template-columns: 1fr; } }
+  .top5-card {
+    background: var(--bg3);
+    border-radius: 6px;
+    padding: 12px;
+    border-left: 3px solid var(--bull);
+  }
+  .top5-card.bear-card { border-left-color: var(--bear); }
+  .top5-card .rank { font-size: 18px; font-weight: 700; color: var(--bull); }
+  .top5-card.bear-card .rank { color: var(--bear); }
+  .top5-card .ticker { font-size: 15px; font-weight: 700; }
+  .top5-card .catalyst { color: var(--muted); font-size: 12px; margin: 4px 0; }
+  .top5-card .levels { font-size: 11px; }
+  .macro-card {
+    background: var(--bg3);
+    border-left: 3px solid var(--purple);
+    border-radius: 4px;
+    padding: 10px 12px;
+    margin: 6px 0;
+  }
+  .wire-card {
+    background: var(--bg3);
+    border-left: 3px solid var(--orange);
+    border-radius: 4px;
+    padding: 8px 12px;
+    margin: 5px 0;
+  }
+  .options-card {
+    background: var(--bg3);
+    border-left: 3px solid var(--blue);
+    border-radius: 4px;
+    padding: 8px 12px;
+    margin: 5px 0;
+  }
+  .theme-banner {
+    background: linear-gradient(135deg, #0f1521, #141c2d);
+    border: 1px solid var(--bull-dim);
+    border-radius: 8px;
+    padding: 16px;
+    margin: 12px 0;
+    text-align: center;
+  }
+  .theme-banner .title { font-size: 16px; font-weight: 700; color: var(--bull); margin-bottom: 6px; }
+  .theme-banner .regime { font-size: 13px; color: var(--amber); }
+  .sanity-pass { color: var(--bull); font-size: 11px; }
+  .suspect { color: var(--bear); font-weight: 600; }
+  .source { font-size: 11px; color: var(--muted); }
+  .divider { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
+  .ts { color: var(--muted); font-size: 11px; }
+</style>
+</head>
+<body>
+
+<!-- TOOL HEALTH BANNER -->
+<div class="tool-health">
+  <span class="live">✅ TV MCP LIVE</span> — sequential pulls via chart_set_symbol &nbsp;|&nbsp;
+  <span class="down">⚠️ Chrome MCP DOWN</span> — Barchart/Finviz/UW skipped, web_search fallback used &nbsp;|&nbsp;
+  <span class="live">✅ web_search LIVE</span> &nbsp;|&nbsp;
+  <span class="live">✅ WebFetch LIVE</span>
+  <br>
+  <span class="sanity-pass">📊 SPY/QQQ SANITY PASS — SPY $739.22 (+0.22% vs Jun 5 $737.55) ✓ | QQQ $716.07 (+1.56% vs Jun 5 $705.06) ✓ | S&P 7,405.73 ✓</span>
+</div>
+
+<h1>🌃 GAP ATTRIBUTION (v7.5 HYBRID) — Monday, June 8, 2026</h1>
+<p class="ts">Generated ~8 PM ET | After-hours full attribution | Prior scan: Premarket Jun 8, 2026</p>
+
+<hr class="divider">
+
+<!-- OVERNIGHT BRIEFING -->
+<div class="briefing">
+  <span class="amber" style="font-weight:700;">📋 OVERNIGHT BRIEFING — 30-second read</span><br><br>
+  Monday June 8 confirmed the AI semis recovery narrative after Friday's brutal −9.22% SMH wipeout. The triple-catalyst stack — <strong class="bull">MRVL S&P 500 inclusion</strong> (+~$7B forced passive buying June 22), <strong class="bull">MU HBM4 high-volume production</strong> for Nvidia Vera Rubin, and <strong class="bull">NVDA LG Group collaboration</strong> — drove <span class="bull">SMH +4.99%</span> to $598. Apple's WWDC26 delivered the AI software story: Siri rebuilt on Google Gemini AI — stock whipsawed $308→$317→$301 intraday before bouncing to <span class="bull">~$311.75 AH (+3.4%)</span>. IONQ surged +5.5%, IREN +4.6% on BTC→AI HPC pivot. <strong class="amber">Wednesday CPI</strong> (April was 3.8% YoY) is the key risk event — hot print = rate hike fears = Nasdaq under pressure. <strong class="amber">SpaceX SPCX</strong> pricing Thursday night ($135/share, $1.77T) creates liquidity drain into Friday debut. <span class="cyan">Trade the AI tape long with defined stops into CPI.</span>
+</div>
+
+<!-- TOP 5 SIDE BY SIDE -->
+<div class="top5-grid">
+  <div>
+    <h2 style="color:var(--bull);">🟢 TOP 5 ETF GAP-UP CANDIDATES</h2>
+    <div class="top5-card">
+      <div class="rank">1</div>
+      <div class="ticker bull">SMH — VanEck Semiconductor ETF</div>
+      <div class="catalyst">AI Semis Recovery | Close $598.16 (+4.99% vs Jun 5)</div>
+      <div><span class="badge-high">🟢 HIGH</span></div>
+      <div class="levels" style="margin-top:6px;">
+        <span class="amber">Entry:</span> Above $598 on vol, confirm $600 break |
+        <span class="bear">Stop:</span> $588 |
+        <span class="bull">Target:</span> $615–620<br>
+        <span class="muted">Catalyst:</span> MRVL +9.7%, MU +2.7%, NVDA +2.2%, AAPL AH +3.4% tailwind<br>
+        <span class="source">TV MCP, 4 PM ET</span>
+      </div>
+    </div>
+    <div class="top5-card" style="margin-top:8px;">
+      <div class="rank">2</div>
+      <div class="ticker bull">SOXX — iShares Semiconductor ETF</div>
+      <div class="catalyst">AI Semis Confirmation | Close $571.45</div>
+      <div><span class="badge-high">🟢 HIGH</span></div>
+      <div class="levels" style="margin-top:6px;">
+        <span class="amber">Entry:</span> Above $572, confirm SMH first |
+        <span class="bear">Stop:</span> $562 |
+        <span class="bull">Target:</span> $585<br>
+        <span class="source">TV MCP, 4 PM ET</span>
+      </div>
+    </div>
+    <div class="top5-card" style="margin-top:8px; border-left-color:var(--amber);">
+      <div class="rank">3</div>
+      <div class="ticker amber">QQQ — Invesco Nasdaq-100</div>
+      <div class="catalyst">Broad Tech | Close $716.07 (+1.56% vs Jun 5)</div>
+      <div><span class="badge-med">🟡 MEDIUM</span></div>
+      <div class="levels" style="margin-top:6px;">
+        <span class="amber">Entry:</span> Above $718 w/ vol |
+        <span class="bear">Stop:</span> $710 |
+        <span class="bull">Target:</span> $725<br>
+        <span class="muted">Risk:</span> CPI Wednesday could flush QQQ<br>
+        <span class="source">TV MCP, 4 PM ET</span>
+      </div>
+    </div>
+    <div class="top5-card" style="margin-top:8px; border-left-color:var(--amber);">
+      <div class="rank">4</div>
+      <div class="ticker amber">XLK — Technology Select SPDR</div>
+      <div class="catalyst">Broad Tech | Close $184.18</div>
+      <div><span class="badge-med">🟡 MEDIUM</span></div>
+      <div class="levels" style="margin-top:6px;">
+        <span class="amber">Entry:</span> Above $185, watch AAPL open |
+        <span class="bear">Stop:</span> $182 |
+        <span class="bull">Target:</span> $189<br>
+        <span class="source">TV MCP, 4 PM ET</span>
+      </div>
+    </div>
+    <div class="top5-card bear-card" style="margin-top:8px;">
+      <div class="rank">5</div>
+      <div class="ticker bear">XLE — Energy Select SPDR</div>
+      <div class="catalyst">Iran Ceasefire Risk | Close $58.33</div>
+      <div><span class="badge-low">🔴 LOW</span></div>
+      <div class="levels" style="margin-top:6px;">
+        <span class="amber">Entry:</span> Only if oil re-escalates (Brent >$96)<br>
+        <span class="bear">⚠️ FADE RISK:</span> Trump ceasefire confirmation = XLE flash crash<br>
+        <span class="source">TV MCP, 4 PM ET</span>
+      </div>
+    </div>
+  </div>
+  <div>
+    <h2 style="color:var(--bull);">📈 TOP 5 STOCK GAP-UP CANDIDATES</h2>
+    <div class="top5-card">
+      <div class="rank">1</div>
+      <div class="ticker bull">AAPL — Apple Inc</div>
+      <div class="catalyst">WWDC Siri/Gemini AI | Close $301.54 | AH ~$311.75 (+3.4%)</div>
+      <div><span class="badge-high">🟢 HIGH</span></div>
+      <div class="levels" style="margin-top:6px;">
+        <span class="amber">Entry:</span> Gap above $312 on vol; hold above $308 |
+        <span class="bear">Stop:</span> $305 |
+        <span class="bull">Target:</span> $320–325<br>
+        <span class="muted">Catalyst:</span> Siri rebuilt on Gemini AI + Dynamic Island. Tim Cook farewell keynote; John Ternus CEO Sept 1<br>
+        <span class="muted">Parent ETF:</span> XLK, QQQ<br>
+        <a href="https://www.cnbc.com/2026/06/08/apple-wwdc-2026-live-updates.html" class="source">CNBC WWDC 2026 Live</a>
+      </div>
+    </div>
+    <div class="top5-card" style="margin-top:8px;">
+      <div class="rank">2</div>
+      <div class="ticker bull">MRVL — Marvell Technology</div>
+      <div class="catalyst">S&P 500 Inclusion June 22 | Close $288.85 (+9.7%) | AH ⚠️ conflicted</div>
+      <div><span class="badge-high">🟢 HIGH</span> <span class="badge-warn">⚠️ AH unconfirmed</span></div>
+      <div class="levels" style="margin-top:6px;">
+        <span class="amber">Entry:</span> Dip $280–285 (index buying floor) |
+        <span class="bear">Stop:</span> $278 |
+        <span class="bull">Target:</span> $305–310<br>
+        <span class="muted">Thesis holds:</span> ~$7B forced passive buying over 2 weeks (June 22). NVDA $2B investment. Jensen "next trillion-dollar company"<br>
+        <span class="muted">Parent ETF:</span> SMH, SOXX<br>
+        <a href="https://www.cnbc.com/2026/06/05/marvell-technology-flex-sp-500-campbells-pool.html" class="source">CNBC — MRVL S&P inclusion</a>
+      </div>
+    </div>
+    <div class="top5-card" style="margin-top:8px;">
+      <div class="rank">3</div>
+      <div class="ticker bull">MU — Micron Technology</div>
+      <div class="catalyst">HBM4 Mass Production | Close $949.28 | High $962.95</div>
+      <div><span class="badge-high">🟢 HIGH</span></div>
+      <div class="levels" style="margin-top:6px;">
+        <span class="amber">Entry:</span> Above $963 (prior high) or dip $935–940 |
+        <span class="bear">Stop:</span> $920 |
+        <span class="bull">Target:</span> $985–1,000<br>
+        <span class="muted">Catalyst:</span> Entered high-volume HBM4 production for Vera Rubin. 2.8+ TB/s bandwidth. Earnings June 24 = pre-earnings run setup<br>
+        <span class="muted">Parent ETF:</span> SMH<br>
+        <a href="https://www.tomshardware.com/pc-components/dram/micron-enters-high-volume-production-of-hbm4-for-nvidia-vera-rubin" class="source">Tom's Hardware — HBM4 production</a>
+      </div>
+    </div>
+    <div class="top5-card" style="margin-top:8px; border-left-color:var(--amber);">
+      <div class="rank">4</div>
+      <div class="ticker amber">IONQ — IonQ Inc</div>
+      <div class="catalyst">Quantum Sector Leader | Close $62.80 (+5.5% session)</div>
+      <div><span class="badge-med">🟡 MEDIUM</span></div>
+      <div class="levels" style="margin-top:6px;">
+        <span class="amber">Entry:</span> Above $65 (prior day high) |
+        <span class="bear">Stop:</span> $60 |
+        <span class="bull">Target:</span> $70+<br>
+        <span class="muted">Catalyst:</span> $2B Trump quantum grants; IONQ named "core add"; $3.1B cash pile<br>
+        <a href="https://www.zacks.com/stock/news/2920833/best-quantum-stock-following-q1-2026-ionq-qbts-or-rgti" class="source">Zacks — Best Quantum Q1 2026</a>
+      </div>
+    </div>
+    <div class="top5-card" style="margin-top:8px; border-left-color:var(--amber);">
+      <div class="rank">5</div>
+      <div class="ticker amber">IREN — IREN Limited</div>
+      <div class="catalyst">BTC Miner → AI/HPC Pivot | Close $59.19 (+4.6% session)</div>
+      <div><span class="badge-med">🟡 MEDIUM</span></div>
+      <div class="levels" style="margin-top:6px;">
+        <span class="amber">Entry:</span> Above $60 on vol |
+        <span class="bear">Stop:</span> $56 |
+        <span class="bull">Target:</span> $65<br>
+        <span class="muted">Catalyst:</span> Microsoft AI cloud partnership; 4.5 GW power pipeline; HPC revenue 71% of total by year-end<br>
+        <a href="https://bitcoinminingstock.io/blog/investor-sentiment-updates-on-bitcoin-mining-stocks-institutions-bet-big-on-iren-cifr-corz-apld-mara/" class="source">BitcoinMiningStock.io</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- THEME + REGIME BANNER -->
+<div class="theme-banner">
+  <div class="title">🌟 THEME OF THE NIGHT: AI HARDWARE SUPERCYCLE — ALL LAYERS MOVING TOGETHER</div>
+  <div style="margin:8px 0; color:var(--text); font-size:12px;">
+    Silicon (NVDA +2.2% | MRVL +9.7%) &nbsp;•&nbsp; Memory (MU +2.7% HBM4) &nbsp;•&nbsp; Cloud Infra (CRWV Vera Rubin deployment | $100B backlog) &nbsp;•&nbsp; Device AI (AAPL Siri/Gemini AH +3.4%) &nbsp;•&nbsp; Power (IREN +4.6% | OKLO active) &nbsp;•&nbsp; Quantum (IONQ +5.5%)
+  </div>
+  <div class="regime">📡 REGIME: RISK-ON with CPI RISK OVERLAY — Long AI semis; defined stops into Wednesday CPI (April 3.8% YoY)</div>
+</div>
+
+<hr class="divider">
+
+<!-- BARCHART AH GAPPERS (FALLBACK) -->
+<details class="section section-collapse" open>
+  <summary>📊 BARCHART POST-MARKET GAPPERS (⚠️ Chrome MCP DOWN — web_search fallback)</summary>
+  <p class="amber" style="margin-bottom:8px;">⚠️ Chrome MCP unavailable. AH gapper table built from TV MCP session data + web_search. Large-cap AH screener could not be directly pulled.</p>
+  <table>
+    <tr>
+      <th>Ticker</th><th>Close (TV MCP)</th><th>AH Price</th><th>AH %</th><th>AH Vol</th><th>Catalyst</th><th>Conv.</th>
+    </tr>
+    <tr>
+      <td class="bull">AAPL</td>
+      <td>$301.54</td>
+      <td class="bull">~$311.75</td>
+      <td class="bull">+3.4%</td>
+      <td>elevated (77.9M session)</td>
+      <td>WWDC Siri/Gemini AI reveal bounce after intraday reversal. <a href="https://www.cnbc.com/2026/06/08/apple-wwdc-2026-live-updates.html">CNBC</a></td>
+      <td><span class="badge-high">🟢 HIGH</span></td>
+    </tr>
+    <tr>
+      <td class="amber">MRVL</td>
+      <td>$288.85</td>
+      <td class="amber">⚠️ conflicted</td>
+      <td class="amber">−2.75% OR +5.8%</td>
+      <td>84.5M session</td>
+      <td>S&P inclusion; two conflicting AH data sources — verify manually. <a href="https://www.cnbc.com/2026/06/05/marvell-technology-flex-sp-500-campbells-pool.html">CNBC</a></td>
+      <td><span class="badge-warn">⚠️ VERIFY</span></td>
+    </tr>
+    <tr>
+      <td class="muted">GMHS</td>
+      <td>—</td>
+      <td class="bull">—</td>
+      <td class="bull">+61%</td>
+      <td>—</td>
+      <td>Micro-cap M&A speculation — <strong>EXCLUDED: &lt;$1B mkt cap</strong></td>
+      <td><span class="badge-low">EXCLUDED</span></td>
+    </tr>
+    <tr>
+      <td class="muted">BGMS</td>
+      <td>—</td>
+      <td class="bull">—</td>
+      <td class="bull">+17%</td>
+      <td>—</td>
+      <td>All-stock acquisition of Future NRG — <strong>EXCLUDED: &lt;$1B mkt cap</strong></td>
+      <td><span class="badge-low">EXCLUDED</span></td>
+    </tr>
+    <tr>
+      <td class="muted">JDZG</td>
+      <td>—</td>
+      <td class="bear">—</td>
+      <td class="bear">−60%</td>
+      <td>—</td>
+      <td>Recent IPO liquidity flush — <strong>EXCLUDED: &lt;$1B mkt cap</strong></td>
+      <td><span class="badge-low">EXCLUDED</span></td>
+    </tr>
+  </table>
+</details>
+
+<!-- ETF AH SWEEP -->
+<details class="section section-collapse" open>
+  <summary>📈 ETF AFTER-HOURS SWEEP (TV MCP — key names only; full 62-ETF sweep not completed)</summary>
+  <p class="amber" style="margin-bottom:8px;">⚠️ TV MCP quote_get returns current chart symbol only. Full 62-ETF sweep requires sequential chart_set_symbol+quote calls. Key ETFs pulled below.</p>
+  <table>
+    <tr><th>ETF</th><th>Theme</th><th>Close (TV MCP)</th><th>High</th><th>Low</th><th>Volume</th><th>Day Change vs Jun 5</th><th>Conv.</th></tr>
+    <tr><td class="bull">SMH</td><td>AI Semis</td><td>$598.16</td><td>$606.20</td><td>$588.54</td><td>13.8M</td><td class="bull">+4.99%</td><td><span class="badge-high">🟢 HIGH</span></td></tr>
+    <tr><td class="bull">SOXX</td><td>AI Semis</td><td>$571.45</td><td>$581.38</td><td>$560.79</td><td>12.8M</td><td class="bull">+est 4-5%</td><td><span class="badge-high">🟢 HIGH</span></td></tr>
+    <tr><td class="amber">QQQ</td><td>Nasdaq-100</td><td>$716.07</td><td>$723.03</td><td>$713.07</td><td>47.4M</td><td class="bull">+1.56%</td><td><span class="badge-med">🟡 MEDIUM</span></td></tr>
+    <tr><td class="amber">XLK</td><td>Tech Select</td><td>$184.18</td><td>$186.71</td><td>$183.17</td><td>14.7M</td><td class="amber">moderate</td><td><span class="badge-med">🟡 MEDIUM</span></td></tr>
+    <tr><td class="amber">SPY</td><td>S&P 500</td><td>$739.22</td><td>$745.34</td><td>$738.19</td><td>49.3M</td><td class="bull">+0.22%</td><td><span class="badge-med">🟡 MEDIUM</span></td></tr>
+    <tr><td class="muted">XLE</td><td>Energy</td><td>$58.33</td><td>$58.96</td><td>$57.97</td><td>25.7M</td><td class="amber">+modest</td><td><span class="badge-low">🔴 FADE RISK</span></td></tr>
+  </table>
+</details>
+
+<hr class="divider">
+
+<!-- TIER 1 -->
+<details class="section section-collapse" open>
+  <summary>🔴 TIER 1: ALWAYS REPORT — Mag 7 / Hyperscalers / Bellwethers</summary>
+
+  <h3 style="color:var(--bull);">📱 AAPL — Apple Inc <span class="badge-high">🟢 HIGH AH SIGNAL</span></h3>
+  <table>
+    <tr><th>Metric</th><th>Value</th><th>Source</th></tr>
+    <tr><td>Session Range</td><td>$301.17 – $317.40</td><td>TV MCP, 4 PM ET</td></tr>
+    <tr><td>Close</td><td class="bear">$301.54</td><td>TV MCP, 4 PM ET</td></tr>
+    <tr><td>AH Price (~7:35 PM)</td><td class="bull">~$311.75 (+3.4%)</td><td>WebSearch, 7:35 PM ET</td></tr>
+    <tr><td>Volume</td><td>77.9M</td><td>TV MCP</td></tr>
+    <tr><td>Catalyst Type</td><td>PRODUCT LAUNCH / STRATEGIC PARTNERSHIP</td><td></td></tr>
+  </table>
+  <p><strong class="cyan">Catalyst:</strong> WWDC26 — Tim Cook's final keynote as CEO. Apple revealed <strong>Siri rebuilt on Google Gemini AI</strong>, multi-step command support, Dynamic Island integration, revamped Apple Intelligence. Siri now has a dedicated app. macOS "Golden Gate" announced. This addresses Apple's biggest competitive vulnerability (AI lag vs Google/OpenAI/Meta).</p>
+  <p style="margin-top:6px;"><strong class="amber">Pattern:</strong> Classic WWDC whipsaw — market priced in expectations → spike to $317.40 → profit-taking → closed at day low $301.54 (−2.3%) → AH buyers stepped in on AI substance, now +3.4% to ~$312. The Siri/Gemini partnership is strategically important: Apple distributing Google AI at scale is revenue-sharing and positions AAPL back in the AI race.</p>
+  <p style="margin-top:6px;" class="muted"><strong>CEO Note:</strong> John Ternus (SVP Hardware Engineering) becomes CEO September 1, 2026. Cook becomes Executive Chairman. <a href="https://www.apple.com/newsroom/2026/04/tim-cook-to-become-apple-executive-chairman-john-ternus-to-become-apple-ceo/">Apple Newsroom, April 20</a> — this was NOT breaking news today; market has had 7 weeks to digest it.</p>
+  <p class="source">Sources: <a href="https://www.cnbc.com/2026/06/08/apple-wwdc-2026-live-updates.html">CNBC WWDC 2026</a> | <a href="https://www.foxbusiness.com/live-news/apple-tim-cook-wwdc26-keynote-iphone-ai-tech-june-8">Fox Business Live</a> | <a href="https://www.macobserver.com/news/tim-cook-prepares-for-his-final-wwdc-keynote-before-stepping-down/">MacObserver</a></p>
+
+  <hr class="divider" style="margin:10px 0;">
+
+  <h3>📊 MAG 7 SESSION SUMMARY (TV MCP, 4 PM ET)</h3>
+  <table>
+    <tr><th>Ticker</th><th>Close</th><th>High</th><th>Volume</th><th>Day Bias</th><th>AH Signal</th></tr>
+    <tr><td class="bull">AAPL</td><td>$301.54</td><td class="bull">$317.40</td><td>77.9M</td><td><span class="bear">−2.3% session</span></td><td class="bull">+3.4% AH (~$311.75)</td></tr>
+    <tr><td class="bull">NVDA</td><td>$208.64</td><td>$210.47</td><td>138.3M</td><td><span class="amber">~flat vs open</span></td><td class="muted">no data</td></tr>
+    <tr><td class="bull">TSLA</td><td class="bull">$408.95</td><td>$412.94</td><td>50.3M</td><td><span class="bull">+3.2% from open</span></td><td class="muted">~$394 (web, unconf.)</td></tr>
+    <tr><td>MSFT</td><td>$411.74</td><td>$417.16</td><td>32.1M</td><td class="muted">−0.6%</td><td class="muted">no data</td></tr>
+    <tr><td>AMZN</td><td>$245.22</td><td>$249.42</td><td>33.9M</td><td class="muted">~flat</td><td class="muted">no data</td></tr>
+    <tr><td class="bear">META</td><td>$585.39</td><td>$592.00</td><td>19.5M</td><td class="bear">−1.1%</td><td class="muted">no data</td></tr>
+    <tr><td>GOOGL</td><td>$363.31</td><td>$366.20</td><td>27.9M</td><td class="muted">~flat</td><td class="muted">no data</td></tr>
+  </table>
+
+  <hr class="divider" style="margin:10px 0;">
+
+  <h3>💾 SEMIS BELLWETHERS</h3>
+  <table>
+    <tr><th>Ticker</th><th>Close</th><th>High</th><th>Low</th><th>Volume</th><th>vs Jun 5</th><th>Key Note</th></tr>
+    <tr><td class="bull">MRVL</td><td class="bull">$288.85</td><td class="bull">$304.96</td><td>$281.36</td><td>84.5M</td><td class="bull">+9.7%</td><td>S&P inclusion + NVDA $2B. AH data conflicted.</td></tr>
+    <tr><td class="bull">MU</td><td class="bull">$949.28</td><td class="bull">$962.95</td><td>$916.50</td><td>54.1M</td><td class="bull">+2.7%</td><td>HBM4 mass production. Earnings June 24.</td></tr>
+    <tr><td class="bull">NVDA</td><td>$208.64</td><td>$210.47</td><td>$206.00</td><td>138.3M</td><td class="bull">+2.2%</td><td>LG Group collab. Highest volume stock pulled.</td></tr>
+    <tr><td>SMCI</td><td>$43.99</td><td>$44.74</td><td>$42.18</td><td>31.6M</td><td class="muted">modest</td><td>Vera Rubin liquid cooling expansion</td></tr>
+  </table>
+
+  <hr class="divider" style="margin:10px 0;">
+
+  <h3>🏦 MACRO PROXIES</h3>
+  <table>
+    <tr><th>Ticker</th><th>Close</th><th>Volume</th><th>Session Note</th></tr>
+    <tr><td>XLE</td><td>$58.33</td><td>25.7M</td><td><span class="muted">Modest gain — ceasefire narrative limiting upside. Brent retreated from $97 spike.</span></td></tr>
+    <tr><td>TSLA</td><td class="bull">$408.95</td><td>50.3M</td><td><span class="bull">Strong — JPMorgan upgrade follow-through. Best Mag7 session.</span></td></tr>
+  </table>
+
+  <h3>🏛️ MATERIAL 8-K FILINGS (Jun 8, >$1B)</h3>
+  <div class="macro-card">
+    <strong class="purple">NNE (Nano Nuclear Energy)</strong> — Multiple active 8-K filings FY2026. NRC formally accepted Construction Permit Application for KRONOS Micromodular Reactor at Univ. of Illinois Urbana-Champaign (accepted May 20, 2026). Catalyst TYPE: REGULATORY.<br>
+    <a href="https://www.sec.gov/Archives/edgar/data/1923891/000149315226025709/form8-k.htm" class="source">SEC EDGAR 8-K</a>
+  </div>
+  <div class="macro-card" style="margin-top:6px;">
+    <strong class="purple">OKLO — ARMEC Acquisition</strong> — Acquired ARMEC to expand advanced reactor manufacturing capacity. Catalyst TYPE: M&A / STRATEGIC. $58.94 close.
+  </div>
+</details>
+
+<!-- TIER 2 -->
+<details class="section section-collapse" open>
+  <summary>⚡ TIER 2: THEME-ALIGNED MOVERS</summary>
+
+  <h3 class="bull">AI SEMIS / AI MEMORY</h3>
+  <table>
+    <tr><th>Ticker</th><th>Catalyst Type</th><th>Close</th><th>High</th><th>Volume</th><th>Conviction</th><th>Tomorrow Setup</th><th>Source</th></tr>
+    <tr>
+      <td class="bull">MRVL</td>
+      <td>S&P INCLUSION + STRATEGIC</td>
+      <td class="bull">$288.85</td>
+      <td class="bull">$304.96</td>
+      <td>84.5M</td>
+      <td><span class="badge-high">🟢 HIGH</span></td>
+      <td>Dip $280–285 = add. $7B forced buying June 22. AH data conflicted — verify before open.</td>
+      <td><a href="https://www.cnbc.com/2026/06/05/marvell-technology-flex-sp-500-campbells-pool.html">CNBC</a></td>
+    </tr>
+    <tr>
+      <td class="bull">MU</td>
+      <td>PRODUCT / PRODUCTION</td>
+      <td class="bull">$949.28</td>
+      <td class="bull">$962.95</td>
+      <td>54.1M</td>
+      <td><span class="badge-high">🟢 HIGH</span></td>
+      <td>Pre-earnings run (earnings June 24). Break above $963 = continuation. Dip $935–940 = entry.</td>
+      <td><a href="https://www.tomshardware.com/pc-components/dram/micron-enters-high-volume-production-of-hbm4-for-nvidia-vera-rubin">Tom's Hardware</a></td>
+    </tr>
+    <tr>
+      <td class="amber">CRWV</td>
+      <td>CONTRACT / PLATFORM</td>
+      <td>$102.37</td>
+      <td>$104.30</td>
+      <td>23.4M</td>
+      <td><span class="badge-med">🟡 MEDIUM</span></td>
+      <td>Consolidating. $100B backlog. Watch $105 break. $850M junk bond slightly concerning.</td>
+      <td><a href="https://www.tipranks.com/news/nbis-crwv-smci-whats-pushing-these-3-ai-infrastructure-stocks-higher">TipRanks</a></td>
+    </tr>
+  </table>
+
+  <h3 class="cyan">QUANTUM COMPUTING</h3>
+  <table>
+    <tr><th>Ticker</th><th>Catalyst Type</th><th>Close</th><th>High</th><th>Volume</th><th>Conviction</th><th>Source</th></tr>
+    <tr>
+      <td class="cyan">IONQ</td>
+      <td>POLICY-STAKE / FUNDING</td>
+      <td class="bull">$62.80</td>
+      <td class="bull">$64.90</td>
+      <td>28.6M</td>
+      <td><span class="badge-med">🟡 MEDIUM</span></td>
+      <td><a href="https://www.zacks.com/stock/news/2920833/best-quantum-stock-following-q1-2026-ionq-qbts-or-rgti">Zacks</a></td>
+    </tr>
+    <tr>
+      <td class="cyan">RGTI</td>
+      <td>POLICY-STAKE / CHIPS ACT</td>
+      <td>$21.77</td>
+      <td>$22.79</td>
+      <td>35.5M</td>
+      <td><span class="badge-med">🟡 MEDIUM</span></td>
+      <td><a href="https://www.tradingkey.com/analysis/stocks/us-stocks/261924210-rigetti-rgti-quantum-computing-government-funding-d-wave-qbts-ionq-ibm-commercialization-nvidia-chips-act-quantum-rally-tradingkey">TradingKey</a></td>
+    </tr>
+  </table>
+
+  <h3 style="color:var(--orange);">NUCLEAR ENERGY</h3>
+  <table>
+    <tr><th>Ticker</th><th>Catalyst Type</th><th>Close</th><th>Range</th><th>Volume</th><th>Conviction</th></tr>
+    <tr>
+      <td style="color:var(--orange);">OKLO</td>
+      <td>M&A</td>
+      <td>$58.94</td>
+      <td>$58.00–$60.35</td>
+      <td>8.9M</td>
+      <td><span class="badge-med">🟡 MEDIUM</span></td>
+    </tr>
+  </table>
+  <p class="muted">NNE: NRC permit accepted (May 20 catalyst, multiple 8-Ks active). SMR: not pulled today — insufficient volume data.</p>
+
+  <h3 style="color:var(--yellow);">BTC MINERS → AI/HPC PIVOT</h3>
+  <table>
+    <tr><th>Ticker</th><th>Catalyst Type</th><th>Close</th><th>High</th><th>Volume</th><th>vs Open</th><th>Conviction</th><th>Source</th></tr>
+    <tr>
+      <td class="bull">IREN</td>
+      <td>STRATEGIC / CONTRACT</td>
+      <td class="bull">$59.19</td>
+      <td class="bull">$59.67</td>
+      <td>41.1M</td>
+      <td class="bull">+4.6%</td>
+      <td><span class="badge-high">🟢 HIGH</span></td>
+      <td><a href="https://bitcoinminingstock.io/blog/investor-sentiment-updates-on-bitcoin-mining-stocks-institutions-bet-big-on-iren-cifr-corz-apld-mara/">BitcoinMiningStock.io</a></td>
+    </tr>
+    <tr>
+      <td class="amber">MARA</td>
+      <td>STRATEGIC / BTC</td>
+      <td>$13.78</td>
+      <td>$13.97</td>
+      <td>32.8M</td>
+      <td class="bull">+4.3%</td>
+      <td><span class="badge-med">🟡 MEDIUM</span></td>
+      <td><a href="https://decrypt.co/367650/bitcoin-miner-mara-sells-1-5-billion-btc-q1-loss">Decrypt</a></td>
+    </tr>
+  </table>
+</details>
+
+<!-- TIER 3 EMERGING -->
+<details class="section section-collapse">
+  <summary>🛰 TIER 3: EMERGING THEME RADAR</summary>
+
+  <div class="section" style="border-left: 3px solid var(--cyan);">
+    <h3 class="cyan">Rare Earth Metals — MP Materials + USA Rare Earth</h3>
+    <p><strong>Motley Fool article published June 8:</strong> "Better rare earth mining stock to buy in June — MP vs USAR." <a href="https://www.fool.com/investing/2026/06/08/better-rare-earth-mining-stock-to-buy-in-june-mp-m/">Source</a></p>
+    <ul style="margin:8px 0 8px 16px;">
+      <li><strong>MP Materials (MP):</strong> Q1 2026 NdPr production record +63% YoY. Adj. EBITDA +$36.6M (vs −$2.7M prior year). <a href="https://coincentral.com/rare-earth-stocks-with-perfect-buy-ratings-mp-materials-usa-rare-earth-top-the-list/">Perfect Buy ratings noted</a></li>
+      <li><strong>USAR:</strong> Early-stage, Q1 Rev $6M. Serra Verde ($2.8B) and Less Common Metals (~$220M) acquisitions. Phase 1a magnet plant commissioned.</li>
+      <li><strong class="bear">RISK:</strong> MP accused USAR of magnet technology theft. <a href="https://www.mining.com/mp-materials-accuses-usa-rare-earth-of-magnet-tech-theft/">Mining.com</a></li>
+    </ul>
+    <p class="muted">Cluster signal: Two rare-earth names active simultaneously. China supply chain diversification narrative building. Watch for ETF (REMX) rotation signal.</p>
+    <div><span class="badge-med">🟡 MEDIUM — Monitor for ETF/cluster upgrade</span></div>
+  </div>
+
+  <div class="section" style="border-left: 3px solid var(--cyan); margin-top:8px;">
+    <h3 class="cyan">FLEX (Flex Ltd) — S&P 500 Inclusion Companion Trade</h3>
+    <p>+4.3% session per TheStreet. Joining S&P 500 alongside MRVL effective June 22. Same index-inclusion forced-buying dynamic as MRVL but lower institutional awareness. Worth monitoring as a secondary index-inclusion trade.</p>
+    <div><span class="badge-med">🟡 MEDIUM</span></div>
+  </div>
+</details>
+
+<!-- TIER 4 MACRO -->
+<details class="section section-collapse" open>
+  <summary>🌍 TIER 4: MACRO / EXOGENOUS</summary>
+
+  <div class="macro-card">
+    <strong class="purple">🕊️ IRAN CEASEFIRE ADVANCING</strong><br>
+    Netanyahu confirmed Israel ceased strikes on Iran. Iran suspended operations but warned it would resume if Israeli strikes in southern Lebanon continued. US forces disabled unladen oil tanker in Gulf of Oman (blockade violation, June 8). Trump facilitating talks.<br>
+    <strong>Market implication:</strong> XLE/OIH long thesis weakening. Hormuz reopening = oil premium unwinding = XLE flash crash risk. Energy YTD +21.6% — most vulnerable to ceasefire confirmation.<br>
+    <strong>Regime impact:</strong> RISK-ON — VIX -12.79% pre-market. Geopolitical tail risk reducing.<br>
+    <a href="https://www.cnn.com/2026/06/07/world/live-news/iran-war-trump-israel-lebanon" class="source">CNN — Iran and Israel halt strikes</a>
+  </div>
+
+  <div class="macro-card" style="margin-top:8px;">
+    <strong class="purple">🌡️ CPI WEDNESDAY JUNE 10, 8:30 AM ET — HIGH RISK EVENT</strong><br>
+    May 2026 CPI release. April 2026 data: <strong class="bear">+3.8% YoY (+0.6% MoM) — highest since May 2023</strong>.<br>
+    Energy: +17.9% YoY | Gasoline: +28.4% | Core CPI: +2.8% (above +2.7% forecast).<br>
+    <strong class="amber">Binary risk:</strong> Benign print = Nasdaq/SMH leg higher. Hot print = rate hike fears = QQQ/SMH stops triggered.<br>
+    <strong class="amber">Action:</strong> Reduce leverage Wednesday morning before 8:30 AM if holding AI semis longs.<br>
+    <a href="https://www.bls.gov/news.release/cpi.nr0.htm" class="source">BLS — CPI April 2026</a>
+  </div>
+
+  <div class="macro-card" style="margin-top:8px;">
+    <strong class="purple">🚀 SpaceX SPCX IPO — Pricing June 11, Trading June 12</strong><br>
+    $135/share fixed price. Implied valuation: ~$1.77 trillion (7th largest US company by mkt cap). ~125 analysts from 21 banks. ~$75B raise — largest IPO in history.<br>
+    <strong class="amber">Liquidity drain:</strong> Retail capital lockup ahead of Friday debut. Small-cap/speculative names (quantum, miners) could underperform Thursday/Friday as retail rotates to SPCX.<br>
+    <a href="https://www.cnbc.com/2026/06/03/spacex-ipo-stock-price-roadshow-musk.html" class="source">CNBC — SpaceX $135 price</a> | <a href="https://finance.yahoo.com/markets/stocks/articles/june-8-could-mark-beginning-130000277.html" class="source">Yahoo Finance — IPO overview</a>
+  </div>
+</details>
+
+<!-- WIRE SCOOPS -->
+<details class="section section-collapse" open>
+  <summary>📰 WIRE SERVICE SCOOPS (4 PM – 8 PM)</summary>
+
+  <div class="wire-card">
+    <span class="orange">Fox Business</span> — Live: Apple's Tim Cook delivers WWDC26 keynote in his farewell as CEO | <span class="ts">Jun 8, 2026</span><br>
+    Tickers: <span class="bull">AAPL</span> | <a href="https://www.foxbusiness.com/live-news/apple-tim-cook-wwdc26-keynote-iphone-ai-tech-june-8">Fox Business Live</a>
+  </div>
+  <div class="wire-card">
+    <span class="orange">CNBC</span> — WWDC 2026: Apple makes its big Siri AI reveal, Liquid Glass OS revamp | <span class="ts">Jun 8, 2026</span><br>
+    Tickers: <span class="bull">AAPL</span> | Key: Siri rebuilt on Google Gemini | <a href="https://www.cnbc.com/2026/06/08/apple-wwdc-2026-live-updates.html">CNBC WWDC</a>
+  </div>
+  <div class="wire-card">
+    <span class="orange">Apple Newsroom</span> (confirmed today) — Tim Cook → Executive Chairman; John Ternus → CEO Sept 1, 2026 | <span class="ts">Originally Apr 20; confirmed at WWDC Jun 8</span><br>
+    <a href="https://www.apple.com/newsroom/2026/04/tim-cook-to-become-apple-executive-chairman-john-ternus-to-become-apple-ceo/">Apple Newsroom</a> | <a href="https://fortune.com/article/who-is-john-ternus-new-apple-ceo-tim-cook-retirement/">Fortune — Who is John Ternus</a>
+  </div>
+  <div class="wire-card">
+    <span class="orange">Bloomberg</span> — Stock market today: Nasdaq +0.86%, S&P +0.30%; semiconductor rebound, Middle East ceasefire fragility | <span class="ts">Jun 8, 2026</span><br>
+    <a href="https://www.bloomberg.com/news/articles/2026-06-08/stock-market-today-dow-s-p-live-updates">Bloomberg</a>
+  </div>
+  <div class="wire-card">
+    <span class="orange">Reuters</span> — South Korea seeks priority Nvidia Vera Rubin GPU supply; Jensen Huang in Seoul meeting SK Group, Samsung, LG, Hyundai, Naver | <span class="ts">Jun 8, 2026</span><br>
+    Tickers: <span class="bull">NVDA</span>, TSM | <a href="https://www.tradingview.com/news/reuters.com,2026:newsml_P8N41D048:0-south-korea-to-seek-priority-supply-of-nvidia-vera-rubin-gpus-science-minister-says/">Reuters via TradingView</a>
+  </div>
+  <div class="wire-card">
+    <span class="orange">Yahoo Finance</span> — "June 8 Could Mark the Beginning of the Biggest IPO in History" | <span class="ts">Jun 8, 2026</span><br>
+    Tickers: <span class="cyan">SPCX</span> | <a href="https://finance.yahoo.com/markets/stocks/articles/june-8-could-mark-beginning-130000277.html">Yahoo Finance</a>
+  </div>
+</details>
+
+<!-- OPTIONS FLOW -->
+<details class="section section-collapse">
+  <summary>🔵 AFTER-HOURS OPTIONS FLOW</summary>
+  <p class="amber">⚠️ Chrome MCP down — Unusual Whales and full options flow not available. Findings from web_search fallback.</p>
+
+  <div class="options-card">
+    <strong class="blue">HNGE (Hinge Health)</strong> — <span class="bull">8,653 calls, 9× average volume, 5× put volume</span>. Concentrated June 18 expiry, $75.00 strike. Unusual bullish positioning. Catalyst unconfirmed — possible M&A speculation or earnings preview.<br>
+    <span class="badge-warn">⚠️ Investigate manually</span><br>
+    <a href="https://www.benzinga.com/calendars/unusual-options-activity" class="source">Benzinga Unusual Options</a>
+  </div>
+  <div class="options-card" style="margin-top:6px;">
+    <strong class="blue">AAPL</strong> — Elevated options activity expected given 77.9M session volume + AH +3.4% bounce. Specific flow unavailable — Chrome MCP down. WWDC vol spike likely drove significant call activity.
+  </div>
+  <div class="options-card" style="margin-top:6px;">
+    <strong class="blue">MARA / IREN</strong> — Likely elevated given sector momentum and institutional positioning in BTC miner → AI HPC pivots. Unconfirmed — pull from UW manually.
+  </div>
+</details>
+
+<!-- EARNINGS PREVIEW -->
+<details class="section section-collapse" open>
+  <summary>📅 TOMORROW'S EARNINGS + UPCOMING SCHEDULE</summary>
+  <p class="muted">No major >$1B tracked-theme earnings on Tuesday June 9.</p>
+  <table>
+    <tr><th>Date</th><th>Event</th><th>Time</th><th>Key Numbers</th><th>Sector Read-Through</th><th>Impact</th></tr>
+    <tr>
+      <td>Wed Jun 10</td>
+      <td class="bear">CPI — May 2026</td>
+      <td>8:30 AM ET</td>
+      <td>April: +3.8% YoY. Core +2.8%.</td>
+      <td>All sectors — binary risk event</td>
+      <td><span class="badge-low">🔴 HIGH RISK</span></td>
+    </tr>
+    <tr>
+      <td>Wed Jun 10</td>
+      <td class="amber">ORCL — Q4 FY2026 Earnings</td>
+      <td>After close</td>
+      <td>EPS est $1.96 (+15.3% YoY). OCI +84% last Q. RPO $553B (+325% YoY).</td>
+      <td>AI cloud infra (CRWV, AMZN, MSFT). Key OCI growth signal.</td>
+      <td><span class="badge-med">🟡 HIGH IMPACT</span></td>
+    </tr>
+    <tr>
+      <td>Thu Jun 11</td>
+      <td class="purple">SpaceX SPCX Investor Event</td>
+      <td>Day</td>
+      <td>~1,500 retail participants</td>
+      <td>RKLB, space sector. Liquidity drain from speculative names.</td>
+      <td><span class="badge-med">🟡 MEDIUM</span></td>
+    </tr>
+    <tr>
+      <td>Thu Jun 11 AH</td>
+      <td class="cyan">SpaceX SPCX IPO Pricing</td>
+      <td>After close</td>
+      <td>$135/share. $1.77T valuation.</td>
+      <td>Largest IPO in history. Liquidity drain risk for small-caps.</td>
+      <td><span class="badge-low">🔴 HIGH LIQUIDITY DRAIN</span></td>
+    </tr>
+    <tr>
+      <td>Fri Jun 12</td>
+      <td class="bull">SpaceX SPCX Nasdaq Debut</td>
+      <td>Market open</td>
+      <td>$135 fixed price. ~$75B raise.</td>
+      <td>Space sector (RKLB, ASTS, PL) — halo or compete-for-capital dynamic</td>
+      <td><span class="badge-high">🟢 HISTORIC EVENT</span></td>
+    </tr>
+    <tr>
+      <td>Tue Jun 16–17</td>
+      <td class="amber">FOMC Meeting</td>
+      <td>—</td>
+      <td>No change expected; hawkish tone risk</td>
+      <td>Rate-sensitive sectors</td>
+      <td><span class="badge-med">🟡 MEDIUM</span></td>
+    </tr>
+    <tr>
+      <td>Tue Jun 24</td>
+      <td class="bull">MU — Micron Earnings</td>
+      <td>After close</td>
+      <td>—</td>
+      <td>HBM4 ramp confirmation. Vera Rubin demand.</td>
+      <td><span class="badge-high">🟢 HIGH — pre-earnings run</span></td>
+    </tr>
+  </table>
+</details>
+
+<!-- EOD ENTRIES -->
+<details class="section section-collapse" open>
+  <summary>📈 EOD ENTRY CANDIDATES (Stockbee/Qullamaggie pattern — 3-5 day hold)</summary>
+  <table>
+    <tr><th>Ticker</th><th>Theme</th><th>Entry Thesis</th><th>Entry Zone</th><th>Stop</th><th>Target</th><th>Hold Duration</th></tr>
+    <tr>
+      <td class="bull">MRVL</td>
+      <td>S&P Inclusion</td>
+      <td>~$7B forced passive buying June 22. Every dip is bought by index buyers. 2-week tailwind window.</td>
+      <td class="amber">$280–285 dip</td>
+      <td class="bear">$278</td>
+      <td class="bull">$305–310</td>
+      <td>Through June 22</td>
+    </tr>
+    <tr>
+      <td class="bull">MU</td>
+      <td>HBM4 / AI Memory</td>
+      <td>Pre-earnings run (earnings June 24). HBM4 mass production = re-rating catalyst. Vera Rubin Q3 delivery visibility.</td>
+      <td class="amber">$935–940 dip</td>
+      <td class="bear">$920</td>
+      <td class="bull">$985–1,000</td>
+      <td>3–5 days / hold into June 24 earnings</td>
+    </tr>
+    <tr>
+      <td class="amber">IREN</td>
+      <td>BTC Miner → AI/HPC</td>
+      <td>MSFT AI cloud partnership + 4.5 GW pipeline. HPC revenue 71% of total by year-end. Low market awareness creates re-rating opportunity.</td>
+      <td class="amber">Above $60</td>
+      <td class="bear">$56</td>
+      <td class="bull">$65</td>
+      <td>3–5 days</td>
+    </tr>
+  </table>
+</details>
+
+<!-- FADE RISKS -->
+<details class="section section-collapse">
+  <summary>🔴 FADE RISKS (ETFs + Stocks)</summary>
+  <h3>ETF Fade Risks</h3>
+  <table>
+    <tr><th>ETF</th><th>Risk</th><th>Trigger</th></tr>
+    <tr><td class="bear">XLE</td><td>Iran ceasefire advancing — oil premium unwinding</td><td>Trump official ceasefire statement = flash crash. Brent below $90 = XLE back to $55</td></tr>
+    <tr><td class="bear">ITA (Defense)</td><td>Ceasefire talks = defense procurement cycle cooling</td><td>Recent earnings: RTX −11%, LMT −13%. Ceasefire confirmation = sector rotation out</td></tr>
+    <tr><td class="amber">GLD</td><td>Gold losing geopolitical risk premium</td><td>VIX −12.79%. Rate hike risk partially supportive but outweighed by risk-on sentiment</td></tr>
+  </table>
+  <h3>Stock Fade Risks</h3>
+  <table>
+    <tr><th>Stock</th><th>Risk</th><th>Trigger</th></tr>
+    <tr><td class="bear">ORCL</td><td>Sold off $217.75→$211.82 heading into Wed earnings (−2.7%)</td><td>Distribution signal. Miss or weak OCI guidance = accelerated selloff</td></tr>
+    <tr><td class="bear">META</td><td>$84.75B equity raise overhang</td><td>Opened $592, closed $585. No new positive catalyst. Avoid longs.</td></tr>
+    <tr><td class="amber">MRVL (conditional)</td><td>If AH is actually −2.75% (not +5.8%)</td><td>AH data conflicted — if sellers are washing out, gap fill to $280 is possible. Use $278 as hard stop.</td></tr>
+  </table>
+</details>
+
+<!-- ASSUMPTION AUDIT -->
+<details class="section section-collapse">
+  <summary>🔍 ASSUMPTION AUDIT (Step 13)</summary>
+  <table>
+    <tr><th>Assumption</th><th>Risk Level</th><th>If Wrong</th></tr>
+    <tr><td>Chrome MCP down — Barchart/Finviz/UW skipped</td><td class="amber">MODERATE</td><td>AH volume data and options flow incomplete. Pull manually from UW and Barchart before open.</td></tr>
+    <tr><td>TV MCP quote_get = current chart symbol only (62-ETF sweep not completed)</td><td class="bear">HIGH</td><td>Only ~20 tickers pulled vs 62-ETF universe. Theme ETFs not pulled: ITA, GLD, ARKQ, BOTZ, REMX, etc.</td></tr>
+    <tr><td>MRVL AH data conflicted (Agent 1: −2.75% vs search: +5.8%)</td><td class="bear">HIGH</td><td>Verify via Yahoo Finance/CNBC before open. Thesis is intact but entry sizing depends on AH direction.</td></tr>
+    <tr><td>AAPL AH $311.75 (+3.4%)</td><td class="amber">LOW-MEDIUM</td><td>Single WebSearch data point (7:35 PM ET). Direction consistent with AI product reveal narrative. Verify at open.</td></tr>
+    <tr><td>CPI Wednesday benign</td><td class="bear">HIGH</td><td>April 3.8% YoY was hot. Hot May print = rate hike fears = SMH/QQQ longs need hard stops. REDUCE LEVERAGE BEFORE 8:30 AM WED.</td></tr>
+    <tr><td>Iran ceasefire holds</td><td class="amber">MEDIUM</td><td>Iran warned it would resume if Israeli strikes continue in Lebanon. If ceasefire breaks → Brent back to $97+ = XLE/OIH spike, SMH unaffected.</td></tr>
+    <tr><td>SpaceX SPCX liquidity drain minimal Mon/Tue</td><td class="amber">MEDIUM</td><td>Retail may be pre-allocating capital as early as Tuesday. Watch small-cap/speculative vol for signs of rotation.</td></tr>
+    <tr><td>MU at $949.28 is correct (vs premarket anchor $924.80)</td><td class="muted">LOW</td><td>TV MCP confirms $949.28 close with high $962.95 and vol 54.1M — fully consistent with HBM4 production catalyst driving +$24/share intraday from anchor.</td></tr>
+  </table>
+</details>
+
+<hr class="divider">
+<p class="muted" style="text-align:center; font-size:11px;">
+  Gap Attribution v7.5 HYBRID — June 8, 2026 | TV MCP ✅ | Chrome MCP ⚠️ DOWN | web_search ✅ | Generated ~8 PM ET<br>
+  All prices from TV MCP (session close, 4 PM ET) unless noted. AH prices from web_search — verify before trading.<br>
+  This is for informational purposes only. Not investment advice.
+</p>
+
+</body>
+</html>
