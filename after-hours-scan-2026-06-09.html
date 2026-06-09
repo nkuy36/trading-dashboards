@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>After-Hours Scan — June 9, 2026</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0a0e17;
+      --bg2: #0d1220;
+      --bg3: #111827;
+      --border: #1e293b;
+      --text: #e2e8f0;
+      --muted: #64748b;
+      --accent: #3b82f6;
+      --green: #22c55e;
+      --red: #ef4444;
+      --yellow: #eab308;
+      --orange: #f97316;
+      --purple: #a855f7;
+      --teal: #14b8a6;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'JetBrains Mono', monospace;
+      background: var(--bg);
+      color: var(--text);
+      font-size: 13px;
+      line-height: 1.6;
+      padding: 24px;
+    }
+    .container { max-width: 1200px; margin: 0 auto; }
+
+    .health-banner {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-left: 4px solid var(--green);
+      border-radius: 8px;
+      padding: 14px 20px;
+      margin-bottom: 28px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      align-items: center;
+    }
+    .health-banner .title {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text);
+      white-space: nowrap;
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 3px 10px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 600;
+    }
+    .badge.ok { background: rgba(34,197,94,0.12); color: var(--green); border: 1px solid rgba(34,197,94,0.25); }
+    .badge.warn { background: rgba(234,179,8,0.12); color: var(--yellow); border: 1px solid rgba(234,179,8,0.25); }
+    .badge.err { background: rgba(239,68,68,0.12); color: var(--red); border: 1px solid rgba(239,68,68,0.25); }
+
+    h1 { font-size: 22px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+    .subtitle { color: var(--muted); font-size: 12px; margin-bottom: 32px; }
+    h2 {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin: 32px 0 16px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border);
+    }
+    h3 { font-size: 13px; font-weight: 600; color: var(--text); margin: 20px 0 10px; }
+
+    .section { margin-bottom: 32px; }
+
+    table { width: 100%; border-collapse: collapse; margin-bottom: 16px; }
+    th {
+      background: var(--bg3);
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      padding: 8px 12px;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+    td {
+      padding: 8px 12px;
+      border-bottom: 1px solid rgba(30,41,59,0.6);
+      color: var(--text);
+      vertical-align: top;
+    }
+    tr:hover td { background: rgba(255,255,255,0.02); }
+    .up { color: var(--green); font-weight: 600; }
+    .down { color: var(--red); font-weight: 600; }
+    .flat { color: var(--muted); }
+    .highlight { color: var(--yellow); font-weight: 600; }
+    .ticker { color: var(--accent); font-weight: 700; }
+
+    .gapper-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 16px;
+    }
+    .gapper-card.primary { border-left: 4px solid var(--green); }
+    .gapper-card.sub { border-left: 4px solid var(--yellow); }
+    .gapper-header {
+      display: flex;
+      align-items: baseline;
+      gap: 12px;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+    }
+    .gapper-ticker { font-size: 20px; font-weight: 700; color: var(--accent); }
+    .gapper-name { color: var(--muted); font-size: 12px; }
+    .gapper-move { font-size: 18px; font-weight: 700; }
+    .gapper-move.up { color: var(--green); }
+    .gapper-move.down { color: var(--red); }
+    .gapper-meta { display: flex; flex-wrap: wrap; gap: 16px; font-size: 12px; color: var(--muted); margin-bottom: 12px; }
+    .gapper-meta span { color: var(--text); }
+    .detail-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-top: 12px; }
+    .detail-item { background: var(--bg3); border-radius: 6px; padding: 10px 14px; }
+    .detail-label { color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px; }
+    .detail-value { color: var(--text); font-weight: 600; font-size: 13px; }
+
+    .macro-banner {
+      background: linear-gradient(135deg, rgba(168,85,247,0.08), rgba(59,130,246,0.08));
+      border: 1px solid rgba(168,85,247,0.2);
+      border-radius: 8px;
+      padding: 16px 20px;
+      margin-bottom: 20px;
+    }
+    .macro-title { font-size: 13px; font-weight: 700; color: var(--purple); margin-bottom: 10px; }
+    .macro-item { display: flex; gap: 10px; margin-bottom: 6px; font-size: 12px; color: var(--text); }
+    .macro-item .icon { flex-shrink: 0; }
+    .macro-item .label { color: var(--muted); margin-right: 6px; }
+
+    .watchlist-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 10px; margin-bottom: 16px; }
+    .wl-item {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 10px 14px;
+    }
+    .wl-item .wl-ticker { font-weight: 700; color: var(--accent); font-size: 14px; }
+    .wl-item .wl-close { font-size: 16px; font-weight: 600; color: var(--text); margin: 2px 0; }
+    .wl-item .wl-change { font-size: 12px; font-weight: 600; }
+    .wl-item .wl-note { font-size: 11px; color: var(--muted); margin-top: 4px; }
+    .wl-item.standout { border-color: rgba(34,197,94,0.3); background: rgba(34,197,94,0.04); }
+    .wl-item.weak { border-color: rgba(239,68,68,0.3); background: rgba(239,68,68,0.04); }
+
+    .news-item {
+      display: flex;
+      gap: 14px;
+      padding: 10px 0;
+      border-bottom: 1px solid rgba(30,41,59,0.5);
+      align-items: flex-start;
+    }
+    .news-time { color: var(--muted); font-size: 11px; white-space: nowrap; min-width: 60px; padding-top: 2px; }
+    .news-content { flex: 1; }
+    .news-headline { color: var(--text); font-size: 12px; margin-bottom: 3px; }
+    .news-meta { color: var(--muted); font-size: 11px; }
+    .news-key { border-left: 3px solid var(--yellow); padding-left: 8px; }
+
+    .alert-box {
+      background: rgba(239,68,68,0.08);
+      border: 1px solid rgba(239,68,68,0.25);
+      border-radius: 6px;
+      padding: 12px 16px;
+      margin-bottom: 16px;
+      font-size: 12px;
+      color: var(--text);
+    }
+    .alert-box .alert-title { color: var(--red); font-weight: 700; margin-bottom: 6px; }
+
+    .info-box {
+      background: rgba(59,130,246,0.06);
+      border: 1px solid rgba(59,130,246,0.2);
+      border-radius: 6px;
+      padding: 12px 16px;
+      margin-bottom: 16px;
+      font-size: 12px;
+      color: var(--text);
+    }
+    .info-box .info-title { color: var(--accent); font-weight: 700; margin-bottom: 6px; }
+
+    .warn-box {
+      background: rgba(234,179,8,0.06);
+      border: 1px solid rgba(234,179,8,0.2);
+      border-radius: 6px;
+      padding: 12px 16px;
+      margin-bottom: 16px;
+      font-size: 12px;
+      color: var(--text);
+    }
+    .warn-box .warn-title { color: var(--yellow); font-weight: 700; margin-bottom: 6px; }
+
+    .setup-badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 600;
+      background: rgba(34,197,94,0.12);
+      color: var(--green);
+      border: 1px solid rgba(34,197,94,0.25);
+    }
+    .catalyst-badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 600;
+      background: rgba(59,130,246,0.12);
+      color: var(--accent);
+      border: 1px solid rgba(59,130,246,0.25);
+      margin-right: 6px;
+    }
+
+    .footer { color: var(--muted); font-size: 11px; margin-top: 48px; padding-top: 16px; border-top: 1px solid var(--border); }
+  </style>
+</head>
+<body>
+<div class="container">
+
+  <!-- TOOL HEALTH BANNER -->
+  <div class="health-banner">
+    <div class="title">🌙 AFTER-HOURS GAPS (v7.6) — June 9, 2026</div>
+    <span class="badge ok">✅ TV MCP Live</span>
+    <span class="badge ok">✅ stockanalysis Live</span>
+    <span class="badge ok">✅ Finviz News Live</span>
+    <span class="badge warn">⚠️ Finviz Elite N/A — public feed</span>
+    <span class="badge warn">⚠️ ETF Watchlist (62) N/A — personal watchlist active</span>
+  </div>
+
+  <h1>🌙 After-Hours Gaps Scan</h1>
+  <div class="subtitle">June 9, 2026 &nbsp;|&nbsp; v7.6 &nbsp;|&nbsp; All data sourced live from TV MCP, stockanalysis.com, Finviz, SEC EDGAR</div>
+
+  <!-- MACRO CONTEXT -->
+  <div class="section">
+    <h2>Macro Context</h2>
+    <div class="macro-banner">
+      <div class="macro-title">🚀 PRIMARY MACRO DRIVER: SpaceX IPO (SPCX)</div>
+      <div class="macro-item"><span class="icon">📅</span><span><span class="label">Pricing:</span>After close June 11 &nbsp;|&nbsp; <span class="label">First Trading:</span>June 12 on Nasdaq (ticker: SPCX)</span></div>
+      <div class="macro-item"><span class="icon">💰</span><span><span class="label">Size:</span>$75B raise at $1.75T valuation — <strong>largest IPO in history</strong> — $135/share</span></div>
+      <div class="macro-item"><span class="icon">🔄</span><span><span class="label">Market Impact:</span>Investors liquidating tech/growth to fund SPCX allocation → capital reallocation selling all week. Retail estimated $50B+ in selling. Nasdaq fast-tracked SPCX to Nasdaq 100.</span></div>
+    </div>
+    <div class="macro-banner" style="background: linear-gradient(135deg, rgba(234,179,8,0.06), rgba(239,68,68,0.06)); border-color: rgba(239,68,68,0.2);">
+      <div class="macro-title" style="color: var(--yellow);">📊 Additional Macro Pressures</div>
+      <div class="macro-item"><span class="icon">🏦</span><span><span class="label">Fed Rate Hike Fears:</span>Bond traders positioning signals rate hikes coming fast (Bloomberg, 4:30 PM) — bearish growth</span></div>
+      <div class="macro-item"><span class="icon">☁️</span><span><span class="label">Geopolitical:</span>Trump vowing reaction to downed US helicopter — uncertainty elevated (Reuters, 4:07 PM)</span></div>
+      <div class="macro-item"><span class="icon">📊</span><span><span class="label">Tomorrow:</span>CPI data release AM June 10 — chips expected to rebound; hot print = continued selloff</span></div>
+    </div>
+
+    <table>
+      <thead>
+        <tr><th>Index/ETF</th><th>Close</th><th>Open</th><th>Day %</th><th>Range</th><th>Source / Pull Time</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="ticker">SPY</td>
+          <td>$737.05</td>
+          <td>$743.63</td>
+          <td class="down">-0.89%</td>
+          <td>$722.59 – $746.90</td>
+          <td style="color:var(--muted)">TV MCP, 16:30 ET ✅ sanity ok</td>
+        </tr>
+        <tr>
+          <td class="ticker">QQQ</td>
+          <td>$707.83</td>
+          <td>$722.98</td>
+          <td class="down">-2.10%</td>
+          <td>$686.37 – $725.66</td>
+          <td style="color:var(--muted)">TV MCP, 16:30 ET ✅ sanity ok</td>
+        </tr>
+        <tr>
+          <td class="ticker">XLK</td>
+          <td>$180.77</td>
+          <td>$185.91</td>
+          <td class="down">-2.77%</td>
+          <td>$172.88 – $187.08</td>
+          <td style="color:var(--muted)">TV MCP, 16:30 ET</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- TRADEABLE AH GAPPERS -->
+  <div class="section">
+    <h2>Tradeable AH Gappers (>$1B | >3% AH | >100K AH Vol)</h2>
+
+    <div class="gapper-card primary">
+      <div class="gapper-header">
+        <span class="gapper-ticker">CASY</span>
+        <span class="gapper-name">Casey's General Stores</span>
+        <span class="gapper-move up">+3.13% AH</span>
+        <span class="catalyst-badge">EARNINGS AMC</span>
+        <span class="setup-badge">GAP-AND-GO</span>
+      </div>
+      <div class="gapper-meta">
+        <div>Mkt Cap: <span>$28.13B</span></div>
+        <div>Close: <span>$761.18</span></div>
+        <div>AH: <span class="up">$784.97</span></div>
+        <div>AH Vol: <span style="color:var(--yellow)">unavailable — TV chart load issue</span></div>
+        <div>Parent ETF: <span>SPY, XLP, XRT</span></div>
+        <div>Source: <span>stockanalysis.com + SEC 8-K, ~16:45 ET</span></div>
+      </div>
+      <div class="detail-grid">
+        <div class="detail-item">
+          <div class="detail-label">EPS Actual vs Est</div>
+          <div class="detail-value up">$4.37 vs $3.39 (+28.9%)</div>
+        </div>
+        <div class="detail-item">
+          <div class="detail-label">Net Income</div>
+          <div class="detail-value">$162.7M <span class="up">(+65.5% YoY)</span></div>
+        </div>
+        <div class="detail-item">
+          <div class="detail-label">EBITDA</div>
+          <div class="detail-value">$350.3M <span class="up">(+33.2% YoY)</span></div>
+        </div>
+        <div class="detail-item">
+          <div class="detail-label">Inside SS Sales</div>
+          <div class="detail-value up">+5.5% (margin 42.4%)</div>
+        </div>
+        <div class="detail-item">
+          <div class="detail-label">Options Implied Move</div>
+          <div class="detail-value highlight">7–8.47% → actual 3.13% = room to run</div>
+        </div>
+        <div class="detail-item">
+          <div class="detail-label">Tomorrow Setup</div>
+          <div class="detail-value" style="color:var(--green)">Gap-and-go; watch $785–800. CPI risk.</div>
+        </div>
+      </div>
+    </div>
+
+    <h3>⚠️ Sub-$1B Notable — Informational Only (Below Threshold)</h3>
+    <div class="gapper-card sub">
+      <div class="gapper-header">
+        <span class="gapper-ticker">CBRL</span>
+        <span class="gapper-name">Cracker Barrel</span>
+        <span class="gapper-move up">+10.28% AH</span>
+        <span class="catalyst-badge">EARNINGS AMC</span>
+      </div>
+      <div class="gapper-meta">
+        <div>Mkt Cap: <span style="color:var(--yellow)">$811.34M (below $1B)</span></div>
+        <div>Close: <span>$36.30</span></div>
+        <div>AH: <span class="up">$40.03</span></div>
+        <div>Source: <span>stockanalysis.com + PR Newswire, ~16:45 ET</span></div>
+      </div>
+      <div class="detail-grid">
+        <div class="detail-item">
+          <div class="detail-label">Revenue vs Est</div>
+          <div class="detail-value up">$797.47M vs $776.69M (+2.7%)</div>
+        </div>
+        <div class="detail-item">
+          <div class="detail-label">Adj EPS vs Est</div>
+          <div class="detail-value down">$0.29 vs $0.48 (miss)</div>
+        </div>
+        <div class="detail-item">
+          <div class="detail-label">FY26 EBITDA Guidance</div>
+          <div class="detail-value up">$120-125M (raised from $85-100M)</div>
+        </div>
+        <div class="detail-item">
+          <div class="detail-label">Context</div>
+          <div class="detail-value">Recovering from late 2025 logo/rebranding debacle. Progress visible.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="info-box">
+      <div class="info-title">stockanalysis AH Gainers — All Others Below Threshold</div>
+      Top movers by %: UK +101% ($1.18M), MSW +81.8% ($17M), GLE +33.8% ($8M), AZI +30.3% ($4.5M), AGMH +21.6% ($2.9M)
+      — all micro-cap (&lt;$25M). Not tradeable per scan criteria. No losses >$1B either.
+    </div>
+  </div>
+
+  <!-- ETF SWEEP -->
+  <div class="section">
+    <h2>ETF After-Hours Sweep</h2>
+    <div class="warn-box">
+      <div class="warn-title">⚠️ INDEX 2 - ROTATIONS Watchlist (62 ETFs) Not Active</div>
+      Current active watchlist in TradingView is personal stocks (41 names). ETF sweep limited to manually pulled names. Activate "INDEX 2 - ROTATIONS" in TradingView before next scheduled run to restore full 62-ETF sweep.
+    </div>
+    <table>
+      <thead>
+        <tr><th>ETF</th><th>Theme</th><th>Close</th><th>Day %</th><th>AH</th><th>Notes</th></tr>
+      </thead>
+      <tbody>
+        <tr><td class="ticker">SPY</td><td>S&amp;P 500</td><td>$737.05</td><td class="down">-0.89%</td><td class="flat">~flat</td><td style="color:var(--muted)">Broad market; Dow mildly positive vs Nasdaq sharply lower = rotation to value</td></tr>
+        <tr><td class="ticker">QQQ</td><td>Nasdaq 100</td><td>$707.83</td><td class="down">-2.10%</td><td class="flat">~flat</td><td style="color:var(--muted)">Tech-heavy; -10%+ from session high to low intraday then recovered half</td></tr>
+        <tr><td class="ticker">XLK</td><td>Technology</td><td>$180.77</td><td class="down">-2.77%</td><td class="flat">~flat</td><td style="color:var(--muted)">Worst sector ETF available; confirms tech led selling</td></tr>
+      </tbody>
+    </table>
+    <p style="color:var(--muted);font-size:12px;">No ETF moving &gt;1.5% AH detected. No 🚨 theme-wide AH breakout. Intraday damage already priced into closes.</p>
+  </div>
+
+  <!-- FINVIZ NEWS -->
+  <div class="section">
+    <h2>Finviz AH News Digest (Public Feed — Since 4 PM ET)</h2>
+    <div class="news-item news-key">
+      <div class="news-time">4:43 PM</div>
+      <div class="news-content">
+        <div class="news-headline">🔑 "Tech stocks dive as Friday's SpaceX IPO creates 'bad psychology'"</div>
+        <div class="news-meta">MarketWatch — PRIMARY MACRO DRIVER — SPCX IPO capital reallocation</div>
+      </div>
+    </div>
+    <div class="news-item news-key">
+      <div class="news-time">4:30 PM</div>
+      <div class="news-content">
+        <div class="news-headline">🔑 "Bond Trader Positioning Signals Fed Rate Hikes Are Coming Fast"</div>
+        <div class="news-meta">Bloomberg — Rate hike fears bearish for growth/tech</div>
+      </div>
+    </div>
+    <div class="news-item">
+      <div class="news-time">4:17 PM</div>
+      <div class="news-content">
+        <div class="news-headline">"Stocks drop as tech rotation resumes"</div>
+        <div class="news-meta">Yahoo Finance — SPY, QQQ</div>
+      </div>
+    </div>
+    <div class="news-item">
+      <div class="news-time">4:17 PM</div>
+      <div class="news-content">
+        <div class="news-headline">"Tech Stocks Waver Ahead of SpaceX's IPO"</div>
+        <div class="news-meta">Wall Street Journal — SPCX overhang confirmed</div>
+      </div>
+    </div>
+    <div class="news-item">
+      <div class="news-time">4:08 PM</div>
+      <div class="news-content">
+        <div class="news-headline">"BDC Tied to Dell-Backed Bank Sells $300M High-Grade Bonds"</div>
+        <div class="news-meta">Bloomberg — DELL credit market; risk appetite context</div>
+      </div>
+    </div>
+    <div class="news-item news-key">
+      <div class="news-time">4:07 PM</div>
+      <div class="news-content">
+        <div class="news-headline">🔑 "S&amp;P 500, Nasdaq fall as tech selling resumes, Trump vows to react to downed US helicopter"</div>
+        <div class="news-meta">Reuters — Geopolitical uncertainty added; dual headwind</div>
+      </div>
+    </div>
+    <div class="news-item">
+      <div class="news-time">4:06 PM</div>
+      <div class="news-content">
+        <div class="news-headline">"Dow ekes out gain, Nasdaq closes sharply lower"</div>
+        <div class="news-meta">MarketWatch — Dow resilience = value/defensive rotation ongoing</div>
+      </div>
+    </div>
+    <div class="news-item">
+      <div class="news-time">4:02 PM</div>
+      <div class="news-content">
+        <div class="news-headline">"S&amp;P 500 and Nasdaq close lower as chip stock rebound fails"</div>
+        <div class="news-meta">CNBC — SMH, AMD specific weakness; chip rebound attempt failed</div>
+      </div>
+    </div>
+    <p style="color:var(--muted);font-size:11px;margin-top:12px;">⚠️ Finviz Elite filter unavailable — public feed used. Some summaries may be paraphrased by WebFetch processing.</p>
+  </div>
+
+  <!-- AMC EARNINGS -->
+  <div class="section">
+    <h2>AMC Earnings Results — June 9, 2026</h2>
+
+    <div class="gapper-card primary">
+      <div class="gapper-header">
+        <span class="gapper-ticker">CASY</span>
+        <span class="gapper-name">Casey's General Stores Q4 FY2026</span>
+        <span style="color:var(--green);font-weight:700;font-size:14px;">AMC BEAT ✅</span>
+      </div>
+      <div class="detail-grid">
+        <div class="detail-item"><div class="detail-label">EPS</div><div class="detail-value up">$4.37 vs $3.39 est (+28.9%)</div></div>
+        <div class="detail-item"><div class="detail-label">Net Income</div><div class="detail-value">$162.7M <span class="up">+65.5% YoY</span></div></div>
+        <div class="detail-item"><div class="detail-label">EBITDA</div><div class="detail-value">$350.3M <span class="up">+33.2% YoY</span></div></div>
+        <div class="detail-item"><div class="detail-label">Inside SS Sales</div><div class="detail-value up">+5.5% / +7.4% 2yr stack</div></div>
+        <div class="detail-item"><div class="detail-label">AH Reaction</div><div class="detail-value up">+3.13% (below 7% implied — room to run)</div></div>
+        <div class="detail-item"><div class="detail-label">Sector Read</div><div class="detail-value">Positive for convenience / consumer staples space</div></div>
+      </div>
+    </div>
+
+    <div class="gapper-card sub">
+      <div class="gapper-header">
+        <span class="gapper-ticker">CBRL</span>
+        <span class="gapper-name">Cracker Barrel Q3 FY2026</span>
+        <span style="color:var(--yellow);font-weight:700;font-size:14px;">AMC — Rev Beat + Guidance Raise ⚠️ EPS Miss</span>
+      </div>
+      <div class="detail-grid">
+        <div class="detail-item"><div class="detail-label">Revenue</div><div class="detail-value up">$797.47M vs $776.69M est (+2.7%)</div></div>
+        <div class="detail-item"><div class="detail-label">Adj EPS</div><div class="detail-value down">$0.29 vs $0.48 est (miss)</div></div>
+        <div class="detail-item"><div class="detail-label">FY26 EBITDA Guide</div><div class="detail-value up">$120-125M (raised from $85-100M)</div></div>
+        <div class="detail-item"><div class="detail-label">AH Reaction</div><div class="detail-value up">+10.28% to $40.03</div></div>
+      </div>
+    </div>
+
+    <div class="gapper-card" style="border-left: 4px solid var(--accent);">
+      <div class="gapper-header">
+        <span class="gapper-ticker">SJM</span>
+        <span class="gapper-name">J.M. Smucker Q4 FY2026</span>
+        <span style="color:var(--accent);font-weight:700;font-size:14px;">BMO BEAT — Already Priced In</span>
+      </div>
+      <div class="detail-grid">
+        <div class="detail-item"><div class="detail-label">EPS</div><div class="detail-value up">$2.77 vs $2.66 est (+4.1%)</div></div>
+        <div class="detail-item"><div class="detail-label">Revenue</div><div class="detail-value down">$2.268B vs $2.282B est (slight miss)</div></div>
+        <div class="detail-item"><div class="detail-label">Driver</div><div class="detail-value">Higher coffee prices</div></div>
+        <div class="detail-item"><div class="detail-label">Regular Session</div><div class="detail-value up">Closed $112.39, +10.1% — FULLY PRICED IN</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- WATCHLIST AH ACTIVITY -->
+  <div class="section">
+    <h2>Watchlist AH Activity</h2>
+    <p style="color:var(--muted);font-size:12px;margin-bottom:14px;">TV MCP shows last = close for these symbols (AH prices minimal or not reflected at pull time, ~16:45 ET). Day % calculated from open→close unless noted.</p>
+
+    <div class="watchlist-grid">
+      <div class="wl-item weak">
+        <div class="wl-ticker">TSLA</div>
+        <div class="wl-close">$396.68</div>
+        <div class="wl-change down">-3.49% (day)</div>
+        <div class="wl-note">SpaceX IPO overhang; growth selloff</div>
+      </div>
+      <div class="wl-item">
+        <div class="wl-ticker">NVDA</div>
+        <div class="wl-close">$208.19</div>
+        <div class="wl-change flat">— (watchlist close)</div>
+        <div class="wl-note">No intraday % from watchlist data</div>
+      </div>
+      <div class="wl-item standout">
+        <div class="wl-ticker">SOFI</div>
+        <div class="wl-close">$16.47</div>
+        <div class="wl-change up">+0.43% (day)</div>
+        <div class="wl-note">🌟 Only green watchlist name on -2.1% QQQ day</div>
+      </div>
+      <div class="wl-item weak">
+        <div class="wl-ticker">AMD</div>
+        <div class="wl-close">$475.51</div>
+        <div class="wl-change down">-5.41% (day)</div>
+        <div class="wl-note">🔴 Worst performer; chip rebound failed</div>
+      </div>
+      <div class="wl-item">
+        <div class="wl-ticker">PLTR</div>
+        <div class="wl-close">$132.07</div>
+        <div class="wl-change down">-2.08% (day)</div>
+        <div class="wl-note">In-line with Nasdaq decline</div>
+      </div>
+      <div class="wl-item weak">
+        <div class="wl-ticker">MARA</div>
+        <div class="wl-close">$13.31</div>
+        <div class="wl-change down">-4.93% (day)</div>
+        <div class="wl-note">Crypto-adjacent; risk-off</div>
+      </div>
+      <div class="wl-item">
+        <div class="wl-ticker">COIN</div>
+        <div class="wl-close">$155.50</div>
+        <div class="wl-change down">-1.11% (day)</div>
+        <div class="wl-note">Relatively resilient vs peers</div>
+      </div>
+      <div class="wl-item weak">
+        <div class="wl-ticker">SNDK</div>
+        <div class="wl-close">$1,646.54</div>
+        <div class="wl-change down">-3.17% (day)</div>
+        <div class="wl-note">⚠️ Range $1,536–$1,803 (17%!)</div>
+      </div>
+      <div class="wl-item">
+        <div class="wl-ticker">META</div>
+        <div class="wl-close">$584.59</div>
+        <div class="wl-change down">-1.08% (day)</div>
+        <div class="wl-note">Relative strength vs Nasdaq</div>
+      </div>
+      <div class="wl-item">
+        <div class="wl-ticker">AMZN</div>
+        <div class="wl-close">$244.19</div>
+        <div class="wl-change flat">— (watchlist close)</div>
+        <div class="wl-note">No intraday % from watchlist</div>
+      </div>
+      <div class="wl-item">
+        <div class="wl-ticker">SPY</div>
+        <div class="wl-close">$737.05</div>
+        <div class="wl-change down">-0.89%</div>
+        <div class="wl-note">✅ sanity checked</div>
+      </div>
+      <div class="wl-item">
+        <div class="wl-ticker">QQQ</div>
+        <div class="wl-close">$707.83</div>
+        <div class="wl-change down">-2.10%</div>
+        <div class="wl-note">✅ sanity checked</div>
+      </div>
+    </div>
+
+    <div class="info-box">
+      <div class="info-title">Notable Watchlist Movers (broader list)</div>
+      From active watchlist — other names showing relative strength today:
+      DLTR +4.14%, CLOV +9.44%, RDDT +4.08%, QGEN +4.20%, NKE +3.28%, BE +2.38%, NRG +1.76%.
+      Value/defensive rotation visible while tech sold off.
+    </div>
+  </div>
+
+  <!-- TOMORROW'S PREVIEW -->
+  <div class="section">
+    <h2>Tomorrow's Preview — June 10, 2026</h2>
+
+    <div class="alert-box">
+      <div class="alert-title">🚨 SpaceX IPO Timeline — 3 Days to Go</div>
+      June 10: Final pre-IPO day — capital reallocation selling likely continues in tech/growth.<br>
+      June 11: SPCX pricing after close — expect most tech selling to peak by EOD June 11.<br>
+      June 12: SPCX first trading on Nasdaq — market structure reconfigures post-IPO.
+    </div>
+
+    <div class="macro-banner" style="background: rgba(20,184,166,0.06); border-color: rgba(20,184,166,0.25);">
+      <div class="macro-title" style="color: var(--teal);">📊 CPI Data — June 10 AM (Key Inflection Point)</div>
+      <div class="macro-item"><span>Hot CPI → rate hike fears confirmed → continued tech/growth selloff, value defense.</span></div>
+      <div class="macro-item"><span>Cool/inline CPI → relief rally; chips and tech oversold bounce likely (Schwab market commentary). Watch QQQ $686 low as key support.</span></div>
+    </div>
+
+    <table>
+      <thead>
+        <tr><th>Ticker</th><th>Event</th><th>Time</th><th>Est EPS</th><th>Implied Move</th><th>Theme Impact</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td colspan="6" style="color:var(--muted);font-style:italic;text-align:center;">No confirmed major watchlist/ETF-universe BMO reporters found for June 10. CPI is the dominant event.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- PERSONAL POSITIONS -->
+  <div class="section">
+    <h2>Personal Positions Plan</h2>
+    <div class="warn-box">
+      <div class="warn-title">⚠️ No Position Data Provided</div>
+      This automated scan has no access to current holdings. General framework below.
+    </div>
+    <table>
+      <thead>
+        <tr><th>Risk Category</th><th>Names</th><th>Overnight Assessment</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td style="color:var(--red)">HIGH RISK</td>
+          <td>Long growth/tech (TSLA, AMD, semis)</td>
+          <td>SpaceX IPO selling likely persists through June 12. Consider reducing or hedging. CPI could accelerate if hot.</td>
+        </tr>
+        <tr>
+          <td style="color:var(--green)">OPPORTUNITY</td>
+          <td>CASY</td>
+          <td>Gap-and-go setup; AH 3.13% below options-implied 7%+ → more upside possible. Add CPI risk modifier for tomorrow open.</td>
+        </tr>
+        <tr>
+          <td style="color:var(--green)">WATCH</td>
+          <td>SOFI</td>
+          <td>Only green watchlist name on -2.1% QQQ day. Rate-sensitive but held; if CPI benign, fintech may lead bounce.</td>
+        </tr>
+        <tr>
+          <td style="color:var(--yellow)">CAUTION</td>
+          <td>SNDK</td>
+          <td>$267 intraday range. Institutional uncertainty. Wide stops or avoid overnight.</td>
+        </tr>
+        <tr>
+          <td style="color:var(--muted)">THEME BIAS</td>
+          <td>Tomorrow</td>
+          <td>MIXED — pre-CPI: cautious. Post-CPI cool print: tech oversold bounce; hot: defensive/value continuation.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ASSUMPTION AUDIT -->
+  <div class="section">
+    <h2>Assumption Audit (v7.6)</h2>
+    <table>
+      <thead>
+        <tr><th>Item</th><th>What Was Assumed</th><th>Risk / What Changes If Wrong</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="highlight">TV MCP AH Prices</td>
+          <td>last = regular session close; no significant AH for major names at pull time (~16:45 ET)</td>
+          <td>If AH moves occurred post-pull for watchlist names, they are missed — verify on TradingView desktop</td>
+        </tr>
+        <tr>
+          <td class="highlight">CASY AH Volume</td>
+          <td>Unavailable — TV chart loading issue (30+ studies causing delays)</td>
+          <td>If AH vol &lt;100K, CASY drops below tradeable threshold — reconfirm manually before trading</td>
+        </tr>
+        <tr>
+          <td>stockanalysis filter</td>
+          <td>Top 20 by % change shown; all were micro-cap; large-cap AH confirmed separately</td>
+          <td>CASY AH confirmed via direct stockanalysis fetch — not dependent on top-20 list</td>
+        </tr>
+        <tr>
+          <td>Finviz news</td>
+          <td>Public feed; Elite filter unavailable (Chrome MCP blocks finviz). WebFetch AI may paraphrase headlines.</td>
+          <td>Possible ticker-specific AH catalysts missed — cross-reference at 8 PM heavy scan</td>
+        </tr>
+        <tr>
+          <td>ETF AH sweep</td>
+          <td>INDEX 2 - ROTATIONS watchlist not active; only XLK, SPY, QQQ pulled manually</td>
+          <td>59 ETF names not checked AH — activate watchlist before next run</td>
+        </tr>
+        <tr>
+          <td>Tomorrow earnings</td>
+          <td>No confirmed major BMO reporters found for June 10</td>
+          <td>Earnings Whispers login blocked — check manually; CPI dominates regardless</td>
+        </tr>
+        <tr>
+          <td>CBRL market cap</td>
+          <td>$811.34M — just below $1B; excluded from tradeable gapper table</td>
+          <td>Included as sub-threshold notable; investor should verify current cap</td>
+        </tr>
+        <tr>
+          <td>SJM</td>
+          <td>BMO report; regular session +10.1%; AH minimal expected</td>
+          <td>Already priced in; no action flagged</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="footer">
+    Report generated: June 9, 2026 &nbsp;|&nbsp; v7.6 &nbsp;|&nbsp;
+    Sources: TV MCP (Cboe One), stockanalysis.com, finviz.com (public), SEC EDGAR, WebSearch &nbsp;|&nbsp;
+    Finviz Elite filter unavailable — public feed used &nbsp;|&nbsp;
+    INDEX 2 - ROTATIONS watchlist (62 ETFs) not active this run
+  </div>
+
+</div>
+</body>
+</html>
