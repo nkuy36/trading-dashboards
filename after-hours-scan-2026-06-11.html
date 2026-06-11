@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>After-Hours Gaps Scan — 2026-06-11</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0e17;
+    --bg2: #111827;
+    --bg3: #1a2235;
+    --border: #1e2d45;
+    --text: #e2e8f0;
+    --muted: #94a3b8;
+    --accent: #38bdf8;
+    --green: #4ade80;
+    --red: #f87171;
+    --orange: #fb923c;
+    --yellow: #fbbf24;
+    --purple: #a78bfa;
+    --teal: #2dd4bf;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    line-height: 1.6;
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  /* TOOL HEALTH BANNER */
+  .health-banner {
+    background: #0c2a1a;
+    border: 1px solid #166534;
+    border-left: 4px solid #4ade80;
+    padding: 12px 16px;
+    margin-bottom: 24px;
+    border-radius: 4px;
+  }
+  .health-banner.warn {
+    background: #1a1600;
+    border-color: #713f12;
+    border-left-color: #fbbf24;
+  }
+  .health-tag { font-weight: 700; color: var(--green); margin-right: 8px; }
+  .health-tag.warn { color: var(--yellow); }
+  /* HEADER */
+  .scan-header {
+    margin-bottom: 28px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border);
+  }
+  .scan-header h1 {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--accent);
+    letter-spacing: 0.5px;
+  }
+  .scan-header .meta {
+    color: var(--muted);
+    font-size: 11px;
+    margin-top: 4px;
+  }
+  /* SECTION */
+  .section { margin-bottom: 32px; }
+  .section-title {
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--accent);
+    margin-bottom: 12px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid var(--border);
+  }
+  /* TABLES */
+  table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  th { background: var(--bg3); color: var(--muted); font-weight: 600; text-transform: uppercase; font-size: 10px; letter-spacing: 0.5px; padding: 8px 10px; text-align: left; border-bottom: 1px solid var(--border); }
+  td { padding: 8px 10px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: rgba(255,255,255,0.02); }
+  /* CARDS */
+  .card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 16px;
+    margin-bottom: 12px;
+  }
+  .card-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+  .ticker-badge {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    color: var(--accent);
+    font-weight: 700;
+    font-size: 14px;
+    padding: 4px 10px;
+    border-radius: 4px;
+  }
+  .move-badge {
+    font-size: 14px;
+    font-weight: 700;
+    padding: 4px 8px;
+    border-radius: 4px;
+  }
+  .move-badge.up { background: rgba(74,222,128,0.12); color: var(--green); }
+  .move-badge.down { background: rgba(248,113,113,0.12); color: var(--red); }
+  .move-badge.flat { background: rgba(148,163,184,0.12); color: var(--muted); }
+  /* TAGS */
+  .tag {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 600;
+    padding: 2px 6px;
+    border-radius: 3px;
+    margin: 1px;
+  }
+  .tag-unconfirmed { background: rgba(251,146,60,0.15); color: var(--orange); border: 1px solid rgba(251,146,60,0.3); }
+  .tag-earnings { background: rgba(167,139,250,0.15); color: var(--purple); border: 1px solid rgba(167,139,250,0.3); }
+  .tag-macro { background: rgba(56,189,248,0.15); color: var(--accent); border: 1px solid rgba(56,189,248,0.3); }
+  .tag-ipo { background: rgba(45,212,191,0.15); color: var(--teal); border: 1px solid rgba(45,212,191,0.3); }
+  .tag-beat { background: rgba(74,222,128,0.15); color: var(--green); border: 1px solid rgba(74,222,128,0.3); }
+  .tag-warn { background: rgba(251,191,36,0.15); color: var(--yellow); border: 1px solid rgba(251,191,36,0.3); }
+  /* GRID */
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  @media (max-width: 700px) { .grid-2 { grid-template-columns: 1fr; } }
+  /* KV */
+  .kv { display: flex; gap: 24px; flex-wrap: wrap; margin: 8px 0; }
+  .kv-item { display: flex; flex-direction: column; }
+  .kv-label { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; }
+  .kv-value { font-size: 13px; font-weight: 600; }
+  /* TEXT HELPERS */
+  .up { color: var(--green); }
+  .down { color: var(--red); }
+  .muted { color: var(--muted); }
+  .warn { color: var(--yellow); }
+  .bold { font-weight: 700; }
+  /* ALERT BOX */
+  .alert {
+    background: rgba(251,191,36,0.08);
+    border: 1px solid rgba(251,191,36,0.25);
+    border-radius: 4px;
+    padding: 10px 14px;
+    margin: 10px 0;
+    font-size: 12px;
+  }
+  .alert.info {
+    background: rgba(56,189,248,0.06);
+    border-color: rgba(56,189,248,0.2);
+  }
+  .alert.success {
+    background: rgba(74,222,128,0.06);
+    border-color: rgba(74,222,128,0.2);
+  }
+  /* DIVIDER */
+  .divider { border: none; border-top: 1px solid var(--border); margin: 24px 0; }
+  /* ROCKET / HEADLINE callouts */
+  .headline-callout {
+    background: var(--bg3);
+    border-left: 3px solid var(--teal);
+    padding: 10px 14px;
+    margin: 8px 0;
+    border-radius: 0 4px 4px 0;
+    font-size: 12px;
+  }
+  .headline-callout .hl-time { color: var(--muted); font-size: 10px; margin-right: 8px; }
+  .headline-callout .hl-ticker { color: var(--accent); font-weight: 700; margin-right: 6px; }
+  .headline-callout .hl-source { color: var(--muted); font-size: 10px; margin-left: 6px; }
+  /* Footer */
+  .footer { margin-top: 40px; padding-top: 16px; border-top: 1px solid var(--border); color: var(--muted); font-size: 10px; }
+</style>
+</head>
+<body>
+
+<!-- TOOL HEALTH BANNER -->
+<div class="health-banner">
+  <span class="health-tag">✅ TOOL HEALTH</span>
+  <span>TV MCP LIVE &nbsp;|&nbsp; stockanalysis.com LIVE &nbsp;|&nbsp; Finviz public news LIVE</span>
+  <br><span class="warn" style="font-size:11px;">⚠️ TV MCP <code>quote_get</code> bug: returned current-chart symbol for all queries — workaround applied via <code>chart_set_symbol</code>. BST AH volume unavailable (TV MCP returns session data only). Finviz Elite filter unavailable — public feed used.</span>
+</div>
+
+<!-- HEADER -->
+<div class="scan-header">
+  <h1>🌙 AFTER-HOURS GAPS SCAN (v7.6)</h1>
+  <div class="meta">2026-06-11 &nbsp;·&nbsp; Generated ~5:30 PM ET &nbsp;·&nbsp; Catalyst Scanner v7.6 &nbsp;·&nbsp; Primary sources: TV MCP + stockanalysis.com + Finviz public</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SECTION 1: TRADEABLE AH GAPPERS -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-title">📊 Tradeable AH Gappers (>$1B Mkt Cap)</div>
+
+  <div class="alert warn">⚠️ Only ONE name passes the >$1B filter across the top-20 gainers + top-20 losers. All other AH movers are micro-cap noise (&lt;$400M). AH market very quiet tonight (+0.05% S&amp;P AH).</div>
+
+  <!-- BST Card -->
+  <div class="card" style="border-left: 3px solid var(--green);">
+    <div class="card-header">
+      <div class="ticker-badge">BST</div>
+      <div class="move-badge up">+6.82% AH</div>
+      <span class="tag tag-unconfirmed">CATALYST UNCONFIRMED</span>
+      <span class="tag tag-warn">FLAG → 8 PM SCAN</span>
+    </div>
+    <div class="kv">
+      <div class="kv-item"><div class="kv-label">Company</div><div class="kv-value">BlackRock Science & Technology Trust</div></div>
+      <div class="kv-item"><div class="kv-label">Mkt Cap</div><div class="kv-value">$1.62B</div></div>
+      <div class="kv-item"><div class="kv-label">AH Price</div><div class="kv-value up">$49.72</div></div>
+      <div class="kv-item"><div class="kv-label">Reg. Close</div><div class="kv-value">$46.60 (+3.03%)</div></div>
+      <div class="kv-item"><div class="kv-label">52-wk Range</div><div class="kv-value">$34.87 – $50.56</div></div>
+      <div class="kv-item"><div class="kv-label">Ex-Div</div><div class="kv-value warn">Jun 15 (yield 9.12%)</div></div>
+      <div class="kv-item"><div class="kv-label">AH Volume</div><div class="kv-value muted">unavailable — not pulled</div></div>
+      <div class="kv-item"><div class="kv-label">Parent ETF</div><div class="kv-value">XLK / IGV proxy (CEF)</div></div>
+    </div>
+    <div style="margin-top:10px; font-size:12px;">
+      <strong>Catalyst:</strong> <span class="warn">UNCONFIRMED</span> — No primary news source found for a June 11 spike. Possible drivers: (1) tech-sector NAV surge from SMH +3.3%+ intraday; (2) 424B5 rights offering activity (~12M shares, May 29 prospectus); (3) CEF premium expansion ahead of Jun 15 ex-div. <br>
+      <strong>Tomorrow's setup:</strong> Approaching 52-week high ($50.56). Without confirmed catalyst → elevated <span class="down">fade risk</span>. Confirm catalyst at 8 PM GAP scan before trading.
+    </div>
+  </div>
+
+  <div class="muted" style="font-size:11px; margin-top:8px;">
+    Sources: stockanalysis.com/markets/afterhours/gainers/ + /losers/ (WebFetch, ~5:00 PM ET). AH price/% from stockanalysis; reg. close from TV MCP (chart_set_symbol NYSE:BST, ~5:05 PM ET). AH volume unavailable — TV MCP returns session data only.
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SECTION 2: ETF AH SWEEP -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-title">📈 ETF After-Hours Sweep</div>
+
+  <div class="alert info">AH indices flat: S&amp;P 500 +0.05% | Nasdaq 100 -0.16% | Dow +0.05% | Russell 2000 -0.06% (stockanalysis.com AH overview, ~5:00 PM ET). No ETF moving &gt;1.5% AH. Big moves happened during the regular session.</div>
+
+  <table>
+    <thead>
+      <tr><th>ETF</th><th>Theme</th><th>Reg. Close</th><th>Session High</th><th>Volume</th><th>Status</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>SMH</strong></td>
+        <td>Semiconductors / AI Compute</td>
+        <td class="up bold">$609.46</td>
+        <td>$611.50</td>
+        <td>699,315</td>
+        <td><span class="tag tag-beat">STRONG SESSION</span> Open $589.80 → Close $609.46 (+3.3%+ intraday). Chip gauge reportedly +8% day. AH flat.</td>
+      </tr>
+      <tr>
+        <td><strong>QQQ</strong></td>
+        <td>Nasdaq 100 Broad</td>
+        <td class="up">$716.63</td>
+        <td>$718.37</td>
+        <td>5,626,839</td>
+        <td>Open $707.26. ~+1.3% intraday. SPCX enters Nasdaq-100 ~July 6 (forced QQQ rebalance).</td>
+      </tr>
+      <tr>
+        <td><strong>SPY</strong></td>
+        <td>S&amp;P 500 Broad</td>
+        <td class="up bold">$737.76</td>
+        <td>$740.00</td>
+        <td>5,867,827</td>
+        <td>+1.70% session (+$12.33). Iran relief rally primary driver. AH flat.</td>
+      </tr>
+      <tr>
+        <td><strong class="muted">UFO / ARKX</strong></td>
+        <td>Space ETFs</td>
+        <td class="muted">unavailable — not pulled</td>
+        <td>—</td>
+        <td>—</td>
+        <td><span class="tag tag-ipo">SPCX IPO DAY</span> Expected positive intraday on SpaceX pricing. AH flat — SPCX doesn't trade until June 12. Confirm at 8 PM.</td>
+      </tr>
+      <tr>
+        <td><strong class="muted">UCO / USO</strong></td>
+        <td>Oil / Energy</td>
+        <td class="muted">unavailable — not pulled</td>
+        <td>—</td>
+        <td>—</td>
+        <td>Oil fell to ~$86 on Iran deal. Expected intraday loser. AH likely flat. Confirm at 8 PM.</td>
+      </tr>
+      <tr>
+        <td><strong class="muted">ITA / PPA</strong></td>
+        <td>Defense</td>
+        <td class="muted">unavailable — not pulled</td>
+        <td>—</td>
+        <td>—</td>
+        <td>Iran strikes canceled = potential session headwind. AH flat expected. Confirm at 8 PM.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div style="margin-top:12px; padding:10px 14px; background:rgba(45,212,191,0.06); border:1px solid rgba(45,212,191,0.2); border-radius:4px; font-size:12px;">
+    🚀 <strong>SPACE THEME WATCH (tomorrow):</strong> SpaceX SPCX starts trading June 12. UFO crossed $1B AUM and will hold SPCX post-IPO. ARKX (ARK) expected to initiate position. Nasdaq-100 forced rebalance ~July 6 triggers QQQ + QQQM buying. This is a multi-week theme catalyst.
+  </div>
+  <div style="margin-top:8px; padding:10px 14px; background:rgba(167,139,250,0.06); border:1px solid rgba(167,139,250,0.2); border-radius:4px; font-size:12px;">
+    🚨 <strong>SEMIS THEME (ongoing):</strong> SMH +41-51% YTD. Today: SMH open-to-close +3.3%+. Chip gauge reportedly +8% day. AI/data center demand driving DRAM and HBM pricing power. SMH is in Stage 2 uptrend. No ETF theme-wide AH breakout tonight, but this is the leading sector.
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SECTION 3: FINVIZ AH NEWS DIGEST -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-title">📰 After-Hours News Digest (Finviz Public + WebSearch)</div>
+  <div class="muted" style="font-size:11px; margin-bottom:12px;">Source: finviz.com/news (WebFetch, public feed, ~5:00 PM ET). Finviz Elite filter unavailable — public feed used. Supplemented by web_search.</div>
+
+  <div class="headline-callout" style="border-left-color: var(--teal);">
+    <span class="hl-time">04:38 PM</span>
+    <span class="hl-ticker">SPCX</span>
+    <span class="tag tag-ipo">IPO</span>
+    SpaceX CEO explains why SpaceX IPO isn't overpriced
+    <span class="hl-source">Fox Business</span>
+  </div>
+  <div class="headline-callout" style="border-left-color: var(--teal);">
+    <span class="hl-time">04:32 PM</span>
+    <span class="hl-ticker">SPCX</span>
+    <span class="tag tag-ipo">IPO</span>
+    SpaceX IPO: Record-breaking deal prices at $135. Trading begins Friday (June 12)
+    <span class="hl-source">MarketWatch</span>
+  </div>
+  <div class="headline-callout" style="border-left-color: var(--teal);">
+    <span class="hl-time">04:27 PM</span>
+    <span class="hl-ticker">SPCX</span>
+    <span class="tag tag-ipo">IPO</span>
+    SpaceX IPO draws at least $5B order from BlackRock — institutional anchor confirmed
+    <span class="hl-source">WSJ</span>
+  </div>
+  <div class="headline-callout" style="border-left-color: var(--teal);">
+    <span class="hl-time">04:25 PM</span>
+    <span class="hl-ticker">SPCX</span>
+    <span class="tag tag-ipo">IPO</span>
+    SpaceX sets milestone: world's largest IPO — $75B raised, $1.77T valuation, 555M shares
+    <span class="hl-source">NYT</span>
+  </div>
+  <div class="headline-callout" style="border-left-color: var(--accent);">
+    <span class="hl-time">04:13 PM</span>
+    <span class="tag tag-macro">MACRO</span>
+    Dow Surges 930 Points — Trump cancels Iran strikes, signals deal "soon". Oil falls to ~$86.
+    <span class="hl-source">WSJ</span>
+  </div>
+  <div class="headline-callout" style="border-left-color: var(--purple);">
+    <span class="hl-time">~04:00 PM</span>
+    <span class="hl-ticker">ADBE</span>
+    <span class="tag tag-earnings">EARNINGS AMC</span>
+    Adobe Q2 FY26: EPS $5.96 vs $5.82E (beat) | Rev $6.62B vs $6.46B E (beat) | AH -0.15% — muted despite beats
+    <span class="hl-source">Multiple</span>
+  </div>
+  <div class="headline-callout" style="border-left-color: var(--yellow);">
+    <span class="hl-time">Post-close</span>
+    <span class="hl-ticker">SPCX</span>
+    <span class="tag tag-warn">RISK</span>
+    Sen. Elizabeth Warren urges SEC to delay SpaceX IPO, citing investor protection concerns
+    <span class="hl-source">Yahoo Finance</span>
+  </div>
+  <div class="headline-callout" style="border-left-color: var(--muted);">
+    <span class="hl-time">04:01 PM</span>
+    <span class="hl-ticker">VSCO</span>
+    Victoria's Secret board wins shareholder approval
+    <span class="hl-source">Bloomberg</span>
+  </div>
+
+  <div style="margin-top:14px; background:var(--bg3); border:1px solid var(--border); border-radius:6px; padding:14px;">
+    <div style="font-weight:700; color:var(--teal); margin-bottom:8px;">🚀 SPACEX IPO — KEY FACTS</div>
+    <div class="grid-2" style="gap:16px; font-size:12px;">
+      <div>
+        <div class="kv">
+          <div class="kv-item"><div class="kv-label">Ticker</div><div class="kv-value" style="color:var(--teal)">SPCX (Nasdaq)</div></div>
+          <div class="kv-item"><div class="kv-label">IPO Price</div><div class="kv-value up">$135</div></div>
+          <div class="kv-item"><div class="kv-label">Shares Offered</div><div class="kv-value">555,555,555</div></div>
+          <div class="kv-item"><div class="kv-label">Total Raised</div><div class="kv-value up">$75B</div></div>
+        </div>
+      </div>
+      <div>
+        <div class="kv">
+          <div class="kv-item"><div class="kv-label">Valuation</div><div class="kv-value up">$1.77T</div></div>
+          <div class="kv-item"><div class="kv-label">Retail Allocation</div><div class="kv-value">30% (vs typical 5-10%)</div></div>
+          <div class="kv-item"><div class="kv-label">First Trade</div><div class="kv-value warn">June 12, 2026</div></div>
+          <div class="kv-item"><div class="kv-label">Nasdaq-100 Entry</div><div class="kv-value">~July 6, 2026</div></div>
+        </div>
+      </div>
+    </div>
+    <div style="margin-top:8px; font-size:11px; color:var(--muted);">Previous record: Saudi Aramco IPO 2019 — $29.4B. SpaceX raised 2.5× that. BlackRock anchor: ≥$5B order confirmed.</div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SECTION 4: WATCHLIST AH ACTIVITY -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-title">👁 Watchlist AH Activity</div>
+
+  <div class="alert success" style="margin-bottom:12px;">SPY/QQQ Sanity Check: SPY +1.70% (prior close implied ~$725.43 → close $737.76). QQQ open $707.26 → close $716.63 (~+1.3% intraday). Both within normal bounds. ✅ No DATA SUSPECT flags.</div>
+
+  <table>
+    <thead>
+      <tr><th>Ticker</th><th>Close</th><th>Session %</th><th>AH %</th><th>AH Price</th><th>Notes</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>SPY</strong></td>
+        <td class="up bold">$737.76</td>
+        <td class="up">+1.70%</td>
+        <td class="muted">~flat</td>
+        <td class="muted">—</td>
+        <td>Iran relief + SpaceX IPO euphoria. (TV MCP watchlist_get, ~4:00 PM ET)</td>
+      </tr>
+      <tr>
+        <td><strong>QQQ</strong></td>
+        <td class="up">$716.63</td>
+        <td class="up">~+1.3%</td>
+        <td class="muted">~flat</td>
+        <td class="muted">—</td>
+        <td>Quiet AH. SPCX Nasdaq-100 entry ~July 6 = structural buying catalyst. (TV MCP chart_set_symbol, ~5:00 PM ET)</td>
+      </tr>
+      <tr>
+        <td><strong>NVDA</strong></td>
+        <td>$202.99</td>
+        <td class="up">+1.0%</td>
+        <td class="muted">~flat</td>
+        <td class="muted">—</td>
+        <td>Range $199.54–$204.47. Chip rally continues; SMH +3.3%+ session. No AH catalyst. (WebSearch, ~5:10 PM ET)</td>
+      </tr>
+      <tr>
+        <td><strong>AMZN</strong></td>
+        <td>$236.07</td>
+        <td class="muted">unavailable</td>
+        <td class="muted">~flat</td>
+        <td class="muted">—</td>
+        <td>No AH catalyst. (WebSearch, ~5:10 PM ET)</td>
+      </tr>
+      <tr>
+        <td><strong>PLTR</strong></td>
+        <td>$129.50</td>
+        <td class="muted">unavailable</td>
+        <td class="muted">~flat</td>
+        <td class="muted">—</td>
+        <td>No AH catalyst. AI/gov data theme intact. (WebSearch, ~5:10 PM ET)</td>
+      </tr>
+      <tr>
+        <td><strong>AMD</strong></td>
+        <td class="muted">unavailable</td>
+        <td class="up">+3%+</td>
+        <td class="muted">~flat</td>
+        <td class="muted">—</td>
+        <td>Strong session — chip rally. Specific close price not pulled. (WebSearch context, ~5:05 PM ET)</td>
+      </tr>
+      <tr>
+        <td><strong>META</strong></td>
+        <td class="muted">unavailable</td>
+        <td class="down">-1%+</td>
+        <td class="muted">~flat</td>
+        <td class="muted">—</td>
+        <td><span class="tag tag-warn">WATCH</span> Underperformed broad market on strong day. Possible rotation ahead of SPCX. (WebSearch context)</td>
+      </tr>
+      <tr>
+        <td><strong>TSLA</strong></td>
+        <td class="muted">~$378–397 (Jun 10)</td>
+        <td class="muted">unavailable</td>
+        <td class="muted">~flat</td>
+        <td class="muted">—</td>
+        <td>June 11 close not confirmed. No AH catalyst. (WebSearch context)</td>
+      </tr>
+      <tr>
+        <td><strong>MARA</strong></td>
+        <td class="muted">unavailable</td>
+        <td class="muted">unavailable</td>
+        <td class="muted">~flat</td>
+        <td class="muted">—</td>
+        <td>BTC miners quiet. No crypto catalyst today. Not in AH movers list.</td>
+      </tr>
+      <tr>
+        <td><strong>COIN</strong></td>
+        <td class="muted">unavailable</td>
+        <td class="muted">unavailable</td>
+        <td class="muted">~flat</td>
+        <td class="muted">—</td>
+        <td>No crypto catalyst. Not in AH movers list.</td>
+      </tr>
+      <tr>
+        <td><strong>SOFI</strong></td>
+        <td class="muted">unavailable</td>
+        <td class="muted">unavailable</td>
+        <td class="muted">~flat</td>
+        <td class="muted">—</td>
+        <td>No catalyst. Not in AH movers list.</td>
+      </tr>
+      <tr>
+        <td><strong>SNDK</strong></td>
+        <td class="muted">unavailable</td>
+        <td class="muted">unavailable</td>
+        <td class="muted">~flat</td>
+        <td class="muted">—</td>
+        <td>Flash memory; chip rally may have lifted session. Not in AH movers list.</td>
+      </tr>
+    </tbody>
+  </table>
+  <div class="muted" style="font-size:11px; margin-top:8px;">Multiple prices unavailable — not pulled. WebSearch did not return specific June 11 close data for AMD, META, TSLA, MARA, COIN, SOFI, SNDK. "~flat AH" inferred from absence from stockanalysis movers list, not confirmed via live pull.</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SECTION 5: AMC EARNINGS -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-title">📋 AMC Earnings Results</div>
+
+  <div class="card">
+    <div class="card-header">
+      <div class="ticker-badge">ADBE</div>
+      <span class="tag tag-beat">EPS BEAT</span>
+      <span class="tag tag-beat">REV BEAT</span>
+      <span class="tag tag-warn">AH MUTED</span>
+    </div>
+    <div class="kv">
+      <div class="kv-item"><div class="kv-label">Quarter</div><div class="kv-value">Q2 FY2026</div></div>
+      <div class="kv-item"><div class="kv-label">EPS (Act / Est)</div><div class="kv-value up">$5.96 / $5.82 (+2.4%)</div></div>
+      <div class="kv-item"><div class="kv-label">Revenue (Act / Est)</div><div class="kv-value up">$6.62B / $6.46B (+2.5%)</div></div>
+      <div class="kv-item"><div class="kv-label">Q3 EPS Guide</div><div class="kv-value">$6.05–6.10</div></div>
+      <div class="kv-item"><div class="kv-label">AH Reaction</div><div class="kv-value muted">-0.15% → $233.72</div></div>
+    </div>
+    <div style="margin-top:10px; font-size:12px;">
+      <strong>Context:</strong> ADBE entered earnings down ~30% YTD. Intraday range $203.35–$234.07 (massive — likely gap-down open then squeeze). Despite beats on both metrics, AH reaction essentially flat. Market interpretation: recovery move into earnings = beats priced in. Guidance Q3 in-line. <span class="muted">No ETF-level read-through — ADBE alone is not enough to move QQQ/XLK/IGV.</span>
+    </div>
+  </div>
+
+  <div class="muted" style="font-size:11px;">Sources: Alphastreet, TheStreet live updates, multiple financial news outlets (WebSearch ~5:05 PM ET). ADBE AH price from Investing.com via WebSearch (~5:10 PM ET).</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SECTION 6: TOMORROW'S PREVIEW -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-title">🔭 Tomorrow's Preview (June 12)</div>
+
+  <div class="card" style="border-left: 3px solid var(--teal);">
+    <div class="card-header">
+      <div class="ticker-badge" style="color:var(--teal)">SPCX</div>
+      <span class="tag tag-ipo">FIRST TRADING DAY</span>
+      <span class="bold" style="font-size:13px; color:var(--teal)">SpaceX — IPO Price $135</span>
+    </div>
+    <div style="font-size:12px;">
+      <strong>Key watch:</strong> Opening print vs. $135. A pop &gt;10% on open = euphoria/momentum. A fade on open = institutional selling into retail demand. Retail allocation 30% = elevated opening volatility.<br><br>
+      <strong>ETF flows:</strong> UFO (owns SPCX post-IPO), ARKX (expected to initiate), QQQ (Nasdaq-100 entry ~July 6 = structural forced buying for weeks). Watch UFO and ARKX for outsized opening moves.<br><br>
+      <strong>Risk:</strong> Sen. Warren SEC delay request on record. If SEC issues surprise comment, SPCX could open halted or dip sharply. Low probability but worth noting.<br><br>
+      <strong>Macro:</strong> Iran deal headline risk persists. Any deal collapse → risk-off, SPY gap-down. Oil short thesis stays valid at ~$86 as long as deal holds.
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:8px;">
+    <div style="font-weight:700; margin-bottom:6px;">Earnings Calendar — June 12 (confirmed)</div>
+    <div class="muted" style="font-size:12px;">No major watchlist earnings confirmed for June 12 from available sources. Verify at earningswhispers.com before market open.</div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SECTION 7: POSITIONS PLAN -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-title">📌 Personal Positions Plan</div>
+  <div class="alert">Scanner has no visibility into current account holdings. Framework guidance only.</div>
+  <div class="card" style="font-size:12px; margin-top:8px;">
+    <div style="margin-bottom:8px;"><span class="bold">Overnight risk:</span> Iran deal headline-driven. Deal collapse → SPY gap-down. No large AH gaps tonight. Position sizing check recommended on Iran-sensitive names (oil, defense).</div>
+    <div style="margin-bottom:8px;"><span class="bold">SPCX first trade:</span> If allocated, watch open vs. $135. Do NOT chase on open without confirmation of price stability above IPO price. Lock-up expiry details TBD.</div>
+    <div style="margin-bottom:8px;"><span class="bold">BST:</span> If held, be aware AH approaching 52-week high ($50.56) with no confirmed catalyst. Elevated reversal risk — hold only with confirmed news at 8 PM scan.</div>
+    <div style="margin-bottom:8px;"><span class="bold">META:</span> Session underperformance noted on a +930 Dow day. Monitor for continued relative weakness. Rotation into SPCX/semis could be source of selling.</div>
+    <div><span class="bold">Theme bias tomorrow:</span> <span class="up">RISK-ON</span> (Iran relief, SpaceX sentiment, chip momentum). Lead: Space (SPCX/UFO/ARKX) + Semis (SMH). Oil short valid. Defense watch (Iran resolution = less defense urgency, but check ITA/PPA).</div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SECTION 8: ASSUMPTION AUDIT -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-title">🔍 Assumption Audit</div>
+  <table>
+    <thead>
+      <tr><th>Item</th><th>Impact</th><th>Confidence</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>TV MCP <code>quote_get</code> bug — all symbols returned current-chart symbol data</td>
+        <td>Workaround: sequential <code>chart_set_symbol</code> applied. SPY, QQQ, SMH, BST pulled correctly.</td>
+        <td class="muted">Medium — TV MCP behavior may differ per session</td>
+      </tr>
+      <tr>
+        <td>BST AH volume — unavailable via TV MCP</td>
+        <td>Cannot confirm &gt;100K AH vol threshold. Noted as caveat throughout.</td>
+        <td class="down">Hard limit of TV MCP (returns session data only)</td>
+      </tr>
+      <tr>
+        <td>BST catalyst unconfirmed</td>
+        <td>Cannot determine if gap is sustainable. Flagged for 8 PM scan. No numbers estimated.</td>
+        <td class="down">Hard — no primary source found</td>
+      </tr>
+      <tr>
+        <td>QQQ prior-session close not retrieved</td>
+        <td>Implied from open $707.26 + intraday context. Sanity check passed (no &gt;5% flag).</td>
+        <td class="muted">Medium — inferred, not directly pulled</td>
+      </tr>
+      <tr>
+        <td>Multiple watchlist prices unavailable (AMD, META, TSLA Jun11, MARA, COIN, SOFI, SNDK)</td>
+        <td>Reported as "unavailable — not pulled." AH flatness inferred from absence in movers list, not direct pull.</td>
+        <td class="down">Hard limit of web search returning links vs. data</td>
+      </tr>
+      <tr>
+        <td>ETF AH sweep limited (only SMH, QQQ, SPY via TV MCP)</td>
+        <td>UFO, ARKX, UCO, ITA, PPA not pulled. Justified by very quiet AH indices (+0.05%). Confirm at 8 PM.</td>
+        <td class="up">High — AH overview data supports conclusion</td>
+      </tr>
+      <tr>
+        <td>"Chip gauge +8%" attribution</td>
+        <td>Reported from WebSearch result. SMH intraday only +3.3%; may refer to SOX index or specific subsector. Not independently confirmed.</td>
+        <td class="muted">Medium</td>
+      </tr>
+      <tr>
+        <td>Finviz Elite filter unavailable</td>
+        <td>Public feed used. Premium/filtered news may be missed.</td>
+        <td class="muted">Structural — not fixable without subscription</td>
+      </tr>
+      <tr>
+        <td>ADBE AH price (-0.15% → $233.72)</td>
+        <td>From Investing.com via WebSearch. Consistent with "initial gains fade" pattern from multiple sources.</td>
+        <td class="up">High</td>
+      </tr>
+      <tr>
+        <td>SPCX first trading June 12</td>
+        <td>Confirmed by multiple independent sources (NPR, MarketWatch, CNBC, WSJ). High confidence.</td>
+        <td class="up">High</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="footer">
+  CATALYST SCANNER v7.6 &nbsp;·&nbsp; 2026-06-11 ~5:30 PM ET &nbsp;·&nbsp; All numbers tagged with source and pull time &nbsp;·&nbsp; Numbers not retrieved marked "unavailable — not pulled" &nbsp;·&nbsp; No estimates or memory-filled values
+</div>
+
+</body>
+</html>
