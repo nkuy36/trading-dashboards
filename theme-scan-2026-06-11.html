@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Daily Theme Scanner — 2026-06-11</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0e17;
+    --bg2: #0f1520;
+    --bg3: #141c2e;
+    --border: #1e2d47;
+    --text: #e2e8f0;
+    --text-muted: #8899aa;
+    --high: #10b981;
+    --medium: #f59e0b;
+    --low: #ef4444;
+    --blue: #60a5fa;
+    --purple: #a78bfa;
+    --cyan: #22d3ee;
+    --glow-high: rgba(16,185,129,0.15);
+    --glow-med: rgba(245,158,11,0.15);
+    --glow-low: rgba(239,68,68,0.15);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'JetBrains Mono', 'Courier New', monospace;
+    font-size: 13px;
+    line-height: 1.7;
+    padding: 32px 24px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  /* Header */
+  .header {
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 20px;
+    margin-bottom: 32px;
+  }
+  .header-top {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 6px;
+  }
+  .logo { color: var(--cyan); font-size: 11px; letter-spacing: 3px; text-transform: uppercase; }
+  .title { font-size: 22px; font-weight: 700; color: var(--text); letter-spacing: -0.5px; }
+  .subtitle { color: var(--text-muted); font-size: 11px; letter-spacing: 1px; }
+  .date-badge {
+    display: inline-block;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    color: var(--cyan);
+    font-size: 11px;
+    padding: 3px 10px;
+    border-radius: 3px;
+    margin-top: 8px;
+  }
+
+  /* Section headers */
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 40px 0 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border);
+  }
+  .section-num {
+    background: var(--bg3);
+    color: var(--cyan);
+    width: 26px; height: 26px;
+    display: flex; align-items: center; justify-content: center;
+    border-radius: 50%;
+    font-size: 11px;
+    font-weight: 700;
+    flex-shrink: 0;
+    border: 1px solid var(--cyan);
+  }
+  .section-title { font-size: 15px; font-weight: 700; color: var(--text); letter-spacing: 1px; text-transform: uppercase; }
+
+  /* Cards */
+  .card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 22px 24px;
+    margin-bottom: 18px;
+    position: relative;
+    overflow: hidden;
+  }
+  .card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: var(--border);
+  }
+  .card.high::before { background: var(--high); box-shadow: 0 0 12px var(--high); }
+  .card.medium::before { background: var(--medium); box-shadow: 0 0 12px var(--medium); }
+  .card.low::before { background: var(--low); box-shadow: 0 0 12px var(--low); }
+  .card.signal::before { background: var(--purple); }
+  .card.catalyst::before { background: var(--blue); }
+
+  .card-title { font-size: 15px; font-weight: 700; color: var(--text); margin-bottom: 14px; }
+
+  /* Meta row */
+  .meta-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+  .badge {
+    font-size: 10px;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 3px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+  .badge-high { background: var(--glow-high); color: var(--high); border: 1px solid rgba(16,185,129,0.3); }
+  .badge-medium { background: var(--glow-med); color: var(--medium); border: 1px solid rgba(245,158,11,0.3); }
+  .badge-low { background: var(--glow-low); color: var(--low); border: 1px solid rgba(239,68,68,0.3); }
+  .badge-stage { background: var(--bg3); color: var(--text-muted); border: 1px solid var(--border); }
+  .badge-strong { background: rgba(96,165,250,0.1); color: var(--blue); border: 1px solid rgba(96,165,250,0.3); }
+  .badge-moderate { background: rgba(245,158,11,0.1); color: var(--medium); border: 1px solid rgba(245,158,11,0.3); }
+
+  /* Tickers */
+  .ticker-group { margin-bottom: 10px; }
+  .ticker-label { color: var(--text-muted); font-size: 10px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px; }
+  .ticker-list { display: flex; flex-wrap: wrap; gap: 6px; }
+  .ticker {
+    background: var(--bg3);
+    color: var(--cyan);
+    border: 1px solid var(--border);
+    padding: 2px 8px;
+    border-radius: 3px;
+    font-size: 11px;
+    font-weight: 600;
+  }
+  .ticker.loser { color: var(--low); border-color: rgba(239,68,68,0.3); }
+
+  /* Evidence */
+  .evidence-list { margin: 14px 0; }
+  .evidence-item {
+    padding: 8px 12px;
+    background: var(--bg3);
+    border-left: 2px solid var(--border);
+    margin-bottom: 6px;
+    font-size: 12px;
+    color: var(--text-muted);
+    border-radius: 0 3px 3px 0;
+  }
+  .evidence-item a { color: var(--blue); text-decoration: none; }
+  .evidence-item a:hover { text-decoration: underline; }
+
+  /* Summary */
+  .summary-box {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 14px 16px;
+    margin-top: 14px;
+    font-size: 12px;
+    color: var(--text-muted);
+    line-height: 1.8;
+  }
+
+  /* Field rows */
+  .field-row { display: flex; gap: 12px; margin-bottom: 8px; font-size: 12px; }
+  .field-key { color: var(--text-muted); min-width: 140px; flex-shrink: 0; }
+  .field-val { color: var(--text); }
+
+  /* Trade idea */
+  .trade-box {
+    background: rgba(96,165,250,0.05);
+    border: 1px solid rgba(96,165,250,0.2);
+    border-radius: 4px;
+    padding: 10px 14px;
+    margin-top: 10px;
+    font-size: 12px;
+    color: var(--blue);
+  }
+  .trade-box .trade-label { font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); margin-bottom: 4px; }
+
+  /* Action Items */
+  .action-section {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 24px;
+    margin-top: 40px;
+  }
+  .action-title {
+    font-size: 14px; font-weight: 700; color: var(--text);
+    text-transform: uppercase; letter-spacing: 1px;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  /* Calendar table */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 16px;
+    font-size: 12px;
+  }
+  th {
+    text-align: left;
+    color: var(--text-muted);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--border);
+    font-weight: 500;
+  }
+  td {
+    padding: 10px 12px;
+    border-bottom: 1px solid rgba(30,45,71,0.5);
+    color: var(--text);
+    vertical-align: top;
+  }
+  td:first-child { color: var(--cyan); white-space: nowrap; }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: var(--bg3); }
+
+  /* Top tickers */
+  .top-ticker-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 14px;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    margin-bottom: 10px;
+  }
+  .top-ticker-num {
+    color: var(--cyan);
+    font-weight: 700;
+    font-size: 18px;
+    min-width: 28px;
+    line-height: 1.4;
+  }
+  .top-ticker-name {
+    color: var(--high);
+    font-weight: 700;
+    font-size: 14px;
+    margin-bottom: 4px;
+  }
+  .top-ticker-text { color: var(--text-muted); font-size: 12px; }
+
+  /* Divider */
+  .divider { border: none; border-top: 1px solid var(--border); margin: 24px 0; }
+
+  /* Footer */
+  .footer {
+    margin-top: 48px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+    color: var(--text-muted);
+    font-size: 10px;
+    text-align: center;
+    letter-spacing: 0.5px;
+  }
+
+  .col2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media (max-width: 700px) { .col2 { grid-template-columns: 1fr; } }
+
+  .section-intro {
+    color: var(--text-muted);
+    font-size: 11px;
+    margin-bottom: 20px;
+    padding: 8px 14px;
+    border-left: 2px solid var(--cyan);
+    background: var(--bg3);
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-top">
+    <span class="logo">⬡ Hedge Fund Research</span>
+  </div>
+  <div class="title">Daily Theme Scanner</div>
+  <div class="subtitle">Pre-Market Intelligence Brief · Thematic Analysis · Catalyst Map</div>
+  <div class="date-badge">Thursday, June 11, 2026 · Pre-Market</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SECTION 1: EMERGING NARRATIVES -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="section-header">
+  <div class="section-num">1</div>
+  <div class="section-title">Emerging Narratives</div>
+</div>
+<div class="section-intro">
+  Narratives identified as NOT yet fully priced in. Sorted by conviction level.
+</div>
+
+<!-- NARRATIVE 1 -->
+<div class="card high">
+  <div class="card-title">1. AI Capex Credibility Crisis</div>
+  <div class="meta-row">
+    <span class="badge badge-high">HIGH Conviction</span>
+    <span class="badge badge-stage">DEVELOPING Stage</span>
+    <span class="badge badge-stage">Timeline: 1-2 Quarters</span>
+  </div>
+
+  <div class="col2">
+    <div>
+      <div class="ticker-group">
+        <div class="ticker-label">Primary Beneficiaries</div>
+        <div class="ticker-list">
+          <span class="ticker">GOOGL</span>
+          <span class="ticker">MSFT</span>
+          <span class="ticker">AMZN</span>
+        </div>
+      </div>
+      <div class="ticker-group" style="margin-top:10px">
+        <div class="ticker-label">Losers / Disrupted</div>
+        <div class="ticker-list">
+          <span class="ticker loser">ORCL</span>
+          <span class="ticker loser">SMCI</span>
+          <span class="ticker loser">ARM</span>
+          <span class="ticker loser">MU</span>
+          <span class="ticker loser">AMD</span>
+        </div>
+      </div>
+    </div>
+    <div class="evidence-list">
+      <div class="evidence-item">Oracle fell 8.9% after-hours despite EPS beat — $40B raise + $55.7B FY2026 capex punished. <a href="https://www.cnbc.com/2026/06/10/oracle-orcl-q4-earnings-report-2026.html" target="_blank">CNBC ↗</a></div>
+      <div class="evidence-item">SMCI -19.7% intraday after $7B equity raise for $39B AI server backlog — dilution > backlog. <a href="https://www.techtimes.com/articles/318176/20260610/super-micro-7-billion-equity-raise-smci-stock-sinks-dilution-funds-39-billion-ai-server-bet.htm" target="_blank">TechTimes ↗</a></div>
+      <div class="evidence-item">95% enterprise AI projects showing zero measurable ROI; market now penalizing vague ROI language. <a href="https://strongmocha.com/ai-infrastructure-data-centers/the-earnings-call-gap-what-q1-2026-just-told-us-about-ai-roi/" target="_blank">StrongMocha ↗</a></div>
+    </div>
+  </div>
+
+  <div class="summary-box">
+    The market has entered a new phase: tolerance for "trust us on AI" is over. Oracle beat on EPS and revenue — and fell 10%+. The S&P 500 tech sector is now in correction territory (-11% from June 2 high). The regime shift is clear: AI buildout is real, but capital efficiency is the new scorecard. Companies showing backlog-to-cash conversion win; those that can't face multiple compression even on beats. Oracle's ~83% capex-to-revenue ratio is unsustainable even with 93% IaaS growth.
+  </div>
+</div>
+
+<!-- NARRATIVE 2 -->
+<div class="card high">
+  <div class="card-title">2. Iran War Energy Shock — Prolonged "Long Grind" Scenario</div>
+  <div class="meta-row">
+    <span class="badge badge-high">HIGH Conviction</span>
+    <span class="badge badge-stage">MATURING Stage</span>
+    <span class="badge badge-stage">Timeline: Already in Earnings</span>
+  </div>
+
+  <div class="col2">
+    <div>
+      <div class="ticker-group">
+        <div class="ticker-label">Primary Beneficiaries</div>
+        <div class="ticker-list">
+          <span class="ticker">XOM</span>
+          <span class="ticker">CVX</span>
+          <span class="ticker">OXY</span>
+          <span class="ticker">COP</span>
+          <span class="ticker">LMT</span>
+          <span class="ticker">RTX</span>
+          <span class="ticker">NOC</span>
+          <span class="ticker">PLTR</span>
+        </div>
+      </div>
+      <div class="ticker-group" style="margin-top:10px">
+        <div class="ticker-label">Secondary (Safe Havens)</div>
+        <div class="ticker-list">
+          <span class="ticker">GLD</span>
+          <span class="ticker">IAU</span>
+          <span class="ticker">SLB</span>
+          <span class="ticker">HAL</span>
+        </div>
+      </div>
+      <div class="ticker-group" style="margin-top:10px">
+        <div class="ticker-label">Losers</div>
+        <div class="ticker-list">
+          <span class="ticker loser">UAL</span>
+          <span class="ticker loser">DAL</span>
+          <span class="ticker loser">AAL</span>
+        </div>
+      </div>
+    </div>
+    <div class="evidence-list">
+      <div class="evidence-item">Dow -953 pts June 10; Nasdaq futures rebounded June 11 after CENTCOM confirmed strikes complete. <a href="https://www.thestreet.com/stock-market-today/stock-market-today-dow-jones-sp-500-nasdaq-updates-june-11-2026" target="_blank">TheStreet ↗</a></div>
+      <div class="evidence-item">WTI $90.03 (+2.07%), Brent $93.10 (+1.8%). Strait of Hormuz disrupted 100+ days. <a href="https://www.cnbc.com/2026/06/07/iran-war-100-days-trump-stocks-sp500-bonds-oil.html" target="_blank">CNBC ↗</a></div>
+      <div class="evidence-item">ITA (Aerospace & Defense ETF) +66% past year, +8% YTD 2026. <a href="https://intellectia.ai/blog/iran-war-financial-market-impact-defense-stocks-oil-2026" target="_blank">Intellectia ↗</a></div>
+    </div>
+  </div>
+
+  <div class="summary-box">
+    Conflict has shifted from tail risk to structural market condition. Investors are pricing in a "long grind." The ECB just hiked 25bps citing war-driven inflation (first hike since 2023). A Trump-Iran deal was reportedly "largely negotiated" in late May, but Iran disputes the framing and fresh strikes resumed this week. Oil staying below $100 due to buffer stocks. Defense capex is a secular beneficiary regardless of resolution timeline.
+  </div>
+</div>
+
+<!-- NARRATIVE 3 -->
+<div class="card medium">
+  <div class="card-title">3. Tesla FSD European Domino Effect</div>
+  <div class="meta-row">
+    <span class="badge badge-medium">MEDIUM Conviction</span>
+    <span class="badge badge-stage">EARLY Stage</span>
+    <span class="badge badge-stage">Timeline: 2-3 Quarters</span>
+  </div>
+
+  <div class="col2">
+    <div>
+      <div class="ticker-group">
+        <div class="ticker-label">Primary</div>
+        <div class="ticker-list"><span class="ticker">TSLA</span></div>
+      </div>
+      <div class="ticker-group" style="margin-top:10px">
+        <div class="ticker-label">Losers</div>
+        <div class="ticker-list">
+          <span class="ticker loser">STLA</span>
+          <span class="ticker loser">VLKAF</span>
+        </div>
+      </div>
+    </div>
+    <div class="evidence-list">
+      <div class="evidence-item">Belgium approved FSD June 10 — 5th EU country, 13th globally — 24hrs after Denmark. <a href="https://www.teslarati.com/tesla-stuns-another-fsd-approval-in-europe-belgium/" target="_blank">Teslarati ↗</a></div>
+      <div class="evidence-item">TSLA rising pre-market June 11; FSD live in 5 EU countries now. <a href="https://www.tipranks.com/news/why-tesla-stock-is-rising-today-june-11-2026" target="_blank">TipRanks ↗</a></div>
+      <div class="evidence-item">FSD v14 EU variant exclusive to HW4/AI4 — creates hardware upgrade demand pull. <a href="https://www.notateslaapp.com/news/4279/teslas-european-fsd-rollout-speeds-up-with-belgium-approval" target="_blank">NotATeslaApp ↗</a></div>
+    </div>
+  </div>
+
+  <div class="summary-box">
+    Two FSD approvals in 48 hours signals a regulatory domino pattern in Europe. Not yet priced in as a revenue driver — FSD subscription revenue recognition lags approvals by 2-3 quarters. The HW4 hardware requirement creates a secondary upgrade revenue stream. Low conviction relative to Iran and AI capex narratives — FSD is still supervised, monetization limited, EU regulatory path beyond 5 countries uncertain.
+  </div>
+</div>
+
+<!-- NARRATIVE 4 -->
+<div class="card medium">
+  <div class="card-title">4. SpaceX IPO — Forced Buying Mechanics and Float Squeeze</div>
+  <div class="meta-row">
+    <span class="badge badge-medium">MEDIUM Conviction</span>
+    <span class="badge badge-stage">DEVELOPING Stage</span>
+    <span class="badge badge-stage">Timeline: Immediate</span>
+  </div>
+
+  <div class="col2">
+    <div>
+      <div class="ticker-group">
+        <div class="ticker-label">Primary</div>
+        <div class="ticker-list">
+          <span class="ticker">SPCX</span>
+          <span class="ticker">QQQ</span>
+        </div>
+      </div>
+      <div class="ticker-group" style="margin-top:10px">
+        <div class="ticker-label">Halo Effect</div>
+        <div class="ticker-list">
+          <span class="ticker">RKLB</span>
+          <span class="ticker">ASTS</span>
+          <span class="ticker">LUNR</span>
+        </div>
+      </div>
+    </div>
+    <div class="evidence-list">
+      <div class="evidence-item">$135/share, $75B raise, $1.77T valuation — largest IPO in history. $250B+ orders (3.5-4x oversubscribed). <a href="https://www.cnbc.com/2026/06/03/spacex-ipo-stock-price-roadshow-musk.html" target="_blank">CNBC ↗</a></div>
+      <div class="evidence-item">Nasdaq rule change (March 2026): mega-IPOs fast-tracked to Nasdaq-100 in 15 trading days. $22-27B forced index buying. <a href="https://eciks.org/7803-24831-qqq-spacex-ipo-nasdaq-100-june-2026" target="_blank">eciks.org ↗</a></div>
+      <div class="evidence-item">Public float only 2.86-3.75%; S&P 500 blocked SpaceX (seasoning rule, June 4). <a href="https://www.cnbc.com/2026/06/05/spacex-blocked-from-early-us-benchmark-index-entry-as-sp-reaffirms-existing-rules.html" target="_blank">CNBC ↗</a></div>
+    </div>
+  </div>
+
+  <div class="summary-box">
+    Largest IPO in history debuts tomorrow into a tech correction. The real catalyst is NOT the open — it's Nasdaq-100 inclusion (~15 trading days post-IPO) when $22-27B in forced buying executes against a 2.86-3.75% float. Classic squeeze setup. QQQ becomes a de facto SpaceX vehicle. Trading story more than investment story at $1.77T — requires massive Starship + Starlink + defense revenue to justify on fundamentals.
+  </div>
+</div>
+
+<!-- NARRATIVE 5 -->
+<div class="card medium">
+  <div class="card-title">5. ECB Hawkish Pivot — Europe Diverges from Fed Pause</div>
+  <div class="meta-row">
+    <span class="badge badge-medium">MEDIUM Conviction</span>
+    <span class="badge badge-stage">DEVELOPING Stage</span>
+    <span class="badge badge-stage">Timeline: 1-3 Quarters</span>
+  </div>
+
+  <div class="col2">
+    <div>
+      <div class="ticker-group">
+        <div class="ticker-label">Beneficiaries (FX)</div>
+        <div class="ticker-list">
+          <span class="ticker">EUR/USD</span>
+          <span class="ticker">FXE</span>
+        </div>
+      </div>
+      <div class="ticker-group" style="margin-top:10px">
+        <div class="ticker-label">Losers</div>
+        <div class="ticker-list">
+          <span class="ticker loser">XLRE</span>
+          <span class="ticker loser">XLU</span>
+        </div>
+      </div>
+    </div>
+    <div class="evidence-list">
+      <div class="evidence-item">ECB raised rates 25bps to 2.25% on June 11 — first hike since 2023; Eurozone CPI 3.2%. <a href="https://www.ecb.europa.eu/press/pr/date/2026/html/ecb.mp260611~4d41bd5e83.en.html" target="_blank">ECB ↗</a></div>
+      <div class="evidence-item">Eurozone GDP contracted Q1 2026 — hiking into contraction = policy error risk. <a href="https://www.fxstreet.com/news/european-central-bank-set-to-hike-interest-rates-for-first-time-in-nearly-three-years-202606110700" target="_blank">FXStreet ↗</a></div>
+      <div class="evidence-item">Fed at 3.50-3.75% unchanged since March 2026; June 17 FOMC expected hold. <a href="https://kalshi.com/markets/kxfeddecision/fed-meeting/kxfeddecision-26jun" target="_blank">Kalshi ↗</a></div>
+    </div>
+  </div>
+
+  <div class="summary-box">
+    ECB hiking into a contraction while the Fed holds is a classic divergence trade setup. Historically creates credit stress within 2-3 quarters. European banks face squeeze between rising deposit costs and deteriorating loan quality. FX implication: EUR strength vs. a pausing Fed. Secondary narrative relative to Iran and AI stories but sets up a longer-duration macro trade.
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SECTION 2: EARNINGS SIGNALS -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="section-header">
+  <div class="section-num">2</div>
+  <div class="section-title">Earnings Signals</div>
+</div>
+
+<div class="card signal">
+  <div class="card-title">Signal 1: AI Capex Beat ≠ Stock Beat — The New Penalty Function</div>
+  <div class="meta-row">
+    <span class="badge badge-strong">STRONG</span>
+    <span class="badge badge-stage">Post-Earnings Price Action + Language Shift</span>
+    <span class="ticker" style="margin-left:4px">ORCL</span>
+    <span class="ticker">SMCI</span>
+    <span class="ticker">META</span>
+  </div>
+
+  <div class="field-row"><div class="field-key">Broader implication:</div><div class="field-val">A beat no longer means a rally if capex guidance overshoots. Any AI infrastructure company reporting next with above-expectation capex guidance faces the same penalty unless paired with concrete, quantitative ROI metrics.</div></div>
+
+  <div class="trade-box">
+    <div class="trade-label">Trade Idea</div>
+    Short companies with capex-to-revenue above 30% and vague AI ROI language. Long <strong>GOOGL</strong> and <strong>AMZN</strong> as AI ROI quantification leaders heading into Q2 earnings.
+  </div>
+
+  <div class="summary-box">
+    Three data points this week confirm a regime shift: Oracle +EPS beat / revenue beat → stock -10%+. SMCI $39B backlog → stock -19.7%. Meta +33% revenue → stock -6% on vague ROI answer. This is the most significant behavioral change in AI investing since 2023. Oracle's ~83% capex intensity ($55.7B capex / $67.4B revenue) is the poster child of what the market is penalizing.
+  </div>
+</div>
+
+<div class="card signal">
+  <div class="card-title">Signal 2: PPI Hot Print — Energy-Driven Structural Inflation</div>
+  <div class="meta-row">
+    <span class="badge badge-moderate">MODERATE</span>
+    <span class="badge badge-stage">Macro Data Surprise</span>
+    <span class="badge badge-stage">Released Today</span>
+  </div>
+
+  <div class="field-row"><div class="field-key">Key data:</div><div class="field-val">May PPI +1.1% MoM (vs +0.7% expected) · 12-month rate 6.5% (highest since Nov 2022) · Core PPI +0.4% (softer) · Gasoline wholesale +23.4%</div></div>
+  <div class="field-row"><div class="field-key">Broader implication:</div><div class="field-val">Complicates Fed's June 17 decision. Energy driver is structural (Iran war) and unlikely to reverse without a Hormuz deal. Fed cannot cut without appearing to accommodate supply-shock inflation.</div></div>
+
+  <div class="trade-box">
+    <div class="trade-label">Trade Idea</div>
+    Oil sector longs (<strong>XOM</strong>, <strong>CVX</strong>, <strong>OXY</strong>). Fade June 17 rate cut bets. Watch FOMC framing language: "supply-shock" vs. "demand-driven" inflation.
+  </div>
+
+  <div class="summary-box">
+    Hot headline, soft core. Energy concentration means inflation is structural (war), not demand-driven. The June 17 FOMC will reference PPI as cover for maintaining restrictive language while holding rates. The next CPI (July 14) is the real wildcard — directly tied to whether a Hormuz deal closes before month-end.
+  </div>
+</div>
+
+<div class="card signal">
+  <div class="card-title">Signal 3: Oracle OCI Cloud Backlog — Sector Read-Through</div>
+  <div class="meta-row">
+    <span class="badge badge-strong">STRONG</span>
+    <span class="badge badge-stage">Sector Read-Through</span>
+    <span class="ticker" style="margin-left:4px">ORCL</span>
+    <span class="ticker">MSFT</span>
+    <span class="ticker">AMZN</span>
+    <span class="ticker">GOOGL</span>
+  </div>
+
+  <div class="field-row"><div class="field-key">Key data:</div><div class="field-val">OCI revenue $5.8B, +93% YoY · Total cloud $9.9B · FY2027 revenue guidance $90B · EPS guidance raised to $8.05</div></div>
+  <div class="field-row"><div class="field-key">Broader implication:</div><div class="field-val">Enterprise AI cloud demand is genuine and accelerating. The penalty on ORCL was capital structure, not demand. Read-through: MSFT Azure, AWS, Google Cloud likely seeing similar demand surge.</div></div>
+
+  <div class="trade-box">
+    <div class="trade-label">Trade Idea</div>
+    Long <strong>GOOGL</strong> and <strong>AMZN</strong> ahead of Q2 earnings. Same demand signal, stronger balance sheets. Oracle's beat+drop may have created a mispriced dip in hyperscaler peers.
+  </div>
+</div>
+
+<div class="card signal">
+  <div class="card-title">Signal 4: Adobe Q2 FY2026 — AI Software Monetization Canary (Tonight)</div>
+  <div class="meta-row">
+    <span class="badge badge-moderate">MODERATE</span>
+    <span class="badge badge-stage">Guidance / Language Shift (Pending)</span>
+    <span class="ticker" style="margin-left:4px">ADBE</span>
+    <span class="ticker">CRM</span>
+    <span class="ticker">INTU</span>
+  </div>
+
+  <div class="field-row"><div class="field-key">Street expects:</div><div class="field-val">EPS $5.81 · Revenue $6.45B · Reporting after market close tonight</div></div>
+  <div class="field-row"><div class="field-key">Key question:</div><div class="field-val">Are Firefly AI features driving net-new ARR or just retention? Quantitative vs. qualitative AI language will determine reaction.</div></div>
+
+  <div class="trade-box">
+    <div class="trade-label">Trade Idea</div>
+    Hold through print. Concrete Firefly ARR attribution → buy and add AI software exposure. Vague AI commentary → expect Meta-like -5 to -8% reaction. Adobe is the positive / negative catalyst for the entire AI software sector.
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SECTION 3: CATALYST MAP -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="section-header">
+  <div class="section-num">3</div>
+  <div class="section-title">Upcoming Catalyst Map</div>
+</div>
+
+<div class="card catalyst">
+  <div class="card-title">Catalyst 1: SpaceX IPO Debut — June 12 (Tomorrow)</div>
+  <div class="meta-row">
+    <span class="badge badge-stage">June 12, 2026</span>
+    <span class="ticker" style="margin-left:4px">SPCX</span>
+    <span class="ticker">QQQ</span>
+    <span class="ticker">RKLB</span>
+  </div>
+  <div class="field-row"><div class="field-key">Consensus:</div><div class="field-val">Strong first-day pop on 3.5-4x oversubscribed demand at $135</div></div>
+  <div class="field-row"><div class="field-key">Surprise scenario:</div><div class="field-val">Float squeeze drives 2x-3x in first week; OR geopolitical risk-off causes choppy disappointing open</div></div>
+  <div class="field-row"><div class="field-key">Positioning:</div><div class="field-val">Euphoric — $250B+ demand; no short interest until shares available to borrow</div></div>
+  <div class="summary-box">The real catalyst is Nasdaq-100 inclusion (~late June/early July), not the IPO open. $22-27B forced buying against a tiny 2.86-3.75% float = structural squeeze setup. Watch QQQ tracking error during inclusion period. Do NOT chase the IPO pop as an entry — wait for the inclusion-driven buying window.</div>
+</div>
+
+<div class="card catalyst">
+  <div class="card-title">Catalyst 2: FOMC Rate Decision — June 17 (6 Days Away)</div>
+  <div class="meta-row">
+    <span class="badge badge-stage">June 17, 2026</span>
+    <span class="ticker" style="margin-left:4px">TLT</span>
+    <span class="ticker">QQQ</span>
+    <span class="ticker">XLF</span>
+    <span class="ticker">XLRE</span>
+  </div>
+  <div class="field-row"><div class="field-key">Consensus:</div><div class="field-val">No change; hold at 3.50-3.75%; ~10% probability of cut per CME FedWatch</div></div>
+  <div class="field-row"><div class="field-key">Surprise scenario:</div><div class="field-val">Hawkish language explicitly closing the door on 2026 cuts → major risk-off; OR soft core CPI enables dovish pivot signal</div></div>
+  <div class="field-row"><div class="field-key">Positioning:</div><div class="field-val">Consensus 1 cut by year-end; market not positioned for no-cut-2026 scenario</div></div>
+  <div class="summary-box">The most important near-term macro event. Hot PPI print and ECB hike give Fed cover for hawkish language while holding. Watch Powell's exact framing: "supply-shock inflation" (allows eventual cuts) vs. "demand-driven inflation" (requires more hikes). The surprise risk is explicitly removing year-end cut expectations.</div>
+</div>
+
+<div class="card catalyst">
+  <div class="card-title">Catalyst 3: Adobe Q2 Earnings — Tonight (June 11, After Close)</div>
+  <div class="meta-row">
+    <span class="badge badge-stage">June 11, After Close</span>
+    <span class="ticker" style="margin-left:4px">ADBE</span>
+    <span class="ticker">CRM</span>
+    <span class="ticker">INTU</span>
+    <span class="ticker">MSFT</span>
+  </div>
+  <div class="field-row"><div class="field-key">Consensus:</div><div class="field-val">EPS $5.81 · Revenue $6.45B · Modest AI commentary · Guidance maintained</div></div>
+  <div class="field-row"><div class="field-key">Surprise scenario:</div><div class="field-val">Firefly AI ARR disclosed quantitatively → positive AI software catalyst; OR guidance miss → another tech leg down</div></div>
+  <div class="summary-box">Adobe reporting into the highest-stakes AI earnings environment of this cycle. A positive AI monetization print could catalyze rotation from AI infrastructure into AI software — exactly what the market needs after Oracle/SMCI disappointments. Risk: qualitative AI framing will be severely punished in current regime.</div>
+</div>
+
+<div class="card catalyst">
+  <div class="card-title">Catalyst 4: Iran Deal / Hormuz Reopening — Indeterminate (Days to Weeks)</div>
+  <div class="meta-row">
+    <span class="badge badge-stage">Indeterminate Timing</span>
+    <span class="ticker" style="margin-left:4px">XOM</span>
+    <span class="ticker">CVX</span>
+    <span class="ticker">UAL</span>
+    <span class="ticker">DAL</span>
+    <span class="ticker">GLD</span>
+  </div>
+  <div class="field-row"><div class="field-key">Consensus:</div><div class="field-val">60-day ceasefire extension with partial Hormuz reopening under negotiation</div></div>
+  <div class="field-row"><div class="field-key">Surprise scenario:</div><div class="field-val">Sudden deal → oil crashes $15-25/barrel overnight → energy sector selloff, airlines spike, entire Iran trade unwinds violently</div></div>
+  <div class="field-row"><div class="field-key">Positioning:</div><div class="field-val">Oil at $90/bbl — pricing partial disruption; market not positioned for sudden full resolution</div></div>
+  <div class="summary-box">The single highest-impact binary event in the market. A sudden deal would be the most violent single-day market move of 2026 — energy stocks down 10-15%, airlines up 5-8%. Size for binary tail risk. GLD is the cleanest hedge: rallies on escalation AND safe-haven flow if deal collapses.</div>
+</div>
+
+<div class="card catalyst">
+  <div class="card-title">Catalyst 5: June CPI Print — July 14, 2026 (Iran Deal Wildcard)</div>
+  <div class="meta-row">
+    <span class="badge badge-stage">July 14, 2026</span>
+    <span class="ticker" style="margin-left:4px">TLT</span>
+    <span class="ticker">QQQ</span>
+    <span class="ticker">XLF</span>
+    <span class="ticker">DXY</span>
+  </div>
+  <div class="field-row"><div class="field-key">Baseline (May CPI):</div><div class="field-val">4.2% YoY — in-line with forecasts (released June 10)</div></div>
+  <div class="field-row"><div class="field-key">June CPI consensus:</div><div class="field-val">~4.0-4.2% YoY if energy stays elevated</div></div>
+  <div class="field-row"><div class="field-key">Surprise scenario:</div><div class="field-val">Hormuz deal closes before June 30 → gasoline plunge → June CPI print 3.0-3.2% → full Fed pivot narrative triggers</div></div>
+  <div class="summary-box">The Iran deal binary will resolve before July 14 and directly set up either a massive inflation surprise (deal signed → CPI miss) or continued stagflation (no deal → CPI in-line/hot). Position sizing in rate-sensitive assets should reflect this 33-day forward binary.</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- ACTION ITEMS -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="action-section">
+  <div class="action-title">⚡ Action Items</div>
+
+  <div style="font-size:11px; color:var(--text-muted); margin-bottom:16px; text-transform:uppercase; letter-spacing:1px;">Top 3 Tickers to Research Further Today</div>
+
+  <div class="top-ticker-card">
+    <div class="top-ticker-num">1</div>
+    <div>
+      <div class="top-ticker-name">GOOGL</div>
+      <div class="top-ticker-text">Best-positioned AI hyperscaler in the new "show me the ROI" regime. Cloud +63% YoY, AI backlog $460B+, specific AI revenue disclosures. Oracle's beat+drop may have created a mispriced dip in GOOGL ahead of its own Q2 report. The contrast with Oracle's penalty is exactly what makes GOOGL attractive right now.</div>
+    </div>
+  </div>
+
+  <div class="top-ticker-card">
+    <div class="top-ticker-num">2</div>
+    <div>
+      <div class="top-ticker-name">XOM / CVX</div>
+      <div class="top-ticker-text">Iran war trade has structural legs. Today's PPI hot print confirms energy inflation is structural. Size for Iran deal binary tail risk — reduce if deal signals strengthen. Maintain core energy exposure; hedge with UAL/DAL calls as binary optionality on a Hormuz reopening surprise.</div>
+    </div>
+  </div>
+
+  <div class="top-ticker-card">
+    <div class="top-ticker-num">3</div>
+    <div>
+      <div class="top-ticker-name">SPCX</div>
+      <div class="top-ticker-text">IPO tomorrow at $135. Watch first-day action vs. the offer price. The real entry point is around QQQ Nasdaq-100 inclusion (~15 trading days post-IPO) when $22-27B in forced buying executes against the tiny float. Do NOT chase the euphoric open — the structure favors waiting for the inclusion-driven buying window in late June/early July.</div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <div style="font-size:11px; color:var(--text-muted); margin-bottom:12px; text-transform:uppercase; letter-spacing:1px;">Position Adjustments</div>
+
+  <div style="font-size:12px; color:var(--text); line-height:2;">
+    ⛔ <strong>Reduce / avoid new longs</strong> in AI infrastructure (SMCI, ARM, MU, AMD) — need cash conversion proof before re-rating<br>
+    ⚠️ <strong>ORCL</strong> — cloud demand real, capital structure problematic; avoid until $40B dilution fully absorbed<br>
+    ✅ <strong>Maintain energy exposure</strong> (XOM, CVX, OXY) but hedge with airline calls for Hormuz binary<br>
+    🎯 <strong>ADBE tonight</strong> — hold through print; AI disclosure quality is the key variable
+  </div>
+
+  <hr class="divider">
+
+  <div style="font-size:11px; color:var(--text-muted); margin-bottom:12px; text-transform:uppercase; letter-spacing:1px;">Key Dates This Week</div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Date</th>
+        <th>Event</th>
+        <th>Tickers Exposed</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Jun 11 (TODAY)</td>
+        <td>May PPI +6.5% YoY (HOT) · ECB +25bps · Adobe earnings after close</td>
+        <td><span class="ticker">ADBE</span> <span class="ticker">TLT</span> <span class="ticker">XOM</span></td>
+      </tr>
+      <tr>
+        <td>Jun 12 (TOMORROW)</td>
+        <td>🚀 SpaceX (SPCX) IPO Debut — largest IPO in history</td>
+        <td><span class="ticker">SPCX</span> <span class="ticker">QQQ</span> <span class="ticker">RKLB</span></td>
+      </tr>
+      <tr>
+        <td>Jun 17</td>
+        <td>FOMC Rate Decision — hold expected; watch language on war inflation</td>
+        <td><span class="ticker">TLT</span> <span class="ticker">QQQ</span> <span class="ticker">XLF</span></td>
+      </tr>
+      <tr>
+        <td>Late Jun / Early Jul</td>
+        <td>SpaceX Nasdaq-100 inclusion — $22-27B forced index buying</td>
+        <td><span class="ticker">SPCX</span> <span class="ticker">QQQ</span></td>
+      </tr>
+      <tr>
+        <td>Jul 14</td>
+        <td>June CPI — Iran deal wildcard print</td>
+        <td><span class="ticker">TLT</span> <span class="ticker">DXY</span> <span class="ticker">QQQ</span></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="footer">
+  Daily Theme Scanner · 2026-06-11 · Pre-Market Edition<br>
+  Sources: CNBC · TheStreet · TechTimes · Teslarati · ECB.europa.eu · BLS.gov · Alphastreet · StrongMocha · Intellectia.AI · FXStreet · eciks.org · Kalshi
+</div>
+
+</body>
+</html>
