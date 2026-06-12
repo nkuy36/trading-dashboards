@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>After-Hours Scan — June 12, 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0e17;
+    --bg2: #0f1420;
+    --bg3: #141928;
+    --border: #1e2a3a;
+    --text: #e2e8f0;
+    --muted: #6b7fa8;
+    --green: #22d3a0;
+    --red: #f04e5a;
+    --yellow: #f5c542;
+    --blue: #4ea8f5;
+    --purple: #a78bfa;
+    --orange: #fb923c;
+    --accent: #38bdf8;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: 'JetBrains Mono', monospace; font-size: 13px; line-height: 1.6; }
+  .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+
+  /* Tool Health Banner */
+  .tool-health-banner { background: #0c1a1c; border: 1px solid #1a3a30; border-left: 4px solid var(--green); padding: 12px 16px; margin-bottom: 24px; border-radius: 4px; }
+  .tool-health-banner.warn { border-left-color: var(--yellow); border-color: #3a3010; background: #16140a; }
+  .tool-health-banner span { margin-right: 18px; }
+
+  /* Header */
+  .header { border-bottom: 1px solid var(--border); padding-bottom: 16px; margin-bottom: 24px; }
+  .header h1 { font-size: 20px; font-weight: 700; color: var(--accent); letter-spacing: 0.5px; }
+  .header .subtitle { color: var(--muted); font-size: 12px; margin-top: 4px; }
+
+  /* Section */
+  .section { margin-bottom: 32px; }
+  .section-title { font-size: 13px; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: 1px; border-bottom: 1px solid var(--border); padding-bottom: 8px; margin-bottom: 16px; }
+  .section-note { font-size: 11px; color: var(--muted); margin-bottom: 12px; border-left: 3px solid var(--border); padding-left: 10px; }
+
+  /* Theme-wide breakout badges */
+  .breakout-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 12px; margin-bottom: 20px; }
+  .breakout-card { background: #0d1e10; border: 1px solid #1a3a1e; border-left: 4px solid var(--green); padding: 12px 14px; border-radius: 4px; }
+  .breakout-card .label { font-size: 11px; font-weight: 700; color: var(--green); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 4px; }
+  .breakout-card .value { font-size: 13px; color: var(--text); font-weight: 600; }
+  .breakout-card .sub { font-size: 11px; color: var(--muted); margin-top: 3px; }
+
+  /* Tables */
+  table { width: 100%; border-collapse: collapse; margin-bottom: 16px; }
+  th { background: var(--bg3); color: var(--muted); font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.8px; padding: 8px 10px; text-align: left; border-bottom: 1px solid var(--border); }
+  td { padding: 7px 10px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  tr:hover td { background: var(--bg2); }
+  tr:last-child td { border-bottom: none; }
+  .up { color: var(--green); font-weight: 600; }
+  .dn { color: var(--red); font-weight: 600; }
+  .warn-text { color: var(--yellow); }
+  .muted { color: var(--muted); }
+  .tag { display: inline-block; font-size: 10px; font-weight: 700; padding: 2px 6px; border-radius: 3px; margin-left: 4px; vertical-align: middle; }
+  .tag-fire { background: #2d1a05; color: var(--orange); border: 1px solid #4a2a0a; }
+  .tag-green { background: #0d1e10; color: var(--green); border: 1px solid #1a3a1e; }
+  .tag-red { background: #1e0d0f; color: var(--red); border: 1px solid #3a1518; }
+  .tag-yellow { background: #1e1a05; color: var(--yellow); border: 1px solid #3a3010; }
+  .tag-blue { background: #0d1625; color: var(--blue); border: 1px solid #1a2a4a; }
+  .tag-purple { background: #160d25; color: var(--purple); border: 1px solid #2a1a4a; }
+
+  /* Gapper card */
+  .gapper-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 6px; padding: 16px; margin-bottom: 14px; }
+  .gapper-header { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
+  .gapper-ticker { font-size: 18px; font-weight: 700; color: var(--text); }
+  .gapper-name { font-size: 12px; color: var(--muted); }
+  .gapper-pct { font-size: 20px; font-weight: 700; }
+  .gapper-meta { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 8px; margin-top: 10px; }
+  .gapper-meta-item { background: var(--bg3); padding: 8px 10px; border-radius: 4px; }
+  .gapper-meta-item .k { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.6px; }
+  .gapper-meta-item .v { font-size: 13px; font-weight: 600; margin-top: 2px; }
+  .gapper-setup { margin-top: 12px; padding: 10px 14px; background: var(--bg3); border-radius: 4px; border-left: 3px solid var(--yellow); font-size: 12px; }
+
+  /* Watchlist row highlights */
+  .highlight-row td { background: #110e0f; }
+  .super-row td { background: #0e1409; }
+
+  /* AMC earnings box */
+  .earnings-box { background: var(--bg2); border: 1px solid var(--border); border-radius: 6px; padding: 16px; margin-bottom: 14px; }
+  .earnings-box h3 { font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 10px; }
+  .earnings-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 12px; }
+  .earnings-grid.two { grid-template-columns: repeat(2, 1fr); }
+  .eg-item { background: var(--bg3); padding: 8px 10px; border-radius: 4px; }
+  .eg-item .k { font-size: 10px; color: var(--muted); text-transform: uppercase; }
+  .eg-item .v { font-size: 13px; font-weight: 600; margin-top: 2px; }
+  .earnings-note { font-size: 12px; color: var(--muted); border-left: 3px solid var(--border); padding-left: 10px; }
+
+  /* Overnight risk */
+  .risk-item { display: flex; gap: 12px; padding: 10px 14px; border-bottom: 1px solid var(--border); align-items: flex-start; }
+  .risk-item:last-child { border-bottom: none; }
+  .risk-num { width: 22px; height: 22px; background: var(--bg3); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; flex-shrink: 0; margin-top: 1px; }
+  .risk-content .title { font-weight: 600; color: var(--text); }
+  .risk-content .detail { font-size: 12px; color: var(--muted); margin-top: 3px; }
+
+  /* Audit table */
+  .audit-table td:first-child { color: var(--blue); font-weight: 600; min-width: 160px; }
+  .audit-table td:nth-child(2) { color: var(--muted); min-width: 200px; }
+
+  /* Footer */
+  .footer { border-top: 1px solid var(--border); padding-top: 16px; margin-top: 32px; color: var(--muted); font-size: 11px; }
+  .footer a { color: var(--accent); text-decoration: none; }
+
+  /* Unclassified */
+  .unclassified-box { background: #16100a; border: 1px solid #3a2a10; border-radius: 4px; padding: 12px 16px; }
+
+  /* Theme bias summary */
+  .bias-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  .bias-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 4px; padding: 12px; }
+  .bias-card .bc-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.8px; color: var(--muted); margin-bottom: 6px; }
+  .bias-card .bc-items { font-size: 12px; color: var(--text); }
+  .bias-card .bc-items span { display: block; padding: 2px 0; }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- TOOL HEALTH BANNER -->
+  <div class="tool-health-banner">
+    <strong>🔧 TOOL HEALTH (June 12, 2026):</strong>
+    <span>TV MCP ✅</span>
+    <span>stockanalysis ✅</span>
+    <span>Finviz public ✅</span>
+    <span class="warn-text">Chrome MCP ⚠️ unavailable — top-20 %-sort only; $1B+ names on pages 2+ may be missed</span>
+  </div>
+
+  <!-- HEADER -->
+  <div class="header">
+    <h1>🌙 AFTER-HOURS GAPS — June 12, 2026 <span style="font-size:13px;color:var(--muted);font-weight:400">v7.7</span></h1>
+    <div class="subtitle">Primary session catalysts: SpaceX (SPCX) historic IPO +19% · Iran ceasefire tentative announcement · Broadcom AVGO Q2 FY26 AMC earnings · AMD analyst target lifts · SNDK +18.41% AI NAND shortage</div>
+  </div>
+
+  <!-- THEME-WIDE BREAKOUTS -->
+  <div class="section">
+    <div class="section-title">🚨 Theme-Wide Breakouts</div>
+    <div class="breakout-grid">
+      <div class="breakout-card">
+        <div class="label">🚨 Travel Theme-Wide</div>
+        <div class="value">JETS +8.49% + PEJ +2.35%</div>
+        <div class="sub">Iran ceasefire → oil down, travel demand reopening</div>
+      </div>
+      <div class="breakout-card">
+        <div class="label">🚨 Gold Miners Theme-Wide</div>
+        <div class="value">GDX +8.16% + GDXJ +9.27%</div>
+        <div class="sub">Juniors LEADING = real metals run, not just hedge bid</div>
+      </div>
+      <div class="breakout-card">
+        <div class="label">🚨 Nuclear Theme-Wide</div>
+        <div class="value">URA +6.38% + NLR +4.00%</div>
+        <div class="sub">Iran peace deal unlocks energy/nuclear policy clarity</div>
+      </div>
+      <div class="breakout-card">
+        <div class="label">🚨 Biotech Theme-Wide</div>
+        <div class="value">XBI +3.60% + IBB +2.36%</div>
+        <div class="sub">Sector-wide bid — not a single squeeze</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TRADEABLE AH GAPPERS -->
+  <div class="section">
+    <div class="section-title">📊 Tradeable AH Gappers (>$1B Market Cap)</div>
+    <div class="section-note">⚠️ Chrome MCP unavailable — discovery limited to WebFetch top-20 %-sort. AVGO (major cap, ~-14% AH post-earnings) NOT in top-20 losers — surfaced via AMC earnings search and reported in Earnings section below.</div>
+
+    <!-- FAC -->
+    <div class="gapper-card">
+      <div class="gapper-header">
+        <div>
+          <div class="gapper-ticker">FAC <span class="tag tag-yellow">🟡 LOW CONVICTION</span></div>
+          <div class="gapper-name">Factorial Energy Inc. — Solid-State Battery · SPAC IPO Jun 8</div>
+        </div>
+        <div style="margin-left:auto; text-align:right;">
+          <div class="gapper-pct up">+7.57% AH</div>
+          <div style="font-size:11px;color:var(--red);">Session: -38.58% 💀</div>
+        </div>
+      </div>
+      <div class="gapper-meta">
+        <div class="gapper-meta-item"><div class="k">AH Price</div><div class="v">$16.49</div></div>
+        <div class="gapper-meta-item"><div class="k">Session Close</div><div class="v dn">$15.33</div></div>
+        <div class="gapper-meta-item"><div class="k">Market Cap</div><div class="v">$1.40B</div></div>
+        <div class="gapper-meta-item"><div class="k">AH Volume</div><div class="v warn-text">Unverified 🟡</div></div>
+        <div class="gapper-meta-item"><div class="k">IPO Date</div><div class="v">Jun 8, 2026</div></div>
+        <div class="gapper-meta-item"><div class="k">SPAC Peak</div><div class="v">$25.33 (Jun 9)</div></div>
+      </div>
+      <div class="gapper-setup">
+        <span class="warn-text">⚠️ HIGH FADE RISK TOMORROW</span> — AH bounce is dead-cat from -38.58% session crash. Post-SPAC IPO unwind dynamics: peaked Jun 9, fell -40%+ in 3 days. Stellantis battery milestone announced but "sell the news" played out. ETF: LIT (tangential). <strong>Catalyst type: IPO/SPAC + NEWS (non-earnings).</strong> Source: <a href="https://www.benzinga.com/trading-ideas/movers/26/06/53148191/why-factorial-energy-stock-is-falling-after-stellantis-battery-milestone" style="color:var(--accent);" target="_blank">Benzinga</a>
+      </div>
+    </div>
+
+    <!-- PLBL note -->
+    <div style="background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:12px 14px;font-size:12px;">
+      <strong class="muted">PLBL (Polibeli Group, $2.84B)</strong> — AH -6.45% to $7.25. Indonesian consumer goods holding co. No major catalyst. CFO changed Jun 8. AH illiquidity noise — <strong>NOT tradeable.</strong>
+    </div>
+  </div>
+
+  <!-- ETF SWEEP -->
+  <div class="section">
+    <div class="section-title">📈 ETF AH Sweep — 57 ETF Embedded Universe (TV MCP batch_run, session close)</div>
+    <div class="section-note">Data: TV MCP batch_run(get_ohlcv) — returns daily session bar (regular hours close). AH ETF moves are typically minimal; session data is the primary signal. All 57 ETFs pulled successfully.</div>
+
+    <table>
+      <thead>
+        <tr><th>ETF</th><th>Theme</th><th>Session %</th><th>Close</th><th>Notes</th></tr>
+      </thead>
+      <tbody>
+        <tr><td colspan="5" style="background:var(--bg3);color:var(--muted);font-size:11px;padding:6px 10px;text-transform:uppercase;letter-spacing:0.8px;">Index / Regime</td></tr>
+        <tr><td><strong>SPY</strong></td><td>S&P 500</td><td class="up">+1.78%</td><td>$741.75</td><td class="muted">✅ Sanity OK — broad risk-on</td></tr>
+        <tr><td><strong>QQQ</strong></td><td>Nasdaq 100</td><td class="up">+3.15%</td><td>$721.34</td><td class="muted">✅ Sanity OK — SPCX IPO + AMD led tech</td></tr>
+        <tr><td><strong>IWM</strong></td><td>Small Caps</td><td class="up">+2.99%</td><td>$292.95</td><td class="muted">Broad participation</td></tr>
+        <tr><td>HYG</td><td>High-Yield Credit</td><td class="up">+0.46%</td><td>$79.94</td><td class="muted">Credit calm — no stress signal</td></tr>
+        <tr><td>TLT</td><td>20Y Bonds</td><td class="up">+0.70%</td><td>$85.77</td><td class="muted">Mild bonds bid alongside equities</td></tr>
+        <tr><td>UUP</td><td>US Dollar</td><td class="dn">-0.46%</td><td>$27.95</td><td class="muted">Dollar weak → metals tailwind</td></tr>
+        <tr><td><strong>GLD</strong></td><td>Gold</td><td class="up" style="color:var(--orange)">+3.36% 🔥</td><td>$386.54</td><td class="muted">Gold + equities both up = dollar weak + Iran uncertainty premium</td></tr>
+
+        <tr><td colspan="5" style="background:var(--bg3);color:var(--muted);font-size:11px;padding:6px 10px;text-transform:uppercase;letter-spacing:0.8px;">Sector SPDRs</td></tr>
+        <tr><td><strong>XLK</strong></td><td>Tech</td><td class="up" style="color:var(--orange)">+3.94% 🔥</td><td>$184.80</td><td class="muted">AMD, SNDK, DRAM carrying semis</td></tr>
+        <tr><td>XLF</td><td>Financials</td><td class="up">+1.90%</td><td>$53.34</td><td class="muted">Risk-on bid</td></tr>
+        <tr><td><strong>XLE</strong></td><td>Energy</td><td class="dn">-2.08%</td><td>$57.55</td><td style="color:var(--red)">Iran ceasefire = supply relief</td></tr>
+        <tr><td>XLI</td><td>Industrials</td><td class="up">+2.86%</td><td>$176.18</td><td></td></tr>
+        <tr><td>XLY</td><td>Consumer Disc.</td><td class="up">+2.17%</td><td>$116.60</td><td></td></tr>
+        <tr><td>XLP</td><td>Staples</td><td class="up">+0.17%</td><td>$85.82</td><td class="muted">Defensive lagged</td></tr>
+        <tr><td>XLU</td><td>Utilities</td><td class="up">+0.70%</td><td>$44.53</td><td></td></tr>
+        <tr><td><strong>XLB</strong></td><td>Materials</td><td class="up" style="color:var(--orange)">+4.21% 🔥</td><td>$52.18</td><td class="muted">Iran peace = supply chain normalization</td></tr>
+        <tr><td>XLC</td><td>Communications</td><td class="up">+0.69%</td><td>$111.65</td><td class="muted">META/GOOGL flat</td></tr>
+        <tr><td>XLV</td><td>Healthcare</td><td class="up">+0.23%</td><td>$153.81</td><td class="muted">Lagged</td></tr>
+        <tr><td>XLRE</td><td>REITs</td><td class="up">+0.67%</td><td>$45.36</td><td></td></tr>
+
+        <tr><td colspan="5" style="background:var(--bg3);color:var(--muted);font-size:11px;padding:6px 10px;text-transform:uppercase;letter-spacing:0.8px;">Industry Groups</td></tr>
+        <tr class="super-row"><td><strong>SMH</strong></td><td>Semiconductors</td><td class="up" style="color:var(--orange)">+6.41% 🔥🔥</td><td>$619.96</td><td style="color:var(--orange)">AMD +10.83%, SNDK +18.41% — AI chip day. ⚠️ AVGO -14% AH may pressure Monday open</td></tr>
+        <tr><td>IGV</td><td>Software</td><td class="up">+0.78%</td><td>$90.70</td><td class="muted">PLTR drag</td></tr>
+        <tr><td>CIBR</td><td>Cybersecurity</td><td class="up">+2.58%</td><td>$85.33</td><td></td></tr>
+        <tr><td><strong>XBI</strong></td><td>Biotech Small-Cap</td><td class="up">+3.60% <span class="tag tag-green">🚨 WIDE</span></td><td>$133.79</td><td class="muted">Sector-wide bid</td></tr>
+        <tr><td><strong>IBB</strong></td><td>Biotech Large-Cap</td><td class="up">+2.36% <span class="tag tag-green">🚨 WIDE</span></td><td>$170.66</td><td class="muted">Pairs with XBI — both up = sector-wide</td></tr>
+        <tr><td>KRE</td><td>Regional Banks</td><td class="up">+1.92%</td><td>$73.41</td><td></td></tr>
+        <tr><td>XOP</td><td>Oil & Gas E&P</td><td class="dn">-2.26%</td><td>$165.34</td><td style="color:var(--red)">Iran supply expansion</td></tr>
+        <tr><td>XHB</td><td>Homebuilders</td><td class="up">+2.99%</td><td>$107.59</td><td></td></tr>
+        <tr><td>XRT</td><td>Retail</td><td class="up">+2.68%</td><td>$87.73</td><td></td></tr>
+        <tr><td>IYT</td><td>Transports</td><td class="up" style="color:var(--orange)">+3.70% 🔥</td><td>$86.51</td><td class="muted">Oil down = transport cost relief</td></tr>
+        <tr><td><strong>JETS</strong></td><td>Airlines</td><td class="up" style="color:var(--orange)">+8.49% 🔥🔥 <span class="tag tag-green">🚨</span></td><td>$29.53</td><td style="color:var(--green)">Iran ceasefire = fuel down + ME routes reopen</td></tr>
+        <tr><td><strong>PEJ</strong></td><td>Travel/Leisure</td><td class="up">+2.35% <span class="tag tag-green">🚨</span></td><td>$65.20</td><td class="muted">RCL, MAR, LVS; pairs JETS</td></tr>
+
+        <tr><td colspan="5" style="background:var(--bg3);color:var(--muted);font-size:11px;padding:6px 10px;text-transform:uppercase;letter-spacing:0.8px;">AI / Tech Themes</td></tr>
+        <tr class="super-row"><td><strong>DRAM</strong></td><td>HBM Memory</td><td class="up" style="color:var(--orange)">+9.06% 🔥🔥</td><td>$65.01</td><td style="color:var(--orange)">SK Hynix/Micron/Samsung — AI memory shortage</td></tr>
+        <tr><td><strong>QTUM</strong></td><td>Quantum</td><td class="up" style="color:var(--orange)">+5.54% 🔥</td><td>$161.30</td><td class="muted">IONQ, RGTI, QBTS all running</td></tr>
+        <tr><td>BOTZ</td><td>Robotics/AI</td><td class="up">+1.73%</td><td>$37.12</td><td></td></tr>
+        <tr><td>ARKK</td><td>Speculative Growth</td><td class="up">+3.07%</td><td>$75.65</td><td class="muted">Risk appetite gauge — strong</td></tr>
+        <tr><td>ARKX</td><td>Space</td><td class="up">+2.27%</td><td>$33.78</td><td class="muted">SPCX IPO day but SPCX NOT yet in holdings</td></tr>
+        <tr><td><strong>AIPO</strong></td><td>AI & Power Infra</td><td class="up" style="color:var(--orange)">+5.29% 🔥</td><td>$31.45</td><td class="muted">VRT, VST, GEV — datacenter power buildout</td></tr>
+        <tr><td>DTCR</td><td>Data Center REITs</td><td class="up">+3.21%</td><td>$31.16</td><td class="muted">EQIX, DLR</td></tr>
+        <tr><td>SHLD</td><td>Defense Tech</td><td class="up">+1.49%</td><td>$63.82</td><td class="muted">Below 1.5% — PLTR drag</td></tr>
+        <tr><td>ITA</td><td>Defense Primes</td><td class="up">+3.16%</td><td>$233.79</td><td class="muted">Iran peace ≠ less defense; ME stability still needs air assets</td></tr>
+        <tr class="super-row"><td><strong>WGMI</strong></td><td>Bitcoin Miners</td><td class="up" style="color:var(--orange)">+11.27% 🔥🔥</td><td>$65.97</td><td style="color:var(--orange)">Crypto bid + AI HPC pivot; MARA +11.64%</td></tr>
+        <tr><td>IBIT</td><td>Spot Bitcoin</td><td class="up">+1.41%</td><td>$36.04</td><td class="muted">BTC broadly bid</td></tr>
+
+        <tr><td colspan="5" style="background:var(--bg3);color:var(--muted);font-size:11px;padding:6px 10px;text-transform:uppercase;letter-spacing:0.8px;">Power / Materials</td></tr>
+        <tr class="super-row"><td><strong>URA</strong></td><td>Uranium/Nuclear</td><td class="up" style="color:var(--orange)">+6.38% 🔥 <span class="tag tag-green">🚨</span></td><td>$45.52</td><td style="color:var(--green)">Nuclear theme-wide (pairs NLR)</td></tr>
+        <tr class="super-row"><td><strong>NLR</strong></td><td>Nuclear Reactors</td><td class="up">+4.00% <span class="tag tag-green">🚨</span></td><td>$121.95</td><td class="muted">Pairs URA — both moving = nuclear sector-wide</td></tr>
+        <tr><td>GRID</td><td>Grid Equipment</td><td class="up">+2.82%</td><td>$189.01</td><td></td></tr>
+        <tr><td><strong>TAN</strong></td><td>Solar</td><td class="up" style="color:var(--orange)">+5.47% 🔥</td><td>$63.03</td><td class="muted">Iran peace = energy policy relief</td></tr>
+        <tr class="super-row"><td><strong>COPX</strong></td><td>Copper Miners</td><td class="up" style="color:var(--orange)">+8.78% 🔥🔥</td><td>$85.97</td><td style="color:var(--orange)">Supply chain normalization + China demand</td></tr>
+        <tr class="super-row"><td><strong>REMX</strong></td><td>Rare Earth</td><td class="up" style="color:var(--orange)">+7.86% 🔥🔥</td><td>$95.50</td><td style="color:var(--orange)">MP, USAR — export controls + Iran peace</td></tr>
+        <tr class="super-row"><td><strong>XME</strong></td><td>Metals & Mining</td><td class="up" style="color:var(--orange)">+5.99% 🔥</td><td>$120.44</td><td></td></tr>
+        <tr><td><strong>LIT</strong></td><td>Lithium/Battery</td><td class="up" style="color:var(--orange)">+5.60% 🔥</td><td>$82.37</td><td></td></tr>
+        <tr class="super-row"><td><strong>GDX</strong></td><td>Gold Miners Large</td><td class="up" style="color:var(--orange)">+8.16% 🔥🔥 <span class="tag tag-green">🚨</span></td><td>$80.03</td><td style="color:var(--green)">Gold miners theme-wide</td></tr>
+        <tr class="super-row"><td><strong>GDXJ</strong></td><td>Junior Gold Miners</td><td class="up" style="color:var(--orange)">+9.27% 🔥🔥 <span class="tag tag-green">🚨</span></td><td>$104.26</td><td style="color:var(--green)">Juniors LEADING = REAL metals run</td></tr>
+        <tr class="super-row"><td><strong>SLV</strong></td><td>Silver</td><td class="up" style="color:var(--orange)">+6.68% 🔥🔥</td><td>$61.29</td><td></td></tr>
+
+        <tr><td colspan="5" style="background:var(--bg3);color:var(--muted);font-size:11px;padding:6px 10px;text-transform:uppercase;letter-spacing:0.8px;">Commodities / Global</td></tr>
+        <tr><td><strong>USO</strong></td><td>Crude Oil</td><td class="dn" style="color:var(--red)">-6.58% 🔴</td><td>$125.43</td><td style="color:var(--red)">Iran ceasefire = massive supply relief signal; Brent ~$103</td></tr>
+        <tr><td>UNG</td><td>Natural Gas</td><td class="up">+0.09%</td><td>$11.35</td><td class="muted">Flat</td></tr>
+        <tr><td>MOO</td><td>Agriculture</td><td class="up">+0.99%</td><td>$78.59</td><td></td></tr>
+        <tr><td>KWEB</td><td>China Internet</td><td class="up">+1.46%</td><td>$26.49</td><td class="muted">Mild China bid</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- AMC EARNINGS -->
+  <div class="section">
+    <div class="section-title">💼 AMC Earnings Results</div>
+
+    <div class="earnings-box">
+      <h3>AVGO — Broadcom Inc. (Q2 FY26) <span class="tag tag-red">AH ~-14%</span></h3>
+      <div class="earnings-grid">
+        <div class="eg-item"><div class="k">Revenue</div><div class="v up">$22.187B <span style="font-size:11px;color:var(--muted)">vs est. $22.04B ✅</span></div></div>
+        <div class="eg-item"><div class="k">EPS vs Consensus</div><div class="v up">Beat ✅</div></div>
+        <div class="eg-item"><div class="k">EPS vs Whisper</div><div class="v dn">Miss ❌ (fell just short of $2.45)</div></div>
+        <div class="eg-item"><div class="k">AI Semi Revenue (YoY)</div><div class="v up">+143%</div></div>
+        <div class="eg-item"><div class="k">FY26 AI Guidance</div><div class="v warn-text">>$100B reaffirmed — NOT raised</div></div>
+        <div class="eg-item"><div class="k">Session Close (TV MCP)</div><div class="v">$382.07</div></div>
+      </div>
+      <div class="eg-item" style="margin-bottom:10px;"><div class="k">AH Price</div><div class="v dn">~-14% AH (web sources) — TV MCP unavailable (quote_get returned SPCX data post-IPO chart switch; see Audit)</div></div>
+      <div class="earnings-note">
+        <strong>Sector read-through:</strong> 🔴 Negative for SMH Monday open — AVGO is a top-3 SMH holding. SMH closed +6.41% today. Expect partial giveback unless AMD momentum offsets.<br>
+        <strong>Conference call key point:</strong> CEO Hock Tan reaffirmed AI chip supercycle but declined to raise 2026 guidance — market had priced in a raise. Classic "sell the news" dynamic.<br>
+        <strong>Sources:</strong> <a href="https://www.shacknews.com/article/149434/broadcom-avgo-q2-fy26-earnings-results" style="color:var(--accent)" target="_blank">Shacknews Q2 FY26</a> · <a href="https://www.heygotrade.com/en/blog/broadcom-avgo-stock-2026/" style="color:var(--accent)" target="_blank">HeyGoTrade AH analysis</a>
+      </div>
+    </div>
+
+    <div style="background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:12px 14px;font-size:12px;color:var(--muted);">
+      No other major AMC earners confirmed for June 12, 2026. (AMC Entertainment Q1 reported May 2026; next in August 2026.)
+    </div>
+  </div>
+
+  <!-- FINVIZ NEWS -->
+  <div class="section">
+    <div class="section-title">📰 Finviz AH News Digest (Post 4 PM ET — Public Feed)</div>
+    <div class="section-note">Finviz Elite filter unavailable — public feed used. All post-4 PM ET headlines dominated by two macro events.</div>
+
+    <table>
+      <thead><tr><th>Time (ET)</th><th>Headline</th><th>Source</th><th>ETF Bucket</th></tr></thead>
+      <tbody>
+        <tr><td>4:55 PM</td><td>SpaceX's stock closes 19% above IPO price — making it the 6th-most valuable company on earth</td><td>MarketWatch</td><td><span class="warn-text">UNCLASSIFIED (new IPO)</span> → ARKX proxy</td></tr>
+        <tr><td>4:48 PM</td><td>SpaceX's Unlikely Journey From Far-Out Idea to $2 Trillion Juggernaut</td><td>New York Times</td><td><span class="warn-text">UNCLASSIFIED</span></td></tr>
+        <tr><td>4:46 PM</td><td>Elon Musk becomes world's first trillionaire as SpaceX soars in stock market debut</td><td>BBC</td><td><span class="warn-text">UNCLASSIFIED</span></td></tr>
+        <tr><td>4:40 PM</td><td>SpaceX Shares Close Up 19% in Historic Debut as Musk Becomes First Trillionaire</td><td>Wall Street Journal</td><td><span class="warn-text">UNCLASSIFIED</span></td></tr>
+        <tr><td>4:07 PM</td><td>Wall Street ends up on Iran war peace deal hopes, SpaceX's historic debut</td><td>Reuters</td><td>USO ❌ · JETS/PEJ ✅ · XLB ✅ · GLD ✅</td></tr>
+        <tr><td>4:05 PM</td><td>U.S. stocks end higher amid optimism for Iran peace deal and SpaceX's record IPO</td><td>MarketWatch</td><td>Broad macro — SPY/QQQ context</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- WATCHLIST AH ACTIVITY -->
+  <div class="section">
+    <div class="section-title">👁 Watchlist AH Activity</div>
+    <div class="section-note">All closes from TV MCP batch_run(get_ohlcv) at regular session close timestamp. AH moves: where noted, from web sources. Quote_get issued for SPCX (returned correctly). AH volume unverified for most names.</div>
+
+    <table>
+      <thead><tr><th>Ticker</th><th>Session Close</th><th>Session %</th><th>AH Note</th><th>Key Catalyst</th></tr></thead>
+      <tbody>
+        <tr class="super-row">
+          <td><strong>SPCX</strong></td><td>$160.95</td>
+          <td class="up" style="color:var(--orange)">+19.2% 🚀 IPO DAY</td>
+          <td><span class="up">+1.81% ~$163.86</span> (web)</td>
+          <td>Historic IPO — $135 price → $160.95 close; high $176.52; volume 514M shares; Musk = 1st trillionaire</td>
+        </tr>
+        <tr class="super-row">
+          <td><strong>AMD</strong></td><td>$511.57</td>
+          <td class="up" style="color:var(--orange)">+10.83% 🔥🔥</td>
+          <td class="muted">AH volume unverified</td>
+          <td>BofA Buy, PT raised $600-665; Oracle $70B datacenter signal; Computex AI CPU/GPU launches</td>
+        </tr>
+        <tr class="super-row">
+          <td><strong>SNDK</strong></td><td>$1,980.10</td>
+          <td class="up" style="color:var(--orange)">+18.41% 🔥🔥</td>
+          <td class="muted">AH volume unverified</td>
+          <td>AI NAND flash structural shortage; 692% YTD; sector momentum — no single Jun 12 catalyst (structural trend)</td>
+        </tr>
+        <tr class="highlight-row">
+          <td><strong>MARA</strong></td><td>$14.08</td>
+          <td class="up" style="color:var(--orange)">+11.64% 🔥🔥</td>
+          <td class="muted">AH volume unverified</td>
+          <td>WGMI day (+11.27%); bitcoin miners ripping; AI HPC pivot narrative</td>
+        </tr>
+        <tr>
+          <td><strong>TSLA</strong></td><td>$406.43</td>
+          <td class="up">+4.67%</td>
+          <td class="muted">AH volume unverified</td>
+          <td>Musk halo effect (SpaceX IPO day)</td>
+        </tr>
+        <tr>
+          <td><strong>SOFI</strong></td><td>$16.58</td>
+          <td class="up">+4.80%</td>
+          <td class="muted">AH volume unverified</td>
+          <td>Risk-on + financials day (XLF +1.90%)</td>
+        </tr>
+        <tr>
+          <td><strong>COIN</strong></td><td>$159.78</td>
+          <td class="up">+3.28%</td>
+          <td class="muted">AH volume unverified</td>
+          <td>Crypto bid broadly</td>
+        </tr>
+        <tr>
+          <td><strong>NVDA</strong></td><td>$205.19</td>
+          <td class="up">+1.84%</td>
+          <td class="muted">AH volume unverified</td>
+          <td>Modest — AMD stole chip day; AVGO AH headwind for semis</td>
+        </tr>
+        <tr>
+          <td><strong>AMZN</strong></td><td>$238.55</td>
+          <td class="up">+0.26%</td>
+          <td class="muted">AH volume unverified</td>
+          <td>Underperformed QQQ — rotation out of mega-cap</td>
+        </tr>
+        <tr>
+          <td><strong>META</strong></td><td>$566.98</td>
+          <td class="up">+0.20%</td>
+          <td class="muted">AH volume unverified</td>
+          <td>Underperformed — mega-cap rotation headwind</td>
+        </tr>
+        <tr>
+          <td><strong>PLTR</strong></td><td>$127.99</td>
+          <td class="dn">-0.61%</td>
+          <td class="muted">AH volume unverified</td>
+          <td>Slight underperform on risk-on day; SHLD drag</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- TOMORROW'S EARNINGS PREVIEW -->
+  <div class="section">
+    <div class="section-title">📅 Tomorrow's Earnings Preview — June 15, 2026 (Monday)</div>
+    <div class="section-note">stockanalysis.com/markets/earnings/ returned HTTP 404. EarningsWhispers login-gated. Data from web search only — verify manually before trading.</div>
+
+    <table>
+      <thead><tr><th>Ticker</th><th>Company</th><th>Theme / ETF</th><th>Time</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td>FCEL</td><td>FuelCell Energy</td><td>Hydrogen / Energy</td><td>TBD</td><td>Small cap; not in major tracked themes</td></tr>
+        <tr><td>VFS</td><td>VinFast</td><td>EV / XLY tangential</td><td>TBD</td><td>Highly volatile; watch for Asian pre-market gap</td></tr>
+        <tr><td>CPB</td><td>Campbell's</td><td>XLP — Consumer Staples</td><td>TBD</td><td>Defensive name; low volatility typically</td></tr>
+      </tbody>
+    </table>
+
+    <div style="background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:10px 14px;font-size:12px;color:var(--muted);">
+      No major watchlist names (TSLA, NVDA, AMD, MARA, COIN, META, AMZN, PLTR, SOFI, SNDK) confirmed reporting June 15. Primary Monday risk = AVGO earnings overhang on SMH.
+    </div>
+  </div>
+
+  <!-- PERSONAL POSITIONS PLAN -->
+  <div class="section">
+    <div class="section-title">🧭 Personal Positions Plan — Monday Overnight Risk</div>
+
+    <div style="background:var(--bg2);border:1px solid var(--border);border-radius:6px;overflow:hidden;margin-bottom:16px;">
+      <div class="risk-item">
+        <div class="risk-num">1</div>
+        <div class="risk-content">
+          <div class="title">SMH / Semiconductor longs — AVGO earnings overhang</div>
+          <div class="detail">AVGO -14% AH presses SMH at Monday open. SMH +6.41% today — expect partial giveback. AMD's +10.83% session strength should partially offset. Watch if AVGO stabilizes pre-market above -10% before pressing the short side.</div>
+        </div>
+      </div>
+      <div class="risk-item">
+        <div class="risk-num">2</div>
+        <div class="risk-content">
+          <div class="title">USO / Oil short — Iran ceasefire validation, but deal risk overnight</div>
+          <div class="detail">Iran ceasefire confirms oil short thesis (USO -6.58%). Overnight risk = deal falls apart (very common in ME negotiations). Brent reportedly $103 from $115. Keep stops above $131 on USO (pre-news level).</div>
+        </div>
+      </div>
+      <div class="risk-item">
+        <div class="risk-num">3</div>
+        <div class="risk-content">
+          <div class="title">WGMI / MARA / crypto — weekend volatility risk</div>
+          <div class="detail">+11.27%/+11.64% on the day — massively extended. Weekend crypto can flush aggressively. Size down or hold with stops. Don't chase Monday open if gap is already +3%+.</div>
+        </div>
+      </div>
+      <div class="risk-item">
+        <div class="risk-num">4</div>
+        <div class="risk-content">
+          <div class="title">SNDK — extreme extension, structural thesis intact</div>
+          <div class="detail">+18.41% in one session ($307/share move). AI NAND shortage story is real and structural (692% YTD). Normal to see -5 to -10% flush on Day+1. Wait for intraday dip before adding; don't chase Monday open.</div>
+        </div>
+      </div>
+      <div class="risk-item">
+        <div class="risk-num">5</div>
+        <div class="risk-content">
+          <div class="title">JETS — Iran ceasefire trade, partial profits warranted</div>
+          <div class="detail">+8.49% on tentative ceasefire. Deal is NOT signed. Take partial profits. Keep core position for confirmation. If ceasefire confirmed Monday → hold; if news reverses → cut quickly.</div>
+        </div>
+      </div>
+      <div class="risk-item">
+        <div class="risk-num">6</div>
+        <div class="risk-content">
+          <div class="title">SPCX — clean IPO, continuation setup</div>
+          <div class="detail">$160.95 close as key support. AH ~$163.86. Momentum is very strong. IPO lock-up: institutional sellers locked for 6 months. Watch $150 open as major support; $160.95 close as near-term base. Risk: massive Day 1 float (514M shares traded).</div>
+        </div>
+      </div>
+      <div class="risk-item">
+        <div class="risk-num">7</div>
+        <div class="risk-content">
+          <div class="title">GLD / GDXJ — metals extremely extended, unusual gold + equities co-run</div>
+          <div class="detail">Gold +3.36%, juniors +9.27% — unusual to see gold and equities both rip together. Likely dollar weakness + Iran uncertainty premium. GDXJ may consolidate after 9% day. Watch GLD $386 as near-term support; below = take down GDXJ exposure.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="bias-grid">
+      <div class="bias-card">
+        <div class="bc-label" style="color:var(--green)">Monday Longs</div>
+        <div class="bc-items">
+          <span class="up">JETS (dip buyer — ceasefire)</span>
+          <span class="up">COPX / REMX (materials pullback)</span>
+          <span class="up">DRAM (AVGO-induced SMH flush = entry)</span>
+          <span class="up">SPCX continuation watch</span>
+        </div>
+      </div>
+      <div class="bias-card">
+        <div class="bc-label" style="color:var(--red)">Monday Trims</div>
+        <div class="bc-items">
+          <span class="dn">SNDK (extended -5 to -10% flush likely)</span>
+          <span class="dn">WGMI / MARA (weekend crypto risk)</span>
+          <span class="dn">GDXJ (9% day — consolidation likely)</span>
+          <span class="dn">SMH (AVGO overhang)</span>
+        </div>
+      </div>
+      <div class="bias-card">
+        <div class="bc-label" style="color:var(--blue)">Theme Bias</div>
+        <div class="bc-items">
+          <span>Macro: <strong class="up">Risk-ON</strong></span>
+          <span>Semis: <strong class="warn-text">Mixed</strong> (AMD+ vs AVGO-)</span>
+          <span>Travel: <strong class="up">Continuation</strong></span>
+          <span>Oil: <strong class="dn">Bearish</strong></span>
+          <span>Metals: <strong class="warn-text">Extended/Pause</strong></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ASSUMPTION AUDIT -->
+  <div class="section">
+    <div class="section-title">🔍 Assumption Audit</div>
+    <table class="audit-table">
+      <thead><tr><th>Item</th><th>Method</th><th>Flag</th></tr></thead>
+      <tbody>
+        <tr><td>TV MCP price pulls</td><td>batch_run(get_ohlcv) for all 57 ETFs + 12 watchlist tickers</td><td class="up">✅ All 57 successful — reliable path confirmed</td></tr>
+        <tr><td>quote_get</td><td>Used for SPCX (correct) and AVGO (post chart_set_symbol)</td><td class="warn-text">⚠️ quote_get returned SPCX data when called after chart switched to SPCX — known intermittent bug. AVGO AH price written "unavailable — not pulled"</td></tr>
+        <tr><td>SPY/QQQ sanity</td><td>SPY +1.78%, QQQ +3.15%</td><td class="up">✅ Both within 5% bounds. Large QQQ move explainable by SPCX IPO + Iran deal</td></tr>
+        <tr><td>AH Volume</td><td>stockanalysis has no AH volume column; TV MCP intraday not attempted (chart stuck)</td><td class="warn-text">⚠️ FAC: "AH volume unverified" — conviction capped 🟡</td></tr>
+        <tr><td>Chrome MCP</td><td>Not available</td><td class="warn-text">⚠️ Top-20 %-sort only. AVGO missed in losers list — discovered via AMC earnings search instead</td></tr>
+        <tr><td>Finviz feed</td><td>Public feed only</td><td class="warn-text">⚠️ Elite filter unavailable — public feed used</td></tr>
+        <tr><td>VIX</td><td>Not batch_run'd (not a standard tradeable ETF)</td><td>Regime proxied via HYG +0.46%, TLT +0.70%, UUP -0.46% → controlled risk-on</td></tr>
+        <tr><td>ETF data type</td><td>batch_run returns daily session bar, not AH bars</td><td>Noted — AH ETF moves typically <0.3% and not primary signal</td></tr>
+        <tr><td>AVGO AH price</td><td>TV MCP unavailable</td><td class="warn-text">⚠️ Web sources cited ~-14% AH reaction — secondary source flagged</td></tr>
+        <tr><td>Tomorrow's earnings</td><td>stockanalysis 404; EarningsWhispers login-gated</td><td class="warn-text">⚠️ FCEL, VFS, CPB from web search — verify manually</td></tr>
+        <tr><td>SPCX ETF attribution</td><td>New IPO — not yet in any ETF</td><td class="warn-text">UNCLASSIFIED — ARKX is closest proxy; ETFs may add SPCX at next rebalance</td></tr>
+        <tr><td>Data pull time</td><td>All TV MCP at timestamp 1781271000</td><td class="up">Jun 12, 2026 regular session close (~4:00 PM ET)</td></tr>
+        <tr><td>Iran deal status</td><td>Reuters/MarketWatch "tentative ceasefire" / "peace deal hopes"</td><td class="warn-text">⚠️ NOT a signed agreement — "hopes" language; overnight reversal risk is real</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="footer">
+    <div>🌙 After-Hours Scan v7.7 · June 12, 2026 · Generated by after-hours-catalyst-scanner</div>
+    <div style="margin-top:6px;">Primary sources: TV MCP (batch_run) · stockanalysis.com · finviz.com/news (public) · CNBC/Reuters/WSJ (web search)</div>
+  </div>
+
+</div>
+</body>
+</html>
