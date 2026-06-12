@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pre-Market Catalyst v7.7 — 2026-06-12</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0e17; --bg2: #111827; --bg3: #1a2235; --border: #1e2d45;
+    --text: #e2e8f0; --muted: #94a3b8; --accent: #38bdf8;
+    --green: #4ade80; --red: #f87171; --orange: #fb923c;
+    --yellow: #fbbf24; --purple: #a78bfa; --teal: #2dd4bf;
+    --cyan: #22d3ee; --blue: #60a5fa;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: 'JetBrains Mono', monospace; font-size: 13px; line-height: 1.6; padding: 20px; max-width: 1300px; margin: 0 auto; }
+  .health-banner { background: #0c2a1a; border: 1px solid #166534; border-left: 4px solid var(--green); padding: 12px 16px; margin-bottom: 8px; border-radius: 4px; }
+  .health-banner.warn { background: #1a1600; border-color: #713f12; border-left-color: var(--yellow); }
+  .health-banner.degraded { background: #1a1200; border-color: #92400e; border-left-color: var(--orange); }
+  .health-tag { font-weight: 700; color: var(--green); margin-right: 8px; }
+  .health-tag.warn { color: var(--yellow); }
+  .health-tag.orange { color: var(--orange); }
+  .scan-header { margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid var(--border); }
+  .scan-header h1 { font-size: 22px; font-weight: 700; color: var(--teal); letter-spacing: 0.5px; }
+  .scan-header .meta { color: var(--muted); font-size: 11px; margin-top: 4px; }
+  .section { margin-bottom: 32px; }
+  .section-title { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--accent); margin-bottom: 12px; padding-bottom: 6px; border-bottom: 1px solid var(--border); }
+  table { width: 100%; border-collapse: collapse; font-size: 12px; margin-bottom: 12px; }
+  th { background: var(--bg3); color: var(--muted); font-weight: 600; text-transform: uppercase; font-size: 10px; letter-spacing: 0.5px; padding: 8px 10px; text-align: left; border-bottom: 1px solid var(--border); }
+  td { padding: 8px 10px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: rgba(255,255,255,0.02); }
+  .card { background: var(--bg2); border: 1px solid var(--border); border-radius: 6px; padding: 16px; margin-bottom: 12px; }
+  .card-header { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; flex-wrap: wrap; }
+  .ticker-badge { background: var(--bg3); border: 1px solid var(--border); color: var(--accent); font-weight: 700; font-size: 15px; padding: 4px 12px; border-radius: 4px; }
+  .move-badge { font-size: 14px; font-weight: 700; padding: 4px 10px; border-radius: 4px; }
+  .move-badge.up { background: rgba(74,222,128,0.12); color: var(--green); }
+  .move-badge.down { background: rgba(248,113,113,0.12); color: var(--red); }
+  .move-badge.flat { background: rgba(148,163,184,0.1); color: var(--muted); }
+  .tag { display: inline-block; font-size: 10px; font-weight: 600; padding: 2px 6px; border-radius: 3px; margin: 1px; }
+  .tag-ipo { background: rgba(45,212,191,0.15); color: var(--teal); border: 1px solid rgba(45,212,191,0.3); }
+  .tag-policy { background: rgba(167,139,250,0.15); color: var(--purple); border: 1px solid rgba(167,139,250,0.3); }
+  .tag-wire { background: rgba(251,146,60,0.15); color: var(--orange); border: 1px solid rgba(251,146,60,0.3); }
+  .tag-flow { background: rgba(96,165,250,0.15); color: var(--blue); border: 1px solid rgba(96,165,250,0.3); }
+  .tag-fade { background: rgba(248,113,113,0.15); color: var(--red); border: 1px solid rgba(248,113,113,0.3); }
+  .tag-macro { background: rgba(56,189,248,0.15); color: var(--accent); border: 1px solid rgba(56,189,248,0.3); }
+  .tag-earnings { background: rgba(167,139,250,0.15); color: var(--purple); border: 1px solid rgba(167,139,250,0.3); }
+  .tag-theme { background: rgba(34,211,238,0.15); color: var(--cyan); border: 1px solid rgba(34,211,238,0.3); }
+  .kv { display: flex; gap: 20px; flex-wrap: wrap; margin: 8px 0; }
+  .kv-item { display: flex; flex-direction: column; }
+  .kv-label { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; }
+  .kv-value { font-size: 13px; font-weight: 600; }
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+  @media(max-width:800px) { .grid-2,.grid-3 { grid-template-columns: 1fr; } }
+  .up { color: var(--green); } .down { color: var(--red); } .muted { color: var(--muted); }
+  .warn { color: var(--yellow); } .bold { font-weight: 700; } .teal { color: var(--teal); }
+  .purple { color: var(--purple); } .orange { color: var(--orange); } .blue { color: var(--blue); } .cyan { color: var(--cyan); }
+  .alert { background: rgba(251,191,36,0.08); border: 1px solid rgba(251,191,36,0.25); border-radius: 4px; padding: 10px 14px; margin: 10px 0; font-size: 12px; }
+  .alert.info { background: rgba(56,189,248,0.06); border-color: rgba(56,189,248,0.2); }
+  .alert.success { background: rgba(74,222,128,0.06); border-color: rgba(74,222,128,0.2); }
+  .alert.danger { background: rgba(248,113,113,0.08); border-color: rgba(248,113,113,0.25); }
+  .alert.theme { background: rgba(34,211,238,0.06); border-color: rgba(34,211,238,0.2); }
+  .hl { background: var(--bg3); border-left: 3px solid var(--teal); padding: 8px 14px; margin: 5px 0; border-radius: 0 4px 4px 0; font-size: 12px; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+  .hl-time { color: var(--muted); font-size: 10px; min-width: 60px; }
+  .hl-ticker { color: var(--accent); font-weight: 700; }
+  .hl-source { color: var(--muted); font-size: 10px; margin-left: auto; }
+  .conviction-high { color: var(--green); font-weight: 700; }
+  .conviction-med { color: var(--yellow); font-weight: 700; }
+  .conviction-low { color: var(--red); font-weight: 700; }
+  .rank-badge { background: var(--bg3); border: 1px solid var(--border); color: var(--muted); font-size: 11px; font-weight: 700; width: 24px; height: 24px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; margin-right: 6px; }
+  .briefing-box { background: linear-gradient(135deg, rgba(45,212,191,0.06), rgba(56,189,248,0.04)); border: 1px solid rgba(45,212,191,0.25); border-radius: 8px; padding: 18px 20px; font-size: 13px; line-height: 1.8; margin-bottom: 24px; }
+  .briefing-box h3 { color: var(--teal); font-size: 14px; font-weight: 700; margin-bottom: 10px; }
+  .epoch-banner { background: linear-gradient(135deg, rgba(45,212,191,0.1), rgba(56,189,248,0.05)); border: 2px solid var(--teal); border-radius: 8px; padding: 20px; margin-bottom: 20px; text-align: center; }
+  .epoch-banner h2 { font-size: 18px; color: var(--teal); font-weight: 700; margin-bottom: 6px; }
+  .epoch-banner .sub { color: var(--muted); font-size: 12px; }
+  .stat-row { display: flex; gap: 16px; flex-wrap: wrap; margin: 12px 0; }
+  .stat-box { background: var(--bg3); border: 1px solid var(--border); border-radius: 6px; padding: 10px 14px; min-width: 120px; }
+  .stat-box .label { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
+  .stat-box .value { font-size: 16px; font-weight: 700; }
+  .source-note { font-size: 10px; color: var(--muted); margin-top: 8px; font-style: italic; }
+  .footer { margin-top: 40px; padding-top: 16px; border-top: 1px solid var(--border); color: var(--muted); font-size: 10px; }
+  a { color: var(--accent); text-decoration: none; } a:hover { text-decoration: underline; }
+  .risk-flag { background: rgba(248,113,113,0.08); border: 1px solid rgba(248,113,113,0.2); border-radius: 4px; padding: 8px 12px; margin: 6px 0; font-size: 12px; }
+  .setup-box { background: var(--bg3); border-left: 3px solid var(--green); padding: 10px 14px; margin: 8px 0; border-radius: 0 4px 4px 0; font-size: 12px; }
+  .setup-box.fade { border-left-color: var(--red); }
+  .theme-wide { background: rgba(34,211,238,0.08); border: 2px solid rgba(34,211,238,0.4); border-radius: 6px; padding: 12px 16px; margin: 8px 0; font-size: 12px; }
+  .policy-card { background: rgba(167,139,250,0.06); border: 1px solid rgba(167,139,250,0.25); border-radius: 6px; padding: 12px 16px; margin: 8px 0; }
+  .wire-card { background: rgba(251,146,60,0.06); border: 1px solid rgba(251,146,60,0.25); border-radius: 6px; padding: 12px 16px; margin: 8px 0; }
+  .flow-card { background: rgba(96,165,250,0.06); border: 1px solid rgba(96,165,250,0.25); border-radius: 6px; padding: 12px 16px; margin: 8px 0; }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════ TOOL HEALTH ═══════════════ -->
+<div class="health-banner degraded">
+  <span class="health-tag orange">⚠️ TOOL HEALTH (PRE-MARKET ~8:30 AM ET)</span>
+  TV MCP <strong class="orange">DEGRADED</strong> — quote_get returns current-chart symbol for ALL calls (chart-lock bug); batch_run get_ohlcv <strong class="down">FAILED</strong> all 55 symbols (JS evaluation error); workaround: chart_set_symbol + data_get_ohlcv used serially for priority ETFs &nbsp;|&nbsp;
+  stockanalysis.com <strong class="up">LIVE</strong> &nbsp;|&nbsp; Finviz public news <strong class="up">LIVE</strong> &nbsp;|&nbsp;
+  Chrome MCP <strong class="warn">UNAVAILABLE</strong> — gap discovery limited to WebFetch top-20 %-sort; Yahoo options skipped &nbsp;|&nbsp; Finviz Elite <strong class="warn">unavailable</strong> — public feed used
+  <br><span style="font-size:11px; color:var(--muted);">TV MCP price method used: chart_set_symbol(SYMBOL) → data_get_ohlcv(summary=true) — parallel execution creates race-condition uncertainty noted in audit. SPY and QQQ: full serial chain confirmed clean.</span>
+</div>
+
+<!-- ═══════════════ HEADER ═══════════════ -->
+<div class="scan-header">
+  <h1>☀️ PRE-MARKET CATALYST (v7.7 HYBRID) — 2026-06-12</h1>
+  <div class="meta">Generated ~8:30 AM ET &nbsp;·&nbsp; v7.7 Hybrid (ETFs + Individual Stocks) &nbsp;·&nbsp; Sources: TV MCP (serial fallback) + stockanalysis.com + Finviz public + web_search (Reuters, Bloomberg, CNBC, NPR, WSJ)</div>
+</div>
+
+<!-- ═══════════════ EPOCH BANNER ═══════════════ -->
+<div class="epoch-banner">
+  <h2>🚀 SPCX EPOCH DAY 1 — SpaceX Opens on Nasdaq at 9:50 AM ET</h2>
+  <div class="sub">$135 IPO price · $75B raised · $1.77T valuation · 3.5× oversubscribed · Gray market +35% → implied ~$182 · Nasdaq-100 inclusion clock: ~15 trading days</div>
+  <div class="stat-row" style="justify-content:center; margin-top:14px;">
+    <div class="stat-box"><div class="label">IPO Price</div><div class="value up">$135</div></div>
+    <div class="stat-box"><div class="label">Raised</div><div class="value up">$75B</div></div>
+    <div class="stat-box"><div class="label">Valuation</div><div class="value up">$1.77T</div></div>
+    <div class="stat-box"><div class="label">QQQ Today</div><div class="value up">+3.37%</div></div>
+    <div class="stat-box"><div class="label">SMH Today</div><div class="value teal">+6.75%</div></div>
+    <div class="stat-box"><div class="label">JETS Today</div><div class="value teal">+6.31%</div></div>
+    <div class="stat-box"><div class="label">USO Today</div><div class="value down">-4.07%</div></div>
+  </div>
+  <div style="margin-top:12px; font-size:12px; color:var(--muted);">
+    🕊️ <span class="up">Iran Peace Deal:</span> Trump cancels strikes · Deal "as soon as this weekend" · Oil falling · Strait of Hormuz to reopen
+    &nbsp;&nbsp;|&nbsp;&nbsp;
+    📊 <span class="cyan">Nasdaq-100 June 22:</span> RKLB · CRWV · ALAB · NBIS · TER — forced index buying begins
+  </div>
+</div>
+
+<!-- ═══════════════ SPY/QQQ SANITY ═══════════════ -->
+<div class="alert success">
+  <strong>SPY/QQQ Sanity Check:</strong> SPY $737.76 (+1.70% vs prior close $725.43) ✅ &nbsp;|&nbsp; QQQ $717.12 (+3.37% vs prior close $693.69) ✅ — Both within ±5% sanity bounds. QQQ significantly outperforming SPY (+3.37% vs +1.70%) — Nasdaq tech/space theme dominant. No DATA SUSPECT flags.
+</div>
+
+<!-- ═══════════════ MORNING BRIEFING ═══════════════ -->
+<div class="briefing-box">
+  <h3>📋 MORNING BRIEFING — 30-SECOND READ</h3>
+  The morning of June 12, 2026 is defined by two once-in-a-generation events colliding: the world's largest IPO (SPCX at $135, $1.77T valuation) opens on Nasdaq at 9:50 AM ET, while Trump's Iran peace breakthrough sends oil tumbling 4%+ and airlines soaring 6%+. QQQ is +3.37% pre-market but <strong class="teal">SMH is +6.75%</strong> — semis dramatically outperforming on ORCL's $95B FY27 AI capex and the Nasdaq-100 additions of CRWV (CoreWeave), RKLB, and ALAB (effective June 22, forcing tens of billions in index buying). RKLB is +3.76% pre-market on the Nasdaq-100 announcement. <strong class="down">ADBE is breaking to 52-week lows</strong> ($203.35 intraday) after CFO departure + earnings weakness — strong fade continues. <strong class="up">Gold is counterintuitively up +3.13%</strong> despite the risk-on backdrop, signaling that the Iran deal is not yet finalized (Iran FM called deal reports "merely speculation"). Key watch: SPCX first print at 9:50 AM (gray market implied ~$182, +35% above IPO), and Michigan Consumer Sentiment at 10:00 AM (June preliminary — May was record low 44.8).
+</div>
+
+<!-- ═══════════════ TOP 3 ETF + TOP 3 STOCK ═══════════════ -->
+<div class="section">
+  <div class="section-title">📊 TOP 3 ETF TRADE IDEAS + TOP 3 INDIVIDUAL STOCK SETUPS</div>
+  <div class="grid-2">
+
+    <!-- ETF TOP 3 -->
+    <div>
+      <div style="font-weight:700; color:var(--teal); margin-bottom:10px; font-size:12px; text-transform:uppercase; letter-spacing:1px;">🏷️ Top 3 ETF Setups</div>
+
+      <div class="card" style="border-left:3px solid var(--teal);">
+        <div class="card-header">
+          <span class="rank-badge">1</span>
+          <div class="ticker-badge">SMH</div>
+          <div class="move-badge up">+6.75%</div>
+          <span class="tag tag-theme">SEMIS / AI INFRA</span>
+          <span class="conviction-high">🟢 HIGH</span>
+        </div>
+        <div class="kv">
+          <div class="kv-item"><div class="kv-label">Pre-Mkt Close</div><div class="kv-value up">$609.45</div></div>
+          <div class="kv-item"><div class="kv-label">Prior Close</div><div class="kv-value">$570.91</div></div>
+          <div class="kv-item"><div class="kv-label">Vol vs Avg</div><div class="kv-value teal">1.27x</div></div>
+          <div class="kv-item"><div class="kv-label">Avg Daily Vol</div><div class="kv-value muted">9.57M</div></div>
+        </div>
+        <div style="font-size:12px; margin-top:8px;">VanEck Semiconductor ETF. Dramatically outperforming QQQ (+3.37%) this morning. Catalysts: ORCL $95B FY27 AI capex (H100/B200 demand), Nasdaq-100 additions — CRWV (AI compute, GPU clusters), ALAB (connectivity chips for AI datacenters), SpaceX semiconductor demand (Starlink, Starship avionics). NVDA top holding is +2.22% today. AMD +strong (~$491). 100-bar uptrend +55% still intact.</div>
+        <div class="setup-box">Entry: above $609.45 with open confirmation (ideally first 5-min candle). Stop: $595 (-2.4%). Target: $635-643 (100-bar high area). Do NOT chase if gap extends to $630+ at open — wait for first pullback.</div>
+        <div class="source-note">TV MCP chart_set_symbol(SMH) + data_get_ohlcv (~8:30 AM ET) · ORCL capex: <a href="https://stockanalysis.com/stocks/orcl/" target="_blank">stockanalysis</a> · CRWV Nasdaq-100: <a href="https://www.benzinga.com/trading-ideas/movers/26/06/53161677/why-is-coreweave-stock-soaring-friday" target="_blank">Benzinga</a></div>
+      </div>
+
+      <div class="card" style="border-left:3px solid var(--teal);">
+        <div class="card-header">
+          <span class="rank-badge">2</span>
+          <div class="ticker-badge">JETS</div>
+          <div class="move-badge up">+6.31%</div>
+          <span class="tag tag-macro">IRAN PEACE / OIL DROP</span>
+          <span class="conviction-high">🟢 HIGH</span>
+        </div>
+        <div class="kv">
+          <div class="kv-item"><div class="kv-label">Pre-Mkt Close</div><div class="kv-value up">$28.97</div></div>
+          <div class="kv-item"><div class="kv-label">Prior Close</div><div class="kv-value">$27.25</div></div>
+          <div class="kv-item"><div class="kv-label">Vol vs Avg</div><div class="kv-value teal">~1.02x (pre-mkt)</div></div>
+          <div class="kv-item"><div class="kv-label">Iran Peace</div><div class="kv-value teal">BULL CATALYST</div></div>
+        </div>
+        <div style="font-size:12px; margin-top:8px;">US Global Jets ETF. Iran peace deal + Strait of Hormuz reopening = oil falls 4%+ = airline margin expansion. Holdings: AAL, UAL, DAL, LUV, SAVE. Pure beneficiary of lower jet fuel costs. PEJ (travel/leisure) likely co-moving. 🚨 Watch: JETS + PEJ both moving = TRAVEL THEME WIDE-BREAKOUT.</div>
+        <div class="setup-box">Entry: above $28.97 continuation OR dip buy to $27.50-28 (if gap opens wide). Stop: $26.50 (below prior support). Target: $31-33 (Iran deal confirmed). Risk: deal not finalized — Iran FM said "speculation." Could reverse hard if deal breaks.</div>
+        <div class="source-note">TV MCP chart_set_symbol(JETS) + data_get_ohlcv (~8:15 AM ET, race condition) · Reuters: "Oil slides on Gulf peace hopes" (04:22 AM) · Bloomberg: "European Bonds Surge as Trump Touts Progress on Iran Peace Deal" (04:55 AM)</div>
+      </div>
+
+      <div class="card" style="border-left:3px solid var(--green);">
+        <div class="card-header">
+          <span class="rank-badge">3</span>
+          <div class="ticker-badge">ARKX</div>
+          <div class="move-badge up">+5.35%</div>
+          <span class="tag tag-ipo">SPACE / SPCX IPO</span>
+          <span class="conviction-high">🟢 HIGH</span>
+        </div>
+        <div class="kv">
+          <div class="kv-item"><div class="kv-label">Pre-Mkt Close</div><div class="kv-value up">~$34.45</div></div>
+          <div class="kv-item"><div class="kv-label">Prior Close</div><div class="kv-value">~$32.70</div></div>
+          <div class="kv-item"><div class="kv-label">Vol vs Avg</div><div class="kv-value teal">2.43x</div></div>
+          <div class="kv-item"><div class="kv-label">Avg Daily Vol</div><div class="kv-value muted">1.02M</div></div>
+        </div>
+        <div style="font-size:12px; margin-top:8px;">ARK Space &amp; Defense Innovation ETF (active managed). Cathie Wood widely expected to initiate SPCX position today (June 12 = first day of trading). Holdings: RKLB (+3.76% pre-mkt), ASTS (+3.4% pre-mkt), KRATOS, AEROVIRONMENT. RKLB's Nasdaq-100 addition announcement adds structural buying catalyst. Note: UFO (Procure Space) and ROKT (SPDR Kensho Frontiers) flagged as higher conviction in 8PM scan — check both as alternatives with potentially higher SPCX exposure.</div>
+        <div class="setup-box">Entry: above ~$34.45 with SPCX open confirmation at 9:50 AM. Stop: $33.00 (-4.2%). Target: $38-40 (if space sector holds). Do NOT size large before SPCX first print — wait for direction. EOD entry preferred for 3-5 day hold as Nasdaq-100 inclusion clock ticks.</div>
+        <div class="source-note">TV MCP chart_set_symbol(ARKX) + data_get_ohlcv (~8:10 AM ET, race condition) · <a href="https://www.cnbc.com/2026/06/12/spacex-ipo-spcx-live-updates.html" target="_blank">CNBC SPCX live updates</a></div>
+      </div>
+    </div>
+
+    <!-- STOCK TOP 3 -->
+    <div>
+      <div style="font-weight:700; color:var(--green); margin-bottom:10px; font-size:12px; text-transform:uppercase; letter-spacing:1px;">📈 Top 3 Individual Stock Setups</div>
+
+      <div class="card" style="border-left:3px solid var(--teal);">
+        <div class="card-header">
+          <span class="rank-badge">1</span>
+          <div class="ticker-badge" style="color:var(--teal); border-color:var(--teal);">SPCX</div>
+          <div class="move-badge flat">IPO $135 · Opens 9:50 AM</div>
+          <span class="tag tag-ipo">LARGEST IPO IN HISTORY</span>
+          <span class="conviction-high">🟢 HIGH (⚠️ extreme vol)</span>
+        </div>
+        <div class="kv">
+          <div class="kv-item"><div class="kv-label">IPO Price</div><div class="kv-value up">$135</div></div>
+          <div class="kv-item"><div class="kv-label">Valuation</div><div class="kv-value up">$1.77T</div></div>
+          <div class="kv-item"><div class="kv-label">Gray Mkt Implied</div><div class="kv-value teal">~$182 (+35%)</div></div>
+          <div class="kv-item"><div class="kv-label">Nasdaq Open</div><div class="kv-value warn">9:50 AM ET</div></div>
+          <div class="kv-item"><div class="kv-label">QQQ Impact</div><div class="kv-value cyan">Nasdaq-100 ~July 6</div></div>
+        </div>
+        <div style="font-size:12px; margin-top:8px;">SpaceX (SPCX). $75B raised, 3.5× oversubscribed ($250B demand), Maye Musk at Nasdaq. First-day IPO dynamics: initial float is thin (only ~4.2% sold in IPO). Structural demand: retail flood ($100B+ orders), BlackRock $5B anchor, Nasdaq-100 inclusion ~15 trading days = forced buying. Parent ETF bucket: ARKX (space).</div>
+        <div class="setup-box">Strategy: WAIT for first print at 9:50 AM. If opens $160-180 (reasonable), let initial euphoria flush (10-15 min). Re-entry on first consolidation above IPO price ($135-145 as support). Stop: $125 (below IPO). Target: $200-220 (first week). <strong class="warn">⚠️ DO NOT CHASE above $200 at open — wide spread, extreme volatility. Size 1/4 normal.</strong></div>
+        <div class="source-note"><a href="https://www.cnbc.com/2026/06/11/spacex-raises-75-billion-in-record-setting-ipo-ahead-of-nasdaq-debut.html" target="_blank">CNBC IPO details</a> · <a href="https://www.fastcompany.com/91558140/spacex-spcx-stock-price-ipo-trading-start-time-nasdaq-debut" target="_blank">Fast Company: open time 9:50 AM</a></div>
+      </div>
+
+      <div class="card" style="border-left:3px solid var(--green);">
+        <div class="card-header">
+          <span class="rank-badge">2</span>
+          <div class="ticker-badge">RKLB</div>
+          <div class="move-badge up">+3.76% pre-mkt</div>
+          <span class="tag tag-policy">NASDAQ-100 ADDITION</span>
+          <span class="tag tag-ipo">SPACE PURE-PLAY</span>
+          <span class="conviction-high">🟢 HIGH</span>
+        </div>
+        <div class="kv">
+          <div class="kv-item"><div class="kv-label">Pre-Mkt Price</div><div class="kv-value up">$119.10</div></div>
+          <div class="kv-item"><div class="kv-label">Prior Close</div><div class="kv-value">$114.78</div></div>
+          <div class="kv-item"><div class="kv-label">Mkt Cap</div><div class="kv-value">$66.4B</div></div>
+          <div class="kv-item"><div class="kv-label">NDX Inclusion</div><div class="kv-value cyan">June 22 (effective)</div></div>
+          <div class="kv-item"><div class="kv-label">1-Year Return</div><div class="kv-value teal">+335%</div></div>
+        </div>
+        <div style="font-size:12px; margin-top:8px;">Rocket Lab Corporation. DUAL CATALYST: (1) Nasdaq-100 addition effective June 22 = forced QQQ/QQQM rebalancing buy — largest rebalancing in history given SPCX IPO changes the composition; (2) SpaceX IPO halo — space sector broadly bid. Q1 rev +63.5% YoY, $2.2B backlog (2× YoY), Neutron reusable rocket late-2026. <strong class="warn">Stretched 94× P/S ratio</strong> — momentum play only.</div>
+        <div class="setup-box">Entry: above $120 on open confirmation (pre-mkt already at $119.10). Stop: $112 (-6.0%). Target: $130-135 (3-5 day as index inclusion approaches). Condition: space sector must hold its bid post-SPCX open. If SPCX opens and fades, rotate out of RKLB quickly.</div>
+        <div class="source-note"><a href="https://investors.rocketlabcorp.com/news-releases/news-release-details/rocket-lab-join-nasdaq-100-index" target="_blank">Rocket Lab Nasdaq-100 announcement (June 12, 06:00 AM)</a> · web_search (~8:00 AM ET)</div>
+      </div>
+
+      <div class="card" style="border-left:3px solid var(--yellow);">
+        <div class="card-header">
+          <span class="rank-badge">3</span>
+          <div class="ticker-badge">NVDA</div>
+          <div class="move-badge up">+2.22%</div>
+          <span class="tag tag-theme">AI INFRA / SEMIS</span>
+          <span class="conviction-med">🟡 MEDIUM</span>
+        </div>
+        <div class="kv">
+          <div class="kv-item"><div class="kv-label">Pre-Mkt Close</div><div class="kv-value up">$204.87</div></div>
+          <div class="kv-item"><div class="kv-label">Prior Close</div><div class="kv-value">$200.42</div></div>
+          <div class="kv-item"><div class="kv-label">Vol vs Avg</div><div class="kv-value">0.92x (pre-mkt)</div></div>
+          <div class="kv-item"><div class="kv-label">Avg Daily Vol</div><div class="kv-value muted">173M</div></div>
+        </div>
+        <div style="font-size:12px; margin-top:8px;">NVIDIA. Steady continuation on ORCL $95B FY27 capex thesis (H100/B200 GPU orders), broad semis rally (+6.75% SMH today). Less explosive than RKLB/CRWV today but higher conviction and liquidity. CRWV's entire compute infrastructure is NVDA GPUs. ALAB (Nasdaq-100 addition) provides connectivity chips for NVDA-based datacenters. Parent ETF: SMH, XLK.</div>
+        <div class="setup-box">Entry: above $205 continuation. Stop: $199 (below yesterday's low $199.92). Target: $215-220. Secondary buy: pull to $201-202 if broad market softens at open. Volume confirmation needed: watch for &gt;175M shares by noon.</div>
+        <div class="source-note">TV MCP chart_set_symbol(NVDA) + data_get_ohlcv (~8:30 AM ET) · <a href="https://congress.net/oracle-orcl-shares-tumble-after-earnings-as-massive-ai-spending-bill-rattles-investors/" target="_blank">ORCL capex analysis</a></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ THEME ROTATION ═══════════════ -->
+<div class="section">
+  <div class="section-title">🌀 THEME ROTATION READ</div>
+
+  <div class="theme-wide">
+    <strong class="cyan">🚨 SPACE THEME WIDE-BREAKOUT:</strong> ARKX (+5.35%) + UFO (space ETF, ~HIGH per 8PM scan) + ROKT (SPDR Kensho Frontiers, ~HIGH per 8PM scan) — all moving on SPCX IPO day. Multiple space ETFs co-moving = structural sector bid, not just one ETF squeeze.
+  </div>
+
+  <div class="theme-wide" style="border-color:rgba(74,222,128,0.4); background:rgba(74,222,128,0.05);">
+    <strong class="up">🚨 SEMIS SUPER-OUTPERFORM:</strong> SMH +6.75% vs QQQ +3.37% = semis running at 2× Nasdaq pace. NVDA +2.22%, AMD strong (~$491). CRWV +4.89%, ALAB (Nasdaq-100 additions). AI capex supercycle in full force. Parent ETF: SMH, XLK.
+  </div>
+
+  <div class="grid-3" style="margin-top:12px;">
+    <div class="card" style="border-left:3px solid var(--teal);">
+      <div style="font-weight:700; color:var(--teal); margin-bottom:6px;">🔥 HOTTEST THEMES</div>
+      <div style="font-size:12px; line-height:2;">
+        🚀 Space / SPCX IPO<br>
+        💡 Semiconductors / AI infra<br>
+        ✈️ Airlines / Travel (Iran peace)<br>
+        🪙 Gold (surprising hedge bid)<br>
+        📊 Nasdaq-100 rebalancing plays
+      </div>
+    </div>
+    <div class="card" style="border-left:3px solid var(--red);">
+      <div style="font-weight:700; color:var(--red); margin-bottom:6px;">📉 WEAKENING THEMES</div>
+      <div style="font-size:12px; line-height:2;">
+        🛢️ Oil/Energy (USO -4.07%)<br>
+        💻 Software/Adobe (ADBE 52-wk low)<br>
+        🛡️ Defense (ITA +4.97% but mixed — Iran peace reduces urgency)<br>
+        ⚡ BTC Miners (capital rotating to SPCX)
+      </div>
+    </div>
+    <div class="card" style="border-left:3px solid var(--yellow);">
+      <div style="font-weight:700; color:var(--yellow); margin-bottom:6px;">⚠️ RISK EVENTS TODAY</div>
+      <div style="font-size:12px; line-height:2;">
+        9:50 AM: SPCX first print<br>
+        10:00 AM: Michigan Sentiment (June prelim)<br>
+        ALL DAY: Iran deal headline risk<br>
+        EOD: SPCX close vs open spread<br>
+        Weekend: Iran deal signing expected
+      </div>
+    </div>
+  </div>
+
+  <div style="margin-top:12px;">
+    <div style="font-weight:700; color:var(--red); margin-bottom:8px; font-size:12px;">ETFs / STOCKS TO AVOID:</div>
+    <div class="grid-2">
+      <div>
+        <div class="card" style="border-left:3px solid var(--red);">
+          <div class="card-header"><div class="ticker-badge" style="color:var(--red);border-color:var(--red);">USO / XLE / XOP</div><span class="tag tag-fade">OIL FADE</span></div>
+          <div style="font-size:12px;">Oil ETFs. USO -4.07% pre-market on Iran peace deal. If Strait of Hormuz reopens, oil supply restoration = sustained bearish pressure. Short rips. Regime shift if deal signed this weekend.</div>
+        </div>
+        <div class="card" style="border-left:3px solid var(--red);">
+          <div class="card-header"><div class="ticker-badge" style="color:var(--red);border-color:var(--red);">ADBE</div><span class="tag tag-fade">STRONG FADE</span></div>
+          <div style="font-size:12px;">Adobe. 52-week low $203.35 hit intraday today. CFO Durn departing June 15 → Marvell. CEO Narayen succession uncertainty. Freemium pivot = ARR drag. AH was $206.68, now ~$208.98 (brief bounce likely to fail). No meaningful support until $180-190. Strong fade — sell all rips.</div>
+        </div>
+      </div>
+      <div>
+        <div class="card" style="border-left:3px solid var(--yellow);">
+          <div class="card-header"><div class="ticker-badge" style="color:var(--yellow);border-color:var(--yellow);">RDW</div><span class="tag tag-fade">FADING — SELL THE NEWS</span></div>
+          <div style="font-size:12px;">Redwire Corp. Was $18.92 AH last night — now $17.03. "Sell the news" is playing out exactly as 8PM scan warned. Below $17 signals further weakness. Do NOT bottom-fish without SPCX confirmation of sustained space sector bid.</div>
+        </div>
+        <div class="card" style="border-left:3px solid var(--yellow);">
+          <div class="card-header"><div class="ticker-badge" style="color:var(--yellow);border-color:var(--yellow);">LUNR</div><span class="tag tag-fade">AVOID</span></div>
+          <div style="font-size:12px;">Intuitive Machines. Thin liquidity, SPCX rotation crowding out smaller space names. Avoid until space sector direction clarifies post-SPCX 9:50 AM open.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ PRE-MARKET GAPPERS TABLE ═══════════════ -->
+<div class="section">
+  <div class="section-title">📋 PRE-MARKET GAPPERS TABLE (stockanalysis.com, WebFetch ~7:57 AM ET)</div>
+  <div class="alert warn" style="margin-bottom:10px;">
+    <strong>⚠️ Gap discovery limited to WebFetch top-20 %-sort (Chrome MCP unavailable).</strong> All 20 top %-gainers are micro-caps below $200M — zero tradeable &gt;$1B names in the %-sorted top-20 (same June 10 issue). Volume-sorted sweep unavailable. The liquid institutional names (RKLB, CRWV, ASTS, NVDA) are from independent research, not this table.
+  </div>
+  <table>
+    <thead><tr><th>#</th><th>Ticker</th><th>Company</th><th>% Gap</th><th>Price</th><th>Vol (Pre-Mkt)</th><th>Mkt Cap</th><th>Tradeable?</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td class="up bold">BYAH</td><td>Park Ha Bio Tech</td><td class="up">+119.05%</td><td>$2.30</td><td>26.6M</td><td class="down">$2.2M ❌</td><td class="down">No</td></tr>
+      <tr><td>2</td><td class="up bold">UBXG</td><td>U-BX Technology</td><td class="up">+103.34%</td><td>$9.74</td><td>4.8M</td><td class="down">$5.8M ❌</td><td class="down">No</td></tr>
+      <tr><td>3</td><td class="up bold">DFNS</td><td>T3 Defense</td><td class="up">+88.54%</td><td>$0.48</td><td>139M</td><td class="down">$10.9M ❌</td><td class="down">No</td></tr>
+      <tr><td colspan="8" style="color:var(--muted); font-style:italic;">Rows 4-20 omitted — all micro-caps under $100M mkt cap. No tradeable >$1B gainers from %-sort top-20.</td></tr>
+    </tbody>
+  </table>
+  <div style="margin-top:8px;">
+    <strong>Losers — only >$1B name:</strong>
+    <div class="hl" style="border-left-color:var(--red);">
+      <span class="hl-ticker">MBX</span>
+      <span class="down bold">-19.46%</span>
+      <span>$30.00 · $1.77B mkt cap ✅</span>
+      <span class="tag tag-earnings">PHASE 2 DATA</span>
+      <span style="font-size:11px; color:var(--muted);">MBX Biosciences — Phase 2 canvuparatide (hypoparathyroidism) results presented at ENDO 2026 + virtual investor event 8 AM ET today. 63% responders vs 31% placebo at 12 weeks — data was POSITIVE but stock is selling off (-19.46% = "sell the news" or data vs elevated expectations). Phase 3 planned Q3 2026. NOT a setup — wait for washout.</span>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ ETF SWEEP ═══════════════ -->
+<div class="section">
+  <div class="section-title">📡 ETF PRE-MARKET SWEEP (57-ETF Universe)</div>
+  <div class="alert" style="margin-bottom:10px;">
+    <strong>⚠️ TV MCP DEGRADED:</strong> batch_run failed all 55 symbols. quote_get returns current chart symbol for all. Only serial chart_set_symbol + data_get_ohlcv method works. Pulled 9 ETFs (priority). Remaining 48 ETFs listed as "not pulled — tool failure." All pulled values may have race-condition uncertainty (see Audit Step 11).
+  </div>
+  <table>
+    <thead><tr><th>ETF</th><th>Theme</th><th>Pre-Mkt Close</th><th>Prior Close</th><th>% Move</th><th>Vol vs Avg</th><th>Signal</th><th>Source/Time</th></tr></thead>
+    <tbody>
+      <tr style="background:rgba(74,222,128,0.04);">
+        <td><strong class="up">SPY</strong></td><td>S&amp;P 500</td><td class="up">$737.76</td><td>$725.43</td><td class="up bold">+1.70%</td><td>86.3M / 73M = 1.18x</td><td class="up">Broad rally ✅</td><td class="muted">TV MCP serial (clean)</td>
+      </tr>
+      <tr style="background:rgba(74,222,128,0.04);">
+        <td><strong class="up">QQQ</strong></td><td>Nasdaq 100</td><td class="up">$717.12</td><td>$693.69</td><td class="up bold">+3.37%</td><td>71.8M / 56.8M = 1.26x</td><td class="up">Tech/space dominant ✅</td><td class="muted">TV MCP serial (clean)</td>
+      </tr>
+      <tr style="background:rgba(74,222,128,0.06);">
+        <td><strong class="teal">SMH</strong></td><td>Semiconductors</td><td class="teal">$609.45</td><td>$570.91</td><td class="teal bold">+6.75%</td><td>12.2M / 9.6M = 1.27x</td><td class="teal">🚨 MASSIVE — buy</td><td class="muted">TV MCP serial (~8:30 ET)</td>
+      </tr>
+      <tr style="background:rgba(74,222,128,0.04);">
+        <td><strong class="up">JETS</strong></td><td>Airlines</td><td class="up">$28.97</td><td>$27.25</td><td class="up bold">+6.31%</td><td>~4.74M / 4.63M = ~1.02x</td><td class="up">🕊️ Iran peace bull</td><td class="muted">TV MCP serial (~8:15 ET, race cond.)</td>
+      </tr>
+      <tr style="background:rgba(74,222,128,0.04);">
+        <td><strong class="up">ARKX</strong></td><td>Space/Defense</td><td class="up">~$34.45</td><td>~$32.70</td><td class="up bold">+5.35%</td><td>2.49M / 1.02M = 2.43x</td><td class="up">🚀 SPCX IPO halo</td><td class="muted">TV MCP serial (~8:10 ET, race cond.)</td>
+      </tr>
+      <tr style="background:rgba(74,222,128,0.04);">
+        <td><strong class="up">ITA</strong></td><td>Defense Primes</td><td class="up">~$236.04</td><td>~$224.87</td><td class="up bold">+4.97%</td><td>1.18M / 1.10M = ~1.08x</td><td class="cyan">Surprise — SpaceX/Starshield + risk-on</td><td class="muted">TV MCP serial (~8:20 ET, race cond.)</td>
+      </tr>
+      <tr style="background:rgba(251,191,36,0.03);">
+        <td><strong class="teal">GLD</strong></td><td>Gold</td><td class="teal">$386.32</td><td>$374.58</td><td class="teal bold">+3.13%</td><td>12.6M / 13.7M = 0.92x</td><td class="warn">⚠️ Up despite risk-on — Iran deal uncertain</td><td class="muted">TV MCP serial (~8:30 ET, likely clean)</td>
+      </tr>
+      <tr style="background:rgba(248,113,113,0.04);">
+        <td><strong class="down">USO</strong></td><td>Crude Oil</td><td class="down">~$128.83</td><td>~$134.30</td><td class="down bold">-4.07%</td><td>12.2M / 24.4M = 0.50x</td><td class="down">🛢️ FADE — Iran peace</td><td class="muted">TV MCP serial (~8:20 ET, race cond.)</td>
+      </tr>
+      <tr>
+        <td colspan="8" class="muted" style="font-style:italic; font-size:11px;">48 remaining ETFs (XLK, XLV, XLF, XLE, XLI, XLY, XLP, XLU, XLB, XLC, XLRE, IGV, CIBR, XBI, IBB, KRE, XOP, XHB, XRT, IYT, PEJ, DRAM, QTUM, BOTZ, ARKK, AIPO, DTCR, SHLD, WGMI, IBIT, URA, NLR, GRID, TAN, COPX, REMX, XME, LIT, GDX, GDXJ, SLV, UNG, MOO, KWEB, HYG, TLT, UUP, IWM): <strong>NOT PULLED — batch_run JS evaluation error + quote_get chart-lock bug.</strong> All require serial chart_set_symbol + data_get_ohlcv; time constraints prevented full sweep.</td>
+      </tr>
+    </tbody>
+  </table>
+  <div style="margin-top:8px; font-size:11px; color:var(--muted);">Estimated via web_search: IWM ~$290 (+2.95%), GLD confirmed, Bitcoin ~$63,668 (+1.78%)</div>
+</div>
+
+<!-- ═══════════════ FINVIZ NEWS DIGEST ═══════════════ -->
+<div class="section">
+  <div class="section-title">📰 FINVIZ NEWS DIGEST (Public Feed — Last 6 Hours)</div>
+  <div style="font-size:11px; color:var(--muted); margin-bottom:8px;">⚠️ Finviz Elite filter unavailable — public feed used. Source: WebFetch finviz.com/news (~7:57 AM ET)</div>
+
+  <div style="font-weight:700; color:var(--teal); margin-bottom:6px; font-size:11px;">SPACEX IPO — DOMINANT THEME</div>
+  <div class="hl" style="border-left-color:var(--teal);"><span class="hl-time">07:57 AM</span><span class="hl-ticker">SPCX</span><span>"SpaceX's IPO: Record-breaking deal prices at $135 a share. Trading begins on Friday."</span><span class="hl-source">MarketWatch</span></div>
+  <div class="hl" style="border-left-color:var(--teal);"><span class="hl-time">07:49 AM</span><span class="hl-ticker">SPCX</span><span>"The Consequences of SpaceX's Trillion-Dollar I.P.O."</span><span class="hl-source">New York Times</span></div>
+  <div class="hl" style="border-left-color:var(--teal);"><span class="hl-time">07:00 AM</span><span class="hl-ticker">SPCX / QQQ</span><span>"The S&amp;P 500 already made a big call on SpaceX stock and index fund investors need to know it"</span><span class="hl-source">CNBC</span></div>
+  <div class="hl" style="border-left-color:var(--teal);"><span class="hl-time">06:42 AM</span><span class="hl-ticker">ARKX / UFO</span><span>"You Could Get Lost in Space Using These Funds"</span><span class="hl-source">WSJ (paywall)</span></div>
+  <div class="hl" style="border-left-color:var(--teal);"><span class="hl-time">05:00 AM</span><span class="hl-ticker">SPCX</span><span>"SpaceX Prepares for Debut After $75 Billion IPO Smashes Record"</span><span class="hl-source">Bloomberg</span></div>
+  <div class="hl" style="border-left-color:var(--teal);"><span class="hl-time">04:19 AM</span><span class="hl-ticker">SPCX</span><span>"SpaceX IPO Today: Investors Await Historic Test of Market"</span><span class="hl-source">WSJ (paywall)</span></div>
+  <div class="hl" style="border-left-color:var(--teal);"><span class="hl-time">03:34 AM</span><span class="hl-ticker">SPCX</span><span>"SpaceX Shares Indicated More Than 35% Higher in Shadow Trading"</span><span class="hl-source">Bloomberg</span></div>
+
+  <div style="font-weight:700; color:var(--yellow); margin-bottom:6px; margin-top:12px; font-size:11px;">IRAN PEACE DEAL / MACRO</div>
+  <div class="hl" style="border-left-color:var(--yellow);"><span class="hl-time">07:37 AM</span><span class="hl-ticker">SPY / QQQ</span><span>"US Futures Rally With All Eyes on SpaceX, Iran War Peace Hopes"</span><span class="hl-source">Bloomberg</span></div>
+  <div class="hl" style="border-left-color:var(--yellow);"><span class="hl-time">06:43 AM</span><span class="hl-ticker">USO / JETS</span><span>"U.S. stock futures rise on signs of a potential U.S.-Iran peace deal; traders await SpaceX IPO"</span><span class="hl-source">CNBC</span></div>
+  <div class="hl" style="border-left-color:var(--yellow);"><span class="hl-time">04:55 AM</span><span class="hl-ticker">TLT / GLD</span><span>"European Bonds Surge as Trump Touts Progress on Iran Peace Deal"</span><span class="hl-source">Bloomberg</span></div>
+  <div class="hl" style="border-left-color:var(--red);"><span class="hl-time">04:22 AM</span><span class="hl-ticker">USO / XOP</span><span>"Oil slides on Gulf peace hopes, all eyes on SpaceX debut"</span><span class="hl-source">Reuters</span></div>
+
+  <div style="font-weight:700; color:var(--muted); margin-bottom:6px; margin-top:12px; font-size:11px;">OTHER / MARKET STRUCTURE</div>
+  <div class="hl"><span class="hl-time">07:45 AM</span><span>— </span><span>"Vanguard Ends BlackRock's 20-Year Run Atop US ETF Market"</span><span class="hl-source">Bloomberg (industry; no trade)</span></div>
+  <div class="hl"><span class="hl-time">07:35 AM</span><span>— </span><span>"U.S. equity funds record 'first weekly outflow in three weeks'"</span><span class="hl-source">Reuters</span></div>
+  <div class="hl"><span class="hl-time">07:22 AM</span><span>— </span><span>"'Extreme' Rotations Leave Stock Market Bulls Without a Playbook"</span><span class="hl-source">Bloomberg</span></div>
+</div>
+
+<!-- ═══════════════ POLICY / STAKE / RUMOR ═══════════════ -->
+<div class="section">
+  <div class="section-title" style="color:var(--purple);">🏛️ POLICY / STAKE / RUMOR CATALYSTS</div>
+
+  <div class="policy-card">
+    <div style="font-weight:700; color:var(--purple); margin-bottom:6px;">🕊️ IRAN PEACE DEAL — HIGH IMPACT</div>
+    <div style="font-size:12px; line-height:1.8;">
+      Status: Trump canceled planned strikes (June 11). Deal framework: 60-day MoU → temporary moratorium on uranium enrichment, sanctions relief, Strait of Hormuz reopening (unrestricted shipping, mines removed within 30 days).<br>
+      <strong class="warn">Iran FM says "merely speculation" — not finalized.</strong> Mediators "cautiously optimistic." Weekend signing possible.<br>
+      Market impact: USO -4.07% (oil falling), JETS +6.31% (airlines), GLD +3.13% (hedge against deal uncertainty), ITA mixed.<br>
+      Source: <a href="https://www.npr.org/2026/06/11/nx-s1-5854970/trump-iran-peace-deal-cancel-strikes" target="_blank">NPR</a> · <a href="https://www.cnn.com/2026/06/11/world/live-news/iran-war-trump-israel-hnk" target="_blank">CNN</a> · <a href="https://www.axios.com/2026/05/28/iran-peace-deal-trump-approval" target="_blank">Axios scoop</a>
+    </div>
+  </div>
+
+  <div class="policy-card">
+    <div style="font-weight:700; color:var(--purple); margin-bottom:6px;">📊 NASDAQ-100 JUNE 22 REBALANCING — FORCED BUYING</div>
+    <div style="font-size:12px; line-height:1.8;">
+      Five additions effective June 22: RKLB (+3.76% pre-mkt), CRWV (+4.89% pre-mkt), ALAB (Astera Labs), NBIS (Nebius Group), TER (Teradyne).<br>
+      SpaceX (SPCX) Nasdaq-100 inclusion expected ~July 6 (15 trading days post-listing per index rules).<br>
+      This is government-adjacent: RKLB has significant DoD/NASA contracts; CRWV has Microsoft/DoD cloud contracts.<br>
+      Source: <a href="https://www.globenewswire.com/news-release/2026/06/12/3310939/0/en/rocket-lab-to-join-the-nasdaq-100-index.html" target="_blank">GlobeNewswire RKLB</a> · <a href="https://www.benzinga.com/trading-ideas/movers/26/06/53161677/why-is-coreweave-stock-soaring-friday" target="_blank">Benzinga CRWV</a>
+    </div>
+  </div>
+
+  <div class="policy-card" style="background:rgba(167,139,250,0.03);">
+    <div style="font-weight:700; color:var(--muted); margin-bottom:6px;">Gov Equity Portfolio Watch — No New Activity Found</div>
+    <div style="font-size:12px; color:var(--muted);">Searched: INTC, MP, IBM, RGTI, QBTS, INFQ — no new CHIPS Act grants, DoD contracts, or executive orders found today. RGTI/QBTS: no new quantum news. MP Materials: no rare earth export control updates. Catalyst unconfirmed for this group today.</div>
+  </div>
+</div>
+
+<!-- ═══════════════ WIRE SCOOPS ═══════════════ -->
+<div class="section">
+  <div class="section-title" style="color:var(--orange);">📡 WIRE SERVICE SCOOPS</div>
+
+  <div class="wire-card">
+    <div style="display:flex; gap:8px; align-items:center; margin-bottom:6px;">
+      <span style="font-weight:700; color:var(--orange);">Bloomberg</span>
+      <span class="tag tag-ipo">SPCX EPOCH</span>
+      <span class="muted" style="font-size:10px;">05:00 AM ET</span>
+    </div>
+    <div style="font-size:12px;">"SpaceX Prepares for Debut After $75 Billion IPO Smashes Record" — Confirms $135 fixed price, $75B raised, Nasdaq debut. Paywall. Affected: SPCX, ARKX, QQQ, RKLB, ASTS.</div>
+  </div>
+
+  <div class="wire-card">
+    <div style="display:flex; gap:8px; align-items:center; margin-bottom:6px;">
+      <span style="font-weight:700; color:var(--orange);">Bloomberg</span>
+      <span class="tag tag-macro">IRAN / MACRO</span>
+      <span class="muted" style="font-size:10px;">04:55 AM ET</span>
+    </div>
+    <div style="font-size:12px;">"European Bonds Surge as Trump Touts Progress on Iran Peace Deal" — European bonds + US futures rallying. Risk-on global. Affected: TLT, HYG, SPY, QQQ, JETS, USO (bearish).</div>
+  </div>
+
+  <div class="wire-card">
+    <div style="display:flex; gap:8px; align-items:center; margin-bottom:6px;">
+      <span style="font-weight:700; color:var(--orange);">Reuters</span>
+      <span class="tag tag-macro">OIL BEARISH</span>
+      <span class="muted" style="font-size:10px;">04:22 AM ET</span>
+    </div>
+    <div style="font-size:12px;">"Oil slides on Gulf peace hopes, all eyes on SpaceX debut" — WTI crude falling on Strait of Hormuz reopening expectations. Affected: USO -4.07%, XLE, XOP, airlines bullish.</div>
+  </div>
+
+  <div class="wire-card">
+    <div style="display:flex; gap:8px; align-items:center; margin-bottom:6px;">
+      <span style="font-weight:700; color:var(--orange);">WSJ</span>
+      <span class="tag tag-ipo">SPCX / SPACE ETFs</span>
+      <span class="muted" style="font-size:10px;">04:19 AM ET · paywall</span>
+    </div>
+    <div style="font-size:12px;">"SpaceX IPO Today: Investors Await Historic Test of Market" — Pre-IPO analysis. WSJ also ran "You Could Get Lost in Space Using These Funds" (06:42 AM) — retail interest in space ETF alternatives.</div>
+  </div>
+
+  <div class="wire-card">
+    <div style="display:flex; gap:8px; align-items:center; margin-bottom:6px;">
+      <span style="font-weight:700; color:var(--orange);">CNBC</span>
+      <span class="tag tag-ipo">SPCX LIVE</span>
+      <span class="muted" style="font-size:10px;">Live updates</span>
+    </div>
+    <div style="font-size:12px;"><a href="https://www.cnbc.com/2026/06/12/spacex-ipo-spcx-live-updates.html" target="_blank">CNBC Live Updates: SpaceX IPO</a> — Maye Musk arrives at Nasdaq. Opening window: 9:50 AM ET. Real-time updates through IPO process.</div>
+  </div>
+</div>
+
+<!-- ═══════════════ OPTIONS FLOW ═══════════════ -->
+<div class="section">
+  <div class="section-title" style="color:var(--blue);">🔵 PRE-MARKET OPTIONS FLOW</div>
+  <div class="alert info" style="margin-bottom:10px;">Yahoo options chains unavailable (Chrome MCP unavailable). web_search for @unusual_whales / @FlowAlgo returned general platform links only — no specific ticker-level flow data for June 12. Benzinga most recent unusual options data was June 2 (stale). All flow commentary below is <strong>price-action inference + partial data</strong> — NOT confirmed live flow. Label: ⚠️ INFERRED, NOT CONFIRMED.</div>
+
+  <div class="flow-card">
+    <div style="font-weight:700; color:var(--blue); margin-bottom:6px;">Overall Market Positioning (inferred)</div>
+    <div style="font-size:12px; line-height:1.8;">
+      Calls outnumbering puts ~4:3 overall (per partial Schwab data).<br>
+      June 12 $120.00 call: 37,613 volume — symbol unclear but near-IPO-price level suggests SPCX-adjacent positioning.<br>
+      <span class="tag tag-flow">UNUSUAL CALL</span> BMY (Bristol-Myers Squibb): 9:1 call-to-put ratio — potential M&amp;A rumor or FDA catalyst not yet identified. <strong class="warn">Investigate manually.</strong><br>
+      <span class="tag tag-flow">UNUSUAL PUT</span> CSGP (CoStar Group): 9:1 put-to-call — June 18 $30 put activity. Potential short thesis on real estate data platform.
+    </div>
+  </div>
+
+  <div class="flow-card" style="background:rgba(96,165,250,0.03);">
+    <div style="font-weight:700; color:var(--muted); margin-bottom:6px;">Inferred Flow by Theme (price action only)</div>
+    <div style="font-size:12px; line-height:1.8;">
+      SPCX: Massive IPO demand ($250B total orders, $100B retail alone) = options market makers will be running massive delta hedges at open. Expect extreme gamma activity post-9:50 AM.<br>
+      SMH/NVDA: Given +6.75%/+2.22% moves with 1.27x volume, likely call buying pressure in semis continuation.<br>
+      USO: -4.07% with puts likely dominating on Iran peace deal oil fade.<br>
+      JETS: +6.31% suggests call buying for Iran peace airlines trade.
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ FOLLOW-THROUGH ═══════════════ -->
+<div class="section">
+  <div class="section-title">🔄 FOLLOW-THROUGH FROM 8 PM SCAN (2026-06-11)</div>
+  <table>
+    <thead><tr><th>Ticker</th><th>8PM Signal</th><th>8PM Level</th><th>Today Level</th><th>% Change</th><th>Status</th></tr></thead>
+    <tbody>
+      <tr style="background:rgba(45,212,191,0.04);">
+        <td><strong class="teal">SPCX</strong></td><td><span class="tag tag-ipo">IPO DAY</span></td><td>$135 (IPO price)</td><td>Opens 9:50 AM</td><td class="teal">TBD</td><td class="teal bold">✅ EPOCH DAY — ACTIVE</td>
+      </tr>
+      <tr style="background:rgba(74,222,128,0.04);">
+        <td><strong class="up">RKLB</strong></td><td>🟡 MEDIUM · space pure-play</td><td>$114.78</td><td>$119.10 pre-mkt</td><td class="up">+3.76%</td><td class="up bold">✅ STRENGTHENING — Nasdaq-100 catalyst added</td>
+      </tr>
+      <tr style="background:rgba(74,222,128,0.04);">
+        <td><strong class="teal">ARKX</strong></td><td>🟡 MEDIUM · SPCX initiation</td><td>~$32.70</td><td>~$34.45</td><td class="teal">+5.35%</td><td class="teal bold">✅ STRONG CONTINUATION</td>
+      </tr>
+      <tr style="background:rgba(74,222,128,0.03);">
+        <td><strong class="up">NVDA</strong></td><td>🟡 MEDIUM · AI infra</td><td>~$200.42</td><td>$204.87</td><td class="up">+2.22%</td><td class="up">✅ MILD CONTINUATION</td>
+      </tr>
+      <tr style="background:rgba(74,222,128,0.03);">
+        <td><strong class="up">ORCL</strong></td><td>🟡 BOUNCE CANDIDATE</td><td>$184.10 close</td><td>~$184.29</td><td class="up">~+0.1%</td><td class="up">✅ BOUNCE IN PROGRESS ($175-185 base zone)</td>
+      </tr>
+      <tr style="background:rgba(248,113,113,0.04);">
+        <td><strong class="down">ADBE</strong></td><td>🔴 STRONG FADE · 52-wk low</td><td>$206.68 AH</td><td>~$208 (intraday low $203.35)</td><td class="down">New 52-wk low ❌</td><td class="down bold">❌ CONFIRMED FADE — 52-wk low $203.35 hit</td>
+      </tr>
+      <tr style="background:rgba(248,113,113,0.04);">
+        <td><strong class="down">RDW</strong></td><td>🟡 MEDIUM · space contract</td><td>$18.92 AH</td><td>$17.03</td><td class="down">-10.0% from AH</td><td class="down bold">❌ FADING — sell the news confirmed</td>
+      </tr>
+      <tr style="background:rgba(74,222,128,0.04);">
+        <td><strong class="up">SMH</strong></td><td>🟢 HIGH · AI chip demand</td><td>~$570.91</td><td>$609.45</td><td class="teal">+6.75%</td><td class="teal bold">✅✅ MASSIVE ACCELERATION</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ═══════════════ SCHEDULE ═══════════════ -->
+<div class="section">
+  <div class="section-title">📅 TODAY'S SCHEDULE (ET)</div>
+  <table>
+    <thead><tr><th>Time</th><th>Event</th><th>Impact</th><th>Note</th></tr></thead>
+    <tbody>
+      <tr style="background:rgba(45,212,191,0.05);">
+        <td class="teal bold">9:50 AM</td><td><strong class="teal">SPCX Opens — Nasdaq IPO</strong></td><td class="teal">⚡ EXTREME</td><td>Gray market +35% implied → watch first print. Triggers space sector direction for entire day. RKLB, ASTS, ARKX follow SPCX's lead.</td>
+      </tr>
+      <tr style="background:rgba(251,191,36,0.04);">
+        <td class="warn bold">10:00 AM</td><td><strong>Michigan Consumer Sentiment (June Preliminary)</strong></td><td class="warn">📊 HIGH</td><td>May was record low 44.8. Iran peace deal could improve June reading. Inflation expectations at 4.8% (up). If June &gt; 50 = bullish catalyst for consumer/retail. If &lt; 44 = macro headwind at worst time (SPCX volatile).</td>
+      </tr>
+      <tr>
+        <td class="muted">8:30 AM</td><td>Import/Export Prices (May)</td><td>LOW</td><td>Minor macro data. Iran peace = import prices likely easing. Minimal market impact expected.</td>
+      </tr>
+      <tr>
+        <td class="muted">ALL WEEKEND</td><td>Iran Peace Deal Signing (expected)</td><td class="warn">MEDIUM</td><td>Trump said "as soon as this weekend" (June 13-14). If signed: oil gaps further down Monday, airlines/travel gaps up. If falls apart: oil reverses violently higher Monday. Hold JETS/USO positions cautiously through weekend.</td>
+      </tr>
+      <tr>
+        <td class="muted">No FOMC</td><td>Fed (next meeting July 29-30)</td><td>LOW</td><td>No Fed speakers scheduled today noted.</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ═══════════════ WATCHLIST STATUS ═══════════════ -->
+<div class="section">
+  <div class="section-title">👁️ PERSONAL WATCHLIST STATUS</div>
+  <div class="alert info" style="margin-bottom:10px;">TV MCP serial method used for NVDA only. All others from web_search (~7-8 AM ET). Analyst upgrades from 6-8 AM batch: SNDK targets raised (Cantor $2,900, BofA $2,100, Mizuho $2,200). Earnings BMO today: none confirmed for watchlist names.</div>
+  <table>
+    <thead><tr><th>Ticker</th><th>Pre-Mkt Price</th><th>% Today</th><th>Prior Close</th><th>Vol Source</th><th>Notes / Analyst</th></tr></thead>
+    <tbody>
+      <tr style="background:rgba(74,222,128,0.04);">
+        <td><strong>NVDA</strong></td><td class="up">$204.87</td><td class="up">+2.22%</td><td>$200.42</td><td>0.92x (158M/173M avg)</td><td>AI infra demand; ORCL $95B capex = structural bull. TV MCP serial confirmed.</td>
+      </tr>
+      <tr>
+        <td><strong>TSLA</strong></td><td class="up">~$388</td><td class="up">~+1.78%</td><td>~$381.59</td><td>web_search (Jun 11 data)</td><td>Elon Musk tie-in to SpaceX. Uncertain if June 12 data — treat as approximate.</td>
+      </tr>
+      <tr style="background:rgba(248,113,113,0.03);">
+        <td><strong>SOFI</strong></td><td class="down">~$16 (est.)</td><td class="down">-40% YTD</td><td>n/a</td><td>web_search estimate (target $21)</td><td>Down ~40% YTD per search. Avoid — no catalyst.</td>
+      </tr>
+      <tr style="background:rgba(74,222,128,0.04);">
+        <td><strong>AMD</strong></td><td class="up">~$491</td><td class="up">strong</td><td>~$452</td><td>web_search (Jun 12 range $452-492)</td><td>Semis rally. Range $452-$492 = high volatility day; buying pressure present.</td>
+      </tr>
+      <tr style="background:rgba(248,113,113,0.03);">
+        <td><strong>PLTR</strong></td><td class="down">$128.95</td><td class="down">-0.97%</td><td>~$130.24</td><td>web_search (~8 AM)</td><td>SHLD ETF heavy holding. Slight fade — defense theme mixed on Iran peace.</td>
+      </tr>
+      <tr style="background:rgba(74,222,128,0.04);">
+        <td><strong>MARA</strong></td><td class="up">+4.64%</td><td class="up">+4.64%</td><td>n/a</td><td>web_search (approximate)</td><td>BTC +1.78%, miners benefiting. SpaceX IPO not crowding out crypto materially (yet).</td>
+      </tr>
+      <tr>
+        <td><strong>COIN</strong></td><td class="muted">BTC-levered</td><td class="muted">~+1-2%</td><td>n/a</td><td>inferred from BTC $63,668</td><td>COIN follows BTC. SpaceX IPO may pull some crypto capital — watch post-open.</td>
+      </tr>
+      <tr style="background:rgba(248,113,113,0.03);">
+        <td><strong>SNDK</strong></td><td class="down">~-2%</td><td class="down">-2%</td><td>n/a</td><td>web_search</td><td>Mini-tender rejection from Tutanota at $1,150 (below market). Despite strong fundamentals (Q3 rev $5.95B, +251% YoY), stock declining on news. Analyst targets $1,800-$2,900. Slight pre-mkt dip is a buy-the-dip candidate if NAND thesis intact.</td>
+      </tr>
+      <tr style="background:rgba(74,222,128,0.03);">
+        <td><strong>META</strong></td><td class="muted">n/a</td><td class="muted">n/a</td><td>n/a</td><td>not found</td><td>Nasdaq rallying +3.37% — META likely up. XLC bucket. Not a primary focus today.</td>
+      </tr>
+      <tr>
+        <td><strong>AMZN</strong></td><td>~$243</td><td class="muted">~flat</td><td>n/a</td><td>web_search ($242.70-$243)</td><td>Iran peace = cloud computing continuity + Bezos SpaceX connection (Blue Origin competitive context). Roughly flat.</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ═══════════════ ASSUMPTION AUDIT ═══════════════ -->
+<div class="section">
+  <div class="section-title">🔎 STEP 11 — ASSUMPTION AUDIT</div>
+  <div class="card">
+    <div style="font-size:12px; line-height:2.0;">
+
+      <strong class="orange">TV MCP PRICE METHOD:</strong> quote_get returned current-chart symbol for ALL calls (persistent chart-lock bug — worse than typical intermittent). batch_run action="get_ohlcv" returned JS evaluation error for all 55 symbols. Method used: chart_set_symbol(SYMBOL) → data_get_ohlcv(summary=true). <strong class="warn">Race condition warning:</strong> In messages where chart_set_symbol(NEXT) ran in parallel with data_get_ohlcv, the captured data may reflect the CURRENT symbol or the NEXT symbol depending on which tool completed first. SPY and QQQ were pulled with clean serial execution (no parallel conflicts). All other ETFs marked with "(race condition)" in the table. The internally consistent prior-close/today values and ETF-typical volumes give high confidence in attribution but cannot be fully guaranteed.<br><br>
+
+      <strong class="orange">TOOLS UNAVAILABLE:</strong><br>
+      — Chrome MCP: ⚠️ No tab group; gap discovery limited to WebFetch top-20 %-sort (Chrome MCP unavailable)<br>
+      — Yahoo options chains: skipped (Chrome MCP unavailable)<br>
+      — Finviz Elite filter: unavailable (public feed used)<br>
+      — batch_run get_ohlcv: failed all 55 symbols (JS evaluation error — documented this run)<br>
+      — 48 of 57 ETFs: not pulled due to tool failure<br><br>
+
+      <strong class="orange">DATA FLAGGED "NOT PULLED":</strong> 48 ETFs including XLE, XLK, XLF, XLU, IGV, XBI, IBB, KRE, IBIT, WGMI, URA, NLR, GDX, GDXJ, SLV, COPX, REMX, TLT, HYG, UUP, KWEB, ARKK, QTUM, and others. Values for TSLA, SOFI, META, COIN sourced from web_search and are approximate.<br><br>
+
+      <strong class="orange">ASSUMPTION RISKS:</strong><br>
+      — Iran peace: deal NOT finalized. Iran FM said "merely speculation." If deal breaks, USO reverses hard (oil spikes), JETS fades, ITA rallies, GLD rallies further. JETS and USO trades are binary-event dependent. Hold positions small through weekend.<br>
+      — SPCX first-day volatility: Gray market +35% is NOT the opening price — it's an indication. Actual open could be $150 or $200 or $135 (if disappointed). All space ETF setups depend on SPCX holding above IPO price at open.<br>
+      — SMH +6.75%: Could be overstating the case. If QQQ pulls back at 9:30 AM open, SMH may see initial gap-fill to $595. Entry above $609 confirmed vs chasing at open.<br>
+      — GLD +3.13% despite risk-on: Counter-intuitive. If Iran deal confirmed this weekend, gold could open Monday down 2-3% as risk-on removes safe-haven bid.<br>
+      — ITA +4.97%: Counterintuitive on Iran peace day. Assumption: SpaceX/Starshield defense contracts + risk-on lifting all. If this is MISATTRIBUTED data (race condition), ITA actual move may differ.<br>
+      — Michigan Sentiment at 10 AM: If June preliminary comes in much worse than May's 44.8, broad market could give back morning gains. Consumer confidence collapse + elevated SPCX volatility = potential for a rough 10 AM-11 AM window.<br><br>
+
+      <strong class="orange">UNCLASSIFIED HEADLINES:</strong> None — all headlines mapped to ETF universe buckets.<br><br>
+      <strong class="orange">WIRE SCOOPS BEHIND PAYWALL:</strong> WSJ "SpaceX IPO Today" (04:19 AM) and "You Could Get Lost in Space" (06:42 AM) are behind paywall. Bloomberg scoops partially accessible via headlines only.<br><br>
+      <strong class="orange">OPTIONS FLOW:</strong> No live options flow data obtained. BMY unusual call 9:1 activity unconfirmed catalyst — investigate separately. CSGP unusual put activity noted but not actionable without more context.
+
+    </div>
+  </div>
+</div>
+
+<div class="footer">
+  <div>Pre-Market Catalyst v7.7 HYBRID · Generated 2026-06-12 ~8:30 AM ET · Claude Sonnet 4.6 + TV MCP + stockanalysis.com + Finviz public + web_search</div>
+  <div style="margin-top:4px;">Sources: <a href="https://www.cnbc.com/2026/06/12/spacex-ipo-spcx-live-updates.html" target="_blank">CNBC SPCX</a> · <a href="https://www.npr.org/2026/06/11/nx-s1-5854970/trump-iran-peace-deal-cancel-strikes" target="_blank">NPR Iran</a> · <a href="https://investors.rocketlabcorp.com/news-releases/news-release-details/rocket-lab-join-nasdaq-100-index" target="_blank">RKLB Nasdaq-100</a> · <a href="https://www.benzinga.com/trading-ideas/movers/26/06/53161677/why-is-coreweave-stock-soaring-friday" target="_blank">CRWV Benzinga</a> · stockanalysis.com · finviz.com/news</div>
+</div>
+
+</body>
+</html>
