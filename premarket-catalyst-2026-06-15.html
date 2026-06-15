@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pre-Market Catalyst v7.7 HYBRID — 2026-06-15</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:#0a0e17;--bg2:#111827;--bg3:#1a2235;--border:#1e2d45;
+    --text:#e2e8f0;--muted:#94a3b8;--accent:#38bdf8;
+    --green:#4ade80;--red:#f87171;--orange:#fb923c;
+    --yellow:#fbbf24;--purple:#a78bfa;--teal:#2dd4bf;
+    --cyan:#22d3ee;--blue:#60a5fa;--gold:#f59e0b;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{background:var(--bg);color:var(--text);font-family:'JetBrains Mono',monospace;font-size:13px;line-height:1.6;padding:20px;max-width:1400px;margin:0 auto;}
+  .health-banner{background:#0c2a1a;border:1px solid #166534;border-left:4px solid var(--green);padding:12px 16px;margin-bottom:8px;border-radius:4px;}
+  .health-banner.warn{background:#1a1600;border-color:#713f12;border-left-color:var(--yellow);}
+  .health-tag{font-weight:700;color:var(--green);margin-right:8px;}
+  .scan-header{margin-bottom:20px;padding-bottom:14px;border-bottom:1px solid var(--border);}
+  .scan-header h1{font-size:21px;font-weight:700;color:var(--teal);letter-spacing:0.5px;}
+  .scan-header .meta{color:var(--muted);font-size:11px;margin-top:4px;}
+  .section{margin-bottom:28px;}
+  .section-title{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--accent);margin-bottom:12px;padding-bottom:6px;border-bottom:1px solid var(--border);}
+  table{width:100%;border-collapse:collapse;font-size:12px;margin-bottom:12px;}
+  th{background:var(--bg3);color:var(--muted);font-weight:600;text-transform:uppercase;font-size:10px;letter-spacing:0.5px;padding:8px 10px;text-align:left;border-bottom:1px solid var(--border);}
+  td{padding:7px 10px;border-bottom:1px solid var(--border);vertical-align:top;}
+  tr:last-child td{border-bottom:none;}
+  tr:hover td{background:rgba(255,255,255,0.02);}
+  .card{background:var(--bg2);border:1px solid var(--border);border-radius:6px;padding:14px 16px;margin-bottom:10px;}
+  .card-header{display:flex;align-items:center;gap:10px;margin-bottom:8px;flex-wrap:wrap;}
+  .ticker-badge{background:var(--bg3);border:1px solid var(--border);color:var(--accent);font-weight:700;font-size:15px;padding:4px 12px;border-radius:4px;}
+  .move-badge{font-size:13px;font-weight:700;padding:3px 9px;border-radius:4px;}
+  .move-badge.up{background:rgba(74,222,128,0.12);color:var(--green);}
+  .move-badge.down{background:rgba(248,113,113,0.12);color:var(--red);}
+  .tag{display:inline-block;font-size:10px;font-weight:600;padding:2px 6px;border-radius:3px;margin:1px;}
+  .tag-iran{background:rgba(34,211,238,0.15);color:var(--cyan);border:1px solid rgba(34,211,238,0.3);}
+  .tag-ma{background:rgba(245,158,11,0.15);color:var(--gold);border:1px solid rgba(245,158,11,0.3);}
+  .tag-ai{background:rgba(56,189,248,0.15);color:var(--accent);border:1px solid rgba(56,189,248,0.3);}
+  .tag-analyst{background:rgba(96,165,250,0.15);color:var(--blue);border:1px solid rgba(96,165,250,0.3);}
+  .tag-theme{background:rgba(34,211,238,0.15);color:var(--cyan);border:1px solid rgba(34,211,238,0.3);}
+  .tag-policy{background:rgba(167,139,250,0.15);color:var(--purple);border:1px solid rgba(167,139,250,0.3);}
+  .tag-wire{background:rgba(251,146,60,0.15);color:var(--orange);border:1px solid rgba(251,146,60,0.3);}
+  .tag-flow{background:rgba(96,165,250,0.15);color:var(--blue);border:1px solid rgba(96,165,250,0.3);}
+  .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+  .grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;}
+  @media(max-width:900px){.grid-2,.grid-3{grid-template-columns:1fr;}}
+  .up{color:var(--green);} .down{color:var(--red);} .muted{color:var(--muted);}
+  .warn{color:var(--yellow);} .bold{font-weight:700;} .teal{color:var(--teal);}
+  .purple{color:var(--purple);} .orange{color:var(--orange);} .blue{color:var(--blue);}
+  .cyan{color:var(--cyan);} .gold{color:var(--gold);}
+  .alert{background:rgba(251,191,36,0.08);border:1px solid rgba(251,191,36,0.25);border-radius:4px;padding:10px 14px;margin:10px 0;font-size:12px;}
+  .alert.success{background:rgba(74,222,128,0.06);border-color:rgba(74,222,128,0.2);}
+  .alert.info{background:rgba(56,189,248,0.06);border-color:rgba(56,189,248,0.2);}
+  .alert.danger{background:rgba(248,113,113,0.08);border-color:rgba(248,113,113,0.25);}
+  .alert.theme{background:rgba(34,211,238,0.06);border-color:rgba(34,211,238,0.2);}
+  .alert.policy{background:rgba(167,139,250,0.06);border-color:rgba(167,139,250,0.25);}
+  .alert.wire{background:rgba(251,146,60,0.06);border-color:rgba(251,146,60,0.25);}
+  .alert.flow{background:rgba(96,165,250,0.06);border-color:rgba(96,165,250,0.25);}
+  .briefing-box{background:linear-gradient(135deg,rgba(45,212,191,0.06),rgba(56,189,248,0.04));border:1px solid rgba(45,212,191,0.25);border-radius:8px;padding:16px 18px;font-size:13px;line-height:1.8;margin-bottom:20px;}
+  .briefing-box h3{color:var(--teal);font-size:14px;font-weight:700;margin-bottom:8px;}
+  .theme-wide{background:rgba(34,211,238,0.08);border:2px solid rgba(34,211,238,0.4);border-radius:6px;padding:10px 14px;margin:8px 0;font-size:12px;}
+  .wire-card{background:rgba(251,146,60,0.06);border:1px solid rgba(251,146,60,0.25);border-radius:6px;padding:10px 14px;margin:6px 0;font-size:12px;}
+  .flow-card{background:rgba(96,165,250,0.06);border:1px solid rgba(96,165,250,0.25);border-radius:6px;padding:10px 14px;margin:6px 0;font-size:12px;}
+  .policy-card{background:rgba(167,139,250,0.06);border:1px solid rgba(167,139,250,0.25);border-radius:6px;padding:10px 14px;margin:6px 0;font-size:12px;}
+  .setup-box{background:var(--bg3);border-left:3px solid var(--green);padding:10px 14px;margin:6px 0;border-radius:0 4px 4px 0;font-size:12px;}
+  .setup-box.fade{border-left-color:var(--red);}
+  .setup-box.caution{border-left-color:var(--yellow);}
+  .stat-row{display:flex;gap:12px;flex-wrap:wrap;margin:10px 0;}
+  .stat-box{background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:8px 12px;min-width:110px;}
+  .stat-box .label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:3px;}
+  .stat-box .value{font-size:15px;font-weight:700;}
+  .rank-badge{background:var(--bg3);border:1px solid var(--border);color:var(--muted);font-size:11px;font-weight:700;width:22px;height:22px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;margin-right:5px;}
+  .hl{background:var(--bg3);border-left:3px solid var(--teal);padding:6px 12px;margin:4px 0;border-radius:0 4px 4px 0;font-size:12px;display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
+  .hl-time{color:var(--muted);font-size:10px;min-width:65px;}
+  .hl-ticker{color:var(--accent);font-weight:700;}
+  .hl-source{color:var(--muted);font-size:10px;margin-left:auto;}
+  .follow-card{border-radius:6px;padding:10px 14px;margin:5px 0;font-size:12px;}
+  .follow-card.on{background:rgba(74,222,128,0.06);border:1px solid rgba(74,222,128,0.25);}
+  .follow-card.risk{background:rgba(251,191,36,0.06);border:1px solid rgba(251,191,36,0.25);}
+  .follow-card.fade{background:rgba(248,113,113,0.06);border:1px solid rgba(248,113,113,0.25);}
+  .source-note{font-size:10px;color:var(--muted);margin-top:6px;font-style:italic;}
+  a{color:var(--accent);text-decoration:none;} a:hover{text-decoration:underline;}
+  .footer{margin-top:40px;padding-top:14px;border-top:1px solid var(--border);color:var(--muted);font-size:10px;}
+  .etf-row-up td:first-child{color:var(--green);}
+  .etf-row-down td:first-child{color:var(--red);}
+  .etf-row-flat td:first-child{color:var(--muted);}
+  .epoch-banner{background:linear-gradient(135deg,rgba(34,211,238,0.10),rgba(56,189,248,0.05));border:2px solid var(--cyan);border-radius:8px;padding:16px 18px;margin-bottom:16px;text-align:center;}
+  .epoch-banner h2{font-size:17px;color:var(--cyan);font-weight:700;margin-bottom:8px;}
+</style>
+</head>
+<body>
+
+<!-- ═══ TOOL HEALTH ═══ -->
+<div class="health-banner warn">
+  <span class="health-tag">⚠️ TOOL HEALTH — 2026-06-15 ~8:20 AM ET</span>
+  TV MCP <strong class="up">✅ LIVE</strong> — batch_run returned all 57/57 ETFs; quote_get returning last session close (pre-mkt price window; see audit) &nbsp;|&nbsp;
+  stockanalysis.com <strong class="up">✅ LIVE</strong> — 20-row %-sorted gainers/losers returned &nbsp;|&nbsp;
+  Finviz public news <strong class="up">✅ LIVE</strong> — headlines 8:09–8:15 AM ET returned &nbsp;|&nbsp;
+  Chrome MCP <strong class="warn">⚠️ UNAVAILABLE</strong> — no tab group; gap discovery limited to top-20 %-sort; Yahoo options skipped; ROKU likely missed (only ~+5% from deal math, below top-20 threshold) &nbsp;|&nbsp;
+  Options flow: web_search only — <span class="warn">price-action inference except AAL confirmed call flow</span>
+  <br><span style="font-size:11px;color:var(--muted);">Price method: batch_run get_ohlcv primary (all 57 ETFs + watchlist 12-ticker batch); quote_get used for 7 individual tickers — ALL returned Friday June 12 close (last bar = last completed daily session). VIX is live (continuous feed, 16.65 today). Pre-mkt individual stock prices from stockanalysis.com gainers/losers table.</span>
+</div>
+
+<!-- ═══ HEADER ═══ -->
+<div class="scan-header">
+  <h1>☀️ PRE-MARKET CATALYST (v7.7 HYBRID) — 2026-06-15 &nbsp;·&nbsp; ~8:20 AM ET</h1>
+  <div class="meta">Generated ~8:20 AM ET &nbsp;·&nbsp; v7.7 Hybrid (ETFs + Individual Stocks) &nbsp;·&nbsp; Sources: TV MCP batch_run + stockanalysis.com + Finviz public + web_search (CNBC, Bloomberg, Reuters, Al Jazeera, NPR, SEC EDGAR, TheStreet, Benzinga, TheFly)</div>
+</div>
+
+<!-- ═══ EPOCH BANNER ═══ -->
+<div class="epoch-banner">
+  <h2>🕊️ US–IRAN CEASEFIRE CONFIRMED &nbsp;|&nbsp; 🎬 FOX ACQUIRES ROKU $22B &nbsp;|&nbsp; 🚀 SPCX DAY 3</h2>
+  <div class="stat-row" style="justify-content:center;margin-top:12px;">
+    <div class="stat-box"><div class="label">SPY Last Close</div><div class="value up">$741.75</div></div>
+    <div class="stat-box"><div class="label">QQQ Last Close</div><div class="value up">$721.34</div></div>
+    <div class="stat-box"><div class="label">VIX LIVE</div><div class="value up">16.65 (−8.5% wk)</div></div>
+    <div class="stat-box"><div class="label">WTI Crude</div><div class="value down">$80.53 (−5.1%)</div></div>
+    <div class="stat-box"><div class="label">S&P Futures</div><div class="value up">~+1%</div></div>
+    <div class="stat-box"><div class="label">Nasdaq Futures</div><div class="value up">~+1.8%</div></div>
+    <div class="stat-box"><div class="label">Nikkei</div><div class="value up">+5.5%</div></div>
+    <div class="stat-box"><div class="label">SPCX IPO</div><div class="value up">$160.95 (Day 1 +19%)</div></div>
+  </div>
+  <div style="margin-top:10px;font-size:12px;color:var(--muted);">
+    🕊️ Trump: "Ships of the World, start your engines" — Strait of Hormuz reopens Friday after signing in Switzerland &nbsp;|&nbsp;
+    🎬 FOX acquires ROKU at $160/share ($96 cash + 0.9693 FOX-A stock) &nbsp;|&nbsp;
+    📅 <strong class="warn">FOMC June 16–17 (TOMORROW)</strong> — Kevin Warsh debut, dot plot = key risk &nbsp;|&nbsp;
+    📅 <strong class="warn">Juneteenth June 19 — US MARKET CLOSED</strong> (4-day week)
+  </div>
+</div>
+
+<!-- ═══ SPY/QQQ SANITY ═══ -->
+<div class="alert success">
+  <strong>SPY/QQQ Sanity Check:</strong>
+  SPY last close $741.75 (TV MCP batch_run, Friday June 12, pulled ~8:20 AM ET) vs 5-bar period open $743.36 → weekly −0.22%. Futures imply pre-mkt ~$749 (+1.0%) ✅ within ±5%.
+  QQQ last close $721.34 vs 5-bar open $699.29 → weekly +3.15%. Futures imply pre-mkt ~$734 (+1.8%) ✅ within ±5%.
+  No DATA SUSPECT flags. VIX live at 16.65 (TV MCP, continuous feed, ~8:20 AM ET) — LOW FEAR, RISK-ON confirmed.
+  <span class="source-note">TV MCP batch_run (primary method) + web_search S&P/Nasdaq futures confirmation (CNBC 08:15 ET)</span>
+</div>
+
+<!-- ═══ MORNING BRIEFING ═══ -->
+<div class="briefing-box">
+  <h3>📋 MORNING BRIEFING — 30-SECOND READ</h3>
+  The US–Iran ceasefire deal — confirmed pre-market Sunday night after months of negotiation — is today's single defining catalyst. Trump announced "Ships of the World, start your engines" as the Strait of Hormuz prepares to reopen following a signing ceremony scheduled for <strong class="warn">Friday June 19 in Switzerland</strong> (Juneteenth — US market CLOSED that day). WTI crude fell to <strong class="down">$80.53 (−5.1%)</strong>, Asian equities surged <strong class="up">+5–6%</strong>, and US futures point to a gap-up open of ~+1–1.8%. Clear winners: <strong class="up">airlines/travel</strong> (JETS entry trigger now live above $29.75), <strong class="up">AI memory</strong> (DRAM +7% weekly, AXTI +14.2% pre-mkt), <strong class="up">critical minerals</strong> (COPX/REMX). Clear losers: <strong class="down">energy</strong> (USO −7% weekly, XOP down), <strong class="down">defense</strong> (ITA/SHLD profit-taking on peace). Fox's $22B Roku acquisition (FOXA −12.8% pre-mkt) adds M&A excitement. Critical risk overhangs: <strong class="warn">FOMC June 16–17</strong> (Kevin Warsh's first meeting — dot plot could reverse risk-on) and the Juneteenth 4-day week. Size positions to survive a hawkish dot-plot surprise.
+</div>
+
+<!-- ═══ TOP 3 ETF + TOP 3 STOCK ═══ -->
+<div class="section">
+  <div class="section-title">📊 TOP 3 ETF TRADE IDEAS + TOP 3 INDIVIDUAL STOCK SETUPS</div>
+  <div class="grid-2">
+
+    <!-- ETFs -->
+    <div>
+      <div style="font-weight:700;color:var(--teal);margin-bottom:10px;font-size:12px;text-transform:uppercase;letter-spacing:1px;">🏷️ Top 3 ETF Trade Ideas</div>
+
+      <div class="card">
+        <div class="card-header">
+          <span class="rank-badge">1</span>
+          <span class="ticker-badge">JETS</span>
+          <span class="move-badge up">+5.65% WK</span>
+          <span class="tag tag-iran">Iran Deal / Oil Collapse</span>
+          <span style="color:var(--green);font-weight:700;">🟢 HIGH</span>
+        </div>
+        <div>Iran ceasefire deal confirmed → Strait of Hormuz reopens → WTI at $80.53 (−5.1%). Airlines spent 56.4% more on jet fuel in March (Iran war onset); that cost reverses now. <strong class="cyan">🚨 THEME-WIDE: JETS +5.65% + PEJ +3.21%</strong> (both travel ETFs co-moving last week). Entry trigger activated: deal signed = above $29.75 conditions met. AAL bullish call flow confirmed (3× expected, IV +4pts — TheFly/TipRanks). Risk: Iran signing ceremony is FRIDAY (Juneteenth, US closed) — if delayed, violent reversal Monday.</div>
+        <div class="setup-box">Entry: gap open above $30.50; wait for first-bar pullback before EOD add. Stop: $28.50 (gap-fill reversal only if deal collapses). Target: $33 (3–4 day, exit by Thursday close). Size: 60% normal — FOMC Wednesday risk. Last close: $29.53 (TV MCP, Fri June 12). Parent theme: travel/airlines.</div>
+        <div class="source-note">TV MCP batch_run $29.53 (Friday June 12, ~8:20 AM ET today) · Iran deal source: <a href="https://www.cnbc.com/amp/2026/06/15/us-iran-deal-stocks-bonds-gold-oil.html" target="_blank">CNBC 06/15</a> · <a href="https://www.aljazeera.com/economy/2026/6/15/stock-markets-soar-oil-falls-as-us-iran-confirm-deal-to-end-war" target="_blank">Al Jazeera 06/15</a> · <a href="https://www.investing.com/news/commodities-news/oil-slips-over-4-after-us-iran-reach-peace-deal-reopen-strait-of-hormuz-4741118" target="_blank">Reuters via Investing.com</a></div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <span class="rank-badge">2</span>
+          <span class="ticker-badge">DRAM</span>
+          <span class="move-badge up">+7.07% WK</span>
+          <span class="tag tag-ai">AI Memory / HBM</span>
+          <span style="color:var(--green);font-weight:700;">🟢 HIGH</span>
+        </div>
+        <div><strong class="cyan">🚨 THEME-WIDE: SMH +3.81% + DRAM +7.07%</strong> — memory ETF leading semis broadly = AI memory cycle confirmed. SNDK +21.18% weekly (BofA $2,100 PT, no new NAND supply until 2028–29), AXTI +14.22% pre-mkt (indium phosphide AI optical substrate buildout), MU at $981.61 approaching $1K psyche level. Firepower: 32M vol vs 47M avg (0.69×) — volume below avg on the weekly move, suggesting more institutional buying room. AI memory demand independent of Iran deal; structural theme.</div>
+        <div class="setup-box">Entry: above $66. Stop: $62. Target: $72 (3–5 day). Last close: $65.01 (TV MCP, Fri June 12). Anchor holdings: MU, SK Hynix (via DRAM ETF), Samsung. Note: 0.69× vol ratio = not yet fully institutionalized — watch for volume confirmation at open.</div>
+        <div class="source-note">TV MCP batch_run $65.01 (Fri June 12, ~8:20 AM ET today) · SNDK catalyst: <a href="https://www.benzinga.com/trading-ideas/movers/26/06/53062503/sandisk-stock-has-35-more-to-run-analyst-says" target="_blank">Benzinga BofA $2,100 PT</a> · AXTI: <a href="https://www.sec.gov/Archives/edgar/data/1051627/000121390026045652/ea0286900-8k_axt.htm" target="_blank">SEC 8-K AXTI</a></div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <span class="rank-badge">3</span>
+          <span class="ticker-badge">COPX</span>
+          <span class="move-badge up">+4.35% WK</span>
+          <span class="tag tag-iran">Global Growth Normalization</span>
+          <span style="color:var(--yellow);font-weight:700;">🟡 MEDIUM</span>
+        </div>
+        <div><strong class="cyan">🚨 THEME-WIDE: COPX +4.35% + REMX +6.92%</strong> (both critical minerals ETFs co-moving). Iran deal → global economic normalization → copper demand for AI infrastructure buildout (datacenters, EVs). Friday materials supercycle included COPX, REMX, LIT, SLV all surging. Today's deal confirmation adds follow-on momentum. Copper demand is structural AI story regardless of Iran. LIT +5.10% weekly adds lithium/battery ecosystem confirmation. Risk: FOMC week macro uncertainty caps metals; copper futures need to hold gains.</div>
+        <div class="setup-box">Entry: gap above $87. Stop: $83. Target: $92 (3–5 day). Last close: $85.97 (TV MCP, Fri June 12, barely at prior entry). Exit before FOMC Wednesday if position from Friday. Volume 4.2M vs 3.8M avg (1.11×).</div>
+        <div class="source-note">TV MCP batch_run $85.97 (Fri June 12, ~8:20 AM ET today)</div>
+      </div>
+    </div>
+
+    <!-- Individual Stocks -->
+    <div>
+      <div style="font-weight:700;color:var(--teal);margin-bottom:10px;font-size:12px;text-transform:uppercase;letter-spacing:1px;">🎯 Top 3 Individual Stock Setups</div>
+
+      <div class="card">
+        <div class="card-header">
+          <span class="rank-badge">1</span>
+          <span class="ticker-badge">TRIP</span>
+          <span class="move-badge up">+14.83% PM</span>
+          <span class="tag tag-iran">Iran Deal / Travel Boom</span>
+          <span style="color:var(--green);font-weight:700;">🟢 HIGH</span>
+        </div>
+        <div>Tripadvisor — pure-play global travel demand. Iran deal → oil down + geopolitical stability → travel bookings surge. Small-cap leverage ($1.44B mkt cap) to theme vs JETS ETF. Pre-mkt $14.25 (+14.83%), vol 535K (stockanalysis.com, ~8 AM ET). Friday close $12.41 (TV MCP). TRIP is the sharpest individual stock expression of the travel trade — more levered than AAL or UAL, smaller cap. Parent ETF bucket: PEJ/JETS.</div>
+        <div class="setup-box">Entry: EOD hold above $14.00 (confirm pre-mkt level holds into close). Pullback entry: $13.40–13.80 range. Stop: $12.80 (below Friday close). Target: $16.50 (3–4 day). Risk: low volume days approaching FOMC may thin out travel trade. Exit by Thursday. Volume ratio: unavailable (no 20D avg in batch; 535K pre-mkt vs unknown daily avg).</div>
+        <div class="source-note">stockanalysis.com pre-mkt $14.25/+14.83%/535K vol (~8 AM ET) · TV MCP quote_get last bar $12.41 (Fri June 12) · Travel catalyst confirmed: <a href="https://www.thestreet.com/stock-market-today/stock-market-today-dow-jones-sp-500-nasdaq-updates-june-15-2026" target="_blank">TheStreet 06/15</a></div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <span class="rank-badge">2</span>
+          <span class="ticker-badge">AXTI</span>
+          <span class="move-badge up">+14.22% PM</span>
+          <span class="tag tag-ai">AI Optical Substrates / SMH</span>
+          <span style="color:var(--green);font-weight:700;">🟢 HIGH</span>
+        </div>
+        <div>AXT Inc — compound semiconductor substrates (indium phosphide) for AI optical datacenter interconnects. $632.5M capital raise for InP capacity expansion; Northland raised PT to $125 from $90 (Outperform); Annual meeting approved expanded share authorization (70M→120M) for AI buildout. $6.19B mkt cap. Pre-mkt $111.00 (+14.22%), vol 642K (stockanalysis.com, ~8 AM ET). Friday close $97.18 (TV MCP). Maps to SMH + DRAM theme (AI compute substrate layer). Daily avg volume 10.6M → 642K pre-mkt = 6% of avg; heavy institutional buying expected at open.</div>
+        <div class="setup-box">Entry: EOD above $110 (if morning spike holds). Pullback entry: $105–108. Stop: $102 (below Friday close). Target: $125 (Northland PT, 3–5 day). Proof: Northland upgrade + 8-K capital raise + AI optical demand structural. Firepower: vol ratio at open will be key signal — watch for >2× day-1 avg at first 30 min.</div>
+        <div class="source-note">stockanalysis.com pre-mkt $111.00/+14.22%/642K vol (~8 AM ET) · TV MCP $97.18 (Fri June 12) · Catalyst: <a href="https://www.sec.gov/Archives/edgar/data/1051627/000121390026045652/ea0286900-8k_axt.htm" target="_blank">SEC 8-K AXT</a> · <a href="https://stockstotrade.com/news/axt-inc-axti-news-2026_06_12-2/" target="_blank">Northland upgrade</a></div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <span class="rank-badge">3</span>
+          <span class="ticker-badge">WOLF</span>
+          <span class="move-badge up">+13.40% PM</span>
+          <span class="tag tag-ai">SiC Power / AI Infra / AIPO</span>
+          <span style="color:var(--yellow);font-weight:700;">🟡 MEDIUM</span>
+        </div>
+        <div>Wolfspeed — silicon carbide power semiconductors for AI datacenters, aerospace, EVs. Catalysts: (1) GE Aerospace MOU (June 8) for high-voltage SiC power modules — industrial/aerospace/defense co-development; (2) Citrini Research bullish thesis: "hard-to-replace fabs, core AI infrastructure player"; (3) New 3.3 kV SiC power module family targeting AI datacenter power conversion. $2.09B mkt cap. Pre-mkt $48.92 (+13.40%), vol 508K. Friday close $43.14 (TV MCP). Maps to AIPO (AI + power infrastructure) and XLI (industrials). Caution: WOLF had a 24M share overhang risk (existing stockholder sale filing noted); verify S-1 status.</div>
+        <div class="setup-box">Entry: EOD above $47. Stop: $44 (below Friday close). Target: $54 (3–5 day). Watch overhang risk carefully. Conviction capped at 🟡 MEDIUM due to potential dilution risk.</div>
+        <div class="source-note">stockanalysis.com pre-mkt $48.92/+13.40%/508K vol (~8 AM ET) · TV MCP $43.14 (Fri June 12) · GE Aerospace MOU: <a href="https://www.investing.com/news/stock-market-news/why-is-wolfspeed-stock-surging-today-93CH-4730831" target="_blank">Investing.com</a></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ THEME ROTATION ═══ -->
+<div class="section">
+  <div class="section-title">🔄 THEME ROTATION READ</div>
+  <div class="grid-3">
+    <div>
+      <div style="font-weight:700;color:var(--green);margin-bottom:8px;font-size:11px;">🔥 HOTTEST THEMES</div>
+      <div class="theme-wide">🚨 <strong>TRAVEL (Iran Deal)</strong> — JETS +5.65% WK + PEJ +3.21% WK. THEME-WIDE CONFIRMED. Entry triggers live. Oil collapse = fuel cost relief for all carriers.</div>
+      <div class="theme-wide">🚨 <strong>AI MEMORY (DRAM/SMH)</strong> — DRAM +7.07% WK + SMH +3.81% WK. SNDK +21% WK. AXTI +14% pre-mkt. Structural AI inference demand cycle.</div>
+      <div class="theme-wide">🚨 <strong>CRITICAL MINERALS</strong> — COPX +4.35% WK + REMX +6.92% WK. LIT +5.10% WK. Iran deal → global growth normalization + AI infra copper demand.</div>
+      <div class="theme-wide">🚨 <strong>COMMUNICATIONS M&A</strong> — Fox/Roku $22B. XLC underlying. ROKU implied +5–6%. Fox deal reshapes streaming landscape.</div>
+    </div>
+    <div>
+      <div style="font-weight:700;color:var(--red);margin-bottom:8px;font-size:11px;">❌ WEAKENING THEMES</div>
+      <div class="alert danger" style="margin:4px 0;">🚨 <strong>NUCLEAR THEME-WIDE WEAKNESS</strong> — URA −2.44% WK + NLR −2.42% WK. Both ETFs declining = sector-wide. Iran deal reduces energy crisis premium. AI power demand structural but nuclear sentiment reset underway.</div>
+      <div class="alert danger" style="margin:4px 0;"><strong>SOFTWARE (IGV)</strong> — −5.56% WK. PLTR −5.67% WK. AI software faces defense-budget pressure as Iran deal removes urgency.</div>
+      <div class="alert danger" style="margin:4px 0;"><strong>ENERGY (USO/XOP/XLE)</strong> — USO −7.05% WK. WTI at $80.53. Don't buy energy here. Oil downtrend accelerating on deal confirmation.</div>
+      <div class="alert danger" style="margin:4px 0;"><strong>SOLAR (TAN)</strong> — −3.86% WK. No catalyst, oil/gas competition returns.</div>
+    </div>
+    <div>
+      <div style="font-weight:700;color:var(--yellow);margin-bottom:8px;font-size:11px;">⚠️ AVOID / CAUTION</div>
+      <div class="alert" style="margin:4px 0;"><strong>DEFENSE (ITA/SHLD)</strong> — ITA closed $233.79. Iran deal = peace = defense budget scrutiny. Last bar was a reversal bar (open $237.03, close $233.79). Avoid fresh longs.</div>
+      <div class="alert" style="margin:4px 0;"><strong>GOLD MINERS (GDX/GDXJ)</strong> — Friday's pop (+8%/+9%) may fade as safe-haven bid exits on confirmed peace deal. GLD −2.76% WK overall. Wait for reset.</div>
+      <div class="alert" style="margin:4px 0;"><strong>META / AMZN / NVDA</strong> — META −4.23% WK, AMZN −3.30% WK, NVDA −2.37% WK. XLC/XLK underlying weakness. No fresh catalyst.</div>
+      <div class="alert" style="margin:4px 0;"><strong>FOXA (acquirer)</strong> — −12.83% pre-mkt. Not a buy. ROKU is the target; FOXA bears acquisition dilution cost.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ GAPPERS TABLE ═══ -->
+<div class="section">
+  <div class="section-title" style="color:var(--yellow);">📈 PRE-MARKET GAPPERS — stockanalysis.com (~8 AM ET) &nbsp;<span style="color:var(--muted);font-size:10px;">⚠️ Chrome MCP unavailable — top-20 %-sort only; volume-sorted sweep not available; liquid names above $1B may be underrepresented</span></div>
+
+  <div style="font-weight:700;color:var(--green);margin-bottom:6px;font-size:11px;">GAINERS — >$1B MARKET CAP (Tradeable)</div>
+  <table>
+    <thead><tr><th>Ticker</th><th>Company</th><th>Mkt Cap</th><th>PM %</th><th>PM Price</th><th>PM Volume</th><th>Fri Close (TV MCP)</th><th>Catalyst</th><th>ETF Bucket</th><th>Tradeable?</th></tr></thead>
+    <tbody>
+      <tr>
+        <td class="bold up">TRIP</td><td>Tripadvisor Inc</td><td>$1.44B</td>
+        <td class="up bold">+14.83%</td><td>$14.25</td><td>535,741</td><td>$12.41</td>
+        <td>Iran deal → travel boom; oil down; geopolitical stability</td><td>PEJ / JETS</td>
+        <td class="up bold">✅ TRADEABLE — Top Pick</td>
+      </tr>
+      <tr>
+        <td class="bold up">AXTI</td><td>AXT Inc</td><td>$6.19B</td>
+        <td class="up bold">+14.22%</td><td>$111.00</td><td>642,233</td><td>$97.18</td>
+        <td>AI optical substrate buildout; Northland PT $125; $632.5M cap raise for InP capacity</td><td>SMH / DRAM</td>
+        <td class="up bold">✅ TRADEABLE — Top Pick</td>
+      </tr>
+      <tr>
+        <td class="bold up">WOLF</td><td>Wolfspeed Inc</td><td>$2.09B</td>
+        <td class="up bold">+13.40%</td><td>$48.92</td><td>508,814</td><td>$43.14</td>
+        <td>GE Aerospace MOU (Jun 8); AI SiC power modules; Citrini bullish</td><td>AIPO / XLI</td>
+        <td class="up bold">✅ TRADEABLE — 🟡 Med (overhang risk)</td>
+      </tr>
+      <tr>
+        <td class="bold muted">ROKU</td><td>Roku Inc</td><td>~$22B</td>
+        <td class="up bold">~+5–6%*</td><td>~$151–152*</td><td>N/A*</td><td>$143.66</td>
+        <td>Fox acquisition at $160/share ($96 cash + 0.9693 FOX-A). Deal spread: FOXA PM $57.40 → implied $151.64. H1 2027 close.</td><td>XLC</td>
+        <td class="warn">⚠️ Merger arb — NOT a momentum setup. Chrome MCP would confirm vol.</td>
+      </tr>
+    </tbody>
+  </table>
+  <div class="source-note">*ROKU not in top-20 %-sort (only ~+5–6% from Friday close); price estimated from deal math ($96 + 0.9693×FOXA PM $57.40 = $151.64). Chrome MCP would surface this via volume sort.</div>
+
+  <div style="font-weight:700;color:var(--red);margin-bottom:6px;margin-top:14px;font-size:11px;">LOSERS — >$1B MARKET CAP (Notable)</div>
+  <table>
+    <thead><tr><th>Ticker</th><th>Company</th><th>Mkt Cap</th><th>PM %</th><th>PM Price</th><th>PM Volume</th><th>Catalyst</th><th>ETF Bucket</th><th>Note</th></tr></thead>
+    <tbody>
+      <tr>
+        <td class="bold down">FOXA</td><td>Fox Corporation</td><td>$27.67B</td>
+        <td class="down bold">−12.83%</td><td>$57.40</td><td>258,080</td><td class="muted">$65.85 (Fri close)</td>
+        <td>Acquirer selloff — buying Roku at $22B enterprise value; dilution to FOX-A shareholders</td><td>XLC</td>
+        <td class="down">Acquirer — avoid long; deal spread arb only</td>
+      </tr>
+      <tr>
+        <td class="bold down">VSTS</td><td>Vestis Corporation</td><td>$1.74B</td>
+        <td class="down bold">−11.07%</td><td>$11.73</td><td>1,565</td><td class="muted">N/A</td>
+        <td class="warn">Catalyst UNCONFIRMED — investigate manually</td><td>XLI</td>
+        <td class="down">Volume too thin (1,565 shares) — not tradeable</td>
+      </tr>
+    </tbody>
+  </table>
+  <div class="alert info"><strong>Note:</strong> WTI (W&amp;T Offshore, $604M) at −11.33% = oil company selling off on Iran deal; BELOW $1B threshold — not listed but confirms energy-sector bear thesis.</div>
+</div>
+
+<!-- ═══ 57-ETF SWEEP ═══ -->
+<div class="section">
+  <div class="section-title">📡 57-ETF SWEEP — EMBEDDED UNIVERSE (TV MCP batch_run, ALL 57 returned) &nbsp;<span style="color:var(--muted);font-size:10px;">Values = Friday June 12 close (last completed daily bar). 5-bar change = week of June 9–12. Pre-mkt ETF prices unavailable from TV MCP during pre-market hours; VIX is live.</span></div>
+
+  <div class="alert theme" style="margin-bottom:12px;">
+    🚨 <strong>THEME-WIDE BREAKOUTS (5-bar weekly co-moves, same ETF category section):</strong>
+    <span class="cyan"> JETS +5.65% + PEJ +3.21%</span> = TRAVEL WIDE &nbsp;|&nbsp;
+    <span class="cyan"> COPX +4.35% + REMX +6.92% + LIT +5.10%</span> = CRITICAL MINERALS WIDE &nbsp;|&nbsp;
+    <span class="cyan"> SMH +3.81% + DRAM +7.07%</span> = SEMIS/MEMORY WIDE &nbsp;|&nbsp;
+    <span class="red"> URA −2.44% + NLR −2.42%</span> = NUCLEAR WEAKNESS THEME-WIDE &nbsp;|&nbsp;
+    <span class="green"> GDX +0.84% + GDXJ +2.14%</span> = Gold miners (juniors outperforming large-cap = real metals bid signal from Friday)
+  </div>
+
+  <table>
+    <thead><tr><th>ETF</th><th>Theme</th><th>Last Close</th><th>5-Bar Wk %</th><th>Avg Vol</th><th>Last Vol</th><th>Today's Direction</th><th>Conviction</th></tr></thead>
+    <tbody>
+      <!-- INDEX / REGIME -->
+      <tr><td colspan="8" style="background:var(--bg3);color:var(--muted);font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;">INDEX / REGIME</td></tr>
+      <tr class="etf-row-flat"><td>SPY</td><td>S&amp;P 500</td><td>$741.75</td><td class="down">−0.22% wk</td><td>68.2M</td><td>57.1M</td><td class="up">↑ PM +1% (futures)</td><td>Iran rally</td></tr>
+      <tr class="etf-row-up"><td>QQQ</td><td>Nasdaq 100</td><td>$721.34</td><td class="up">+3.15% wk</td><td>65.5M</td><td>51.2M</td><td class="up">↑ PM +1.8% (futures)</td><td>Iran + tech</td></tr>
+      <tr class="etf-row-up"><td>IWM</td><td>Small Caps</td><td>$292.25</td><td class="up">+2.61% wk</td><td>36.8M</td><td>34.4M</td><td class="up">↑ risk-on</td><td>Broad rally</td></tr>
+      <tr class="etf-row-up"><td>VIX</td><td>Volatility (LIVE)</td><td class="up bold">16.65</td><td class="down">−8.47% wk</td><td>0</td><td>0</td><td class="up">↓ LIVE TODAY — LOW FEAR ✅</td><td class="up">Risk-on confirmed</td></tr>
+      <tr class="etf-row-up"><td>HYG</td><td>High-Yield Credit</td><td>$79.94</td><td class="up">+0.43% wk</td><td>35.0M</td><td>29.9M</td><td class="up">↑ risk-on credit</td><td>Mild positive</td></tr>
+      <tr class="etf-row-flat"><td>TLT</td><td>20Y Bonds</td><td>$85.77</td><td class="up">+0.63% wk</td><td>25.0M</td><td>23.1M</td><td class="muted">↔ Iran = less inflation → mildly bullish bonds</td><td>Neutral-watch</td></tr>
+      <tr class="etf-row-flat"><td>UUP</td><td>US Dollar</td><td>$27.95</td><td class="down">−0.14% wk</td><td>2.2M</td><td>2.2M</td><td class="down">↓ risk-on = mild USD weakness</td><td>Neutral</td></tr>
+      <tr class="etf-row-down"><td>GLD</td><td>Gold</td><td>$386.54</td><td class="down">−2.76% wk</td><td>10.3M</td><td>7.5M</td><td class="down">↓ Safe haven exits on Iran deal confirmation</td><td class="warn">Caution — avoid</td></tr>
+      <!-- SECTOR SPDRs -->
+      <tr><td colspan="8" style="background:var(--bg3);color:var(--muted);font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;">SECTOR SPDRs</td></tr>
+      <tr class="etf-row-flat"><td>XLK</td><td>Technology</td><td>$184.80</td><td class="down">−0.23% wk</td><td>19.6M</td><td>15.0M</td><td class="up">↑ market up; NVDA soft</td><td>Neutral</td></tr>
+      <tr class="etf-row-flat"><td>XLV</td><td>Healthcare</td><td>$153.81</td><td class="up">+0.37% wk</td><td>11.0M</td><td>9.1M</td><td class="muted">↔ no catalyst</td><td>Neutral</td></tr>
+      <tr class="etf-row-up"><td>XLF</td><td>Financials</td><td>$53.34</td><td class="up">+2.11% wk</td><td>40.8M</td><td>51.0M</td><td class="up">↑ Iran deal = less risk = banks improve</td><td>Mild positive</td></tr>
+      <tr class="etf-row-down"><td>XLE</td><td>Energy Majors</td><td>$57.55</td><td class="down">−0.91% wk</td><td>36.2M</td><td>32.0M</td><td class="down">↓ Oil collapsing. AVOID longs.</td><td class="down">BEARISH</td></tr>
+      <tr class="etf-row-up"><td>XLI</td><td>Industrials</td><td>$176.18</td><td class="up">+0.72% wk</td><td>9.3M</td><td>7.0M</td><td class="up">↑ Iran deal = global trade normalization</td><td>Mild positive</td></tr>
+      <tr class="etf-row-up"><td>XLY</td><td>Consumer Disc</td><td>$116.60</td><td class="up">+1.59% wk</td><td>7.7M</td><td>7.7M</td><td class="up">↑ lower oil = consumer spending power</td><td>Positive</td></tr>
+      <tr class="etf-row-up"><td>XLP</td><td>Consumer Staples</td><td>$85.82</td><td class="up bold">+3.43% wk</td><td>12.5M</td><td>9.4M</td><td class="muted">↔ Unusual — staples running with cyclicals may signal hedging</td><td class="warn">Caution</td></tr>
+      <tr class="etf-row-flat"><td>XLU</td><td>Utilities / AI Power</td><td>$44.53</td><td class="up">+0.47% wk</td><td>19.2M</td><td>17.9M</td><td class="muted">↔ VST, CEG, NRG — AI power demand structural; neutral today</td><td>Neutral</td></tr>
+      <tr class="etf-row-up"><td>XLB</td><td>Materials</td><td>$52.18</td><td class="up">+3.10% wk</td><td>12.4M</td><td>15.2M</td><td class="up">↑ Iran = global growth; materials demand</td><td>Positive</td></tr>
+      <tr class="etf-row-flat"><td>XLC</td><td>Communications</td><td>$111.65</td><td class="up">+0.22% wk</td><td>6.9M</td><td>7.5M</td><td class="up">↑ Fox/Roku deal adds catalyst; META/GOOGL soft</td><td>Mixed</td></tr>
+      <tr class="etf-row-up"><td>XLRE</td><td>REITs</td><td>$45.36</td><td class="up">+1.50% wk</td><td>4.9M</td><td>4.0M</td><td class="up">↑ lower rates expectation if oil/inflation fall</td><td>Mild positive</td></tr>
+      <!-- INDUSTRY GROUPS -->
+      <tr><td colspan="8" style="background:var(--bg3);color:var(--muted);font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;">INDUSTRY GROUPS</td></tr>
+      <tr class="etf-row-up"><td class="bold cyan">SMH</td><td>Semiconductors 🚨 THEME</td><td>$619.96</td><td class="up bold">+3.81% wk</td><td>13.6M</td><td>9.0M</td><td class="up">↑ AI compute demand; pairs with DRAM</td><td class="up bold">🟢 HIGH</td></tr>
+      <tr class="etf-row-down"><td>IGV</td><td>Software</td><td>$90.70</td><td class="down bold">−5.56% wk</td><td>17.3M</td><td>15.0M</td><td class="down">↓ PLTR −5.67% WK inside; defense software weak</td><td class="down bold">AVOID</td></tr>
+      <tr class="etf-row-down"><td>CIBR</td><td>Cybersecurity</td><td>$85.33</td><td class="down">−1.99% wk</td><td>1.6M</td><td>1.3M</td><td class="muted">↔ no catalyst; Iran deal reduces cyber urgency narrative</td><td class="down">Weak</td></tr>
+      <tr class="etf-row-up"><td>XBI</td><td>Biotech Small-Cap</td><td>$133.79</td><td class="up">+2.75% wk</td><td>8.9M</td><td>7.8M</td><td class="up">↑ GLUE AH catalyst Friday; sector bid ongoing</td><td>Positive</td></tr>
+      <tr class="etf-row-flat"><td>IBB</td><td>Biotech Large-Cap</td><td>$170.64</td><td class="up">+0.85% wk</td><td>1.6M</td><td>1.7M</td><td class="muted">↔ XBI leading more; pairs watch</td><td>Neutral</td></tr>
+      <tr class="etf-row-up"><td>KRE</td><td>Regional Banks</td><td>$73.41</td><td class="up bold">+4.28% wk</td><td>16.0M</td><td>16.2M</td><td class="up">↑ Iran = risk-on = regional banks improve; high volume (16.2M vs 16.0M avg = 1.01×)</td><td>Positive</td></tr>
+      <tr class="etf-row-down"><td>XOP</td><td>Oil &amp; Gas E&amp;P</td><td>$165.34</td><td class="down">−1.64% wk</td><td>4.3M</td><td>3.7M</td><td class="down">↓ Oil collapsing. AVOID.</td><td class="down">BEARISH</td></tr>
+      <tr class="etf-row-up"><td>XHB</td><td>Homebuilders</td><td>$107.59</td><td class="up bold">+3.68% wk</td><td>3.7M</td><td>3.4M</td><td class="up">↑ Lower rates + lower inflation expectations = positive for housing</td><td>Positive</td></tr>
+      <tr class="etf-row-up"><td>XRT</td><td>Retail</td><td>$87.73</td><td class="up bold">+6.01% wk</td><td>5.7M</td><td>5.0M</td><td class="up">↑ Consumer spending power up on lower oil/energy</td><td>Positive</td></tr>
+      <tr class="etf-row-up"><td>IYT</td><td>Transports</td><td>$86.51</td><td class="up">+2.03% wk</td><td>0.75M</td><td>0.45M</td><td class="up">↑ Iran = trade normalization; FDX, UPS</td><td>Positive</td></tr>
+      <tr class="etf-row-up"><td class="bold cyan">JETS</td><td>Airlines 🚨 THEME-WIDE ✅</td><td>$29.53</td><td class="up bold">+5.65% wk</td><td>3.7M</td><td>4.3M</td><td class="up bold">↑↑ TRIGGER LIVE — Iran confirmed. Entry >$29.75 activated.</td><td class="up bold">🟢 TOP PICK</td></tr>
+      <tr class="etf-row-up"><td class="bold cyan">PEJ</td><td>Travel/Leisure 🚨 THEME-WIDE ✅</td><td>$65.20</td><td class="up bold">+3.21% wk</td><td>36.6K</td><td>70.1K</td><td class="up">↑ Iran deal; cruises, hotels, casinos. LOW LIQUIDITY — AUM thin.</td><td class="warn">🟡 Low AUM — prefer JETS</td></tr>
+      <!-- AI / TECH THEMES -->
+      <tr><td colspan="8" style="background:var(--bg3);color:var(--muted);font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;">AI / TECH THEMES</td></tr>
+      <tr class="etf-row-up"><td class="bold cyan">DRAM</td><td>HBM Memory 🚨 THEME-WIDE ✅</td><td>$65.01</td><td class="up bold">+7.07% wk</td><td>47.1M</td><td>32.3M</td><td class="up bold">↑↑ AI memory cycle. SNDK +21% WK. MU at $982. Top ETF pick.</td><td class="up bold">🟢 TOP PICK</td></tr>
+      <tr class="etf-row-up"><td>QTUM</td><td>Quantum Computing</td><td>$161.30</td><td class="up">+2.43% wk</td><td>1.1M</td><td>0.78M</td><td class="up">↑ RGTI/QBTS CHIPS Act $100M LOIs (ongoing, not fresh today)</td><td>Positive-ongoing</td></tr>
+      <tr class="etf-row-down"><td>BOTZ</td><td>Robotics</td><td>$37.12</td><td class="down">−3.52% wk</td><td>1.2M</td><td>0.77M</td><td class="down">↓ No catalyst; robotics weak</td><td>Weak</td></tr>
+      <tr class="etf-row-flat"><td>ARKK</td><td>Speculative Growth</td><td>$75.65</td><td class="down">−0.77% wk</td><td>9.4M</td><td>11.6M</td><td class="up">↑ Iran risk-on may lift ARKK; but IGV/software drag</td><td>Neutral</td></tr>
+      <tr class="etf-row-down"><td>ARKX</td><td>Space</td><td>$33.78</td><td class="down">−2.45% wk</td><td>2.5M</td><td>2.3M</td><td class="muted">↔ SPCX IPO overshadowing RKLB/ASTS; sell-the-news pattern</td><td>Caution</td></tr>
+      <tr class="etf-row-flat"><td>AIPO</td><td>AI + Power Infra</td><td>$31.45</td><td class="down">−1.19% wk</td><td>2.0M</td><td>1.4M</td><td class="up">↑ WOLF +13.4% pre-mkt (SiC power) may lift AIPO; VRT, VST constituents</td><td>Watch WOLF catalyst</td></tr>
+      <tr class="etf-row-flat"><td>DTCR</td><td>Data Center REITs</td><td>$31.16</td><td class="down">−0.57% wk</td><td>1.1M</td><td>0.70M</td><td class="muted">↔ EQIX, DLR — no catalyst</td><td>Neutral</td></tr>
+      <tr class="etf-row-flat"><td>SHLD</td><td>Defense Tech</td><td>$63.82</td><td class="up">+0.36% wk</td><td>1.4M</td><td>0.97M</td><td class="down">↓ Iran peace = PLTR/defense tech weak; IGV −5.56% sector</td><td class="down">Avoid</td></tr>
+      <tr class="etf-row-flat"><td>ITA</td><td>Defense Primes</td><td>$233.79</td><td class="up">+1.45% wk</td><td>0.79M</td><td>0.65M</td><td class="down">↓ Iran deal = defense budget scrutiny. Reversal bar Fri (open $237 → close $234).</td><td class="down">Avoid</td></tr>
+      <tr class="etf-row-up"><td>WGMI</td><td>BTC Miners / AI-HPC</td><td>$65.97</td><td class="up">+3.29% wk</td><td>0.57M</td><td>0.53M</td><td class="up">↑ Iran risk-on = BTC up = miners up. IREN $60 entry from Friday likely triggered.</td><td class="up">🟢 FOLLOW-THROUGH</td></tr>
+      <tr class="etf-row-flat"><td>IBIT</td><td>Spot Bitcoin</td><td>$36.04</td><td class="up">+0.14% wk</td><td>45.4M</td><td>36.5M</td><td class="up">↑ risk-on; BTC broadly positive</td><td>Mild positive</td></tr>
+      <!-- POWER / MATERIALS -->
+      <tr><td colspan="8" style="background:var(--bg3);color:var(--muted);font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;">POWER / MATERIALS</td></tr>
+      <tr class="etf-row-down"><td class="red">URA</td><td>Uranium 🚨 THEME-WEAK</td><td>$45.52</td><td class="down bold">−2.44% wk</td><td>4.6M</td><td>3.1M</td><td class="down">↓ Nuclear sector weak despite Friday pop. Iran deal removes energy crisis premium.</td><td class="down bold">⚠️ CAUTION</td></tr>
+      <tr class="etf-row-down"><td class="red">NLR</td><td>Nuclear Utilities 🚨 THEME-WEAK</td><td>$121.95</td><td class="down bold">−2.42% wk</td><td>0.65M</td><td>0.28M</td><td class="down">↓ Both URA + NLR down = sector-wide nuclear weakness</td><td class="down bold">⚠️ CAUTION</td></tr>
+      <tr class="etf-row-flat"><td>GRID</td><td>Grid Equipment</td><td>$189.01</td><td class="down">−0.73% wk</td><td>0.73M</td><td>0.47M</td><td class="muted">↔ ETN, HUBB — no catalyst</td><td>Neutral</td></tr>
+      <tr class="etf-row-down"><td>TAN</td><td>Solar</td><td>$63.03</td><td class="down bold">−3.86% wk</td><td>2.0M</td><td>2.6M</td><td class="down">↓ Oil/gas competition returns on Iran deal. Avoid.</td><td class="down">AVOID</td></tr>
+      <tr class="etf-row-up"><td class="bold cyan">COPX</td><td>Copper Miners 🚨 THEME-WIDE ✅</td><td>$85.97</td><td class="up bold">+4.35% wk</td><td>3.8M</td><td>4.2M</td><td class="up">↑ Iran = global growth; AI copper demand structural</td><td class="up bold">🟢 WATCH</td></tr>
+      <tr class="etf-row-up"><td class="bold cyan">REMX</td><td>Rare Earth 🚨 THEME-WIDE ✅</td><td>$95.50</td><td class="up bold">+6.92% wk</td><td>0.99M</td><td>0.77M</td><td class="up">↑ US govt backing (USAR $1.6B, MP Materials); China pricing power curbed</td><td class="up bold">🟢 STRONG</td></tr>
+      <tr class="etf-row-flat"><td>XME</td><td>Metals &amp; Mining</td><td>$120.44</td><td class="down">−0.22% wk</td><td>2.2M</td><td>1.5M</td><td class="muted">↔ Flat weekly despite materials surge — mixed signals</td><td>Neutral</td></tr>
+      <tr class="etf-row-up"><td class="bold cyan">LIT</td><td>Lithium/Battery 🚨 THEME</td><td>$82.37</td><td class="up bold">+5.10% wk</td><td>1.0M</td><td>0.27M</td><td class="up">↑ Critical minerals theme co-move; EV supply chain demand</td><td class="up">Positive</td></tr>
+      <tr class="etf-row-up"><td>GDX</td><td>Gold Miners Large</td><td>$80.03</td><td class="up">+0.84% wk</td><td>26.1M</td><td>25.6M</td><td class="warn">↓? Safe-haven bid may exit on Iran deal confirmation. Friday pop may fade.</td><td class="warn">⚠️ RISK — monitor</td></tr>
+      <tr class="etf-row-up"><td>GDXJ</td><td>Junior Gold Miners</td><td>$104.26</td><td class="up">+2.14% wk</td><td>7.5M</td><td>5.9M</td><td class="warn">↓? Same risk as GDX — juniors outperformed Friday but safe-haven rotation at risk today</td><td class="warn">⚠️ RISK — monitor</td></tr>
+      <tr class="etf-row-down"><td>SLV</td><td>Silver</td><td>$61.29</td><td class="down">−1.19% wk</td><td>27.4M</td><td>21.3M</td><td class="muted">↔ Mixed; industrial silver (AI) may hold; safe-haven silver fades</td><td>Neutral</td></tr>
+      <!-- COMMODITIES / GLOBAL -->
+      <tr><td colspan="8" style="background:var(--bg3);color:var(--muted);font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;">COMMODITIES / GLOBAL</td></tr>
+      <tr class="etf-row-down"><td class="red bold">USO</td><td>Crude Oil</td><td>$125.43</td><td class="down bold">−7.05% wk</td><td>8.4M</td><td>8.5M</td><td class="down bold">↓↓ WTI $80.53 (−5.1%) today. Iran deal = supply normalization. AVOID all longs.</td><td class="down bold">BEARISH — KEY SHORT</td></tr>
+      <tr class="etf-row-flat"><td>UNG</td><td>Natural Gas</td><td>$11.35</td><td class="down">−0.44% wk</td><td>5.4M</td><td>5.3M</td><td class="muted">↔ Less geopolitical premium; LNG demand structural</td><td>Neutral</td></tr>
+      <tr class="etf-row-flat"><td>MOO</td><td>Agriculture</td><td>$78.59</td><td class="up">+0.05% wk</td><td>0.15M</td><td>0.13M</td><td class="muted">↔ No catalyst. Low liquidity (AUM thin).</td><td>Neutral</td></tr>
+      <tr class="etf-row-flat"><td>KWEB</td><td>China Internet ADRs</td><td>$26.49</td><td class="flat">0.00% wk</td><td>15.3M</td><td>13.3M</td><td class="up">↑ Iran deal = China trade normalization speculation; BABA, PDD</td><td>Mild positive</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ═══ FINVIZ NEWS ═══ -->
+<div class="section">
+  <div class="section-title">📰 FINVIZ NEWS DIGEST — Public Feed, Last 6 Hours (~2–8 AM ET)</div>
+  <div class="hl"><span class="hl-time">08:15 AM</span><span class="hl-ticker">MARKET</span><span>US stock futures jump on Iran deal; SpaceX rises in second day of trading</span><span class="hl-source">CNBC</span></div>
+  <div class="hl"><span class="hl-time">08:14 AM</span><span class="hl-ticker">MARKET</span><span>Global Markets Rally on Iran Peace Hopes — equities, bonds, gold all moving</span><span class="hl-source">New York Times</span></div>
+  <div class="hl"><span class="hl-time">08:10 AM</span><span class="hl-ticker">MARKET</span><span>Stocks soar after US and Iran reach ceasefire deal</span><span class="hl-source">Yahoo Finance</span></div>
+  <div class="hl"><span class="hl-time">08:09 AM</span><span class="hl-ticker">MARKET</span><span>Stocks and Bonds Rally as Oil Falls on Iran Deal: Markets Wrap</span><span class="hl-source">Bloomberg · ETF Bucket: SPY/QQQ/TLT/USO</span></div>
+  <div class="hl"><span class="hl-time">07:56 AM</span><span class="hl-ticker up bold">FOX / ROKU</span><span>Fox to buy Roku in a cash-and-stock deal worth $22 billion — $160/share</span><span class="hl-source">Yahoo Finance · ETF Bucket: XLC</span></div>
+  <div class="hl"><span class="hl-time">07:49 AM</span><span class="hl-ticker">MARKET</span><span>Shipping Firms, Awaiting Details, Are Cautious of US–Iran Deal — Strait logistics unclear</span><span class="hl-source">New York Times · ETF Bucket: IYT</span></div>
+  <div class="hl"><span class="hl-time">07:45 AM</span><span class="hl-ticker up">GOOGL</span><span>Goldman Brings Google to Prepaid Energy Market After Equity Deal — AI power procurement deal</span><span class="hl-source">Bloomberg · ETF Bucket: XLC / XLU</span></div>
+  <div class="source-note">Source: WebFetch https://finviz.com/news (~8:15 AM ET). Finviz Elite filter unavailable — public feed used. Some overnight headlines may be missed.</div>
+</div>
+
+<!-- ═══ POLICY / STAKE / RUMOR ═══ -->
+<div class="section">
+  <div class="section-title" style="color:var(--purple);">🏛️ POLICY / STAKE / RUMOR CATALYST CHECK</div>
+
+  <div class="policy-card">
+    <strong class="purple">🏛️ RGTI (Rigetti Computing) — $100M DoC CHIPS Act Letter of Intent (ONGOING)</strong><br>
+    DoC/Commerce Dept signed $100M LOI for 3-year quantum R&amp;D funding under CHIPS Act. Federal equity stake in exchange. Rigetti's 108-qubit Cepheus-1-108Q live on cloud platforms. Wedbush flagged as commercial milestone. Story from June 3 — ongoing, not a fresh today catalyst. Part of $2B total quantum computing govt investment (IBM, QBTS, RGTI all receiving). Maps to: QTUM.<br>
+    <span class="source-note">Source: <a href="https://www.foreignpolicyjournal.com/2026/06/03/rigetti-computing-nasdaq-rgti-signs-100-million-u-s-department-of-commerce-letter-of-intent-for-quantum-rd-funding/" target="_blank">Foreign Policy Journal 06/03</a></span>
+  </div>
+
+  <div class="policy-card">
+    <strong class="purple">🏛️ QBTS (D-Wave Quantum) — $100M DoC LOI + $100M Equity Stake (ONGOING)</strong><br>
+    D-Wave signed matching $100M CHIPS Act LOI. US government takes $100M equity stake. D-Wave annealing architecture = commercially mature, optimization-focused (logistics, finance). +30%+ on initial announcement. No fresh catalyst today — ongoing story. Maps to: QTUM.<br>
+    <span class="source-note">Source: <a href="https://www.foreignpolicyjournal.com/2026/05/28/us-government-pours-2-billion-into-quantum-computing-as-ibm-qbts-and-rgti-stocks-surge/" target="_blank">Foreign Policy Journal 05/28</a></span>
+  </div>
+
+  <div class="policy-card">
+    <strong class="purple">🏛️ USAR (USA Rare Earth) — $1.6B Trump Admin Funding (ONGOING)</strong><br>
+    Trump administration announced $1.6B funding package for USA Rare Earth (USAR) — sintered neo magnet factory in Oklahoma, commercial production expected Q1 2026. MP Materials also US-backed; industry leaders say US backing curbed China's rare earth pricing power. MP vs USAR legal dispute (magnet tech theft allegation) adds complexity. No fresh catalyst today. Maps to: REMX.<br>
+    <span class="source-note">Source: <a href="https://www.energypolicy.columbia.edu/mp-materials-deal-marks-a-significant-shift-in-us-rare-earths-policy/" target="_blank">Columbia CGEP</a></span>
+  </div>
+
+  <div class="policy-card">
+    <strong class="purple">🏛️ GOOGL — Goldman/Google Prepaid Energy Deal (FRESH TODAY)</strong><br>
+    Goldman Sachs brings Google into prepaid energy market after equity deal — AI power procurement innovation. Suggests Google is securing energy supply chains directly. Maps to: XLU / XLC / DTCR.<br>
+    <span class="source-note">Source: Bloomberg 07:45 AM ET · <a href="https://finviz.com/news" target="_blank">Finviz public feed</a></span>
+  </div>
+
+  <div class="alert policy">No FRESH government equity announcements today for INTC, IBM, INFQ. Quantum and rare earth stories are ONGOING, not today-specific catalysts. Iran deal is today's defining policy event.</div>
+</div>
+
+<!-- ═══ WIRE SERVICE SCOOPS ═══ -->
+<div class="section">
+  <div class="section-title" style="color:var(--orange);">📡 WIRE SERVICE SCOOPS</div>
+
+  <div class="wire-card">
+    <strong class="orange">📰 BLOOMBERG — 07:48 AM ET &nbsp;·&nbsp; FOX ACQUIRES ROKU $22B</strong><br>
+    "Fox to Buy Roku at $22 Billion Value in Streaming Video Push" — deal confirmed with $160/share consideration ($96 cash + 0.9693 FOX-A stock). Expected close H1 2027. ~$400M synergies. FOXA −12.83% PM (acquirer dilution). ROKU implied ~$151.64 based on deal math. Confirmed via Fox IR press release and SEC 8-K.<br>
+    <a href="https://www.bloomberg.com/news/articles/2026-06-15/fox-to-buy-roku-at-22-billion-value-in-streaming-video-push" target="_blank">Bloomberg</a> · <a href="https://www.foxcorporation.com/news/corp-press-releases/2026/fox-corporation-to-acquire-roku-inc/" target="_blank">Fox IR</a> · <a href="https://www.prnewswire.com/news-releases/fox-corporation-to-acquire-roku-inc-302800220.html" target="_blank">PRNewswire</a> · ETF Bucket: XLC
+  </div>
+
+  <div class="wire-card">
+    <strong class="orange">📰 CNBC — 08:15 AM ET &nbsp;·&nbsp; US–IRAN DEAL + SPACEX DAY 2</strong><br>
+    "US stock futures jump on potential Iran deal to end the war; SpaceX rises in second day of trading" — Deal scope: Strait of Hormuz reopens, US naval blockade lifted, signing ceremony in Switzerland on Friday (June 19 = Juneteenth, US market CLOSED). WTI −5.1% to $80.53. S&amp;P futures +1%, Nasdaq futures +1.8%.<br>
+    <a href="https://www.cnbc.com/amp/2026/06/15/us-iran-deal-stocks-bonds-gold-oil.html" target="_blank">CNBC 06/15</a> · <a href="https://www.cnbc.com/2026/06/14/oil-price-iran-war-strait-hormuz-peace-deal.html" target="_blank">CNBC oil drop</a> · ETF Bucket: SPY/QQQ/USO/JETS/XLE
+  </div>
+
+  <div class="wire-card">
+    <strong class="orange">📰 REUTERS / AL JAZEERA — Pre-mkt &nbsp;·&nbsp; IRAN MARKET DETAILS</strong><br>
+    "Oil slips $4 as US, Iran reach peace deal to reopen Strait of Hormuz" — Brent −$4.08 (4.7%) to $83.25; WTI −$4.35 (5.1%) to $80.53. Nikkei +5.5%, Kospi +5.7%. Framework signed; official ceremony Friday in Switzerland. Shipping firms cautious on logistics timeline (risk note).<br>
+    <a href="https://www.investing.com/news/commodities-news/oil-slips-over-4-after-us-iran-reach-peace-deal-reopen-strait-of-hormuz-4741118" target="_blank">Reuters via Investing.com</a> · <a href="https://www.aljazeera.com/economy/2026/6/15/stock-markets-soar-oil-falls-as-us-iran-confirm-deal-to-end-war" target="_blank">Al Jazeera</a>
+  </div>
+
+  <div class="wire-card">
+    <strong class="orange">📰 BLOOMBERG — 07:45 AM ET &nbsp;·&nbsp; GOLDMAN/GOOGLE ENERGY DEAL</strong><br>
+    "Goldman Brings Google to Prepaid Energy Market After Equity Deal" — AI power procurement innovation; Goldman takes equity. Paywall status: likely paywalled (Bloomberg article). Maps to XLU/XLC/DTCR.
+  </div>
+
+  <div class="alert wire"><strong>Paywall note:</strong> Bloomberg articles are paywalled; summaries sourced from Finviz public feed and secondary sources. Core facts (Fox/Roku, Iran, oil prices) confirmed via multiple free sources (Fox IR, PRNewswire, CNBC, Al Jazeera, Reuters).</div>
+</div>
+
+<!-- ═══ OPTIONS FLOW ═══ -->
+<div class="section">
+  <div class="section-title" style="color:var(--blue);">🔵 PRE-MARKET OPTIONS FLOW</div>
+
+  <div class="alert flow">
+    <strong>⚠️ FLOW DATA LIMITATION:</strong> Yahoo options chains SKIPPED (Chrome MCP unavailable). Unusual Whales paid data (15-min delayed, 4-ticker free limit) NOT used. Data below = web_search free sources only. Only AAL flow is CONFIRMED. All other options commentary = <strong>price-action inference — NOT confirmed flow data.</strong>
+  </div>
+
+  <div class="flow-card">
+    <strong class="blue">🔵 CONFIRMED — American Airlines (AAL): Bullish Call Volume 3× Expected</strong><br>
+    Directionally bullish call flow in AAL: 48,474 calls trading vs 3× expected; implied vol +4pts to 53.94%. Consistent with Iran deal airline trade. Maps to JETS basket.<br>
+    <span class="source-note">Source: TheFly / TipRanks · <a href="https://www.tipranks.com/news/the-fly/american-airlines-call-volume-above-normal-and-directionally-bullish-thefly" target="_blank">TipRanks</a></span>
+  </div>
+
+  <div class="flow-card">
+    <strong class="blue">🔵 INFERENCE — VIX at 16.65 (LIVE) = Market Not Pricing Crash</strong><br>
+    VIX live at 16.65, down from 18.19 weekly open (−8.47% wk). Below 20 = calm. No VIX call spike = market not buying crash protection. Confirms risk-on. NOT confirmed options flow — price-action inference only.
+  </div>
+
+  <div class="flow-card">
+    <strong class="blue">🔵 INFERENCE — Iran Option Context: Vol Surged Week of June 8–11</strong><br>
+    Saxo options brief (June 11): "Iran day two vol surges" — put/call vol in airlines elevated all week as hedgers positioned both ways. With deal now confirmed, puts likely unwinding = call flow net bullish. This is INFERENCE based on Saxo article, not confirmed live flow.
+  </div>
+
+  <div class="source-note">No SPY/QQQ specific options flow data available from free web_search sources for June 15 pre-market. No JETS ETF block data confirmed. Yahoo options chains unavailable (Chrome MCP down).</div>
+</div>
+
+<!-- ═══ FOLLOW-THROUGH ═══ -->
+<div class="section">
+  <div class="section-title">🔄 FOLLOW-THROUGH FROM FRIDAY JUNE 12 8 PM SCAN</div>
+
+  <div class="alert info">Context: Friday 8 PM scan (gap-attribution-2026-06-12.html) was an "EPOCH DAY" — SPCX IPO (+19%), Iran deal text "agreed" (but Supreme Leader sign-off pending at that time), materials supercycle sweep (COPX/REMX/GDX/GDXJ/LIT/SLV all +6-9%). Today that deal is CONFIRMED, which resolves Friday's key uncertainty.</div>
+
+  <div class="follow-card on"><strong class="green">✅ JETS — TRIGGER ACTIVATED (Strongest Follow-Through)</strong><br>Friday entry >$29.75 "only if Iran deal signed overnight." Entry condition NOW MET. JETS closed $29.53; should gap significantly above $29.75 today. <strong>Status: CONFIRMED — PRIMARY PLAY TODAY.</strong></div>
+
+  <div class="follow-card on"><strong class="green">✅ WGMI — STILL ON</strong><br>Entry above $66; closed $65.97 Friday. Iran deal = risk-on = BTC up = miners up. IREN ($60 entry), MARA +10.22% WK confirm basket strength. <strong>Status: LIKELY GAPS ABOVE ENTRY TODAY.</strong></div>
+
+  <div class="follow-card on"><strong class="green">✅ AMD — STILL ON</strong><br>Entry above $515; closed $511.57. BofA $560 PT / Venice launch July 22. Broad market +1.8% today likely triggers entry. <strong>Status: LIKELY ACTIVATES TODAY.</strong></div>
+
+  <div class="follow-card on"><strong class="green">✅ IREN — STILL ON</strong><br>Entry above $60; closed $59.77. $1.6B Dell Blackwell GPU deal. WGMI basket up = IREN follow-through. <strong>Status: LIKELY ACTIVATES TODAY.</strong></div>
+
+  <div class="follow-card on"><strong class="green">✅ CRWV — STILL ON</strong><br>Entry above $101; closed $100.55. Nasdaq-100 addition effective June 22 → passive forced buying incoming (6 trading days). <strong>Status: LIKELY ACTIVATES TODAY. Exit target June 20-22 forced-buy window.</strong></div>
+
+  <div class="follow-card on"><strong class="green">✅ COPX — AT ENTRY</strong><br>Entry above $86; closed $85.97. Iran deal confirms global growth narrative. COPX should gap above $87 today. <strong>Status: FOLLOW-THROUGH ACTIVE. Reduce size given FOMC risk.</strong></div>
+
+  <div class="follow-card on"><strong class="green">✅ MU — STILL ON</strong><br>Entry above $985; closed $981.61 approaching $1K level. DRAM/SMH theme intact. AI memory structural. <strong>Status: WATCH — $1,000 psyche level is the key test.</strong></div>
+
+  <div class="follow-card risk"><strong class="warn">⚠️ GDX/GDXJ — WEAKENING</strong><br>Friday entry >$80/$104. Iran deal confirmation = safe-haven bid exits gold. GDX/GDXJ Friday pop (+8%/+9%) may fade as peace premium reverses. GLD −2.76% WK confirms longer-term downtrend. <strong>Status: REDUCE OR EXIT. Iran confirmation is bearish for safe-haven gold.</strong></div>
+
+  <div class="follow-card fade"><strong class="red">❌ URA/NLR — CAUTION</strong><br>Both at barely-triggered entries. Nuclear weekly trend -2.44%/-2.42%. Iran deal reduces energy crisis premium. Friday pop was on peace optimism; today confirmation may trigger profit-taking in nuclear names. <strong>Status: DO NOT INITIATE. Existing positions: tighten stops to entry.</strong></div>
+
+  <div class="follow-card risk"><strong class="warn">⚠️ TSLA — MEDIUM CONVICTION</strong><br>Entry above $408; closed $406.43. "Musk wealth halo" from SPCX still in play but fading (SPCX now Day 3). Iran deal = lower oil = marginally reduces EV cost-vs-petrol argument, but minor. <strong>Status: CONDITIONAL — only if SPCX narrative persists into Day 3.</strong></div>
+
+  <div class="follow-card on"><strong class="green">✅ GLUE (Monte Rosa Therapeutics) — WATCH</strong><br>Wells Fargo upgrade + Phase 1/2 data. XBI +2.75% WK confirms biotech sector bid. <strong>Status: WATCH pre-market price; if holding AH gains, biotech continuation valid.</strong></div>
+</div>
+
+<!-- ═══ WATCHLIST ═══ -->
+<div class="section">
+  <div class="section-title">👁️ PERSONAL WATCHLIST STATUS</div>
+  <div class="alert info">All prices = Friday June 12 close (TV MCP batch_run, ~8:20 AM ET today). 5-bar change = weekly (June 9–12). Pre-market inferred from Iran deal + market context; no live individual watchlist stock PM prices available from TV MCP in pre-market window.</div>
+  <table>
+    <thead><tr><th>Ticker</th><th>Fri Close</th><th>5-Bar Wk %</th><th>PM Direction Today</th><th>Catalyst / Analyst</th><th>Setup Status</th></tr></thead>
+    <tbody>
+      <tr><td class="bold">NVDA</td><td>$205.19</td><td class="down">−2.37% wk</td><td class="up">↑ Market up +1.8%; but NVDA weak WK</td><td>No fresh catalyst today</td><td class="muted">NEUTRAL — watch for vol confirmation</td></tr>
+      <tr><td class="bold">TSLA</td><td>$406.43</td><td class="up">+2.55% wk</td><td class="up">↑ Market up; Musk SPCX halo Day 3</td><td>Entry >$408 from Friday scan</td><td class="warn">CONDITIONAL — see follow-through section</td></tr>
+      <tr><td class="bold">SOFI</td><td>$16.58</td><td class="up">+2.47% wk</td><td class="up">↑ KRE +4.28% WK; risk-on financial</td><td>No specific catalyst</td><td class="up">POSITIVE — rides KRE strength</td></tr>
+      <tr><td class="bold">AMD</td><td>$511.57</td><td class="up bold">+5.48% wk</td><td class="up bold">↑↑ Market up + BofA $560 PT intact</td><td>BofA $560 PT; Venice launch July 22</td><td class="up bold">ENTRY >$515 LIKELY TODAY 🟢</td></tr>
+      <tr><td class="bold">PLTR</td><td>$127.99</td><td class="down bold">−5.67% wk</td><td class="down">↓ Iran deal = defense budget risk; IGV −5.56% sector</td><td>IGV weakness; SHLD flat</td><td class="down bold">AVOID — do not initiate longs</td></tr>
+      <tr><td class="bold">MARA</td><td>$14.08</td><td class="up bold">+10.22% wk</td><td class="up">↑ Iran risk-on + BTC miners</td><td>BTC miners proxy</td><td class="up">WGMI follow-through</td></tr>
+      <tr><td class="bold">COIN</td><td>$159.78</td><td class="up">+2.03% wk</td><td class="up">↑ BTC risk-on</td><td>No specific catalyst</td><td class="up">Mild positive</td></tr>
+      <tr><td class="bold up">SNDK</td><td>$1,980.10</td><td class="up bold">+21.18% wk</td><td class="up bold">↑↑ AI memory supercycle</td><td>BofA $2,100 PT; Morgan Stanley $1,750 PT; NAND shortage to 2028–29; 251% YoY rev growth Q3</td><td class="up bold">MONSTER WEEKLY — DRAM theme leader 🟢</td></tr>
+      <tr><td class="bold">META</td><td>$566.45</td><td class="down bold">−4.23% wk</td><td class="up">↑ Market up offset vs sector weakness</td><td>XLC weak; Fox/Roku deal may shift streaming narrative</td><td class="down">WEAK SECTOR — neutral at best</td></tr>
+      <tr><td class="bold">AMZN</td><td>$238.55</td><td class="down">−3.30% wk</td><td class="up">↑ Market up; but weekly trend weak</td><td>No fresh catalyst</td><td class="down">WEAK TREND — wait</td></tr>
+      <tr><td class="bold up">ROKU</td><td>$143.66</td><td class="up bold">+14.15% wk</td><td class="up bold">↑ Fox acquisition at $160/share</td><td>Fox deal $96 cash + 0.9693 FOX-A; close H1 2027. Implied PM ~$151.64.</td><td class="warn">MERGER ARB — not a momentum trade. Deal spread risk to FOXA trajectory.</td></tr>
+      <tr><td class="bold down">FOXA</td><td>$65.85</td><td class="down">−1.55% wk</td><td class="down bold">↓↓ −12.83% PM ($57.40)</td><td>Acquirer of Roku; heavy dilution</td><td class="down bold">CONFIRMED PM LOSER — avoid longs; deal arb only</td></tr>
+    </tbody>
+  </table>
+  <div class="alert info">Analyst actions this morning (6–8 AM batch): Northland↑ AXTI PT $90→$125 (Outperform) confirmed. No specific Mag-7 morning analyst actions found from free sources. No earnings BMO today for watchlist names. No 8-K filings in last 24h for watchlist names (check EDGAR for FOXA/ROKU post-announcement).</div>
+</div>
+
+<!-- ═══ MACRO / SCHEDULE ═══ -->
+<div class="section">
+  <div class="section-title">📅 TODAY'S MACRO SCHEDULE &amp; RISK EVENTS</div>
+  <table>
+    <thead><tr><th>Time (ET)</th><th>Event</th><th>Expected</th><th>Impact</th><th>Positions at Risk</th></tr></thead>
+    <tbody>
+      <tr><td class="warn bold">8:30 AM</td><td>Empire State Manufacturing (NY Fed)</td><td>+13.2 (above 0 = expansion)</td><td>MEDIUM — miss could dampen industrials/materials</td><td>COPX, XLB, XLI</td></tr>
+      <tr><td class="red bold">TOMORROW Jun 16</td><td>FOMC Meeting begins (Kevin Warsh debut)</td><td>HOLD at 3.50–3.75% (99% prob)</td><td><strong class="red">HIGH — dot plot &amp; SEP are the key risk.</strong> Iran deal → oil down → less inflation → more dovish dots? But CPI 4.2% = Fed hawkish. Hawkish dots = violent risk-off reversal.</td><td>ALL longs; especially JETS, COPX, AMD, DRAM</td></tr>
+      <tr><td class="red bold">Wed Jun 17</td><td>FOMC Decision + Press Conference (2 PM ET)</td><td>HOLD; press conf focus = Warsh tone</td><td><strong class="red">HIGH — rate hold certain; Warsh tone + dots = the real move catalyst</strong></td><td>ALL positions</td></tr>
+      <tr><td class="warn bold">Fri Jun 19</td><td>Juneteenth — US MARKET CLOSED</td><td>—</td><td><strong class="warn">Iran signing ceremony in Switzerland same day — US market can't react until Monday June 22.</strong></td><td>All Iran-deal trades held overnight Thu</td></tr>
+      <tr><td class="muted">Fri Jun 19</td><td>Iran signing ceremony (Switzerland)</td><td>Formal signing of ceasefire MOU</td><td>HIGH for Iran plays IF US market were open; US market CLOSED (Juneteenth). First opportunity to react: Monday June 22.</td><td>JETS, TRIP, USO short</td></tr>
+      <tr><td class="muted">Mon Jun 22</td><td>Nasdaq-100 rebalance effective</td><td>RKLB, CRWV, ALAB, NBIS, TER added</td><td>MEDIUM — passive forced buying at Monday open for additions; CRWV in particular</td><td>CRWV long</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ═══ ASSUMPTION AUDIT ═══ -->
+<div class="section">
+  <div class="section-title">🔍 STEP 11 — ASSUMPTION AUDIT</div>
+  <table>
+    <thead><tr><th>Item</th><th>What Was Assumed</th><th>What Changes If Wrong</th><th>Risk to Trade</th></tr></thead>
+    <tbody>
+      <tr><td class="warn">TV MCP price method</td><td>batch_run get_ohlcv (all 57 ETFs + watchlist 12); quote_get for 7 individual stocks — ALL returned Friday June 12 close (last daily bar). VIX is live (continuous). No live pre-market ETF prices available in pre-mkt window.</td><td>ETF pre-market gaps unknown until 9:30 AM open. Using direction inference from news + futures.</td><td>LOW — prices confirm at open; direction thesis unchanged.</td></tr>
+      <tr><td class="warn">Chrome MCP unavailable</td><td>Gap discovery limited to top-20 %-sort. Volume-sorted deep sweep not available. ROKU missed (only ~+5% from deal math, below top-20 threshold by %). Yahoo options chains skipped.</td><td>Liquid mid-cap gappers above $1B with 3–10% moves may be missed. ROKU position analysis incomplete.</td><td>MEDIUM — potentially missing 1–3 tradeable names; ROKU confirmed via news, not stockanalysis.</td></tr>
+      <tr><td class="muted">Finviz Elite</td><td>Public feed used. Elite filtered view unavailable (Chrome blocked).</td><td>Some overnight headlines may be missed; thinly covered names might not appear.</td><td>LOW — major catalysts (Iran, Fox/Roku) confirmed via multiple free sources.</td></tr>
+      <tr><td class="warn">Options flow</td><td>Only AAL confirmed (TheFly/TipRanks). All other flow = inference. Yahoo chains skipped.</td><td>If large bearish blocks in JETS/SPY exist and are unreported, downside risk is unhedged.</td><td>MEDIUM — use VIX 16.65 (live) as primary fear gauge. Low VIX = net flow is bullish.</td></tr>
+      <tr><td class="red">Iran deal signing ceremony</td><td>Assumed signing proceeds Friday June 19 as announced. Supreme Leader sign-off and technical logistics assumed to proceed.</td><td>If signing is delayed or falls apart, ALL travel/oil-short trades reverse violently. JETS could gap −15%+ on failure.</td><td>HIGH — JETS is the most vulnerable. Strict stop at $28.50. Size 60% of normal.</td></tr>
+      <tr><td class="red">FOMC dot plot</td><td>Rate HOLD assumed (99%). Real risk is dot plot tone. Hawkish shift (fewer 2026 cut signals) = risk-off across all longs.</td><td>Hawkish dots → JETS/COPX/DRAM/AMD all reverse. Worst case: Warsh says "inflation still elevated (4.2%), no cuts in 2026" → market correction.</td><td>HIGH — reduce ALL positions to 60% size today; re-evaluate Wednesday post-FOMC.</td></tr>
+      <tr><td class="muted">VSTS −11.07%</td><td>No catalyst found from free sources.</td><td>Unknown catalyst.</td><td>"Catalyst UNCONFIRMED — investigate manually" (meets SCOPE LOCK standard).</td></tr>
+      <tr><td class="muted">WOLF share overhang</td><td>WOLF had 24M share sale filing from existing stockholders noted in June 14 search. Not confirmed as today's event.</td><td>If share sale executes at open, WOLF reverses despite catalyst strength.</td><td>MEDIUM — capped at 🟡 Medium conviction. Verify S-1 status before entering.</td></tr>
+      <tr><td class="muted">SNDK $1,980 price</td><td>Confirmed via TV MCP batch_run AND web_search (SanDisk/AI memory play; BofA $2,100 PT). Price is real.</td><td>No anomaly — stock has 21.18% 5-day run driven by real fundamental catalysts (NAND shortage, multi-year supply agreements).</td><td>LOW — no data integrity issue.</td></tr>
+      <tr><td class="muted">GDX/GDXJ gold miners</td><td>Friday pop (+8%/+9%) may fade today as Iran confirmation removes safe-haven gold premium.</td><td>If gold holds bid despite deal (structural safe haven = Fed uncertainty hedge), GDX/GDXJ continue higher.</td><td>MEDIUM — REDUCE, do not initiate new. Wait for GLD directional clarity at open.</td></tr>
+      <tr><td class="muted">Juneteenth holiday</td><td>US market closed Friday June 19. Iran signing ceremony Friday in Switzerland. US cannot react until Monday June 22.</td><td>If signing goes smoothly, Iran trades hold well into Monday. If signing fails, positions are trapped through the weekend.</td><td>HIGH — DO NOT hold large Iran positions through Thursday close (FOMC + Juneteenth risk stacked).</td></tr>
+      <tr><td class="muted">Wire scoop paywall</td><td>Bloomberg articles paywalled. Fox/Roku and Iran deal details confirmed via Fox IR (free), PRNewswire (free), CNBC (free), Al Jazeera (free).</td><td>No dependency on paywalled content for any trade thesis.</td><td>LOW.</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ═══ FOOTER ═══ -->
+<div class="footer">
+  Pre-Market Catalyst v7.7 HYBRID · 2026-06-15 · Generated ~8:30 AM ET ·
+  Sources: TV MCP (batch_run all 57 ETFs + 12-ticker watchlist), stockanalysis.com, finviz.com/news (public), web_search (CNBC, Bloomberg, Reuters, Al Jazeera, NPR, Fox IR, PRNewswire, SEC EDGAR, TheFly/TipRanks, TheStreet, Saxo, Benzinga, StocksToTrade) ·
+  ⚠️ Chrome MCP unavailable — gap discovery limited to top-20 %-sort · Yahoo options skipped · Finviz Elite unavailable · Options flow = price-action inference except AAL confirmed ·
+  TV MCP price method: batch_run get_ohlcv (primary, 57 ETFs); quote_get 7 individual tickers — all returned Friday June 12 close · VIX live at 16.65 ·
+  VSTS catalyst UNCONFIRMED — investigate manually
+</div>
+</body>
+</html>
