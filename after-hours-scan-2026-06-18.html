@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>After-Hours Gaps Scan — June 18, 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0e17;
+    --bg2: #111827;
+    --bg3: #1a2236;
+    --border: #1e2d45;
+    --text: #e2e8f0;
+    --muted: #64748b;
+    --green: #22c55e;
+    --red: #ef4444;
+    --yellow: #eab308;
+    --orange: #f97316;
+    --blue: #3b82f6;
+    --purple: #a855f7;
+    --cyan: #06b6d4;
+    --accent: #38bdf8;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    line-height: 1.6;
+    padding: 24px 16px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  h1 { font-size: 20px; font-weight: 700; color: var(--accent); margin-bottom: 4px; }
+  h2 { font-size: 14px; font-weight: 600; color: var(--accent); margin: 28px 0 10px; text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 1px solid var(--border); padding-bottom: 6px; }
+  h3 { font-size: 13px; font-weight: 600; color: #94a3b8; margin: 16px 0 8px; }
+  .tool-health {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--green);
+    border-radius: 6px;
+    padding: 10px 14px;
+    margin-bottom: 20px;
+    font-size: 12px;
+  }
+  .tool-health.warn { border-left-color: var(--yellow); }
+  .tool-health span { margin-right: 16px; }
+  .headline-box {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 14px 16px;
+    margin-bottom: 14px;
+  }
+  .headline-box .title { font-weight: 600; color: var(--orange); margin-bottom: 6px; }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 10px 0;
+    font-size: 12px;
+  }
+  th {
+    background: var(--bg3);
+    color: var(--muted);
+    text-align: left;
+    padding: 7px 10px;
+    font-weight: 500;
+    border-bottom: 1px solid var(--border);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    font-size: 10px;
+  }
+  td {
+    padding: 7px 10px;
+    border-bottom: 1px solid #0f172a;
+    vertical-align: top;
+  }
+  tr:hover td { background: rgba(255,255,255,0.02); }
+  .up { color: var(--green); }
+  .down { color: var(--red); }
+  .warn-text { color: var(--yellow); }
+  .note { color: var(--muted); font-size: 11px; }
+  .badge {
+    display: inline-block;
+    padding: 1px 7px;
+    border-radius: 10px;
+    font-size: 10px;
+    font-weight: 600;
+  }
+  .badge-green { background: rgba(34,197,94,0.15); color: var(--green); border: 1px solid rgba(34,197,94,0.3); }
+  .badge-red { background: rgba(239,68,68,0.15); color: var(--red); border: 1px solid rgba(239,68,68,0.3); }
+  .badge-yellow { background: rgba(234,179,8,0.15); color: var(--yellow); border: 1px solid rgba(234,179,8,0.3); }
+  .badge-blue { background: rgba(59,130,246,0.15); color: var(--blue); border: 1px solid rgba(59,130,246,0.3); }
+  .badge-orange { background: rgba(249,115,22,0.15); color: var(--orange); border: 1px solid rgba(249,115,22,0.3); }
+  .section { margin-bottom: 28px; }
+  .card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 14px 16px;
+    margin-bottom: 10px;
+  }
+  .card.highlight { border-color: #f97316; }
+  .card.suspect { border-color: var(--yellow); }
+  .card-title { font-weight: 700; margin-bottom: 6px; }
+  .card-row { display: flex; gap: 24px; flex-wrap: wrap; margin: 4px 0; }
+  .card-field { min-width: 140px; }
+  .card-label { color: var(--muted); font-size: 10px; text-transform: uppercase; letter-spacing: 0.05em; }
+  .card-value { font-weight: 600; font-size: 13px; }
+  .etf-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 8px;
+    margin: 10px 0;
+  }
+  .etf-item {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 6px 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .etf-item .ticker { font-weight: 600; color: var(--accent); }
+  .etf-item .desc { font-size: 10px; color: var(--muted); }
+  .meta { color: var(--muted); font-size: 11px; margin-top: 4px; }
+  .big-number { font-size: 22px; font-weight: 700; }
+  .divider { border: none; border-top: 1px solid var(--border); margin: 20px 0; }
+  .zero-result {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--muted);
+    border-radius: 6px;
+    padding: 12px 16px;
+    color: var(--muted);
+  }
+  .alert-box {
+    background: rgba(249,115,22,0.08);
+    border: 1px solid rgba(249,115,22,0.3);
+    border-radius: 6px;
+    padding: 12px 16px;
+    margin: 10px 0;
+  }
+  .intc-hero {
+    background: linear-gradient(135deg, rgba(239,68,68,0.08), rgba(15,23,42,0));
+    border: 1px solid rgba(239,68,68,0.3);
+    border-radius: 8px;
+    padding: 18px 20px;
+    margin: 12px 0;
+  }
+  .intc-hero .main-stat { display: flex; gap: 32px; align-items: baseline; margin-bottom: 10px; }
+  .audit-table td { font-size: 11px; }
+  .holiday-banner {
+    background: rgba(168,85,247,0.08);
+    border: 1px solid rgba(168,85,247,0.3);
+    border-radius: 6px;
+    padding: 10px 16px;
+    margin: 10px 0;
+    color: var(--purple);
+    font-weight: 600;
+  }
+  footer { color: var(--muted); font-size: 10px; margin-top: 40px; padding-top: 16px; border-top: 1px solid var(--border); }
+</style>
+</head>
+<body>
+
+<h1>🌙 After-Hours Gaps Scan (v7.7) — June 18, 2026</h1>
+<p class="meta">Generated ~5:45 PM ET · Pull times noted per item</p>
+
+<!-- TOOL HEALTH BANNER -->
+<div class="tool-health warn" style="margin-top:12px">
+  <strong>TOOL HEALTH:</strong>
+  <span>✅ TV MCP (batch_run)</span>
+  <span>✅ stockanalysis AH pages</span>
+  <span>✅ Finviz public news</span>
+  <span>⚠️ Chrome MCP (unavailable — automated run; WebFetch top-20 only; $1B+ names beyond page 1 may be missed)</span>
+</div>
+
+<div class="holiday-banner">
+  📅 REMINDER: Markets CLOSED Friday June 19 (Juneteenth). Next session: Monday June 22.
+</div>
+
+<!-- ========== MACRO HEADLINES ========== -->
+<div class="section">
+<h2>Headline Macro Context</h2>
+
+<div class="headline-box">
+  <div class="title">🕊️ Iran Peace Deal (Formalized June 16) — Driving Today's Session</div>
+  Iran-US deal removed Hormuz geopolitical risk premium. Winners: travel/leisure (JETS +1.37%), homebuilders (XHB +1.77%), broad market. Losers: defense tech (SHLD -2.70%). Crude oil (USO +2.19%) counterintuitively UP — demand optimism or OPEC dynamics offsetting supply relief.
+</div>
+
+<div class="intc-hero">
+  <div class="card-title" style="color:#ef4444; font-size:15px;">⚡ KEY AH ALERT: INTC After-Hours -7.01%</div>
+  <div class="main-stat">
+    <div>
+      <div class="card-label">AH Price</div>
+      <div class="big-number down">$129.59</div>
+    </div>
+    <div>
+      <div class="card-label">vs Session Close</div>
+      <div class="big-number down">-7.01%</div>
+    </div>
+    <div>
+      <div class="card-label">Session Close</div>
+      <div class="card-value">$134.26 (+0.92%)</div>
+    </div>
+  </div>
+  <div>Trump announced Apple-Intel chip partnership at <strong>4:30 PM ET after close</strong>. Intel to design/build chips for Apple in the US — reduces TSMC reliance. Market reaction: <span class="down">SELL THE NEWS</span>. Intel Foundry Services running $2.4B operating loss in Q1 2026; 18A yields below breakeven. Partnership adds revenue but at thin margins. AH volume unverified. ETF buckets: <span class="badge badge-blue">SMH</span> <span class="badge badge-blue">XLK</span>. Monday gap-down risk if weakness holds over weekend.</div>
+</div>
+</div>
+
+<!-- ========== TRADEABLE AH GAPPERS ========== -->
+<div class="section">
+<h2>Step 1 — Tradeable AH Gappers (>$1B Mkt Cap)</h2>
+<p class="meta">Source: WebFetch stockanalysis.com AH gainers + losers (top-20 %-sort · Chrome MCP unavailable · pull ~5:20 PM ET)</p>
+
+<h3>Gainers — >$1B Filter</h3>
+<div class="zero-result">
+  ZERO entries pass the >$1B market cap filter. All 20 gainers on stockanalysis are micro-caps (&lt;$100M). Largest: CANG ($77.94M). Valid honest result — quiet Friday ahead of Juneteenth long weekend.
+</div>
+
+<h3>Losers — >$1B Filter</h3>
+<div class="card suspect">
+  <div style="display:flex; justify-content:space-between; align-items:start; flex-wrap:wrap; gap:12px;">
+    <div>
+      <div class="card-title">HQ — Horizon Quantum Holdings Ltd. <span class="badge badge-yellow">🟡 DATA CONFLICT</span></div>
+      <div class="card-row">
+        <div class="card-field"><div class="card-label">AH % (stockanalysis)</div><div class="card-value down">-11.19%</div></div>
+        <div class="card-field"><div class="card-label">AH Price (stockanalysis)</div><div class="card-value">$28.42</div></div>
+        <div class="card-field"><div class="card-label">Mkt Cap</div><div class="card-value">$1.65B</div></div>
+        <div class="card-field"><div class="card-label">Session Close (TV MCP)</div><div class="card-value">$29.00</div></div>
+        <div class="card-field"><div class="card-label">Session Range</div><div class="card-value">$26.78 – $31.80</div></div>
+        <div class="card-field"><div class="card-label">ETF Bucket</div><div class="card-value" style="color:var(--purple)">QTUM</div></div>
+      </div>
+    </div>
+    <div class="badge badge-yellow" style="white-space:nowrap">AH Volume Unverified</div>
+  </div>
+  <div style="margin-top:10px; padding-top:10px; border-top: 1px solid var(--border); font-size:11px;">
+    <span class="warn-text">⚠️ DATA SUSPECT:</span> stockanalysis -11.19% implies prior close ~$32; TV MCP session close = $29.00 (→ AH = -2.0%, not -11.19%). Separate web search found HQ at $29.80 +26% AH at a different timestamp — stock was volatile all session. The -11.19% on stockanalysis likely references yesterday's June 17 close (~$32), not today's close. Catalyst unconfirmed — quantum computing sector volatility; IonQ deal June 15. Flag for 8 PM scan.
+  </div>
+</div>
+</div>
+
+<!-- ========== ETF SWEEP ========== -->
+<div class="section">
+<h2>Step 2 — ETF After-Hours Sweep (57-ETF Embedded Universe)</h2>
+<p class="meta">Source: TV MCP batch_run get_ohlcv (2 bars) · Regular session closes · Pull ~5:25 PM ET</p>
+<div class="alert-box">
+  ⚠️ batch_run returns SESSION closes (4 PM ET bars), not AH prices. ETF AH moves not confirmed. Some ETFs (SHLD, XME, XHB, JETS, PEJ, UNG, MOO) show midday ~12 PM ET as last bar due to thin liquidity.
+</div>
+
+<h3>Notable Session Movers (≥1.0%)</h3>
+<table>
+  <thead><tr><th>ETF</th><th>Theme</th><th>Session %</th><th>Close</th><th>Bar Time</th><th>Catalyst / Note</th></tr></thead>
+  <tbody>
+    <tr><td class="up">USO</td><td>Crude oil</td><td class="up">+2.19%</td><td>$114.55</td><td>4 PM</td><td>Counterintuitively UP vs Iran deal supply relief — demand optimism or OPEC</td></tr>
+    <tr><td class="up">UNG</td><td>Natural gas</td><td class="up">+1.91%</td><td>$11.74</td><td>~12 PM*</td><td>LNG demand; power burn; Iran deal trade flow re-routing</td></tr>
+    <tr><td class="up">XHB</td><td>Homebuilders</td><td class="up">+1.77%</td><td>$111.01</td><td>~12 PM*</td><td>Iran peace → lower rate expectations → housing demand tailwind</td></tr>
+    <tr><td class="down">SHLD</td><td>Defense tech (PLTR-heavy)</td><td class="down">-2.70%</td><td>$62.25</td><td>~12 PM*</td><td>Iran peace = defense de-risking. ITA only -0.09% → SHLD-specific, not broad defense sell-off</td></tr>
+    <tr><td class="down">XME</td><td>Metals &amp; mining</td><td class="down">-1.70%</td><td>$116.96</td><td>~12 PM*</td><td>Materials rotation out; Iran deal risk-on not lifting metals</td></tr>
+    <tr><td class="up">JETS</td><td>Airlines</td><td class="up">+1.37%</td><td>$31.02</td><td>~12 PM*</td><td>Iran peace = open skies / travel optimism</td></tr>
+    <tr><td class="up">ARKK</td><td>Speculative growth</td><td class="up">+1.12%</td><td>$79.99</td><td>4 PM</td><td>Risk-on Friday bid</td></tr>
+    <tr><td class="up">IBIT</td><td>Spot Bitcoin</td><td class="up">+1.19%</td><td>$35.70</td><td>4 PM</td><td>Crypto risk-on; WGMI +0.40%</td></tr>
+    <tr><td class="up">CIBR</td><td>Cybersecurity</td><td class="up">+1.15%</td><td>$84.74</td><td>4 PM</td><td>Broad tech bid</td></tr>
+    <tr><td class="up">TAN</td><td>Solar</td><td class="up">+1.13%</td><td>$60.98</td><td>4 PM</td><td>Energy transition + favorable rate expectations</td></tr>
+    <tr><td class="down">XLU</td><td>Utilities / AI Power</td><td class="down">-1.06%</td><td>$44.80</td><td>4 PM</td><td>Rotation out of defensives on Iran risk-on; yield dynamics</td></tr>
+  </tbody>
+</table>
+<p class="note">* Midday bar — illiquid ETF, last trade ~12 PM ET</p>
+
+<h3>Theme Pair Attribution</h3>
+<table>
+  <thead><tr><th>Pair</th><th>ETF1</th><th>ETF2</th><th>Verdict</th></tr></thead>
+  <tbody>
+    <tr><td>Defense</td><td>SHLD -2.70%</td><td>ITA -0.09%</td><td>NOT theme-wide — SHLD-specific; not broad defense</td></tr>
+    <tr><td>Biotech</td><td>XBI +0.84%</td><td>IBB +0.51%</td><td>Both up modestly — NOT threshold-level breakout</td></tr>
+    <tr><td>Airlines/Travel</td><td>JETS +1.37%</td><td>PEJ -0.15%</td><td>Diverging — NOT theme-wide</td></tr>
+    <tr><td>Nuclear</td><td>URA +0.84%</td><td>NLR +0.19%</td><td>Both positive but small — NOT theme-wide</td></tr>
+    <tr><td>Gold miners</td><td>GDX -0.21%</td><td>GDXJ -0.02%</td><td>Both flat/negative — gold risk-off fading</td></tr>
+  </tbody>
+</table>
+
+<h3>All 57 ETFs — Session Close Data</h3>
+<div class="etf-grid">
+  <div class="etf-item"><div><div class="ticker">SPY</div><div class="desc">S&amp;P 500</div></div><div class="up">+0.23%</div></div>
+  <div class="etf-item"><div><div class="ticker">QQQ</div><div class="desc">Nasdaq 100</div></div><div class="up">+0.29%</div></div>
+  <div class="etf-item"><div><div class="ticker">IWM</div><div class="desc">Small caps</div></div><div class="up">+0.52%</div></div>
+  <div class="etf-item"><div><div class="ticker">VIX</div><div class="desc">Volatility</div></div><div class="down">-1.56%</div></div>
+  <div class="etf-item"><div><div class="ticker">HYG</div><div class="desc">HY credit</div></div><div class="up">+0.05%</div></div>
+  <div class="etf-item"><div><div class="ticker">TLT</div><div class="desc">20Y bonds</div></div><div class="down">-0.12%</div></div>
+  <div class="etf-item"><div><div class="ticker">UUP</div><div class="desc">US dollar</div></div><div class="up">+0.14%</div></div>
+  <div class="etf-item"><div><div class="ticker">GLD</div><div class="desc">Gold</div></div><div class="down">-0.38%</div></div>
+  <div class="etf-item"><div><div class="ticker">XLK</div><div class="desc">Tech</div></div><div class="up">+0.38%</div></div>
+  <div class="etf-item"><div><div class="ticker">XLV</div><div class="desc">Healthcare</div></div><div class="up">+0.54%</div></div>
+  <div class="etf-item"><div><div class="ticker">XLF</div><div class="desc">Financials</div></div><div class="down">-0.51%</div></div>
+  <div class="etf-item"><div><div class="ticker">XLE</div><div class="desc">Energy</div></div><div class="up">+0.43%</div></div>
+  <div class="etf-item"><div><div class="ticker">XLI</div><div class="desc">Industrials</div></div><div class="up">+0.13%</div></div>
+  <div class="etf-item"><div><div class="ticker">XLY</div><div class="desc">Cons disc</div></div><div class="up">+0.13%</div></div>
+  <div class="etf-item"><div><div class="ticker">XLP</div><div class="desc">Staples</div></div><div class="down">-0.11%</div></div>
+  <div class="etf-item"><div><div class="ticker">XLU</div><div class="desc">Utilities</div></div><div class="down" style="color:var(--red)">-1.06%</div></div>
+  <div class="etf-item"><div><div class="ticker">XLB</div><div class="desc">Materials</div></div><div class="down">-0.09%</div></div>
+  <div class="etf-item"><div><div class="ticker">XLC</div><div class="desc">Comms</div></div><div class="down">-0.39%</div></div>
+  <div class="etf-item"><div><div class="ticker">XLRE</div><div class="desc">REITs</div></div><div class="down">-0.54%</div></div>
+  <div class="etf-item"><div><div class="ticker">SMH</div><div class="desc">Semis</div></div><div class="up">+0.59%</div></div>
+  <div class="etf-item"><div><div class="ticker">IGV</div><div class="desc">Software</div></div><div class="up">+0.54%</div></div>
+  <div class="etf-item"><div><div class="ticker">CIBR</div><div class="desc">Cybersec</div></div><div class="up">+1.15%</div></div>
+  <div class="etf-item"><div><div class="ticker">XBI</div><div class="desc">Biotech SC</div></div><div class="up">+0.84%</div></div>
+  <div class="etf-item"><div><div class="ticker">IBB</div><div class="desc">Biotech LC</div></div><div class="up">+0.51%</div></div>
+  <div class="etf-item"><div><div class="ticker">KRE</div><div class="desc">Reg banks</div></div><div class="up">+0.08%</div></div>
+  <div class="etf-item"><div><div class="ticker">XOP</div><div class="desc">E&amp;P</div></div><div class="up">+0.60%</div></div>
+  <div class="etf-item"><div><div class="ticker">XHB</div><div class="desc">Homebuilders</div></div><div class="up" style="color:var(--green)">+1.77%*</div></div>
+  <div class="etf-item"><div><div class="ticker">XRT</div><div class="desc">Retail</div></div><div class="down">-0.25%</div></div>
+  <div class="etf-item"><div><div class="ticker">IYT</div><div class="desc">Transports</div></div><div class="down">-0.64%</div></div>
+  <div class="etf-item"><div><div class="ticker">JETS</div><div class="desc">Airlines</div></div><div class="up" style="color:var(--green)">+1.37%*</div></div>
+  <div class="etf-item"><div><div class="ticker">PEJ</div><div class="desc">Travel/leisure</div></div><div class="down">-0.15%*</div></div>
+  <div class="etf-item"><div><div class="ticker">DRAM</div><div class="desc">HBM memory</div></div><div class="up">+0.79%</div></div>
+  <div class="etf-item"><div><div class="ticker">QTUM</div><div class="desc">Quantum</div></div><div class="up">+0.78%</div></div>
+  <div class="etf-item"><div><div class="ticker">BOTZ</div><div class="desc">Robotics</div></div><div class="up">+0.44%</div></div>
+  <div class="etf-item"><div><div class="ticker">ARKK</div><div class="desc">Spec growth</div></div><div class="up">+1.12%</div></div>
+  <div class="etf-item"><div><div class="ticker">ARKX</div><div class="desc">Space</div></div><div class="up">+0.23%</div></div>
+  <div class="etf-item"><div><div class="ticker">AIPO</div><div class="desc">AI Power Infra</div></div><div class="up">+0.06%</div></div>
+  <div class="etf-item"><div><div class="ticker">DTCR</div><div class="desc">DC REITs</div></div><div class="down">-1.03%</div></div>
+  <div class="etf-item"><div><div class="ticker">SHLD</div><div class="desc">Defense tech</div></div><div class="down" style="color:var(--red)">-2.70%*</div></div>
+  <div class="etf-item"><div><div class="ticker">ITA</div><div class="desc">Defense primes</div></div><div class="down">-0.09%</div></div>
+  <div class="etf-item"><div><div class="ticker">WGMI</div><div class="desc">BTC miners</div></div><div class="up">+0.40%</div></div>
+  <div class="etf-item"><div><div class="ticker">IBIT</div><div class="desc">Spot Bitcoin</div></div><div class="up">+1.19%</div></div>
+  <div class="etf-item"><div><div class="ticker">URA</div><div class="desc">Uranium</div></div><div class="up">+0.84%</div></div>
+  <div class="etf-item"><div><div class="ticker">NLR</div><div class="desc">Nuclear utils</div></div><div class="up">+0.19%</div></div>
+  <div class="etf-item"><div><div class="ticker">GRID</div><div class="desc">Grid equip</div></div><div class="up">+0.20%</div></div>
+  <div class="etf-item"><div><div class="ticker">TAN</div><div class="desc">Solar</div></div><div class="up">+1.13%</div></div>
+  <div class="etf-item"><div><div class="ticker">COPX</div><div class="desc">Copper miners</div></div><div class="down">-0.76%</div></div>
+  <div class="etf-item"><div><div class="ticker">REMX</div><div class="desc">Rare earth</div></div><div class="down">-0.08%</div></div>
+  <div class="etf-item"><div><div class="ticker">XME</div><div class="desc">Metals/mining</div></div><div class="down" style="color:var(--red)">-1.70%*</div></div>
+  <div class="etf-item"><div><div class="ticker">LIT</div><div class="desc">Lithium</div></div><div class="down">-0.39%</div></div>
+  <div class="etf-item"><div><div class="ticker">GDX</div><div class="desc">Gold miners L</div></div><div class="down">-0.21%</div></div>
+  <div class="etf-item"><div><div class="ticker">GDXJ</div><div class="desc">Gold miners J</div></div><div class="down">-0.02%</div></div>
+  <div class="etf-item"><div><div class="ticker">SLV</div><div class="desc">Silver</div></div><div class="down">-0.55%</div></div>
+  <div class="etf-item"><div><div class="ticker">USO</div><div class="desc">Crude oil</div></div><div class="up" style="color:var(--green)">+2.19%</div></div>
+  <div class="etf-item"><div><div class="ticker">UNG</div><div class="desc">Nat gas</div></div><div class="up" style="color:var(--green)">+1.91%*</div></div>
+  <div class="etf-item"><div><div class="ticker">MOO</div><div class="desc">Agriculture</div></div><div class="down">-0.09%*</div></div>
+  <div class="etf-item"><div><div class="ticker">KWEB</div><div class="desc">China internet</div></div><div class="up">+0.06%</div></div>
+</div>
+<p class="note">* Midday bar (last trade ~12 PM ET due to thin liquidity). Values are not 4 PM official close.</p>
+</div>
+
+<!-- ========== FINVIZ NEWS ========== -->
+<div class="section">
+<h2>Step 3 — Finviz AH News Digest</h2>
+<p class="meta">Source: WebFetch finviz.com/news (public feed) · Finviz Elite filter unavailable · Pull ~5:20 PM ET</p>
+<table>
+  <thead><tr><th>Time ET</th><th>Headline</th><th>Ticker</th><th>ETF Bucket</th><th>Significance</th></tr></thead>
+  <tbody>
+    <tr>
+      <td>4:30 PM</td>
+      <td><strong>Trump Announces Intel-Apple Chip Partnership</strong> (WSJ)</td>
+      <td>INTC, AAPL</td>
+      <td><span class="badge badge-blue">XLK</span> <span class="badge badge-blue">SMH</span></td>
+      <td class="down">INTC AH -7.01% — sell the news</td>
+    </tr>
+    <tr>
+      <td>4:42 PM</td>
+      <td>Trump cites market gains as validation of Iran deal (Yahoo Finance)</td>
+      <td>—</td>
+      <td><span class="badge badge-green">SPY/QQQ macro</span></td>
+      <td>Confirms risk-on narrative; Iran deal firmly in place</td>
+    </tr>
+    <tr>
+      <td>4:46 PM</td>
+      <td>Reformation (clothing brand) Prepares for Summer IPO (WSJ)</td>
+      <td>—</td>
+      <td><span class="badge badge-yellow">UNCLASSIFIED</span></td>
+      <td>Pre-IPO; no ticker. Watch XRT post-listing.</td>
+    </tr>
+    <tr>
+      <td>4:31 PM</td>
+      <td>Wall St advances with boost from chips, Iran optimism (Reuters)</td>
+      <td>SPX, INDU, CCMP</td>
+      <td><span class="badge badge-green">SPY, QQQ, SMH</span></td>
+      <td>Session close recap</td>
+    </tr>
+    <tr>
+      <td>4:05 PM</td>
+      <td>Nasdaq, S&amp;P 500 end sharply higher as stocks rebound on Iran deal (MarketWatch)</td>
+      <td>—</td>
+      <td><span class="badge badge-green">SPY, QQQ</span></td>
+      <td>Session close</td>
+    </tr>
+  </tbody>
+</table>
+<p class="note">Note: Finviz claims "Nasdaq nearly 2%" — TV MCP shows QQQ +0.29% session close. Discrepancy may reflect intraday high vs. close fade, or COMP vs. QQQ difference. TV MCP data used as authoritative close.</p>
+</div>
+
+<!-- ========== WATCHLIST ========== -->
+<div class="section">
+<h2>Step 4 — Watchlist AH Activity</h2>
+<p class="meta">Source: TV MCP batch_run session closes (4 PM ET) + web search for INTC AH price · Pull ~5:25 PM ET</p>
+<div class="alert-box" style="margin-bottom:10px">
+  SPY sanity ✅ $748.02 (+0.23%) | QQQ sanity ✅ $740.42 (+0.29%) — both within 5% bounds of prior close.
+</div>
+<table>
+  <thead><tr><th>Ticker</th><th>Session Close</th><th>Session %</th><th>AH Price</th><th>AH %</th><th>Notes</th></tr></thead>
+  <tbody>
+    <tr>
+      <td><strong>INTC</strong></td>
+      <td>$134.26</td>
+      <td class="up">+0.92%</td>
+      <td class="down"><strong>$129.59</strong></td>
+      <td class="down"><strong>-7.01%</strong></td>
+      <td>⚠️ Apple partnership sell-the-news. Foundry losses. AH vol unverified. ETF: SMH, XLK</td>
+    </tr>
+    <tr>
+      <td>TSLA</td>
+      <td>$399.83</td>
+      <td class="up">+2.26%</td>
+      <td class="muted">—</td>
+      <td class="note">n/a</td>
+      <td>Strong session. Iran deal beneficiary (energy transition + demand optimism)</td>
+    </tr>
+    <tr>
+      <td>NVDA</td>
+      <td>$210.21</td>
+      <td class="up">+0.60%</td>
+      <td class="muted">—</td>
+      <td class="note">n/a</td>
+      <td>Steady. SMH +0.59%. INTC AH drop may create SMH drag Monday</td>
+    </tr>
+    <tr>
+      <td>SNDK</td>
+      <td>$2,203.56</td>
+      <td class="up">+1.48%</td>
+      <td class="muted">—</td>
+      <td class="note">n/a</td>
+      <td>Memory/storage play; high price reflects post-WD spinoff dynamics</td>
+    </tr>
+    <tr>
+      <td>AMD</td>
+      <td>$537.55</td>
+      <td class="up">+0.45%</td>
+      <td class="muted">—</td>
+      <td class="note">n/a</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>PLTR</td>
+      <td>$128.88</td>
+      <td class="up">+1.24%</td>
+      <td class="muted">—</td>
+      <td class="note">n/a</td>
+      <td>Solid session despite SHLD -2.70% (SHLD weakness not driven by PLTR)</td>
+    </tr>
+    <tr>
+      <td>MARA</td>
+      <td>$14.19</td>
+      <td class="up">+1.14%</td>
+      <td class="muted">—</td>
+      <td class="note">n/a</td>
+      <td>IBIT +1.19% — crypto risk-on bid</td>
+    </tr>
+    <tr>
+      <td>META</td>
+      <td>$578.00</td>
+      <td class="up">+0.18%</td>
+      <td class="muted">—</td>
+      <td class="note">n/a</td>
+      <td>XLC -0.39% (comms sector weak); META outperforming sector</td>
+    </tr>
+    <tr>
+      <td>AAPL</td>
+      <td>$297.83</td>
+      <td class="up">+0.12%</td>
+      <td class="muted">—</td>
+      <td class="note">n/a</td>
+      <td>Partnership announced AMC; muted session. AH price not pulled</td>
+    </tr>
+    <tr>
+      <td>COIN</td>
+      <td>$163.38</td>
+      <td class="down">-0.31%</td>
+      <td class="muted">—</td>
+      <td class="note">n/a</td>
+      <td>Crypto exchange; IBIT up but COIN flat/down</td>
+    </tr>
+    <tr>
+      <td>AMZN</td>
+      <td>$243.74</td>
+      <td class="down">-0.04%</td>
+      <td class="muted">—</td>
+      <td class="note">n/a</td>
+      <td>Flat session</td>
+    </tr>
+    <tr>
+      <td>SOFI</td>
+      <td>$17.87</td>
+      <td class="up">+0.45%</td>
+      <td class="muted">—</td>
+      <td class="note">n/a</td>
+      <td>KRE +0.08%; fintech holding steady</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+<!-- ========== AMC EARNINGS ========== -->
+<div class="section">
+<h2>Step 5 — AMC Earnings Results</h2>
+<div class="zero-result">
+  No major AMC earnings tonight (June 18, 2026). Confirmed via web search — Earnings Whispers shows no significant after-close reports. Quiet Friday ahead of Juneteenth. AMC Entertainment next reports Aug 11, 2026.
+</div>
+</div>
+
+<!-- ========== CATALYST ATTRIBUTION ========== -->
+<div class="section">
+<h2>Step 6 — Catalyst Attribution</h2>
+
+<div class="card highlight">
+  <div class="card-title" style="font-size:15px; color:var(--red)">INTC — Intel Corporation (Watchlist)</div>
+  <div class="card-row">
+    <div class="card-field"><div class="card-label">Mkt Cap</div><div class="card-value">~$600B</div></div>
+    <div class="card-field"><div class="card-label">Session Close</div><div class="card-value">$134.26</div></div>
+    <div class="card-field"><div class="card-label">AH Price</div><div class="card-value down">$129.59</div></div>
+    <div class="card-field"><div class="card-label">AH Move</div><div class="card-value down">-7.01%</div></div>
+    <div class="card-field"><div class="card-label">Catalyst Type</div><div class="card-value">POLICY-STAKE</div></div>
+    <div class="card-field"><div class="card-label">Direction</div><div class="card-value down">DOWN (sell news)</div></div>
+  </div>
+  <div style="margin-top:10px; padding-top:10px; border-top:1px solid var(--border)">
+    <div><strong>Catalyst:</strong> Trump announced Apple-Intel chip partnership at 4:30 PM ET — Intel to design and build chips for Apple in America, reducing TSMC reliance. US government holds 10% equity stake in Intel (~$60B). Stock surged 9-10% earlier (pre-market) on early deal reports; the 4:30 PM formal confirmation triggered "sell the news." Intel Foundry Services ran $2.4B operating loss in Q1 2026; 18A yields remain below breakeven. Market views this as thin-margin contract work for Intel.</div>
+    <div style="margin-top:6px"><strong>Sources:</strong> CNBC · WSJ · CNN Business (June 18, 2026)</div>
+    <div style="margin-top:6px"><strong>Monday June 22 setup:</strong> Gap-down open likely if AH weakness (-7%) holds through weekend. Watch SMH open for contagion to NVDA/AMD. AAPL AH unconfirmed — may absorb differently (customer in deal, not foundry).</div>
+    <div style="margin-top:4px"><strong>ETF buckets:</strong> <span class="badge badge-blue">SMH</span> <span class="badge badge-blue">XLK</span></div>
+  </div>
+</div>
+
+<div class="card suspect" style="margin-top:10px">
+  <div class="card-title">HQ — Horizon Quantum Holdings ($1.65B) <span class="badge badge-yellow">🟡 Catalyst Unconfirmed</span></div>
+  <div class="card-row">
+    <div class="card-field"><div class="card-label">AH % (stockanalysis)</div><div class="card-value down">-11.19%</div></div>
+    <div class="card-field"><div class="card-label">TV MCP Session Close</div><div class="card-value">$29.00</div></div>
+    <div class="card-field"><div class="card-label">Implied true AH %</div><div class="card-value down">~-2.0% (vs $29 close)</div></div>
+    <div class="card-field"><div class="card-label">ETF Bucket</div><div class="card-value" style="color:var(--purple)">QTUM</div></div>
+  </div>
+  <div style="margin-top:8px; font-size:11px; color:var(--muted)">
+    ⚠️ DATA SUSPECT — three different sources show three different prices. Catalyst unconfirmed. Probable explanation: stock gapped up at open from ~$24 (June 17 close) to $31.80 high on IonQ deal news (June 15), then faded to $29.00 close, now sliding to ~$28.42 AH. The -11.19% on stockanalysis is vs. yesterday's close, not today's. Flag for 8 PM wide-universe scan investigation.
+  </div>
+</div>
+</div>
+
+<!-- ========== TOMORROW'S PREVIEW ========== -->
+<div class="section">
+<h2>Step 7 — Earnings Preview</h2>
+<div class="holiday-banner">📅 Markets CLOSED June 19 (Juneteenth). Next session: Monday June 22, 2026.</div>
+<div class="zero-result" style="margin-top:10px">
+  Earnings calendar for Monday June 22 not accessible (WebFetch of earningswhispers.com returned login-gated content). Verify manually via Earnings Whispers, Zacks, or MarketBeat before Monday's open.
+</div>
+</div>
+
+<!-- ========== POSITIONS PLAN ========== -->
+<div class="section">
+<h2>Step 8 — Positions Plan for Monday</h2>
+<table>
+  <thead><tr><th>Theme</th><th>Bias</th><th>Action Note</th></tr></thead>
+  <tbody>
+    <tr><td>Iran Peace Deal</td><td class="up">Tailwind</td><td>Airlines (JETS), homebuilders (XHB), energy importers — already pricing in. Iran deal is old news by Monday.</td></tr>
+    <tr><td>INTC / SMH Monday Gap</td><td class="down">Headwind</td><td>INTC AH -7% could create SMH drag at open. Watch whether NVDA/AMD decouple. If SMH gaps down &gt;1.5%, high semiconductor exposure may need trim.</td></tr>
+    <tr><td>Defense (SHLD)</td><td class="down">Ongoing</td><td>SHLD -2.7% session; ITA stable. Iran peace = structural de-risking of defense tech. Consider whether PLTR-heavy names keep underperforming the ETF.</td></tr>
+    <tr><td>USO / Crude Oil</td><td class="warn-text">Watch</td><td>Counterintuitive +2.19% vs Iran deal. If oil rally is sustainable, XLE/XOP may offer swing opportunity. If it fades Monday, Iran deal supply relief will eventually show.</td></tr>
+    <tr><td>Broad Market</td><td class="up">Risk-On</td><td>VIX 16.41 (-1.56%); HYG flat. Low fear. Risk-on bias entering 3-day weekend. Monday likely to open strong absent INTC contagion.</td></tr>
+    <tr><td>TSLA</td><td class="up">Positive</td><td>+2.26% session, strongest watchlist performer. No specific catalyst identified — Iran/macro bid + EV demand optimism.</td></tr>
+  </tbody>
+</table>
+</div>
+
+<!-- ========== AUDIT ========== -->
+<div class="section">
+<h2>Step 9 — Assumption Audit</h2>
+<table class="audit-table">
+  <thead><tr><th>Item</th><th>Status</th><th>Notes</th></tr></thead>
+  <tbody>
+    <tr><td>TV MCP method</td><td class="up">✅ batch_run</td><td>Primary method; 57 ETFs + 12 watchlist — 69 symbols, 0 failures</td></tr>
+    <tr><td>ETF AH prices</td><td class="warn-text">⚠️ Session closes only</td><td>batch_run returns 4 PM bars; ETF AH moves not confirmed via TV MCP</td></tr>
+    <tr><td>Midday-bar ETFs</td><td class="warn-text">⚠️</td><td>SHLD, XME, XHB, JETS, PEJ, UNG, MOO — last bars from ~12 PM ET</td></tr>
+    <tr><td>Chrome MCP</td><td class="warn-text">⚠️ Unavailable</td><td>Automated run; WebFetch top-20 only; $1B+ beyond page 1 may be missed</td></tr>
+    <tr><td>AH gainers &gt;$1B</td><td class="up">✅ ZERO</td><td>All 20 entries &lt;$100M — valid honest result</td></tr>
+    <tr><td>HQ AH data</td><td class="down">⚠️ DATA SUSPECT</td><td>Three conflicting sources; true AH vs. session close likely ~-2%, not -11.19%</td></tr>
+    <tr><td>INTC AH -7.01%</td><td class="warn-text">⚠️ Web search only</td><td>Not confirmed via TV MCP AH pull — corroborated by two web search results</td></tr>
+    <tr><td>AH volume</td><td class="warn-text">⚠️ All unverified</td><td>Stockanalysis AH pages show no volume column; TV MCP intraday AH bars not pulled</td></tr>
+    <tr><td>Finviz Elite filter</td><td class="warn-text">⚠️ Unavailable</td><td>Public feed used; filter view (?v=3) blocked</td></tr>
+    <tr><td>QQQ +0.29% vs "Nasdaq nearly 2%"</td><td class="warn-text">⚠️ Discrepancy</td><td>COMP vs QQQ difference or intraday high vs. close fade; TV MCP close used</td></tr>
+    <tr><td>AMC earnings</td><td class="up">✅ None</td><td>Confirmed — no major reports tonight</td></tr>
+    <tr><td>Markets June 19</td><td class="up">✅ CLOSED</td><td>Juneteenth; next session Monday June 22</td></tr>
+    <tr><td>June 22 earnings calendar</td><td class="down">❌ Unavailable</td><td>Login-gated; verify manually</td></tr>
+    <tr><td>USO +2.19%</td><td class="warn-text">⚠️ Counterintuitive</td><td>Iran deal should lower oil; upward move vs expectation — demand dynamics or OPEC</td></tr>
+    <tr><td>UNCLASSIFIED headlines</td><td>1</td><td>Reformation IPO (pre-IPO clothing brand, no ticker)</td></tr>
+  </tbody>
+</table>
+</div>
+
+<footer>
+  🌙 After-Hours Gaps Scan v7.7 · June 18, 2026 · Generated ~5:45 PM ET<br>
+  Sources: TV MCP (batch_run get_ohlcv) · stockanalysis.com · finviz.com/news (public) · web search<br>
+  <a href="https://nkuy36.github.io/trading-dashboards/" style="color:var(--accent)">← All Reports</a>
+</footer>
+
+</body>
+</html>
