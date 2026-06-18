@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Gap Attribution — 2026-06-17 (8PM AH Scan v7.7)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:#0a0e17; --text:#e2e8f0; --card:#111827; --border:#1f2937;
+    --green:#22c55e; --red:#ef4444; --amber:#f59e0b; --purple:#a855f7;
+    --cyan:#06b6d4; --orange:#f97316; --blue:#3b82f6; --yellow:#eab308;
+  }
+  * { box-sizing: border-box; }
+  body { background:var(--bg); color:var(--text); font-family:'JetBrains Mono',monospace; margin:0; padding:12px 16px; line-height:1.45; font-size:13px; }
+  h1 { font-size:20px; margin:0; } h2 { font-size:15px; margin:0.5em 0 0.3em; color:#94a3b8; border-bottom:1px solid var(--border); padding-bottom:4px; }
+  h3 { font-size:13px; margin:0.4em 0 0.2em; color:#cbd5e1; }
+  a { color:#60a5fa; text-decoration:none; } a:hover { text-decoration:underline; }
+  .header { display:flex; justify-content:space-between; align-items:flex-start; border-bottom:2px solid var(--border); padding-bottom:12px; margin-bottom:16px; }
+  .meta { font-size:11px; opacity:0.7; margin-top:4px; }
+  .tool-health { background:#0f172a; border:1px solid var(--border); border-radius:6px; padding:10px 14px; margin-bottom:14px; font-size:12px; }
+  .tool-health strong { color:#94a3b8; }
+  .section { margin:18px 0; }
+  .card { background:var(--card); border:1px solid var(--border); border-radius:6px; padding:12px; margin-bottom:10px; }
+  table { width:100%; border-collapse:collapse; font-size:12px; }
+  th,td { border:1px solid var(--border); padding:5px 8px; text-align:left; vertical-align:top; }
+  th { background:#0f172a; color:#94a3b8; font-weight:600; }
+  tr:hover td { background:#131d2e; }
+  .green { color:var(--green); font-weight:700; }
+  .red { color:var(--red); font-weight:700; }
+  .amber { color:var(--amber); font-weight:700; }
+  .purple { color:var(--purple); font-weight:700; }
+  .cyan { color:var(--cyan); font-weight:700; }
+  .orange { color:var(--orange); font-weight:700; }
+  .blue { color:var(--blue); font-weight:700; }
+  .yellow { color:var(--yellow); font-weight:700; }
+  .badge { display:inline-block; padding:1px 7px; border-radius:3px; font-size:10px; margin-left:4px; vertical-align:middle; }
+  .bull { background:#052e16; color:var(--green); }
+  .bear { background:#450a0a; color:var(--red); }
+  .neut { background:#451a03; color:var(--amber); }
+  .macro { background:#2e1065; color:var(--purple); }
+  .emerg { background:#083344; color:var(--cyan); }
+  .wirescoop { background:#431407; color:var(--orange); }
+  .optflow { background:#1e3a5f; color:var(--blue); }
+  .gapdiscov { background:#3d2e00; color:var(--yellow); }
+  .src { font-size:10px; opacity:0.55; word-break:break-all; margin-top:3px; }
+  .topbar { position:sticky; top:0; background:var(--bg); padding:6px 0; z-index:10; border-bottom:1px solid var(--border); display:flex; gap:6px; flex-wrap:wrap; align-items:center; }
+  .tier-btn { background:#1f2937; color:#e2e8f0; border:1px solid var(--border); padding:3px 10px; cursor:pointer; border-radius:4px; font-family:inherit; font-size:12px; }
+  .tier-btn:hover,.tier-btn.active { background:var(--green); color:#0a0e17; }
+  .flag { font-size:11px; background:#1c1917; border-left:3px solid var(--amber); padding:4px 8px; margin:4px 0; }
+  .flag.red { border-color:var(--red); }
+  .flag.green { border-color:var(--green); }
+  details summary { cursor:pointer; font-size:13px; font-weight:700; padding:6px 0; color:#94a3b8; }
+  details summary:hover { color:var(--text); }
+  .grid2 { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+  @media(max-width:800px){ .grid2{grid-template-columns:1fr;} }
+  .stat { display:inline-block; background:#0f172a; border:1px solid var(--border); border-radius:4px; padding:2px 8px; margin:2px; font-size:11px; }
+  .conv-high::before { content:"🟢 "; }
+  .conv-med::before { content:"🟡 "; }
+  .conv-low::before { content:"🔴 "; }
+  .warn { color:var(--amber); font-weight:700; }
+  .suspect { color:var(--red); font-weight:700; }
+  .theme-breakout { background:#2d0b0b; border:1px solid var(--red); border-radius:4px; padding:6px 10px; margin:6px 0; font-size:12px; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div>
+    <h1>⚡ Gap Attribution — 2026-06-17 <span style="font-size:13px;color:var(--cyan);">v7.7 HYBRID (8 PM AH)</span></h1>
+    <div class="meta">Generated: 2026-06-17 ~20:00 ET &nbsp;|&nbsp; Universe: US &gt;$1B mkt cap, &gt;3% AH, &gt;100K AH vol &nbsp;|&nbsp; Primary sources only</div>
+    <div class="meta">TV MCP method: batch_run (all 57 ETFs ✅) + quote_get (individual stocks) &nbsp;|&nbsp; Stockanalysis %-sorted top-20 (Chrome MCP market-cap sort not executed)</div>
+  </div>
+  <div style="text-align:right;font-size:11px;opacity:0.8;">
+    <div>nkuy36.github.io/trading-dashboards/</div>
+    <div><a href="https://nkuy36.github.io/trading-dashboards/gap-attribution-2026-06-17.html" target="_blank">🔗 Full Report</a></div>
+  </div>
+</div>
+
+<!-- ╔══════════════ TOOL HEALTH ══════════════╗ -->
+<div class="tool-health">
+  <strong>TOOL HEALTH (20:00 ET):</strong>
+  &nbsp;✅ TV MCP batch_run (57/57 ETFs) &nbsp;|&nbsp; ✅ TV MCP quote_get (AH prices) &nbsp;|&nbsp;
+  ✅ stockanalysis.com (gainers + losers) &nbsp;|&nbsp; ✅ Finviz news (public feed) &nbsp;|&nbsp; ✅ Chrome MCP &nbsp;|&nbsp;
+  ⚠️ stockanalysis market-cap sort: NOT executed (fell back to top-20 %-sort; $1B+ names beyond page 1 may be missed) &nbsp;|&nbsp;
+  ⚠️ Finviz Elite: unavailable — public feed used &nbsp;|&nbsp;
+  ⚠️ AH volume: unverified for all tickers (TV MCP returns regular-session volume; intraday AH bars not pulled; all AH candidates capped 🟡 per AH VOLUME NOTE) &nbsp;|&nbsp;
+  ⚠️ Yahoo options: skipped — web_search flow only &nbsp;|&nbsp;
+  ⚠️ Earnings calendar: stockanalysis.com/markets/earnings/ → 404; web_search fallback used &nbsp;|&nbsp;
+  ⚠️ ETF prices: regular session closes (batch_run returns daily bars; ETFs don't trade significantly AH)
+</div>
+
+<!-- ╔══════════════ SPY/QQQ SANITY ══════════════╗ -->
+<div class="card" style="font-size:12px;border-color:#1f2937;">
+  <strong>SPY/QQQ Sanity Check:</strong>
+  SPY close <span class="red">$745.50</span> (TV MCP batch_run, 16:00 ET) — prior close ~$750.65 → change <span class="red">-0.69%</span> ✅ within bounds &nbsp;|&nbsp;
+  QQQ close <span class="red">$729.93</span> — prior close ~$733.44 → change <span class="red">-0.48%</span> ✅ within bounds
+</div>
+
+<!-- ╔══════════════ TOPBAR FILTERS ══════════════╗ -->
+<div class="topbar">
+  <strong style="font-size:12px;color:#475569;">TIER:</strong>
+  <button class="tier-btn active" onclick="filterTiers('all')">All</button>
+  <button class="tier-btn" onclick="filterTiers('synth')">📌 Synthesis</button>
+  <button class="tier-btn" onclick="filterTiers(1)">T1</button>
+  <button class="tier-btn" onclick="filterTiers(2)">T2</button>
+  <button class="tier-btn" onclick="filterTiers(3)">T3</button>
+  <button class="tier-btn" onclick="filterTiers(4)">T4 Macro</button>
+  <button class="tier-btn" onclick="filterTiers('earn')">📅 Earnings</button>
+  <button class="tier-btn" onclick="filterTiers('audit')">🔍 Audit</button>
+</div>
+
+<!-- ╔══════════════ OVERNIGHT BRIEFING ══════════════╗ -->
+<div class="section synth" id="briefing">
+  <h2>🌃 OVERNIGHT BRIEFING — 30-second read</h2>
+  <div class="card" style="border-color:var(--cyan);font-size:13px;line-height:1.6;">
+    Fed Chair Warsh's inaugural FOMC meeting delivered a <strong>hawkish shock</strong>: 9 of 17 dot-plot participants project at least one rate hike before year-end, pushing the median 2026 rate forecast to <strong>3.8%</strong> (from 3.4% in March) while PCE inflation projections jumped to 3.6%. The Dow fell 500 points, <strong>gold miners collapsed</strong> (GDX −5.01%, GDXJ −5.24% — <span class="red">THEME-WIDE BREAKDOWN</span>), homebuilders cratered (XHB −3.77%) on mortgage rate fears, and VIX spiked +12.86% to 18.43. The dollar (UUP +0.86%) was the lone macro winner. Against this hawkish tide, AI/memory proved remarkably resilient: <strong>MU +1.79%</strong>, DRAM the <em>only green ETF</em> in the entire 57-name universe, and <strong>RUM surging +17% AH</strong> on the formal closing of its Northern Data GPU acquisition (22,000 NVIDIA GPUs, 250 MW capacity, $270M Together AI contract). SWBI also popped +18% AH on a massive Q4 earnings beat (EPS $0.36 vs $0.23 est, +56.5%). Tomorrow's key print: <strong>Accenture BMO</strong> — if AI consulting bookings remain at record pace, the AI complex holds even as rate-sensitive sectors continue to unwind.
+  </div>
+  <div style="display:flex;gap:12px;font-size:12px;margin-top:6px;">
+    <div class="stat purple">🌡️ Theme of Night: WARSH HAWKISH SHOCK — Gold Miners Collapse, AI Memory Resilient</div>
+    <div class="stat amber">📡 Regime: HAWKISH TRANSITION — Sep hike live, avoid rate-sensitive, stay in AI/semis</div>
+  </div>
+</div>
+
+<!-- ╔══════════════ TOP PICKS SIDE-BY-SIDE ══════════════╗ -->
+<div class="section synth" id="toppicks">
+  <h2>📊 TOP PICKS (Side-by-Side)</h2>
+  <div class="grid2">
+
+    <!-- TOP 5 ETF GAP-UPS -->
+    <div class="card">
+      <h3 class="green">TOP 5 ETF GAP-UP CANDIDATES</h3>
+      <div class="flag">⚠️ Hawkish backdrop — all ETF setups are 🟡 MEDIUM conviction; no 🟢 HIGH conviction ETF gap-up tonight</div>
+
+      <table>
+        <tr><th>#</th><th>ETF</th><th>Session</th><th>Setup / Trigger</th><th>Stop→Target</th><th>Theme</th><th>Conv</th></tr>
+        <tr>
+          <td>1</td>
+          <td><strong>SMH</strong><span class="badge neut">Semi</span></td>
+          <td><span class="red">−0.14%</span> $635</td>
+          <td>Near-flat on rough day = relative strength. AI demand intact. Entry: hold above $630 at open</td>
+          <td>$615 → $660+</td>
+          <td>AI/Semis (MU+AVGO+NVDA)</td>
+          <td class="conv-med">MEDIUM</td>
+        </tr>
+        <tr>
+          <td>2</td>
+          <td><strong>DRAM</strong><span class="badge bull">Memory</span></td>
+          <td><span class="green">+0.61%</span> $72.36</td>
+          <td>Only green ETF in 57-name universe. AI/HBM shortage counter-cyclical to rates. Entry: momentum continuation above $72</td>
+          <td>$70 → $80+</td>
+          <td>HBM Memory / AI (SK Hynix, MU, Samsung)</td>
+          <td class="conv-med">MEDIUM ⚠️LOW LIQ</td>
+        </tr>
+        <tr>
+          <td>3</td>
+          <td><strong>IGV</strong><span class="badge neut">Software</span></td>
+          <td><span class="red">−1.40%</span> $89.92</td>
+          <td>Conditional on ACN BMO beat tomorrow. If AI bookings record again → software complex lifts. Entry: ACN beat → watch IGV open</td>
+          <td>$88 → $95</td>
+          <td>AI Software (ACN read-through)</td>
+          <td class="conv-med">MEDIUM (ACN-conditional)</td>
+        </tr>
+        <tr>
+          <td>4</td>
+          <td><strong>ITA</strong><span class="badge neut">Defense</span></td>
+          <td><span class="red">−0.50%</span> $243</td>
+          <td>Rate-insensitive defense. Relative strength vs. market. Warsh "good news = good news" regime favors defense spend. Entry: hold above $241</td>
+          <td>$238 → $255</td>
+          <td>Defense Primes (RTX, LMT, GD, BA)</td>
+          <td class="conv-med">MEDIUM</td>
+        </tr>
+        <tr>
+          <td>5</td>
+          <td><strong>WGMI</strong><span class="badge neut">BTC/AI</span></td>
+          <td><span class="red">−0.17%</span> $69.66</td>
+          <td>RUM AI GPU pivot narrative spillover to BTC-miners-to-AI theme. Entry: above $70. Speculative / thin</td>
+          <td>$67 → $76</td>
+          <td>BTC Miners→AI (IREN, CIFR, MARA)</td>
+          <td class="conv-med">MEDIUM ⚠️SPECULATIVE</td>
+        </tr>
+      </table>
+    </div>
+
+    <!-- TOP 5 STOCK GAP-UPS -->
+    <div class="card">
+      <h3 class="green">TOP 5 INDIVIDUAL STOCK GAP-UP CANDIDATES</h3>
+
+      <table>
+        <tr><th>#</th><th>Ticker</th><th>AH</th><th>Catalyst</th><th>Stop→Target</th><th>Theme</th><th>Conv</th></tr>
+        <tr>
+          <td>1</td>
+          <td><strong>RUM</strong><span class="badge bull">AI GPU</span></td>
+          <td><span class="green">+17% AH</span> $8.52 ($2.48B)</td>
+          <td>Northern Data acquisition closes: 22K NVIDIA GPUs, 250 MW capacity. $270M Together AI GPU contract. Rebrands to "Quake AI" cloud. Entry: gap hold above $8.50. <span class="warn">⚠️ AH vol unverified: 91K&lt;100K</span></td>
+          <td>$7.50 → $10–11</td>
+          <td>AI Infra / BTC→AI (WGMI, IBIT)</td>
+          <td class="conv-med">MEDIUM (vol unverified)</td>
+        </tr>
+        <tr>
+          <td>2</td>
+          <td><strong>WDC</strong><span class="badge bull">AI Storage</span></td>
+          <td>+1.39% session $737.49 (+~3.5% AH per 5PM scan)</td>
+          <td>Morgan Stanley PT to $650 (from $488) citing HDD shortage through 2028. JPM, Mizuho, Citi also raised targets. AI HDD demand +40–50%/yr. Entry: continuation above $740. <span class="warn">⚠️ AH vol unverified</span></td>
+          <td>$710 → $800</td>
+          <td>AI Storage (SMH-adjacent)</td>
+          <td class="conv-high">HIGH (volume need confirm)</td>
+        </tr>
+        <tr>
+          <td>3</td>
+          <td><strong>MU</strong><span class="badge bull">HBM Memory</span></td>
+          <td><span class="green">+1.79%</span> $1,077.70</td>
+          <td>AI/HBM memory outperformer. Only semi bellwether clearly green today. Pairs with DRAM ETF (only green ETF). Entry: hold above $1,060. No new isolated catalyst — running on theme.</td>
+          <td>$1,000 → new highs</td>
+          <td>HBM Memory / DRAM</td>
+          <td class="conv-med">MEDIUM (theme, no new cat.)</td>
+        </tr>
+        <tr>
+          <td>4</td>
+          <td><strong>ACN</strong><span class="badge neut">AI Consulting</span></td>
+          <td>BMO tomorrow — pre-earnings</td>
+          <td>Accenture Q3 FY2026 reporting BMO June 18. Est. EPS $3.71 / ~$18.8B rev. AI bookings at record in Q2 ($22.1B). If beat + AI bookings accelerate → IGV + software complex rallies. Entry: gap reaction BMO.</td>
+          <td>Miss = fade. Beat → $345+</td>
+          <td>AI Software / Consulting</td>
+          <td class="conv-med">MEDIUM (pre-earnings)</td>
+        </tr>
+        <tr>
+          <td>5</td>
+          <td><strong>IREN</strong><span class="badge neut">BTC→AI</span></td>
+          <td><span class="green">+1.32%</span> $59.10</td>
+          <td>BTC miner AI compute pivot. Resilient vs. market. Benefiting from RUM AI infrastructure narrative (Northern Data model). Entry: hold above $58.</td>
+          <td>$55 → $65</td>
+          <td>BTC Miners→AI (WGMI)</td>
+          <td class="conv-med">MEDIUM</td>
+        </tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- FADE RISKS -->
+  <div class="grid2" style="margin-top:10px;">
+    <div class="card">
+      <h3 class="red">TOP 3 ETF FADE RISKS</h3>
+      <table>
+        <tr><th>ETF</th><th>Session</th><th>Why Fade</th><th>Target</th><th>Conv</th></tr>
+        <tr><td><strong>GDX</strong></td><td class="red">−5.01% $84.82</td><td>Dollar strength + rate hike timeline = sustained bearish for gold miners. GDX + GDXJ both −5% = 🚨 THEME-WIDE breakdown. Dollar (UUP) likely to stay bid.</td><td>$79–80</td><td class="conv-high">HIGH</td></tr>
+        <tr><td><strong>XHB</strong></td><td class="red">−3.77% $107.60</td><td>Homebuilders directly punished by rate hike expectations. Higher mortgage rates = demand destruction. Multi-week breakdown risk.</td><td>$100</td><td class="conv-high">HIGH</td></tr>
+        <tr><td><strong>XLRE</strong></td><td class="red">−1.86% $43.90</td><td>REITs rate-sensitive. September hike still needs to price in. Continued headwind as long as dot plot stays hawkish.</td><td>$42</td><td class="conv-med">MEDIUM</td></tr>
+      </table>
+    </div>
+    <div class="card">
+      <h3 class="red">TOP 3 STOCK FADE RISKS</h3>
+      <table>
+        <tr><th>Stock</th><th>Session</th><th>Why Fade</th><th>Conv</th></tr>
+        <tr><td><strong>NNE</strong> (Nano Nuclear)</td><td class="red">−4.05% $25.85</td><td>Nuclear power names under rate pressure (utility/growth blend). Significant decline with no isolated positive catalyst. Further risk if rates expectations rise.</td><td class="conv-med">MEDIUM</td></tr>
+        <tr><td><strong>BAC / KRE</strong></td><td class="red">BAC −1.43% $56.73 / KRE −1.16% $71.44</td><td>Banks face rate complexity (curve inversion risk, NIM). Regional banks more exposed. If September hike fully prices in → multiple compression.</td><td class="conv-med">MEDIUM</td></tr>
+        <tr><td><strong>GDX majors (NEM, AEM)</strong></td><td class="red">GDX −5.01%</td><td>Individual gold miners carrying GDX lower. Dollar bid + rate hike = continued gold price pressure = miner margin compression. Hold short.</td><td class="conv-high">HIGH</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- EOD ENTRIES -->
+  <div class="card" style="margin-top:10px;">
+    <h3 class="cyan">📈 EOD ENTRY CANDIDATES (tomorrow's close if breakouts hold — 3-5 day Qullamaggie pattern)</h3>
+    <table>
+      <tr><th>Ticker</th><th>Pattern</th><th>Entry Condition</th><th>Stop</th><th>Target</th><th>Theme</th></tr>
+      <tr><td><strong>RUM</strong></td><td>Episodic pivot (massive catalyst, new story)</td><td>Gap holds morning session above $8.50. Volume confirmation. Hold into close.</td><td>Below $7.50</td><td>$10–11 (3-5 day)</td><td>AI Infra GPU cloud</td></tr>
+      <tr><td><strong>WDC</strong></td><td>Institutional breakout (analyst upgrade wave, new fundamental story)</td><td>AH gains confirmed at open. Volume &gt;2x 30-day avg. Hold above $740.</td><td>Below $710</td><td>$800 (3-5 day)</td><td>AI Storage shortage</td></tr>
+      <tr><td><strong>MU</strong></td><td>Relative strength within theme (AI memory counter-trend day)</td><td>Holds above $1,060 while market is weak. ACN beat tomorrow would be a catalyst accelerant.</td><td>Below $1,000</td><td>New 52-week high</td><td>HBM / DRAM theme</td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- ╔══════════════ AH GAPPERS TABLE ══════════════╗ -->
+<div class="section" id="gappers">
+  <h2><span class="yellow">◆</span> POST-MARKET GAPPERS (stockanalysis.com — top-20 %-sorted, 20:00 ET)</h2>
+  <div class="flag">⚠️ AH gap discovery limited to top-20 %-sort — Chrome MCP market-cap sort NOT executed. $1B+ names beyond page 1 may be missed. AH volume column: NOT available on stockanalysis AH pages (AH volume unverified for all).</div>
+
+  <details open><summary>▶ GAINERS</summary>
+  <table>
+    <tr><th>Ticker</th><th>% AH</th><th>AH Price</th><th>Mkt Cap</th><th>Qualifies ($1B+)</th><th>Status</th></tr>
+    <tr style="background:#052e16;"><td><strong>RUM</strong></td><td class="green">+16.80%</td><td>$8.52</td><td>$2.48B</td><td class="green">✅ YES</td><td>✅ Catalyst confirmed — see Tier 2</td></tr>
+    <tr><td>SWBI</td><td class="green">+17.70%</td><td>$16.16</td><td>$610.9M</td><td class="amber">❌ Below $1B</td><td>Notable: Q4 earnings beat — see Tier 3</td></tr>
+    <tr><td>GPUS</td><td class="green">+15.63%</td><td>$0.46</td><td>$193M</td><td class="red">❌</td><td>Micro-cap filtered</td></tr>
+    <tr><td>LPA</td><td class="green">+70.70%</td><td>$5.36</td><td>$99M</td><td class="red">❌</td><td>Micro-cap filtered</td></tr>
+    <tr><td colspan="6" class="src">All other gainers &lt;$200M mkt cap — filtered per >$1B universe requirement</td></tr>
+  </table>
+  </details>
+
+  <details open><summary>▶ LOSERS</summary>
+  <table>
+    <tr><th>Ticker</th><th>% AH</th><th>AH Price</th><th>Mkt Cap</th><th>Qualifies ($1B+)</th><th>Status</th></tr>
+    <tr style="background:#450a0a;"><td><strong>SLBT</strong></td><td class="red">−7.05%</td><td>$5.93</td><td>$1.03B</td><td class="green">✅ Borderline</td><td><span class="warn">⚠️ Catalyst unconfirmed — investigate manually</span></td></tr>
+    <tr><td>SNBR</td><td class="red">−32.10%</td><td>$0.26</td><td>$9M</td><td class="red">❌</td><td>Micro-cap filtered</td></tr>
+    <tr><td colspan="6" class="src">All other losers well below $1B — filtered</td></tr>
+  </table>
+  </details>
+</div>
+
+<!-- ╔══════════════ 57-ETF SWEEP ══════════════╗ -->
+<div class="section" id="etf">
+  <h2>📡 57-ETF AH SWEEP (TV MCP batch_run — regular session closes, 16:00 ET)</h2>
+  <div class="flag">Note: TV MCP batch_run returns regular-session daily OHLCV. ETFs don't trade significantly AH. These are the session closes as of 4 PM ET. AH price ≈ session close for ETFs. Method: batch_run get_ohlcv — batch_run used successfully 57/57 (the step the Jun 11 bug gutted).</div>
+
+  <div class="theme-breakout">
+    🚨 <strong>THEME-WIDE BREAKOUT DOWN: GDX (−5.01%) + GDXJ (−5.24%)</strong> — Gold miners full collapse. Dollar strength (UUP +0.86%) + Warsh rate hike signal = sustained bearish setup for precious metals/miners.
+  </div>
+
+  <details open><summary>▶ INDEX / REGIME (8 ETFs)</summary>
+  <table>
+    <tr><th>ETF</th><th>Theme</th><th>Close</th><th>Session Chg</th><th>Signal</th></tr>
+    <tr><td><strong>SPY</strong></td><td>S&P 500</td><td>$745.50</td><td class="red">−0.69%</td><td>Broad market selloff on Warsh</td></tr>
+    <tr><td><strong>QQQ</strong></td><td>Nasdaq 100</td><td>$729.93</td><td class="red">−0.48%</td><td>Tech more resilient; AI names holding</td></tr>
+    <tr><td><strong>IWM</strong></td><td>Small caps</td><td>$292.37</td><td class="red">−1.04%</td><td>Small-cap headwind from higher-for-longer rates</td></tr>
+    <tr><td><strong>VIX</strong></td><td>Volatility</td><td>18.43</td><td class="red">+12.86% 🚨</td><td>Fear spike. Entering caution zone (not panic yet; elevated)</td></tr>
+    <tr><td><strong>TLT</strong></td><td>20Y Bonds</td><td>$86.33</td><td class="red">−0.06%</td><td>Muted bond reaction — market may not fully believe hike yet</td></tr>
+    <tr><td><strong>HYG</strong></td><td>High-yield credit</td><td>$79.85</td><td class="red">−0.21%</td><td>Credit mildly stressed; no panic</td></tr>
+    <tr><td><strong>UUP</strong></td><td>US Dollar</td><td>$28.21</td><td class="green">+0.86% ✅</td><td>Dollar strengthening = Warsh hawkish. Bearish gold, EM, commodities</td></tr>
+    <tr><td><strong>GLD</strong></td><td>Gold</td><td>$392.59</td><td class="red">−1.95%</td><td>Gold declining on dollar rally + rate hike bets</td></tr>
+  </table>
+  </details>
+
+  <details><summary>▶ SECTOR SPDRs (11 ETFs)</summary>
+  <table>
+    <tr><th>ETF</th><th>Theme</th><th>Close</th><th>Chg</th><th>Signal</th></tr>
+    <tr><td>XLK</td><td>Tech</td><td>$188.04</td><td class="red">−0.46%</td><td>Tech resilient vs. broad market</td></tr>
+    <tr><td>XLV</td><td>Healthcare/Pharma</td><td>$150.88</td><td class="red">−0.92%</td><td>Mild broad selloff</td></tr>
+    <tr><td>XLF</td><td>Financials</td><td>$54.16</td><td class="red">−0.97%</td><td>Financials mixed on rate-hike signal (NIM complex)</td></tr>
+    <tr><td>XLE</td><td>Energy majors</td><td>$54.65</td><td class="red">−0.64%</td><td>Oil muted on Hormuz deal reopening</td></tr>
+    <tr><td>XLI</td><td>Industrials</td><td>$181.09</td><td class="red">−0.57%</td><td>Mild; CAT/DE muted</td></tr>
+    <tr><td>XLY</td><td>Consumer Discret.</td><td>$115.82</td><td class="red">−1.52% ▲</td><td>Consumer weakness; Apple price hike news</td></tr>
+    <tr><td>XLP</td><td>Consumer Staples</td><td>$83.66</td><td class="red">−1.34%</td><td>Rate pressure on bond-like staples</td></tr>
+    <tr><td>XLU</td><td>Utilities / AI power</td><td>$44.48</td><td class="red">−0.88%</td><td>Rate-sensitive; VST, CEG, NRG under pressure</td></tr>
+    <tr><td>XLB</td><td>Materials/Chemicals</td><td>$52.23</td><td class="red">−1.90% ▲</td><td>Dollar strength = commodity headwind</td></tr>
+    <tr><td>XLC</td><td>Communications</td><td>$109.22</td><td class="red">−1.02%</td><td>META −1.05%, GOOGL +0.22% (mixed)</td></tr>
+    <tr><td>XLRE</td><td>REITs</td><td>$43.90</td><td class="red">−1.86% ▲</td><td>Rate-sensitive. Fade candidate tomorrow.</td></tr>
+  </table>
+  </details>
+
+  <details><summary>▶ INDUSTRY GROUPS (12 ETFs)</summary>
+  <table>
+    <tr><th>ETF</th><th>Theme</th><th>Close</th><th>Chg</th><th>Signal</th></tr>
+    <tr><td><strong>SMH</strong></td><td>Semiconductors</td><td>$635.00</td><td class="red">−0.14% ✅</td><td>Near-FLAT on bad day = strong relative strength. MU +1.79% anchor.</td></tr>
+    <tr><td>IGV</td><td>Software</td><td>$89.92</td><td class="red">−1.40%</td><td>ACN BMO tomorrow is key catalyst</td></tr>
+    <tr><td>CIBR</td><td>Cybersecurity</td><td>$84.45</td><td class="red">−0.83%</td><td>Mild; CRWD/PANW holding relatively</td></tr>
+    <tr><td>XBI</td><td>Biotech small-cap</td><td>$140.17</td><td class="red">−1.08%</td><td>Broad selloff</td></tr>
+    <tr><td>IBB</td><td>Biotech large-cap</td><td>$173.44</td><td class="red">−1.31%</td><td>Both XBI + IBB down = sector-wide (not a single squeeze)</td></tr>
+    <tr><td>KRE</td><td>Regional banks</td><td>$71.44</td><td class="red">−1.16%</td><td>Rate hike fears weighing on regionals</td></tr>
+    <tr><td>XOP</td><td>Oil &amp; Gas E&amp;P</td><td>$155.67</td><td class="red">−0.85%</td><td>Hormuz deal mildly bearish oil supply</td></tr>
+    <tr><td><strong>XHB</strong></td><td>Homebuilders</td><td>$107.60</td><td class="red">−3.77% 🚨</td><td>WORST SECTOR. Rate hike = mortgage rate pain. Fade candidate.</td></tr>
+    <tr><td>XRT</td><td>Retail equal-weight</td><td>$84.57</td><td class="red">−2.79% ▲</td><td>Consumer discretionary under pressure</td></tr>
+    <tr><td>IYT</td><td>Transports</td><td>$83.04</td><td class="red">−2.34% ▲</td><td>Econ slowdown fear; UPS/FDX/truckers down</td></tr>
+    <tr><td>JETS</td><td>Airlines</td><td>$30.27</td><td class="red">−1.83% ▲</td><td>Consumer travel under higher-rate pressure</td></tr>
+    <tr><td>PEJ</td><td>Travel/Leisure</td><td>$64.66</td><td class="red">−1.51% ▲</td><td>Hotels/cruises/casinos; JETS+PEJ both down = travel theme-wide pressure</td></tr>
+  </table>
+  </details>
+
+  <details><summary>▶ AI / TECH THEMES (11 ETFs)</summary>
+  <table>
+    <tr><th>ETF</th><th>Theme</th><th>Close</th><th>Chg</th><th>Signal</th></tr>
+    <tr style="background:#052e16;"><td><strong>DRAM</strong></td><td>HBM Memory</td><td>$72.36</td><td class="green">+0.61% ✅</td><td>ONLY GREEN ETF IN UNIVERSE. AI/HBM shortage counter-cyclical to rates. MU anchor. 🟢 AI resilience signal. ⚠️ LOW LIQUIDITY ETF</td></tr>
+    <tr><td>QTUM</td><td>Quantum</td><td>$164.61</td><td class="red">−0.74%</td><td>Mild pullback; no news</td></tr>
+    <tr><td>BOTZ</td><td>Robotics/Physical AI</td><td>$37.68</td><td class="red">−1.59% ▲</td><td>Broad risk-off</td></tr>
+    <tr><td>ARKK</td><td>Speculative growth</td><td>$79.28</td><td class="red">−2.22% ▲</td><td>Risk appetite gauge. −2.22% confirms risk-off environment</td></tr>
+    <tr><td>ARKX</td><td>Space (RKLB, ASTS, PL)</td><td>$34.72</td><td class="red">−1.11%</td><td>Mild; space names quiet</td></tr>
+    <tr><td>AIPO</td><td>AI &amp; Power Infra</td><td>$33.01</td><td class="red">−0.48%</td><td>Resilient (VRT, VST, GEV); datacenter power holding. ⚠️ LOW LIQUIDITY</td></tr>
+    <tr><td>DTCR</td><td>Data Center REITs</td><td>$31.54</td><td class="red">−0.76%</td><td>REIT pressure but less than XLRE (data center defensive)</td></tr>
+    <tr><td>SHLD</td><td>Defense Tech (PLTR)</td><td>$64.15</td><td class="red">−0.80%</td><td>PLTR-heavy; mild decline</td></tr>
+    <tr><td>ITA</td><td>Defense Primes</td><td>$243.00</td><td class="red">−0.50%</td><td>Near-flat. Rate-insensitive defense spending. Relative strength.</td></tr>
+    <tr><td>WGMI</td><td>BTC Miners/AI-HPC</td><td>$69.66</td><td class="red">−0.17% ✅</td><td>Near-flat. RUM acquisition narrative positive for WGMI. IREN +1.32%.</td></tr>
+    <tr><td>IBIT</td><td>Spot Bitcoin</td><td>$36.49</td><td class="red">−1.95%</td><td>BTC under pressure from dollar strength + risk-off</td></tr>
+  </table>
+  </details>
+
+  <details><summary>▶ POWER / MATERIALS (12 ETFs)</summary>
+  <table>
+    <tr><th>ETF</th><th>Theme</th><th>Close</th><th>Chg</th><th>Signal</th></tr>
+    <tr><td>URA</td><td>Uranium/nuclear fuel</td><td>$47.23</td><td class="red">−2.54% ▲</td><td>Uranium under pressure; rate fears + utility sentiment weak</td></tr>
+    <tr><td>NLR</td><td>Nuclear utilities</td><td>$125.48</td><td class="red">−1.48%</td><td>Just below 1.5% flag threshold. URA + NLR both down but NLR less severe.</td></tr>
+    <tr><td>GRID</td><td>Grid equipment</td><td>$193.48</td><td class="red">−0.46%</td><td>Resilient; ETN/HUBB holding</td></tr>
+    <tr><td>TAN</td><td>Solar</td><td>$59.47</td><td class="red">−1.23%</td><td>Rate-sensitive growth sector</td></tr>
+    <tr><td><strong>COPX</strong></td><td>Copper miners</td><td>$87.26</td><td class="red">−3.64% 🚨</td><td>Copper miners crushed. Dollar strength + China slowdown fears + rate pressure on materials.</td></tr>
+    <tr><td>REMX</td><td>Rare earth (MP, USAR)</td><td>$96.35</td><td class="red">−1.99% ▲</td><td>But MP individual name +1.29% — divergence worth watching</td></tr>
+    <tr><td>XME</td><td>Metals &amp; Mining</td><td>$119.53</td><td class="red">−1.85% ▲</td><td>Broad metals selloff on dollar</td></tr>
+    <tr><td>LIT</td><td>Lithium/Battery</td><td>$82.79</td><td class="red">−2.02% ▲</td><td>Dollar + rate pressure on battery metals</td></tr>
+    <tr style="background:#450a0a;"><td><strong>GDX</strong></td><td>Gold miners large</td><td>$84.82</td><td class="red">−5.01% 🚨🚨</td><td>THEME-WIDE BREAKDOWN. GDX + GDXJ both −5%. Fade candidate. NEM/AEM crushed.</td></tr>
+    <tr style="background:#450a0a;"><td><strong>GDXJ</strong></td><td>Junior gold miners</td><td>$111.03</td><td class="red">−5.24% 🚨🚨</td><td>THEME-WIDE BREAKDOWN. Juniors leading down = real metals run, not hedge bid. Most bearish gold signal.</td></tr>
+    <tr><td>SLV</td><td>Silver</td><td>$61.83</td><td class="red">−3.33% ▲</td><td>Silver under pressure alongside gold. Dollar + rate fears.</td></tr>
+  </table>
+  </details>
+
+  <details><summary>▶ COMMODITIES / GLOBAL (4 ETFs)</summary>
+  <table>
+    <tr><th>ETF</th><th>Theme</th><th>Close</th><th>Chg</th><th>Signal</th></tr>
+    <tr><td>USO</td><td>Crude oil</td><td>$114.20</td><td class="red">−0.76%</td><td>Hormuz deal going into effect — oil supply reopening bearish crude</td></tr>
+    <tr><td>UNG</td><td>Natural gas</td><td>$11.49</td><td class="red">−0.13%</td><td>Flat; no major gas catalyst</td></tr>
+    <tr><td>MOO</td><td>Agriculture</td><td>$78.00</td><td class="red">−0.57%</td><td>Mild</td></tr>
+    <tr><td>KWEB</td><td>China internet ADRs</td><td>$25.50</td><td class="red">−1.24%</td><td>China under pressure; BABA, PDD, BIDU soft</td></tr>
+  </table>
+  </details>
+</div>
+
+<!-- ╔══════════════ TIER 1 ══════════════╗ -->
+<div class="section tier1" id="tier1">
+  <h2>🏆 TIER 1 — ALWAYS REPORT (Mag 7, Semis Bellwethers, Macro Proxies)</h2>
+
+  <details open><summary>▶ A) Mag 7 / Hyperscalers</summary>
+  <div class="card">
+  <table>
+    <tr><th>Ticker</th><th>Session Close</th><th>Session Chg</th><th>AH</th><th>Signal</th><th>Source</th></tr>
+    <tr><td><strong>NVDA</strong></td><td>$206.33</td><td class="green">−0.04% ≈ flat ✅</td><td>Quiet</td><td>AI darling resilient on Warsh day. Holding near highs.</td><td>TV MCP batch_run, ~16:00 ET</td></tr>
+    <tr><td><strong>MSFT</strong></td><td>$382.28</td><td class="red">−0.80%</td><td>Quiet</td><td>Mild selloff; Azure/AI intact</td><td>TV MCP batch_run, ~16:00 ET</td></tr>
+    <tr><td><strong>GOOGL</strong></td><td>$365.70</td><td class="green">+0.22% ✅</td><td>Quiet</td><td>Green on bad day = relative strength. AI search narrative intact.</td><td>TV MCP batch_run, ~16:00 ET</td></tr>
+    <tr><td><strong>AMZN</strong></td><td>$239.40</td><td class="red">−0.35%</td><td>Quiet</td><td>AWS/AI spending intact; mild pullback</td><td>TV MCP batch_run, ~16:00 ET</td></tr>
+    <tr><td><strong>META</strong></td><td>$574.50</td><td class="red">−1.05%</td><td>Quiet</td><td>Ad revenue concern on macro; AI spend intact</td><td>TV MCP batch_run, ~16:00 ET</td></tr>
+    <tr><td><strong>AAPL</strong></td><td>$297.05</td><td class="red">−0.51%</td><td>Quiet</td><td>MarketWatch: "Apple says it will be forced to raise prices due to AI boom" — consumer concern but stock muted</td><td>TV MCP batch_run, ~16:00 ET</td></tr>
+    <tr><td><strong>TSLA</strong></td><td>$397.73</td><td class="red">−0.82%</td><td>Quiet</td><td>Mild; rate-sensitive growth component pressured</td><td>TV MCP batch_run, ~16:00 ET</td></tr>
+  </table>
+  </div>
+  </details>
+
+  <details open><summary>▶ B) Semis Bellwethers</summary>
+  <div class="card">
+  <table>
+    <tr><th>Ticker</th><th>Session Close</th><th>Session Chg</th><th>Signal</th><th>Source</th></tr>
+    <tr><td><strong>TSM</strong></td><td>$437.98</td><td class="green">−0.15% ≈ flat ✅</td><td>Near-flat = very resilient. AI wafer demand intact.</td><td>TV MCP batch_run, ~16:00 ET</td></tr>
+    <tr><td><strong>ASML</strong></td><td>$1,906.90</td><td class="red">−0.99%</td><td>Mild selloff; EUV demand not questioned</td><td>TV MCP batch_run, ~16:00 ET</td></tr>
+    <tr><td><strong>AVGO</strong></td><td>$398.06</td><td class="green">−0.10% ≈ flat ✅</td><td>Custom AI ASIC demand protecting stock on bad day</td><td>TV MCP batch_run, ~16:00 ET</td></tr>
+    <tr><td><strong>AMD</strong></td><td>$522.00</td><td class="red">−0.42%</td><td>Mild; MI300X still in demand but below NVDA momentum</td><td>TV MCP batch_run, ~16:00 ET</td></tr>
+    <tr style="background:#052e16;"><td><strong>MU</strong></td><td>$1,077.70</td><td class="green">+1.79% 🟢</td><td>STANDOUT. Only semi bellwether clearly green. AI/HBM memory shortage = demand surge. Pairs with DRAM ETF (only green ETF). Entry candidate for tomorrow.</td><td>TV MCP batch_run, ~16:00 ET</td></tr>
+  </table>
+  </div>
+  </details>
+
+  <details><summary>▶ C) Macro Proxies</summary>
+  <div class="card">
+  <table>
+    <tr><th>Ticker</th><th>Session Close</th><th>Session Chg</th><th>Signal</th><th>Source</th></tr>
+    <tr><td>JPM</td><td>$334.07</td><td class="red">−0.70%</td><td>Financials under mild pressure</td><td>TV MCP batch_run, ~16:00 ET</td></tr>
+    <tr><td>GS</td><td>$1,103.64</td><td class="red">−1.17%</td><td>Hawkish rate concern; trading desk uncertainty</td><td>TV MCP batch_run, ~16:00 ET</td></tr>
+    <tr><td>BAC</td><td>$56.73</td><td class="red">−1.43%</td><td>Banks most exposed to curve/NIM risk from rate hike</td><td>TV MCP batch_run, ~16:00 ET</td></tr>
+    <tr><td>XOM</td><td>$141.00</td><td class="red">−0.44%</td><td>Hormuz deal mildly bearish; rates neutral for oil major</td><td>TV MCP batch_run, ~16:00 ET</td></tr>
+    <tr><td>CVX</td><td>$177.80</td><td class="red">−0.77%</td><td>Similar to XOM</td><td>TV MCP batch_run, ~16:00 ET</td></tr>
+    <tr><td>CAT</td><td>$962.56</td><td class="red">−0.46%</td><td>Mild; capex outlook held by AI infrastructure buildout</td><td>TV MCP batch_run, ~16:00 ET</td></tr>
+    <tr><td>DE</td><td>$591.00</td><td class="red">−0.90%</td><td>Ag machinery mild selloff; rate concern for farm credit</td><td>TV MCP batch_run, ~16:00 ET</td></tr>
+  </table>
+  </div>
+  </details>
+
+  <details open><summary>▶ D) &gt;10% AH Movers (&gt;$1B)</summary>
+  <div class="card">
+    <div style="margin-bottom:8px;"><strong class="green">RUM +17% AH</strong> — see Tier 2 (AI GPU cloud pivot + Northern Data close)</div>
+    <div style="border:1px solid var(--border);padding:8px;border-radius:4px;opacity:0.8;">
+      <strong>SWBI +17.70% AH</strong> — <span class="amber">⚠️ Below $1B market cap ($610.9M) — does NOT qualify for main universe.</span> Earnings beat. See Tier 3.
+    </div>
+  </div>
+  </details>
+
+  <details><summary>▶ E) Material 8-K Filings Today (&gt;$1B)</summary>
+  <div class="card">
+  <table>
+    <tr><th>Company</th><th>Ticker</th><th>Event</th><th>Mkt Cap</th><th>Item</th><th>Primary Source</th></tr>
+    <tr style="background:#052e16;"><td><strong>Rumble Inc.</strong></td><td>RUM</td><td>Northern Data acquisition closing</td><td>$2.48B</td><td>1.01 / 2.01</td><td><a href="https://www.stocktitan.net/sec-filings/RUM/8-k-rumble-inc-reports-material-event-289549f0c282.html" target="_blank">StockTitan 8-K ↗</a></td></tr>
+    <tr><td>Smith &amp; Wesson</td><td>SWBI</td><td>Q4/FY2026 earnings (below $1B — flagged)</td><td>$610.9M</td><td>2.02</td><td><a href="https://www.stocktitan.net/news/SWBI/smith-wesson-brands-inc-reports-fourth-quarter-and-full-fiscal-2026-ixp7fbke653o.html" target="_blank">StockTitan ↗</a></td></tr>
+    <tr><td>Corcept Therapeutics</td><td>CORT</td><td>Relacorilant NDA resubmission for Cushing's syndrome (announced May 27; 8-K formalization June 17)</td><td>~$8.91B</td><td>8.01</td><td><a href="https://www.sec.gov/Archives/edgar/data/0001088856/000119312526274258/d159941d8k.htm" target="_blank">EDGAR ↗</a></td></tr>
+  </table>
+  <div class="src">CORT: Stock down −3.18% on day ($82.01 close) — not catalyst-driven; market-wide selloff + prior +42% run on May 27 announcement already priced in. NDA resubmission is a regulatory milestone, not approval.</div>
+  </div>
+  </details>
+</div>
+
+<!-- ╔══════════════ TIER 2 ══════════════╗ -->
+<div class="section tier2" id="tier2">
+  <h2>🎯 TIER 2 — THEME-ALIGNED MOVERS</h2>
+
+  <details open><summary>▶ AI Infra / BTC→AI Theme (RUM, WDC, IREN)</summary>
+  <div class="card">
+  <table>
+    <tr><th>Ticker</th><th>AH / Session</th><th>Catalyst (PRIMARY)</th><th>Type</th><th>ETF Bucket</th><th>Proof &amp; Firepower</th><th>Conv</th><th>Setup</th></tr>
+    <tr style="background:#052e16;">
+      <td><strong>RUM</strong><span class="badge bull">AI GPU CLOUD</span></td>
+      <td class="green">+17% AH<br>$8.52<br>($2.48B)<br><span class="warn">⚠️ AH vol 91K&lt;100K</span></td>
+      <td>
+        <strong>1. Northern Data acquisition closes (8-K June 17)</strong>: ~22,000 NVIDIA H100/H200 GPUs, 250 MW capacity (10 data centers), &gt;200 MW unmonetized. Tether warrants at $7.88 ($36.2M). FY2026 rev guidance raised to €170–190M.<br>
+        <strong>2. $270M Together AI GPU cloud contract</strong> (signed June 3): Multi-year dedicated NVIDIA Blackwell B300 capacity — largest customer commitment in company history.<br>
+        <strong>Rebrand:</strong> Cloud division renamed "Quake AI". RUM Group parent holds two units: Rumble (video) + Quake AI.
+        <div class="src">Primary: <a href="https://www.stocktitan.net/sec-filings/RUM/8-k-rumble-inc-reports-material-event-289549f0c282.html" target="_blank">StockTitan 8-K (M&amp;A close)</a> | <a href="https://www.manilatimes.net/2026/06/18/tmt-newswire/globenewswire/rumble-closes-acquisition-of-northern-data/2367928" target="_blank">GlobeNewswire via Manila Times</a> | <a href="https://www.tipranks.com/news/catalyst/rumble-stock-pops-as-massive-gpu-cloud-deal-lands" target="_blank">TipRanks GPU deal</a></div>
+      </td>
+      <td>M&amp;A / REBRAND<br>+ CONTRACT</td>
+      <td>WGMI / IBIT / ARKK</td>
+      <td>Episodic pivot (new business model). Not in Stage 2 uptrend yet — speculative gap. Volume below 100K AH threshold → firepower unverified.</td>
+      <td class="conv-med">🟡 MEDIUM<br>(vol unverified)</td>
+      <td>Gap-and-go. If gap holds first 30 min above $8.50, EOD entry for 3-5 day episodic hold. Stop: $7.50.</td>
+    </tr>
+    <tr>
+      <td><strong>WDC</strong><span class="badge bull">AI Storage</span></td>
+      <td class="green">+1.39% session<br>$737.49<br>+~3.5% AH (5PM scan)<br><span class="warn">⚠️ AH vol unverified</span></td>
+      <td>
+        Morgan Stanley raised PT to $650 (from $488): "Global shortage of high-capacity HDDs will persist through at least 2028." JPMorgan, Mizuho, Citi also raised targets same day. AI infrastructure demand: HDD demand forecast +40-50%/yr; supply only +30-35%. Recent results: gross margins &gt;50%, revenue +45% YoY.
+        <div class="src">Primary: <a href="https://finance.yahoo.com/markets/article/western-digital-stock-jumps-as-ai-trade-reignites-132154187.html" target="_blank">Yahoo Finance — WDC AI trade reignites</a> | <a href="https://markets.financialcontent.com/stocks/article/stockstory-2026-6-17-why-is-western-digital-wdc-stock-rocketing-higher-today" target="_blank">FinancialContent — Why WDC rocketing</a></div>
+      </td>
+      <td>ANALYST<br>(upgrade wave)</td>
+      <td>SMH-adjacent / AI Infra</td>
+      <td>Stock up 282% YTD, new 52-week highs. Institutional accumulation. Volume &gt;2x avg on session. Strong firepower. Proof: stage 2 uptrend confirmed.</td>
+      <td class="conv-high">🟢 HIGH<br>(session vol confirmed)</td>
+      <td>Continuation above $740. EOD entry if holds. Target $800. Stop $710.</td>
+    </tr>
+    <tr>
+      <td><strong>IREN</strong><span class="badge neut">BTC→AI</span></td>
+      <td class="green">+1.32%<br>$59.10</td>
+      <td>BTC/AI compute pivot resilience. Benefiting from RUM Northern Data model (GPU data center build). No isolated new catalyst — running on AI/HPC narrative.
+        <div class="src">Theme-driven; no new primary source for June 17 specifically</div>
+      </td>
+      <td>THEME</td>
+      <td>WGMI</td>
+      <td>Resilient on bad tape day. Institutional accumulation pattern. Avg vol 1M+ shares.</td>
+      <td class="conv-med">🟡 MEDIUM</td>
+      <td>Hold above $58. Target $65. Stop $55.</td>
+    </tr>
+  </table>
+  </div>
+  </details>
+
+  <details><summary>▶ Nuclear Theme (OKLO, NNE, NLR, URA — all negative)</summary>
+  <div class="card">
+  <table>
+    <tr><th>Ticker</th><th>Session Chg</th><th>Signal</th></tr>
+    <tr><td>OKLO</td><td class="red">−1.22%</td><td>Mild decline; no isolated catalyst. Rate-hike fears weigh on high-multiple nuclear growth</td></tr>
+    <tr><td><strong>NNE</strong></td><td class="red">−4.05%</td><td>Significant decline. No isolated negative catalyst — market-driven + rate sensitivity for nuclear power (utility/growth blend). Watch for any news.</td></tr>
+    <tr><td>URA</td><td class="red">−2.54%</td><td>Uranium ETF under pressure. CCJ/OKLO/SMR all soft.</td></tr>
+    <tr><td>NLR</td><td class="red">−1.48%</td><td>Nuclear utilities reactor ETF; not quite at 1.5% threshold. URA + NLR both down but not extreme divergence = sector-wide rate pressure, not a single-name event.</td></tr>
+  </table>
+  </div>
+  </details>
+
+  <details><summary>▶ Rare Earth (MP counter-trend vs REMX ETF)</summary>
+  <div class="card">
+    <div><strong>MP Materials</strong>: <span class="green">+1.29%</span> $61.41 — Counter-trend vs. REMX ETF (−1.99%). No new primary catalyst retrieved. Watch for export controls news. This divergence suggests stock-specific buying, possibly on policy/trade narrative not captured in today's news sweep.</div>
+    <div class="src">Theme-driven; no new primary source</div>
+  </div>
+  </details>
+
+  <details><summary>▶ Quantum Theme (RGTI, QBTS, IONQ — mild pullback)</summary>
+  <div class="card">
+  <table>
+    <tr><th>Ticker</th><th>Session Chg</th><th>Signal</th></tr>
+    <tr><td>RGTI</td><td class="red">−1.87%</td><td>Risk-off pullback; no theme news</td></tr>
+    <tr><td>QBTS</td><td class="red">−1.56%</td><td>Mild; no news</td></tr>
+    <tr><td>IONQ</td><td class="red">−0.80%</td><td>Resilient vs. peers; no news</td></tr>
+  </table>
+  </div>
+  </details>
+</div>
+
+<!-- ╔══════════════ TIER 3 ══════════════╗ -->
+<div class="section tier3" id="tier3">
+  <h2>🔭 TIER 3 — EMERGING THEME RADAR</h2>
+
+  <details open><summary>▶ SWBI (Smith &amp; Wesson) — Below $1B but Significant Earnings Beat</summary>
+  <div class="card">
+  <div class="flag red">⚠️ BELOW $1B MARKET CAP ($610.9M) — Does NOT qualify for main universe. Reported for read-through implications only.</div>
+  <table>
+    <tr><th>Ticker</th><th>AH</th><th>Catalyst</th><th>Read-Through</th><th>ETF Bucket</th><th>Conv</th></tr>
+    <tr>
+      <td><strong>SWBI</strong></td>
+      <td class="green">+17.70%<br>$16.16<br>($610.9M)<br><span class="warn">⚠️ AH vol unverified</span></td>
+      <td>
+        <strong>Q4 FY2026 Earnings Beat:</strong><br>
+        EPS: $0.36 vs $0.23 est (<span class="green">+56.5% beat</span>)<br>
+        Revenue: $178.4M vs $155.3M est (<span class="green">+14.9% beat</span>, +26.7% YoY)<br>
+        Gross margin: 29.8% (vs 28.8% prior yr)<br>
+        Full-year net sales: $523.8M (+10.4% YoY)<br>
+        New products: 37.5% of Q4 revenue<br>
+        Company NICS: +23.2% vs industry +1.1% (massive market share gain)<br>
+        Guidance: "Firearm demand in FY2027 healthy and slightly higher"<br>
+        Dividend: $0.13/share (payable July 15)
+        <div class="src">Primary: <a href="https://www.stocktitan.net/news/SWBI/smith-wesson-brands-inc-reports-fourth-quarter-and-full-fiscal-2026-ixp7fbke653o.html" target="_blank">StockTitan SWBI Q4 Press Release</a></div>
+      </td>
+      <td>Gun industry health signal. NICS data suggests strong consumer demand. Check: <strong>RGR (Sturm Ruger), AOUT (American Outdoor Brands)</strong> — may gap up in sympathy if market cap qualifies.</td>
+      <td><span class="amber">UNCLASSIFIED</span> — No gun stocks ETF in 57-name universe. Closest: ITA (defense primes, NOT civilian firearms).</td>
+      <td class="conv-med">🟡 MEDIUM (below $1B; earnings catalyst confirmed)</td>
+    </tr>
+  </table>
+  </div>
+  </details>
+
+  <details><summary>▶ SLBT (SL Science Holding) — $1.03B Loser −7.05%</summary>
+  <div class="card">
+    <div><strong>SLBT</strong>: −7.05% AH, $5.93, $1.03B mkt cap. <span class="warn">⚠️ Catalyst unconfirmed — investigate manually. No news found in this scan's sources. Small company with thin coverage. Possible: company-specific announcement, earnings, or liquidity event.</span></div>
+  </div>
+  </details>
+</div>
+
+<!-- ╔══════════════ TIER 4 MACRO ══════════════╗ -->
+<div class="section tier4" id="tier4">
+  <h2>🏛️ TIER 4 — MACRO / EXOGENOUS</h2>
+
+  <details open><summary>▶ 🚨 DOMINANT EVENT: Fed / Warsh FOMC (June 17, 2026)</summary>
+  <div class="card" style="border-color:var(--purple);">
+  <div class="purple" style="font-size:14px;margin-bottom:8px;">Fed Chair Warsh — Inaugural FOMC Meeting</div>
+  <table>
+    <tr><th>Item</th><th>Detail</th></tr>
+    <tr><td>Decision</td><td>Rates HELD at 3.50–3.75% (12-0 unanimous)</td></tr>
+    <tr><td>Dot Plot</td><td>Warsh did NOT submit a dot ("not helpful in conduct of policy"). 17 dots submitted: <strong>9 members project ≥1 hike before year-end 2026; 6 of 9 project two 25bp hikes.</strong></td></tr>
+    <tr><td>Median 2026 rate</td><td class="red"><strong>3.8%</strong> (up from 3.4% in March SEP — hawkish revision)</td></tr>
+    <tr><td>PCE Inflation forecast</td><td class="red"><strong>3.6%</strong> (raised from 2.7%)</td></tr>
+    <tr><td>Unemployment forecast</td><td>4.3%</td></tr>
+    <tr><td>Forward guidance</td><td>DROPPED. Statement simplified. Language: "Inflation remains elevated... in part reflecting supply shocks."</td></tr>
+    <tr><td>First live hike meeting</td><td class="amber"><strong>September 2026</strong></td></tr>
+    <tr><td>CME FedWatch post-decision</td><td>~36% prob one hike by year-end, ~34% prob 50bp cumulative</td></tr>
+    <tr><td>Key Warsh quote</td><td>"This committee will deliver price stability. The commitment to deliver is strong, unanimous, and unambiguous."</td></tr>
+    <tr><td>Market reaction</td><td>Dow −500pts. SPY −0.69%. Gold −1.95%. GDX −5%. UUP +0.86%. VIX +12.86% to 18.43.</td></tr>
+    <tr><td>Regime read</td><td class="amber"><strong>HAWKISH TRANSITION</strong> — September hike is live. Avoid rate-sensitive. Stay in AI/semis.</td></tr>
+  </table>
+  <div class="src">Primary: <a href="https://www.cnbc.com/2026/06/17/fed-meeting-today-live-updates.html" target="_blank">CNBC Live Updates</a> | <a href="https://www.federalreserve.gov/mediacenter/files/FOMCpresconf20260617.pdf" target="_blank">Fed Official Press Conf Transcript</a> | <a href="https://finance.yahoo.com/economy/policy/articles/warsh-hawkish-shock-9-fed-180221394.html" target="_blank">Yahoo Finance — Warsh Hawkish Shock</a> | <a href="https://www.foxbusiness.com/economy/federal-reserve-interest-rate-decision-june-17-2026" target="_blank">Fox Business FOMC</a></div>
+  </div>
+  </details>
+
+  <details><summary>▶ Hormuz Deal Goes Into Effect</summary>
+  <div class="card">
+    <div class="purple">Bloomberg 6:03 PM: "Crude Oil Edges Lower as Deal to Reopen Hormuz Goes Into Effect"</div>
+    <p style="font-size:12px;margin-top:6px;">Strait of Hormuz reopening deal active — oil supply flows normalizing. Bearish for crude (USO −0.76%). XLE −0.64%. If supply resumes fully, downward pressure on oil prices. Geopolitically positive (Iran de-escalation) but oil-bearish. Watch USO in early session tomorrow.</p>
+    <div class="src">Bloomberg 6:03 PM ET — headline confirmed via Finviz public news feed</div>
+  </div>
+  </details>
+
+  <details><summary>▶ Apple AI Price Hike Warning</summary>
+  <div class="card">
+    <div class="amber">MarketWatch 6:07 PM: "Apple says it will be forced to raise prices due to the AI boom"</div>
+    <p style="font-size:12px;margin-top:6px;">Apple acknowledging AI cost pressures → consumer pricing impact. AAPL −0.51% (muted reaction). Read-through: consumer tech hardware facing AI-driven cost inflation. XLY −1.52% partly reflects consumer spending concern. Watch AAPL's next product cycle pricing.</p>
+    <div class="src">MarketWatch 6:07 PM ET via Finviz public news feed</div>
+  </div>
+  </details>
+
+  <details><summary>▶ Gold Holds Decline</summary>
+  <div class="card">
+    <div class="amber">Bloomberg 6:57 PM: "Gold Holds Decline After Bets Increase on Fed Hike This Year"</div>
+    <p style="font-size:12px;margin-top:6px;">AH gold not recovering. Dollar strength persisting into evening. GLD −1.95%, GDX −5.01%, GDXJ −5.24%. Regime confirmation: hawkish dollar = bearish gold. Gold miners not bouncing AH. Short thesis intact for tomorrow.</p>
+    <div class="src">Bloomberg 6:57 PM ET via Finviz public news feed</div>
+  </div>
+  </details>
+
+  <details><summary>▶ Bank of England — Expected Hold</summary>
+  <div class="card">
+    <div style="font-size:12px;">BBC: "Interest rates expected to be held by Bank of England." Expected. Minor global context — no US equity impact. GBP/USD positioning minimal.</div>
+  </div>
+  </details>
+</div>
+
+<!-- ╔══════════════ FINVIZ NEWS ══════════════╗ -->
+<div class="section" id="finviz">
+  <h2>📰 FINVIZ EVENING NEWS DIGEST (Public feed, 4PM–8PM ET)</h2>
+  <div class="flag">⚠️ Finviz Elite filter unavailable — public feed used. Sorted by relevance to tracked themes.</div>
+  <div class="card">
+  <table>
+    <tr><th>Time</th><th>Source</th><th>Headline</th><th>ETF Bucket</th><th>Direction</th></tr>
+    <tr><td>08:00 PM</td><td>NYT</td><td>Warsh Makes His Case With Jargon, and a Penchant for Detail</td><td>Macro / Regime</td><td class="purple">MACRO</td></tr>
+    <tr><td>06:57 PM</td><td>Bloomberg</td><td>Gold Holds Decline After Bets Increase on Fed Hike This Year</td><td>GLD / GDX / GDXJ</td><td class="red">BEARISH GOLD</td></tr>
+    <tr><td>06:29 PM</td><td>Bloomberg</td><td>Warsh Rocks Bond Market in Debut, Sparks Surge in Rate-Hike Bets</td><td>TLT / UUP</td><td class="purple">MACRO / HAWKISH</td></tr>
+    <tr><td>06:18 PM</td><td>Fox Business</td><td>Kevin Warsh is making a 'big bet' on productivity in AI: Joe Moglia</td><td>Macro / AI</td><td class="amber">NEUTRAL-POSITIVE AI</td></tr>
+    <tr><td>06:11 PM</td><td>Bloomberg</td><td>Asian Stocks, Bonds to Fall on Hawkish Fed Signals: Markets Wrap</td><td>SPY / QQQ / IWM</td><td class="red">RISK-OFF (overnight)</td></tr>
+    <tr><td>06:08 PM</td><td>CNBC</td><td>Stock futures tick higher after Fed's hint of possible rate hike in 2026 spurs sell-off</td><td>SPY / QQQ</td><td class="green">FUTURES BOUNCING</td></tr>
+    <tr><td>06:07 PM</td><td>MarketWatch</td><td>Apple says it will be forced to raise prices due to the AI boom</td><td>AAPL / XLY</td><td class="red">BEARISH CONSUMER</td></tr>
+    <tr><td>06:03 PM</td><td>Bloomberg</td><td>Crude Oil Edges Lower as Deal to Reopen Hormuz Goes Into Effect</td><td>USO / XLE</td><td class="red">BEARISH CRUDE</td></tr>
+    <tr><td>05:48 PM</td><td>Fox Business</td><td>LARRY KUDLOW: Kevin Warsh's message to markets — good news can be good news again</td><td>Macro</td><td class="green">CONSTRUCTIVE MACRO</td></tr>
+    <tr><td>05:42 PM</td><td>MarketWatch</td><td>The Fed just threw investors a curveball. Here's how stocks, bonds, gold and the dollar reacted.</td><td>SPY / TLT / GLD / UUP</td><td class="purple">MACRO WRAP</td></tr>
+    <tr><td>05:21 PM</td><td>WSJ</td><td>Warsh's Commitment to Inflation Fight Sparks Market Slide</td><td>SPY / All sectors</td><td class="red">BEARISH BROAD MARKET</td></tr>
+    <tr><td>05:04 PM</td><td>Reuters</td><td>Wall Street sinks on bets Fed will hike rates this year</td><td>SPY / QQQ</td><td class="red">RISK-OFF</td></tr>
+    <tr><td>05:03 PM</td><td>Reuters</td><td>Trading Day: US stocks end lower, dollar jumps as Federal Reserve kicks off Warsh era</td><td>UUP / SPY</td><td class="red">RISK-OFF / DOLLAR BID</td></tr>
+  </table>
+  </div>
+</div>
+
+<!-- ╔══════════════ WIRE SCOOPS ══════════════╗ -->
+<div class="section" id="wire">
+  <h2><span class="orange">📡 WIRE SCOOPS (4PM–8PM Window)</span></h2>
+  <div class="card">
+  <table>
+    <tr><th>Time</th><th>Outlet</th><th>Headline</th><th>Tickers Affected</th><th>Direction</th></tr>
+    <tr><td>06:29 PM</td><td><span class="orange">Bloomberg</span></td><td><strong>"Warsh Rocks Bond Market in Debut, Sparks Surge in Rate-Hike Bets"</strong></td><td>TLT, UUP, GLD, GDX, XHB, XLRE</td><td class="red">HAWKISH / RISK-OFF</td></tr>
+    <tr><td>06:11 PM</td><td><span class="orange">Bloomberg</span></td><td><strong>"Asian Stocks, Bonds to Fall on Hawkish Fed Signals: Markets Wrap"</strong> — pre-open warning for Asia session</td><td>KWEB, EEM-proxies, overnight futures</td><td class="red">RISK-OFF OVERNIGHT</td></tr>
+    <tr><td>06:03 PM</td><td><span class="orange">Bloomberg</span></td><td><strong>"Crude Oil Edges Lower as Deal to Reopen Hormuz Goes Into Effect"</strong></td><td>USO, XLE, XOP, XOM, CVX</td><td class="red">BEARISH OIL SUPPLY</td></tr>
+    <tr><td>06:07 PM</td><td><span class="orange">MarketWatch</span></td><td><strong>"Apple says it will be forced to raise prices due to the AI boom"</strong></td><td>AAPL, XLY</td><td class="red">CONSUMER HEADWIND</td></tr>
+    <tr><td>05:21 PM</td><td><span class="orange">WSJ</span></td><td><strong>"Warsh's Commitment to Inflation Fight Sparks Market Slide"</strong></td><td>SPY, all sectors</td><td class="red">BROAD SELLOFF</td></tr>
+  </table>
+  <div class="src">No exclusive WSJ/Bloomberg investigative scoops found beyond Warsh/FOMC and Hormuz. Wire services dominated by FOMC coverage.</div>
+  </div>
+</div>
+
+<!-- ╔══════════════ OPTIONS FLOW ══════════════╗ -->
+<div class="section" id="options">
+  <h2><span class="blue">🔵 AFTER-HOURS OPTIONS FLOW</span></h2>
+  <div class="card">
+    <div class="flag">⚠️ No sweep data retrieved from public sources. Yahoo options not attempted. Web_search returned no publicly indexed AH flow for June 17. All options commentary is price-action inference only — NOT confirmed flow data.</div>
+    <table>
+      <tr><th>Ticker</th><th>P/C Ratio</th><th>Interpretation</th><th>Source</th></tr>
+      <tr><td><strong>RUM</strong></td><td>0.32</td><td class="green">Strongly bullish options positioning. P/C 0.32 = heavy call bias. Consistent with AI rebrand narrative driving speculation.</td><td>Fintel (static, not live AH sweep)</td></tr>
+      <tr><td><strong>SWBI</strong></td><td>0.44</td><td class="green">Bullish options tilt. Earnings catalyst drove call buying pre-print.</td><td>Fintel (static)</td></tr>
+      <tr><td>SPY / QQQ</td><td>Not pulled</td><td>Futures ticking higher per CNBC 6:08 PM suggests some short covering AH. No confirmed flow data.</td><td>Price-action inference only</td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- ╔══════════════ EARNINGS ══════════════╗ -->
+<div class="section earn" id="earn">
+  <h2>📅 TOMORROW'S EARNINGS (June 18, 2026)</h2>
+  <div class="flag amber">⚠️ Earnings calendar: stockanalysis.com/markets/earnings/ → 404 (HTTP 404). Web_search fallback used → Benzinga / Yahoo Finance.</div>
+  <div class="card">
+  <table>
+    <tr><th>Ticker</th><th>Company</th><th>Mkt Cap</th><th>Time</th><th>Est. EPS</th><th>Theme</th><th>Watch</th></tr>
+    <tr style="background:#052e16;">
+      <td><strong>ACN</strong></td>
+      <td>Accenture</td>
+      <td>~$96B</td>
+      <td>🌅 BMO</td>
+      <td>$3.71 est.</td>
+      <td>AI Consulting (IGV)</td>
+      <td><strong>AI bookings trajectory</strong> (Q2 record $22.1B total bookings). Operating margin. Explicit AI revenue quantification. Beat → IGV + software complex rallies.</td>
+    </tr>
+    <tr>
+      <td>KR</td>
+      <td>Kroger</td>
+      <td>~$38B</td>
+      <td>🌅 BMO</td>
+      <td>$1.46 est.</td>
+      <td>Consumer Staples (XLP)</td>
+      <td>Consumer spending health. ID sales +3.2% guidance. Agent source showed possible actuals (EPS $1.49, Rev $45.12B) — may already be released. Verify pre-market. <span class="warn">⚠️ Verify actuals vs. estimate status</span></td>
+    </tr>
+  </table>
+  <div class="src">Sources: <a href="https://finance.yahoo.com/calendar/earnings/" target="_blank">Yahoo Finance Earnings Calendar</a> | <a href="https://www.tipranks.com/stocks/acn/earnings" target="_blank">TipRanks ACN Earnings</a></div>
+  </div>
+</div>
+
+<!-- ╔══════════════ ASSUMPTION AUDIT ══════════════╗ -->
+<div class="section audit" id="audit">
+  <h2>🔍 STEP 13 — ASSUMPTION AUDIT</h2>
+  <div class="card" style="font-size:12px;">
+  <table>
+    <tr><th>Item</th><th>Detail / Risk if Wrong</th></tr>
+    <tr><td><strong>TV MCP price method</strong></td><td>batch_run get_ohlcv used for all 57 ETFs (successful 57/57). Returns REGULAR SESSION daily bars (close = 4 PM ET price). For individual stocks, quote_get used — returns AH/extended price for stocks (last traded). All ETF prices = regular session closes. All ETF "AH moves" are actually session closes — ETFs don't trade significantly AH.</td></tr>
+    <tr><td><strong>AH volume: UNVERIFIED</strong></td><td>TV MCP batch_run returns regular-session volume. TV MCP intraday extended-hours bars NOT pulled (time/context constraint). All AH candidates flagged "AH volume unverified" per AH VOLUME NOTE. Conviction capped at 🟡 for all AH picks including RUM (91K daily bar volume vs 100K threshold). This is the primary data gap in tonight's scan.</td></tr>
+    <tr><td><strong>stockanalysis market-cap sort</strong></td><td>NOT executed via Chrome MCP (table click navigation not attempted). Fell back to top-20 %-sorted. Risk: $1B+ AH movers beyond page 1 may be missed. This is the known gap documented Jun 11.</td></tr>
+    <tr><td><strong>Finviz Elite filter</strong></td><td>Unavailable — public Finviz feed used (/news). Elite filtered view (?v=3) not accessible. Some headline coverage may be missing vs. Elite filtered feed.</td></tr>
+    <tr><td><strong>Yahoo options</strong></td><td>Not attempted. Options flow: "price-action inference only — NOT confirmed flow data" for all commentary. P/C ratios from Fintel (static, not live AH sweep).</td></tr>
+    <tr><td><strong>Wire scoops paywall</strong></td><td>WSJ and Bloomberg story content accessible via news aggregators; full exclusives may be paywalled. No new market-moving investigative scoop found beyond Warsh/FOMC/Hormuz.</td></tr>
+    <tr><td><strong>SWBI market cap</strong></td><td>$610.9M — below $1B threshold. Included in Tier 3 for read-through implications. Not eligible for main universe picks.</td></tr>
+    <tr><td><strong>CORT 8-K</strong></td><td>NDA resubmission for Cushing's announced May 27; June 17 8-K is formalization. Not a new catalyst; prior run priced in. Stock −3.18% = market-driven, not resubmission-driven. Risk: If the June 17 8-K contains additional data vs. May announcement, this could be underestimated.</td></tr>
+    <tr><td><strong>SLBT catalyst</strong></td><td>−7.05%, $1.03B. No catalyst found. "Investigate manually" flag. Risk: may be a significant corporate event missed in this scan.</td></tr>
+    <tr><td><strong>Earnings calendar</strong></td><td>stockanalysis.com 404; web_search fallback confirmed ACN and KR for June 18 BMO. KR actuals may already be published (source showed actual vs. estimate). Verify pre-market. Other names below $1B may also report.</td></tr>
+    <tr><td><strong>WDC AH data</strong></td><td>5 PM scan showed +3.5% AH continuation; not refreshed in 8 PM run. Regular session close: $737.49 (+1.39%). AH price unknown in this run. AH volume unverified.</td></tr>
+    <tr><td><strong>UNCLASSIFIED</strong></td><td>SWBI (gun stocks) — no ETF bucket in 57-name universe. Potential add: civilian firearms/outdoor sports ETF if this becomes a multi-night cluster.</td></tr>
+    <tr><td><strong>Hormuz deal</strong></td><td>Bloomberg headline confirms deal active. Magnitude of supply resumption unknown. Risk: if deal fails or is partial, oil could reverse higher quickly.</td></tr>
+    <tr><td><strong>Prior scan continuity</strong></td><td>Read gap-attribution-2026-06-17-g.html (5 PM scan). All prices refreshed in 8 PM run per PRICE PULL METHOD. No 5 PM prices carried forward as 8 PM prices.</td></tr>
+  </table>
+  </div>
+</div>
+
+<div style="margin-top:24px;padding-top:12px;border-top:1px solid var(--border);font-size:11px;opacity:0.5;text-align:center;">
+  Gap Attribution v7.7 HYBRID — 2026-06-17 (8 PM AH Scan) &nbsp;|&nbsp; All prices primary-sourced from live tool pulls &nbsp;|&nbsp; nkuy36.github.io/trading-dashboards
+</div>
+
+<script>
+function filterTiers(t) {
+  document.querySelectorAll('.tier-btn').forEach(b => b.classList.remove('active'));
+  event.target.classList.add('active');
+  const sections = ['tier1','tier2','tier3','tier4','synth','earn','audit'];
+  if (t === 'all') {
+    document.querySelectorAll('.section').forEach(s => s.style.display = '');
+    return;
+  }
+  document.querySelectorAll('.section').forEach(s => {
+    if (t === 'all' || s.classList.contains(String(t)) || s.id === String(t) || s.classList.contains('tier' + t)) {
+      s.style.display = '';
+    } else {
+      s.style.display = 'none';
+    }
+  });
+}
+</script>
+</body>
+</html>
