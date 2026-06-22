@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>After-Hours Gaps Scan (v7.7) — June 22, 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0e17;
+    --bg2: #0f1624;
+    --bg3: #161e30;
+    --border: #1e2d45;
+    --text: #e2e8f0;
+    --muted: #7a8fa6;
+    --accent: #38bdf8;
+    --green: #4ade80;
+    --red: #f87171;
+    --yellow: #fbbf24;
+    --orange: #fb923c;
+    --purple: #a78bfa;
+    --cyan: #22d3ee;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    line-height: 1.6;
+    padding: 24px;
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+  h1 { font-size: 20px; color: var(--accent); border-bottom: 1px solid var(--border); padding-bottom: 12px; margin-bottom: 16px; }
+  h2 { font-size: 14px; color: var(--cyan); margin: 28px 0 10px; text-transform: uppercase; letter-spacing: 0.05em; border-left: 3px solid var(--cyan); padding-left: 10px; }
+  h3 { font-size: 13px; color: var(--accent); margin: 16px 0 8px; }
+  .tool-health {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--green);
+    padding: 12px 16px;
+    margin-bottom: 20px;
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .tool-health .badge {
+    padding: 2px 8px;
+    border-radius: 3px;
+    font-weight: 700;
+    font-size: 11px;
+  }
+  .badge-ok { background: rgba(74,222,128,0.15); color: var(--green); border: 1px solid rgba(74,222,128,0.3); }
+  .badge-warn { background: rgba(251,191,36,0.15); color: var(--yellow); border: 1px solid rgba(251,191,36,0.3); }
+  .badge-fail { background: rgba(248,113,113,0.15); color: var(--red); border: 1px solid rgba(248,113,113,0.3); }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 16px;
+    font-size: 12px;
+  }
+  th {
+    background: var(--bg3);
+    color: var(--muted);
+    text-align: left;
+    padding: 6px 10px;
+    border-bottom: 1px solid var(--border);
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 10px;
+    letter-spacing: 0.05em;
+  }
+  td {
+    padding: 6px 10px;
+    border-bottom: 1px solid var(--border);
+    color: var(--text);
+    vertical-align: top;
+  }
+  tr:hover td { background: rgba(255,255,255,0.02); }
+  .pos { color: var(--green); font-weight: 600; }
+  .neg { color: var(--red); font-weight: 600; }
+  .neutral { color: var(--muted); }
+  .big-neg { color: #ff4444; font-weight: 700; font-size: 14px; }
+  .ticker { color: var(--accent); font-weight: 700; }
+  .conviction-yellow { color: var(--yellow); font-weight: 700; }
+  .conviction-red { color: var(--red); }
+  .note {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--yellow);
+    padding: 10px 14px;
+    margin: 10px 0;
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .note.red-note { border-left-color: var(--red); }
+  .note.green-note { border-left-color: var(--green); }
+  .note.blue-note { border-left-color: var(--accent); }
+  .catalyst-block {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 14px 16px;
+    margin: 10px 0;
+  }
+  .catalyst-block.red-block { border-left: 4px solid var(--red); }
+  .catalyst-block.green-block { border-left: 4px solid var(--green); }
+  .catalyst-block.yellow-block { border-left: 4px solid var(--yellow); }
+  .section { margin-bottom: 32px; }
+  .big-gapper-card {
+    background: var(--bg2);
+    border: 1px solid #2d1a1a;
+    border-left: 5px solid var(--red);
+    border-radius: 4px;
+    padding: 16px 20px;
+    margin: 12px 0;
+  }
+  .big-gapper-card.up {
+    border: 1px solid #1a2d1a;
+    border-left: 5px solid var(--green);
+  }
+  .gapper-header { display: flex; align-items: baseline; gap: 16px; margin-bottom: 8px; }
+  .gapper-ticker { font-size: 22px; font-weight: 700; color: var(--text); }
+  .gapper-pct { font-size: 20px; font-weight: 700; }
+  .gapper-pct.dn { color: #ff4444; }
+  .gapper-pct.up { color: var(--green); }
+  .gapper-meta { font-size: 11px; color: var(--muted); margin-bottom: 8px; }
+  .gapper-meta span { margin-right: 16px; }
+  .gapper-catalyst { font-size: 12px; color: var(--text); }
+  .gapper-catalyst li { margin-left: 16px; margin-top: 4px; }
+  .etf-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 10px; margin-top: 10px; }
+  .etf-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    padding: 10px 12px;
+    font-size: 11px;
+  }
+  .etf-card.mover-neg { border-left: 3px solid var(--red); }
+  .etf-card.mover-pos { border-left: 3px solid var(--green); }
+  .etf-card .etf-name { color: var(--accent); font-weight: 700; margin-bottom: 2px; }
+  .etf-card .etf-move { font-weight: 700; }
+  .etf-card .etf-desc { color: var(--muted); margin-top: 3px; }
+  .news-time { color: var(--muted); font-size: 10px; white-space: nowrap; }
+  .watchlist-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 8px; margin-top: 10px; }
+  .wl-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    padding: 10px;
+    font-size: 11px;
+  }
+  .wl-ticker { font-size: 14px; font-weight: 700; color: var(--accent); }
+  .wl-close { font-size: 16px; font-weight: 600; }
+  .wl-today { font-size: 11px; font-weight: 600; }
+  .wl-note { color: var(--muted); font-size: 10px; margin-top: 3px; }
+  .audit-row { display: grid; grid-template-columns: 240px 1fr; gap: 8px; padding: 5px 0; border-bottom: 1px solid var(--border); }
+  .audit-key { color: var(--muted); font-size: 11px; }
+  .audit-val { font-size: 11px; }
+  .big-upcoming {
+    background: linear-gradient(135deg, var(--bg2) 0%, #0d1a2e 100%);
+    border: 1px solid #1e3a5f;
+    border-left: 5px solid var(--purple);
+    border-radius: 4px;
+    padding: 16px 20px;
+    margin: 12px 0;
+  }
+  .mu-label { font-size: 11px; color: var(--purple); font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 6px; }
+  .mu-ticker { font-size: 24px; font-weight: 700; color: var(--text); }
+  .mu-date { font-size: 13px; color: var(--yellow); font-weight: 600; margin-left: 12px; }
+  .mu-meta { color: var(--muted); font-size: 11px; margin: 8px 0; }
+  .mu-meta span { margin-right: 16px; }
+  .positions-table td:first-child { color: var(--accent); font-weight: 700; }
+  .source-url { color: var(--muted); font-size: 10px; }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  .section-divider { border: none; border-top: 1px solid var(--border); margin: 24px 0; }
+  .vol-fail { color: var(--red); font-size: 10px; }
+  .tag {
+    display: inline-block;
+    padding: 1px 6px;
+    border-radius: 3px;
+    font-size: 10px;
+    font-weight: 700;
+    margin-left: 4px;
+  }
+  .tag-8k { background: rgba(251,191,36,0.15); color: var(--yellow); border: 1px solid rgba(251,191,36,0.3); }
+  .tag-analyst { background: rgba(167,139,250,0.15); color: var(--purple); border: 1px solid rgba(167,139,250,0.3); }
+  .tag-fleet { background: rgba(56,189,248,0.15); color: var(--accent); border: 1px solid rgba(56,189,248,0.3); }
+</style>
+</head>
+<body>
+
+<h1>🌙 After-Hours Gaps (v7.7) — June 22, 2026</h1>
+
+<div class="tool-health">
+  <strong>TOOL HEALTH:</strong>
+  <span class="badge badge-ok">✅ TV MCP</span>
+  <span class="badge badge-ok">✅ stockanalysis.com</span>
+  <span class="badge badge-ok">✅ Finviz (public)</span>
+  <span class="badge badge-warn">⚠️ Chrome MCP — not tested (optional)</span>
+  <span style="color:var(--muted); font-size:11px;">AH discovery limited to top-20 %-sort · $1B+ names beyond page 1 may be missed · Finviz Elite unavailable</span>
+</div>
+
+<!-- ===================== TOP GAPPERS ===================== -->
+<div class="section">
+<h2>⚡ Tradeable AH Gappers (&gt;$1B cap, &gt;3% gap)</h2>
+
+<div class="big-gapper-card">
+  <div class="gapper-header">
+    <span class="gapper-ticker">PRIM</span>
+    <span class="gapper-pct dn">-31.70% AH</span>
+    <span class="conviction-yellow">🟡 WATCH</span>
+    <span class="tag tag-8k">8-K</span>
+  </div>
+  <div class="gapper-meta">
+    <span>Primoris Services Corp</span>
+    <span>Mkt Cap: <strong>$5.88B</strong></span>
+    <span>Close: $108.34 (TV MCP, batch_run)</span>
+    <span>AH Price: ~$74.00 (stockanalysis)</span>
+    <span>AH Vol: <strong class="conviction-yellow">UNVERIFIED</strong> — conviction capped 🟡</span>
+    <span>ETF: <strong>XLI</strong> (primary) / TAN (secondary)</span>
+  </div>
+  <ul class="gapper-catalyst">
+    <li><strong>COO departure</strong> effective June 22, 2026</li>
+    <li><strong>Renewables cost overruns</strong> identified — third-party industry expert assessment underway</li>
+    <li><strong>FY2026 financial outlook LOWERED</strong> (exact numbers: SEC 8-K inaccessible 403; confirmed via web search)</li>
+    <li>Partial offset: $2.0B new project awards Q2 (Energy segment — nat gas, industrial, electric construction)</li>
+    <li>Share buyback: ~$50M at avg $111.29/share Q2; ~$100M remaining authorized</li>
+    <li>Source: SEC EDGAR, PRIM 8-K filed 2026-06-22</li>
+  </ul>
+  <div style="margin-top: 10px; font-size: 11px; color: var(--muted);">
+    <strong>Tomorrow setup:</strong> GAP-DOWN OPEN expected $72-76 range. Fade bounces unless new buyers + guidance clarity emerge. Three negative simultaneous shocks (leadership + execution + guidance) = continued institutional distribution.
+  </div>
+</div>
+
+<div class="big-gapper-card up">
+  <div class="gapper-header">
+    <span class="gapper-ticker">CAR</span>
+    <span class="gapper-pct up">+8.44% AH</span>
+    <span class="conviction-red">❌ VOLUME FAILED</span>
+    <span class="tag tag-fleet">FLEET 8-K</span>
+    <span class="tag tag-analyst">ANALYST</span>
+  </div>
+  <div class="gapper-meta">
+    <span>Avis Budget Group, Inc.</span>
+    <span>Mkt Cap: <strong>$6.58B</strong></span>
+    <span>Close: $186.28 (TV MCP, batch_run)</span>
+    <span>AH Price: ~$202.00 (stockanalysis)</span>
+    <span>AH Vol: <strong class="neg">~3,023 shares</strong> (TV MCP intraday) — BELOW 100K threshold</span>
+    <span>ETF: <strong>IYT</strong> (transports)</span>
+  </div>
+  <ul class="gapper-catalyst">
+    <li>Spike at 4:30 PM ET: single bar (open $187.54 → high $201.84 → close $198.00, vol 2,445)</li>
+    <li>Prior catalyst: Barclays upgrade June 8 + Jefferies AI upgrade April + S&P credit rating upgrade</li>
+    <li>Specific June 22 catalyst: fleet financing 8-K (extension routine); SEC URL inaccessible</li>
+    <li>Morgan Stanley (May 20): "dislocated from fundamentals" PT $99 vs ~$187 current</li>
+  </ul>
+  <div style="margin-top: 10px; font-size: 11px; color: var(--red);">
+    ❌ Does NOT meet tradeable criteria — AH volume 3,023 shares is 33× below 100K threshold. Thin AH prints unreliable. Do not chase.
+  </div>
+</div>
+
+</div>
+
+<!-- ===================== ETF SWEEP ===================== -->
+<div class="section">
+<h2>📊 ETF AH Sweep — 56-ETF Universe</h2>
+<div class="note blue-note">
+  AH ETF trading: FLAT tonight. Spot-checked XLE ($54.05 vs $54.06 close, 120 shares) and ARKX ($33.27 vs $33.36 close, 9 shares) via quote_get — no ETF clearing >1.5% AH. Regular-session moves shown for tomorrow context.
+</div>
+
+<h3>Notable Regular-Session Moves (direction risk for tomorrow)</h3>
+<div class="etf-grid">
+  <div class="etf-card mover-neg">
+    <div class="etf-name">ARKX <span style="color:var(--red)">-2.36%</span></div>
+    <div>Close: $33.36 | AH: $33.27 (flat)</div>
+    <div class="etf-desc">Space (RKLB, ASTS) — SpaceX 3-day IPO slide headline</div>
+  </div>
+  <div class="etf-card mover-neg">
+    <div class="etf-name">SHLD <span style="color:var(--red)">-2.01%</span></div>
+    <div>Close: $60.59 | 100-bar: -21.81%</div>
+    <div class="etf-desc">Defense tech (PLTR-heavy) — PLTR -4.95% today drag</div>
+  </div>
+  <div class="etf-card mover-neg">
+    <div class="etf-name">SLV <span style="color:var(--red)">-1.96%</span></div>
+    <div>Close: $58.91 | 100-bar: -42.68%</div>
+    <div class="etf-desc">Silver — sustained metals correction trend</div>
+  </div>
+  <div class="etf-card mover-neg">
+    <div class="etf-name">NLR <span style="color:var(--red)">-1.50%</span></div>
+    <div>Close: $124.55 | 100-bar: -21.49%</div>
+    <div class="etf-desc">Nuclear utilities/reactors — ongoing weakness trend</div>
+  </div>
+  <div class="etf-card mover-neg">
+    <div class="etf-name">ITA <span style="color:var(--red)">-1.37%</span></div>
+    <div>Close: $235.51</div>
+    <div class="etf-desc">Defense primes (RTX, LMT, GD, BA) — risk-off rotation</div>
+  </div>
+  <div class="etf-card mover-neg">
+    <div class="etf-name">XHB <span style="color:var(--red)">-1.32%</span></div>
+    <div>Close: $109.13</div>
+    <div class="etf-desc">Homebuilders — rate sensitivity</div>
+  </div>
+  <div class="etf-card mover-neg">
+    <div class="etf-name">XLC <span style="color:var(--red)">-1.18%</span></div>
+    <div>Close: $106.86 | 100-bar: -8.40%</div>
+    <div class="etf-desc">Communications (META, GOOGL, NFLX) — Mag7 momentum fade</div>
+  </div>
+  <div class="etf-card mover-pos">
+    <div class="etf-name">XBI <span style="color:var(--green)">+1.62%</span></div>
+    <div>Close: $145.86 | 100-bar: +13.52%</div>
+    <div class="etf-desc">Biotech small-cap — notable outperformer; high vol 16.7M</div>
+  </div>
+  <div class="etf-card mover-pos">
+    <div class="etf-name">AIPO <span style="color:var(--green)">+1.22%</span></div>
+    <div>Close: $34.77 | 100-bar: +38.75%</div>
+    <div class="etf-desc">AI power infra (VRT, VST, GEV) — datacenter demand</div>
+  </div>
+  <div class="etf-card mover-pos">
+    <div class="etf-name">GRID <span style="color:var(--green)">+1.13%</span></div>
+    <div>Close: $197.52 | 100-bar: +20.51%</div>
+    <div class="etf-desc">Grid equipment (ETN, HUBB) — power buildout secular</div>
+  </div>
+</div>
+
+<h3>Regime / Index Summary</h3>
+<table>
+<tr><th>ETF</th><th>Theme</th><th>Close</th><th>Today</th><th>100-Bar</th><th>AH</th></tr>
+<tr><td class="ticker">SPY</td><td>S&amp;P 500</td><td>$744.39</td><td class="neg">-0.44%</td><td class="pos">+7.36%</td><td>flat</td></tr>
+<tr><td class="ticker">QQQ</td><td>Nasdaq 100</td><td>$737.95</td><td class="neg">-0.55%</td><td class="pos">+16.40%</td><td>flat</td></tr>
+<tr><td class="ticker">IWM</td><td>Small caps</td><td>$298.18</td><td class="pos">+0.35%</td><td class="pos">+12.57%</td><td>flat</td></tr>
+<tr><td class="ticker">TLT</td><td>20Y bonds</td><td>$86.09</td><td class="neg">-0.24%</td><td class="pos">+0.24%</td><td>flat</td></tr>
+<tr><td class="ticker">HYG</td><td>High-yield credit</td><td>$79.94</td><td>flat</td><td class="pos">+0.98%</td><td>flat</td></tr>
+<tr><td class="ticker">GLD</td><td>Gold</td><td>$384.59</td><td>+0.09%</td><td class="neg">-20.44%</td><td>flat</td></tr>
+<tr><td class="ticker">SMH</td><td>Semiconductors</td><td>$668.91</td><td class="neg">-0.21%</td><td class="pos">+61.05%</td><td>flat</td></tr>
+<tr><td class="ticker">DRAM</td><td>HBM memory</td><td>$80.72</td><td>+0.06%</td><td class="pos">+175.68%</td><td>flat</td></tr>
+<tr><td class="ticker">IBIT</td><td>Spot Bitcoin</td><td>$36.50</td><td class="neg">-0.75%</td><td class="neg">-28.42%</td><td>flat</td></tr>
+<tr><td class="ticker">WGMI</td><td>BTC miners</td><td>$71.98</td><td class="neg">-1.60%</td><td class="pos">+40.61%</td><td>flat</td></tr>
+<tr><td class="ticker">KWEB</td><td>China internet</td><td>$25.05</td><td class="neg">-0.18%</td><td class="neg">-31.22%</td><td>flat</td></tr>
+</table>
+<div class="note">VIX not pulled — omitted from batch_run list. Add to next run. | No THEME-WIDE BREAKOUT triggered tonight (no same-category pair both >1.5% AH).</div>
+</div>
+
+<!-- ===================== AMC EARNINGS ===================== -->
+<div class="section">
+<h2>📋 AMC Earnings Results (June 22, 2026)</h2>
+<div class="note">
+  <strong>No major AMC earnings confirmed</strong> for June 22, 2026 from the embedded universe or watchlist. Earnings calendar sources returned no June 22 AMC data from accessible sources (verify manually).<br><br>
+  Note: PRIM's June 22 8-K is a <em>business update / guidance revision</em> filed after-hours — NOT a scheduled earnings release. Prior Q1 2026 earnings were May 5.
+</div>
+</div>
+
+<!-- ===================== FINVIZ NEWS ===================== -->
+<div class="section">
+<h2>📰 Finviz AH News Digest</h2>
+<div class="note">Finviz Elite filter unavailable — public feed used. Limited post-4 PM coverage.</div>
+
+<table>
+<tr><th>Time ET</th><th>Headline</th><th>Ticker</th><th>ETF Bucket</th><th>Source</th></tr>
+<tr>
+  <td class="news-time">4:51 PM</td>
+  <td>Momentum fading for some Mag 7 stocks</td>
+  <td class="ticker">MULTI</td>
+  <td>XLC, QQQ, XLK</td>
+  <td>Fox Business</td>
+</tr>
+<tr>
+  <td class="news-time">4:50 PM</td>
+  <td>On the Border Mexican Grill files Chapter 7 liquidation</td>
+  <td class="ticker">OBGX</td>
+  <td>XRT (minor)</td>
+  <td>WSJ</td>
+</tr>
+<tr>
+  <td class="news-time">4:45 PM</td>
+  <td>Major chip index doubled despite Nvidia ranking last</td>
+  <td class="ticker">NVDA / SMH</td>
+  <td><strong>SMH</strong> — NVDA intra-index laggard</td>
+  <td>MarketWatch</td>
+</tr>
+<tr>
+  <td class="news-time">4:40 PM</td>
+  <td>SpaceX loses $400B in value post-IPO</td>
+  <td class="ticker">SPACEX</td>
+  <td>ARKX (indirect) — UNCLASSIFIED</td>
+  <td>MarketWatch</td>
+</tr>
+<tr>
+  <td class="news-time">4:28 PM</td>
+  <td><strong>Oil prices drop after Iran cleared to sell crude</strong></td>
+  <td class="ticker">XLE/XOP</td>
+  <td><span class="neg">XLE 🔴, XOP 🔴, USO 🔴</span> — supply glut bearish</td>
+  <td>WSJ</td>
+</tr>
+<tr>
+  <td class="news-time">4:25 PM</td>
+  <td>SpaceX's 3-day slide wipes out IPO gains</td>
+  <td class="ticker">SPACEX</td>
+  <td>ARKX (indirect) — UNCLASSIFIED</td>
+  <td>Yahoo Finance</td>
+</tr>
+<tr>
+  <td class="news-time">4:10 PM</td>
+  <td>Sony plans first dollar-bond sale in 30 years</td>
+  <td class="ticker">SNE</td>
+  <td><em>UNCLASSIFIED</em> (Japan consumer electronics)</td>
+  <td>Bloomberg</td>
+</tr>
+<tr>
+  <td class="news-time">4:06 PM</td>
+  <td>S&amp;P 500, Nasdaq fall as Big Tech weighs</td>
+  <td class="ticker">SPY/QQQ</td>
+  <td>SPY, QQQ, XLK</td>
+  <td>Yahoo Finance</td>
+</tr>
+<tr>
+  <td class="news-time">3:55 PM</td>
+  <td>CME trading disrupted by platform disconnects</td>
+  <td class="ticker">CME</td>
+  <td>XLF (minor — exchange, not bank)</td>
+  <td>Bloomberg</td>
+</tr>
+</table>
+</div>
+
+<!-- ===================== WATCHLIST ===================== -->
+<div class="section">
+<h2>👁️ Watchlist AH Activity</h2>
+<div class="note blue-note">All prices: batch_run(get_ohlcv) TV MCP; confirmed via quote_get for META, AMZN, NVDA. Regular session closes. AH: flat across watchlist tonight — no AMC earnings, no watchlist-specific catalysts.</div>
+
+<div class="watchlist-grid">
+  <div class="wl-card">
+    <div class="wl-ticker">TSLA</div>
+    <div class="wl-close">$405.05</div>
+    <div class="wl-today pos">+$10.20 (+2.58%) today</div>
+    <div class="wl-note">Range $394.85–$414.75 · Strong session · AH flat</div>
+  </div>
+  <div class="wl-card">
+    <div class="wl-ticker">NVDA</div>
+    <div class="wl-close">$208.65</div>
+    <div class="wl-today neg">-$2.79 (-1.32%) today</div>
+    <div class="wl-note">"NVDA ranked last" in chip index narrative · AH flat · MU June 24 catalyst watch</div>
+  </div>
+  <div class="wl-card">
+    <div class="wl-ticker">AMD</div>
+    <div class="wl-close">$551.63</div>
+    <div class="wl-today pos">+$6.13 (+1.12%) today</div>
+    <div class="wl-note">+117% over 100 bars · Monster performer · AH flat</div>
+  </div>
+  <div class="wl-card">
+    <div class="wl-ticker">PLTR</div>
+    <div class="wl-close">$119.50</div>
+    <div class="wl-today neg">-$6.24 (-4.95%) today</div>
+    <div class="wl-note">-27% 100-bar · Heaviest watchlist loser · SHLD drag · AH flat</div>
+  </div>
+  <div class="wl-card">
+    <div class="wl-ticker">META</div>
+    <div class="wl-close">$563.85</div>
+    <div class="wl-today neg">-$8.17 (-1.43%) today</div>
+    <div class="wl-note">-16% 100-bar · XLC weakness driver · AH flat</div>
+  </div>
+  <div class="wl-card">
+    <div class="wl-ticker">AMZN</div>
+    <div class="wl-close">$232.79</div>
+    <div class="wl-today neg">-$7.29 (-3.04%) today</div>
+    <div class="wl-note">Opened $240.08 · Notable volume 65M+ · AH flat</div>
+  </div>
+  <div class="wl-card">
+    <div class="wl-ticker">SNDK</div>
+    <div class="wl-close">$2,273.73</div>
+    <div class="wl-today neg">-$19.59 (-0.85%) today</div>
+    <div class="wl-note">+354% 100-bar (!!) · Extraordinary run · AH flat</div>
+  </div>
+  <div class="wl-card">
+    <div class="wl-ticker">MARA</div>
+    <div class="wl-close">$14.85</div>
+    <div class="wl-today pos">+$0.36 (+2.49%) today</div>
+    <div class="wl-note">WGMI/Bitcoin-aligned · AH flat</div>
+  </div>
+  <div class="wl-card">
+    <div class="wl-ticker">COIN</div>
+    <div class="wl-close">$164.84</div>
+    <div class="wl-today neutral">-$0.10 (-0.06%) today</div>
+    <div class="wl-note">-23% 100-bar · Essentially flat today · AH flat</div>
+  </div>
+  <div class="wl-card">
+    <div class="wl-ticker">SOFI</div>
+    <div class="wl-close">$17.10</div>
+    <div class="wl-today neg">-$0.49 (-2.78%) today</div>
+    <div class="wl-note">-33% 100-bar · Continued weakness · AH flat</div>
+  </div>
+  <div class="wl-card">
+    <div class="wl-ticker">SPY</div>
+    <div class="wl-close">$744.39</div>
+    <div class="wl-today neg">-0.44% today</div>
+    <div class="wl-note">✅ Sanity check passed (today -0.44%, within 5%)</div>
+  </div>
+  <div class="wl-card">
+    <div class="wl-ticker">QQQ</div>
+    <div class="wl-close">$737.95</div>
+    <div class="wl-today neg">-0.55% today</div>
+    <div class="wl-note">✅ Sanity check passed (today -0.55%, within 5%)</div>
+  </div>
+</div>
+</div>
+
+<!-- ===================== TOMORROW'S EARNINGS ===================== -->
+<div class="section">
+<h2>📅 Tomorrow's Earnings Preview (June 23, 2026)</h2>
+<div class="note red-note">
+  <strong>Earnings calendar unavailable from primary sources.</strong> earningswhispers required login; stockanalysis returned April data; Kiplinger page truncated; Yahoo Finance search shows 15 reports on June 23 but no company names returned. <strong>Verify manually.</strong>
+</div>
+
+<div class="big-upcoming">
+  <div class="mu-label">🔮 KEY UPCOMING CATALYST — 2 DAYS OUT</div>
+  <div style="display:flex; align-items:baseline; gap:12px;">
+    <span class="mu-ticker">MU</span>
+    <span class="mu-date">📅 June 24, 2026 — AMC (Tuesday evening)</span>
+  </div>
+  <div class="mu-meta">
+    <span>Micron Technology — Fiscal Q3 2026 Earnings</span>
+  </div>
+  <table style="margin-top:10px;">
+    <tr><th>Metric</th><th>Consensus</th><th>Company Guidance</th></tr>
+    <tr><td>Revenue</td><td class="pos">$34.66B</td><td>$33.5B ± $0.75B</td></tr>
+    <tr><td>EPS (non-GAAP)</td><td class="pos">$19.95</td><td>$19.15 ± $0.40</td></tr>
+    <tr><td>Gross Margin</td><td>—</td><td>~81%</td></tr>
+    <tr><td>OpEx</td><td>—</td><td>~$1.4B</td></tr>
+  </table>
+  <div style="margin-top:10px; font-size:11px; color:var(--muted);">
+    <strong>Key monitors:</strong> HBM4 allocation outlook · FY2026 guidance raise/cut · 81% GM sustainability vs CAPEX inflation + SK Hynix / Samsung competition<br>
+    <strong>ETF impact:</strong> SMH (primary) · DRAM (HBM memory direct — +176% 100-bar) · XLK (sector)<br>
+    <strong>Context:</strong> SMH +61% over 100 bars. DRAM +176% over 100 bars. MU lagging NVDA but the HBM story is intact. This report sets the memory cycle narrative for Q3.
+  </div>
+</div>
+</div>
+
+<!-- ===================== POSITIONS PLAN ===================== -->
+<div class="section">
+<h2>🧭 Personal Positions Plan</h2>
+
+<table class="positions-table">
+<tr><th>Theme</th><th>Bias</th><th>Rationale</th></tr>
+<tr>
+  <td>Big tech (XLC, XLK, QQQ)</td>
+  <td><span class="neg">CAUTIOUS</span></td>
+  <td>Mag7 momentum fading (FOX Business); META -1.43%, AMZN -3.04% today; PLTR -4.95%</td>
+</tr>
+<tr>
+  <td>Semiconductors (SMH)</td>
+  <td><span class="neutral">NEUTRAL/WATCH</span></td>
+  <td>Index +61% over 100 bars but NVDA "ranked last" — divergence. MU June 24 could reset narrative</td>
+</tr>
+<tr>
+  <td>Energy (XLE, XOP)</td>
+  <td><span class="neg">CAUTIOUS</span></td>
+  <td>Iran crude cleared to sell → supply bearish. XLE +0.99% today may have priced some in</td>
+</tr>
+<tr>
+  <td>Industrials (XLI)</td>
+  <td><span class="neg">CAUTIOUS</span></td>
+  <td>PRIM gap-down -31.7% AH — E&amp;C/Renewables execution risk narrative</td>
+</tr>
+<tr>
+  <td>Biotech (XBI)</td>
+  <td><span class="pos">CONSTRUCTIVE</span></td>
+  <td>+1.62% today with 16.7M volume — clear relative strength outperformer</td>
+</tr>
+<tr>
+  <td>AI Power (AIPO, GRID)</td>
+  <td><span class="pos">CONSTRUCTIVE</span></td>
+  <td>+1.22% / +1.13% today. Datacenter power demand secular theme intact</td>
+</tr>
+<tr>
+  <td>Defense (SHLD, ITA)</td>
+  <td><span class="neg">CAUTIOUS</span></td>
+  <td>SHLD -2.01% (PLTR-driven, not theme-wide). ITA -1.37% softening</td>
+</tr>
+<tr>
+  <td>Space (ARKX)</td>
+  <td><span class="neg">NEAR-TERM BEARISH</span></td>
+  <td>SpaceX 3-day IPO slide; ARKX -2.36% regular session</td>
+</tr>
+</table>
+
+<div style="margin-top: 14px; font-size: 12px;">
+<strong>Specific watch items for tomorrow:</strong>
+<ul style="margin-left:20px; margin-top:6px; line-height:1.8;">
+  <li><strong>PRIM open:</strong> expect $72-76 gap-down. Do NOT buy into the flush unless Q2 guidance reinstated with specifics. Three shocks simultaneously (leadership + execution + guidance) = more downside risk.</li>
+  <li><strong>CAR at open:</strong> AH at ~$199-202 on 3K shares is unreliable. Likely fades to $190-195 on open volume. Barclays PT unknown, Jefferies AI thesis may attract new buyers but $187 → $202 on 3K shares = noise.</li>
+  <li><strong>NVDA + MU pre-positioning:</strong> MU June 24 AMC. Memory cycle print + HBM4 allocation language will drive SMH/DRAM follow-through. Consider positioning before the event.</li>
+  <li><strong>AMZN:</strong> -3.04% today on 65M volume. Watch if this continues — heaviest QQQ component drag risk.</li>
+  <li><strong>SNDK at $2,273:</strong> +354% over 100 bars. If holding, review trailing stops given velocity.</li>
+</ul>
+</div>
+</div>
+
+<!-- ===================== AUDIT ===================== -->
+<div class="section">
+<h2>🔍 Assumption Audit (Step 9)</h2>
+<div class="audit-row"><div class="audit-key">TV MCP price method</div><div class="audit-val">batch_run(get_ohlcv) for 56-ETF sweep + watchlist ✅; quote_get for CAR, PRIM, XLE, ARKX, META, AMZN, NVDA spot-checks ✅; chart_set_symbol + chart_set_timeframe(15) + data_get_ohlcv for CAR AH bars ✅</div></div>
+<div class="audit-row"><div class="audit-key">VIX</div><div class="audit-val" style="color:var(--yellow)">NOT PULLED — omitted from 57-ETF batch_run (sent 56 tickers). Add VIX to next run.</div></div>
+<div class="audit-row"><div class="audit-key">AH volume — CAR</div><div class="audit-val">VERIFIED: 3,023 shares total (2,445 + 577 + 1) from TV MCP intraday 15-min bars. BELOW 100K threshold → marked ❌ volume-failed, not tradeable.</div></div>
+<div class="audit-row"><div class="audit-key">AH volume — PRIM</div><div class="audit-val" style="color:var(--yellow)">UNVERIFIED — chart_set_symbol("PRIM") returned data at $33-34 price range, inconsistent with batch_run close $108.34. Likely TV MCP chart resolved to wrong symbol. Batch_run + stockanalysis AH price ($74.00) trusted. Conviction capped 🟡.</div></div>
+<div class="audit-row"><div class="audit-key">Chrome MCP</div><div class="audit-val" style="color:var(--yellow)">NOT TESTED (optional). AH gap discovery limited to WebFetch top-20 %-sorted pages. $1B+ names on pages 2+ may be missed. Noted in header.</div></div>
+<div class="audit-row"><div class="audit-key">Finviz Elite filter</div><div class="audit-val" style="color:var(--yellow)">UNAVAILABLE — public feed only; no post-4PM filtering. Limited AH headline coverage.</div></div>
+<div class="audit-row"><div class="audit-key">SEC EDGAR URLs</div><div class="audit-val" style="color:var(--yellow)">Both PRIM and CAR June 22 8-K URLs returned 403 Forbidden. Catalyst content confirmed via web_search summaries (SEC.gov search results + investing.com + stocktitan).</div></div>
+<div class="audit-row"><div class="audit-key">Earnings calendar</div><div class="audit-val" style="color:var(--yellow)">UNAVAILABLE from primary sources. earningswhispers required login; stockanalysis returned April placeholder data; Kiplinger page truncated; Yahoo Finance showed 15 June 23 reports but no names. Verify manually.</div></div>
+<div class="audit-row"><div class="audit-key">PRIM guidance specifics</div><div class="audit-val" style="color:var(--yellow)">FY2026 old vs new numbers not accessible (403 on EDGAR). COO departure, Renewables overruns, guidance cut, $2B awards, $50M buyback all confirmed via web_search summary.</div></div>
+<div class="audit-row"><div class="audit-key">PRIM intraday data discrepancy</div><div class="audit-val" style="color:var(--red)">Chart showed $33-34 range; batch_run shows $108.34 close. Likely chart resolved wrong symbol. Batch_run data and stockanalysis AH price accepted as ground truth. Flagged in AH volume status.</div></div>
+<div class="audit-row"><div class="audit-key">UNCLASSIFIED headlines</div><div class="audit-val">2 items: (1) SpaceX post-IPO slide — SPACEX now a public company; not in 57-ETF universe; affects ARKX indirectly. (2) Sony dollar-bond (SNE, Japan electronics — no bucket fit).</div></div>
+<div class="audit-row"><div class="audit-key">ETF AH confirmed flat</div><div class="audit-val">XLE: $54.05 vs $54.06 close (-0.02%, 120 shares). ARKX: $33.27 vs $33.36 close (-0.27%, 9 shares). Both via quote_get. No ETF >1.5% AH.</div></div>
+<div class="audit-row"><div class="audit-key">stockanalysis.com pages</div><div class="audit-val">Gainers: top-20 %-sorted (page 1 of 43). Losers: top-20 %-sorted. $1B+ filter applied; all micro-caps filtered out except CAR ($6.58B) and PRIM ($5.88B).</div></div>
+</div>
+
+<hr class="section-divider">
+<div style="color: var(--muted); font-size: 11px; text-align: center; padding: 12px 0;">
+  After-Hours Gaps v7.7 · June 22, 2026 · Sources: TV MCP (batch_run, quote_get, data_get_ohlcv) · stockanalysis.com · finviz.com/news (public) · SEC EDGAR (web_search) · web_search
+</div>
+
+</body>
+</html>
