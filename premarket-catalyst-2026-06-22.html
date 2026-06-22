@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pre-Market Catalyst — June 22, 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0e17; --bg2: #0f1520; --bg3: #141c2e;
+    --text: #e2e8f0; --muted: #8896aa; --border: #1e2d42;
+    --green: #22c55e; --green-dim: #166534; --green-bg: #052e16;
+    --red: #ef4444; --red-dim: #991b1b; --red-bg: #2d0a0a;
+    --amber: #f59e0b; --amber-bg: #1c1200;
+    --cyan: #22d3ee; --cyan-bg: #0a2231;
+    --purple: #a855f7; --purple-bg: #1a0d2e;
+    --orange: #fb923c; --orange-bg: #1c0e00;
+    --blue: #60a5fa; --blue-bg: #0c1a2e;
+    --yellow: #fde047; --yellow-bg: #1c1700;
+    --card: #111827;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: 'JetBrains Mono', monospace; font-size: 13px; line-height: 1.6; }
+  .container { max-width: 1400px; margin: 0 auto; padding: 16px 20px; }
+
+  /* TOOL HEALTH BANNER */
+  .health-banner { background: var(--bg3); border: 1px solid var(--border); border-left: 4px solid var(--green); padding: 10px 16px; margin-bottom: 20px; border-radius: 4px; display: flex; align-items: center; gap: 20px; flex-wrap: wrap; }
+  .health-ok { color: var(--green); font-weight: 700; }
+  .health-warn { color: var(--amber); font-weight: 700; }
+  .health-item { color: var(--muted); font-size: 12px; }
+
+  /* HEADER */
+  .header { margin-bottom: 24px; }
+  .header h1 { font-size: 22px; font-weight: 700; color: var(--text); }
+  .header .sub { color: var(--muted); font-size: 12px; margin-top: 4px; }
+  .vix-badge { display: inline-block; background: var(--bg3); border: 1px solid var(--border); color: var(--amber); padding: 3px 10px; border-radius: 3px; font-size: 12px; margin-left: 12px; }
+
+  /* THEME-WIDE ALERT */
+  .theme-alert { background: var(--cyan-bg); border: 1px solid var(--cyan); border-radius: 4px; padding: 10px 16px; margin-bottom: 12px; }
+  .theme-alert.bearish { background: var(--red-bg); border-color: var(--red); }
+  .theme-alert .label { color: var(--cyan); font-weight: 700; font-size: 13px; }
+  .theme-alert.bearish .label { color: var(--red); }
+  .theme-alert p { color: var(--text); font-size: 12px; margin-top: 4px; }
+
+  /* SECTION */
+  section { margin-bottom: 28px; }
+  .section-title { font-size: 14px; font-weight: 700; color: var(--text); border-bottom: 1px solid var(--border); padding-bottom: 6px; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
+  .section-title .badge { font-size: 11px; padding: 2px 8px; border-radius: 3px; font-weight: 500; }
+  .badge-green { background: var(--green-bg); color: var(--green); border: 1px solid var(--green-dim); }
+  .badge-red { background: var(--red-bg); color: var(--red); border: 1px solid var(--red-dim); }
+  .badge-amber { background: var(--amber-bg); color: var(--amber); }
+  .badge-cyan { background: var(--cyan-bg); color: var(--cyan); }
+  .badge-purple { background: var(--purple-bg); color: var(--purple); }
+  .badge-orange { background: var(--orange-bg); color: var(--orange); }
+  .badge-blue { background: var(--blue-bg); color: var(--blue); }
+
+  /* BRIEFING */
+  .briefing { background: var(--bg3); border: 1px solid var(--border); border-left: 4px solid var(--cyan); padding: 14px 18px; border-radius: 4px; line-height: 1.8; color: var(--text); font-size: 13px; }
+
+  /* GRID */
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+  @media (max-width: 900px) { .grid-2, .grid-3 { grid-template-columns: 1fr; } }
+
+  /* TRADE CARD */
+  .trade-card { background: var(--card); border: 1px solid var(--border); border-radius: 6px; padding: 14px 16px; }
+  .trade-card.high { border-top: 3px solid var(--green); }
+  .trade-card.medium { border-top: 3px solid var(--amber); }
+  .trade-card .ticker { font-size: 17px; font-weight: 700; color: var(--text); }
+  .trade-card .name { color: var(--muted); font-size: 11px; margin-bottom: 8px; }
+  .trade-card .conviction { float: right; font-size: 12px; padding: 2px 8px; border-radius: 3px; }
+  .conv-high { background: var(--green-bg); color: var(--green); border: 1px solid var(--green-dim); }
+  .conv-med { background: var(--amber-bg); color: var(--amber); border: 1px solid #78350f; }
+  .trade-card .row { display: flex; justify-content: space-between; margin-bottom: 4px; font-size: 12px; }
+  .trade-card .row .k { color: var(--muted); }
+  .trade-card .row .v { color: var(--text); font-weight: 500; }
+  .trade-card .row .v.green { color: var(--green); }
+  .trade-card .row .v.red { color: var(--red); }
+  .trade-card .note { font-size: 11px; color: var(--muted); margin-top: 8px; border-top: 1px solid var(--border); padding-top: 6px; }
+  .trade-card .catalyst-line { font-size: 11px; color: var(--cyan); margin-top: 6px; }
+
+  /* TABLE */
+  table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  th { background: var(--bg3); color: var(--muted); font-weight: 600; text-align: left; padding: 6px 10px; border-bottom: 1px solid var(--border); }
+  td { padding: 5px 10px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  tr:hover td { background: var(--bg2); }
+  .pos { color: var(--green); font-weight: 600; }
+  .neg { color: var(--red); font-weight: 600; }
+  .neutral { color: var(--muted); }
+
+  /* ETF ROW COLORS */
+  tr.etf-hot-bull td { background: rgba(34,197,94,0.06); }
+  tr.etf-hot-bear td { background: rgba(239,68,68,0.06); }
+
+  /* NEWS */
+  .news-item { background: var(--card); border: 1px solid var(--border); border-radius: 4px; padding: 10px 14px; margin-bottom: 8px; }
+  .news-item.wire { border-left: 3px solid var(--orange); }
+  .news-item.policy { border-left: 3px solid var(--purple); }
+  .news-item.biotech { border-left: 3px solid var(--green); }
+  .news-item.metals { border-left: 3px solid var(--red); }
+  .news-item .headline { font-size: 13px; color: var(--text); font-weight: 500; }
+  .news-item .meta { font-size: 11px; color: var(--muted); margin-top: 3px; }
+  .news-item .etf-tag { display: inline-block; background: var(--bg3); border: 1px solid var(--border); color: var(--cyan); font-size: 10px; padding: 1px 6px; border-radius: 2px; margin-right: 4px; margin-top: 3px; }
+
+  /* WATCHLIST */
+  .wl-row td:nth-child(3) { font-weight: 600; }
+
+  /* AVOID */
+  .avoid-item { display: inline-block; background: var(--red-bg); border: 1px solid var(--red-dim); color: var(--red); padding: 4px 10px; border-radius: 3px; margin: 3px; font-size: 12px; }
+
+  /* DIVIDER */
+  .divider { border: none; border-top: 1px solid var(--border); margin: 24px 0; }
+
+  /* STEP LABEL */
+  .step-label { font-size: 10px; color: var(--muted); font-weight: 500; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 2px; }
+
+  /* AUDIT */
+  .audit-row td:first-child { color: var(--amber); font-size: 11px; }
+  .audit-row td { font-size: 11px; color: var(--muted); }
+
+  a { color: var(--blue); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  .pill { display: inline-block; padding: 2px 8px; border-radius: 12px; font-size: 11px; font-weight: 600; margin-right: 4px; }
+  .pill-green { background: var(--green-bg); color: var(--green); }
+  .pill-red { background: var(--red-bg); color: var(--red); }
+  .pill-amber { background: var(--amber-bg); color: var(--amber); }
+</style>
+</head>
+<body>
+<div class="container">
+
+<!-- TOOL HEALTH BANNER -->
+<div class="health-banner">
+  <span class="health-ok">✅ TV MCP LIVE</span>
+  <span class="health-ok">✅ StockAnalysis LIVE</span>
+  <span class="health-ok">✅ Finviz News LIVE</span>
+  <span class="health-warn">⚠️ Chrome MCP — NOT TESTED (top-20 %-sort only; Yahoo options skipped)</span>
+  <span class="health-item">Options flow: price-action inference only | Price method: batch_run get_ohlcv | 56/56 ETFs returned</span>
+</div>
+
+<!-- HEADER -->
+<div class="header">
+  <h1>☀️ PRE-MARKET CATALYST (v7.7 HYBRID) — June 22, 2026 <span class="vix-badge">VIX 17.13</span></h1>
+  <div class="sub">Pulled ~08:30 ET · SPY $746.74 (-0.35%) · QQQ $739.81 (+0.74%) · IWM $295.59 (+1.07%) · VIX 17.13 — moderate, no panic</div>
+</div>
+
+<!-- THEME-WIDE ALERTS -->
+<div class="theme-alert">
+  <div class="label">🚨 THEME-WIDE BREAKOUT — SEMICONDUCTOR / MEMORY SUPERCYCLE</div>
+  <p>SMH +4.17% + DRAM +6.91% (Friday closes) · UMC +13.41% pre-mkt today · PENG +14.65% pre-mkt · SNDK WD share swap completes TODAY · Apple "unavoidable" memory price hikes · UMC wafer +10% H2 2026 · Multi-day institutional accumulation confirmed.</p>
+</div>
+<div class="theme-alert bearish">
+  <div class="label">🚨 THEME-WIDE CRASH — PRECIOUS METALS / GOLD COMPLEX</div>
+  <p>GDX -5.38% + GDXJ -6.52% + SLV -6.35% + COPX -4.31% + GLD -2.69% (Friday) · Goldman Sachs cut gold 2026 target to $4,900/oz (from $5,400) Saturday · Fed rate hike signal · AGI (gold miner) -12.38% pre-mkt today — crash accelerating into Monday.</p>
+</div>
+
+<!-- MORNING BRIEFING -->
+<section>
+  <div class="step-label">Morning Briefing</div>
+  <div class="briefing">
+    Monday June 22 opens with two dominant cross-asset rotations: a <strong style="color:var(--cyan)">SEMI/MEMORY SUPERCYCLE BREAKOUT</strong> and a <strong style="color:var(--red)">METALS/GOLD CRASH</strong>. SanDisk (SNDK) completes its Western Digital share swap <em>today</em>, positioning it as a pure-play NAND/SSD company into a sold-out capacity environment — Apple CEO Tim Cook confirmed memory price increases are "unavoidable"; UMC announced +10% H2 wafer hikes; and DRAM ETF's +6.91% Friday close is validated by UMC's +13.41% and PENG's +14.65% pre-market continuation. Against this, Goldman Sachs' Saturday gold target cut to $4,900/oz is detonating precious metals: GDX/GDXJ/SLV all posted 5–6% losses Friday, and gold miners are accelerating lower this morning. The biotech bucket gets a separate, high-quality lift from AbbVie's confirmed <strong style="color:var(--green)">$135.11 cash acquisition of APGE (+46.76%)</strong> and DFTX's Phase 3 positive MDD readout today. <strong>VIX at 17.13 signals no panic</strong> — aggressive sector rotation, not a crash. The semi/memory theme is the highest-conviction long idea of the session.
+  </div>
+</section>
+
+<!-- TRADE IDEAS — SIDE BY SIDE -->
+<section>
+  <div class="section-title">
+    📊 TOP 3 ETF TRADE IDEAS <span class="badge badge-cyan">STEP 10A</span>
+  </div>
+  <div class="grid-3">
+    <!-- DRAM -->
+    <div class="trade-card high">
+      <span class="conviction conv-high">🟢 HIGH</span>
+      <div class="ticker">DRAM</div>
+      <div class="name">Roundhill HBM Memory ETF · Parent: Semis/Memory</div>
+      <div class="row"><span class="k">Fri Close</span><span class="v green">$76.71 (+6.91%)</span></div>
+      <div class="row"><span class="k">Entry trigger</span><span class="v">Gap continuation >$77.50</span></div>
+      <div class="row"><span class="k">Stop</span><span class="v red">Below $73</span></div>
+      <div class="row"><span class="k">Target</span><span class="v green">$85–90</span></div>
+      <div class="row"><span class="k">AUM</span><span class="v">~$17B · Vol: 52.6M (1.11x avg)</span></div>
+      <div class="catalyst-line">🚨 SMH+DRAM theme-wide · Apple "unavoidable" hikes · UMC +10% H2 wafer · SNDK WD swap today</div>
+      <div class="note">Proof: Multi-week base breakout, Stage 2 uptrend. Firepower: AUM adequate, vol confirming.</div>
+    </div>
+    <!-- XBI -->
+    <div class="trade-card medium">
+      <span class="conviction conv-med">🟡 MEDIUM</span>
+      <div class="ticker">XBI</div>
+      <div class="name">SPDR Biotech Small-Cap · Parent: Biotech</div>
+      <div class="row"><span class="k">Fri Close</span><span class="v green">$140.58 (+3.08%)</span></div>
+      <div class="row"><span class="k">Entry trigger</span><span class="v">Confirm above $141 on open</span></div>
+      <div class="row"><span class="k">Stop</span><span class="v red">Below $136</span></div>
+      <div class="row"><span class="k">Target</span><span class="v green">$150</span></div>
+      <div class="row"><span class="k">Vol</span><span class="v">9.57M (0.72x avg Fri)</span></div>
+      <div class="catalyst-line">AbbVie acquires APGE ($135.11 cash) + DFTX Phase 3 MDD positive today = dual catalyst</div>
+      <div class="note">XBI + IBB both green = biotech theme-wide. Vol light Friday — watch for open confirmation.</div>
+    </div>
+    <!-- AIPO -->
+    <div class="trade-card medium">
+      <span class="conviction conv-med">🟡 MEDIUM</span>
+      <div class="ticker">AIPO</div>
+      <div class="name">Defiance AI & Power Infra · VRT, VST, GEV</div>
+      <div class="row"><span class="k">Fri Close</span><span class="v green">$34.00 (+3.94%)</span></div>
+      <div class="row"><span class="k">Entry trigger</span><span class="v">Hold above $34.25</span></div>
+      <div class="row"><span class="k">Stop</span><span class="v red">Below $32.50</span></div>
+      <div class="row"><span class="k">Target</span><span class="v green">$37–38</span></div>
+      <div class="row"><span class="k">Vol</span><span class="v">1.25M (0.95x avg)</span></div>
+      <div class="catalyst-line">AI inference server buildout · Data center power demand · Rides semi tailwind</div>
+      <div class="note">Confirmation of AI infra super-cycle. Moderate firepower — position size accordingly.</div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="section-title">
+    🎯 TOP 3 INDIVIDUAL STOCK SETUPS <span class="badge badge-green">STEP 10B</span>
+  </div>
+  <div class="grid-3">
+    <!-- PENG -->
+    <div class="trade-card medium">
+      <span class="conviction conv-med">🟡 MEDIUM</span>
+      <div class="ticker">PENG</div>
+      <div class="name">Penguin Solutions · AI Server Infra · Mkt Cap $3.41B</div>
+      <div class="row"><span class="k">Pre-mkt</span><span class="v green">$76.99 (+14.65%)</span></div>
+      <div class="row"><span class="k">TV MCP Fri Close</span><span class="v">$67.15 (+8.01%)</span></div>
+      <div class="row"><span class="k">Entry trigger</span><span class="v">Flag >$72 post-open; avoid gap chase</span></div>
+      <div class="row"><span class="k">Stop</span><span class="v red">Below $68</span></div>
+      <div class="row"><span class="k">Target</span><span class="v green">$82–85</span></div>
+      <div class="row"><span class="k">Parent ETF</span><span class="v">SMH (semiconductor)</span></div>
+      <div class="catalyst-line">AI inference/agentic workloads · Guidance raised to high end · Vol 4.42M (1.39x avg Fri)</div>
+      <div class="note">Already ran hard — gap open may fade. Wait for flag formation before entry.</div>
+    </div>
+    <!-- UMC -->
+    <div class="trade-card medium">
+      <span class="conviction conv-med">🟡 MEDIUM</span>
+      <div class="ticker">UMC</div>
+      <div class="name">United Microelectronics · $63.58B · NYSE: UMC</div>
+      <div class="row"><span class="k">Pre-mkt</span><span class="v green">$27.31 (+13.41%)</span></div>
+      <div class="row"><span class="k">TV MCP Fri Close</span><span class="v">$24.08 (+8.13%)</span></div>
+      <div class="row"><span class="k">Entry trigger</span><span class="v">Gap continuation >$27.50</span></div>
+      <div class="row"><span class="k">Stop</span><span class="v red">Below $25.50</span></div>
+      <div class="row"><span class="k">Target</span><span class="v green">$30–32</span></div>
+      <div class="row"><span class="k">Parent ETF</span><span class="v">SMH (semiconductor)</span></div>
+      <div class="catalyst-line">Wafer price +10% H2 2026 · Sold-out 2026 capacity · Vol 26.9M (1.33x avg)</div>
+      <div class="note">3rd day of extension — fade risk real. Tight stop required. Very liquid ($63B mkt cap).</div>
+    </div>
+    <!-- APGE arb -->
+    <div class="trade-card high">
+      <span class="conviction conv-high">🟢 HIGH (M&A arb)</span>
+      <div class="ticker">APGE</div>
+      <div class="name">Apogee Therapeutics · M&A Arb · Mkt Cap $6.77B</div>
+      <div class="row"><span class="k">Pre-mkt</span><span class="v green">$132.64 (+46.76%)</span></div>
+      <div class="row"><span class="k">Deal price</span><span class="v">$135.11 cash (AbbVie)</span></div>
+      <div class="row"><span class="k">Deal spread</span><span class="v green">$2.47 (1.83%)</span></div>
+      <div class="row"><span class="k">Entry</span><span class="v">Buy $132–133 for arb spread</span></div>
+      <div class="row"><span class="k">Stop</span><span class="v red">WIDE — deal break = -30%+</span></div>
+      <div class="row"><span class="k">Target</span><span class="v green">$135.11 (deal close)</span></div>
+      <div class="catalyst-line">Definitive agreement signed · AbbVie investor call 8AM CT today · XBI/IBB both green</div>
+      <div class="note">⚠️ SIZE SMALL — binary risk on deal break. This is special-situation arb, not directional momentum.</div>
+    </div>
+  </div>
+</section>
+
+<!-- PRE-MARKET GAPPERS TABLE -->
+<section>
+  <div class="section-title">
+    📈 PRE-MARKET GAPPERS — &gt;$1B Market Cap <span class="badge badge-amber">STEP 1</span>
+    <span style="font-size:11px;color:var(--muted);font-weight:400;">Chrome MCP unavailable · top-20 %-sort · stockanalysis.com</span>
+  </div>
+  <table>
+    <tr><th>Ticker</th><th>Company</th><th>Pre-Mkt %</th><th>Pre-Mkt Price</th><th>Pre-Mkt Vol</th><th>Mkt Cap</th><th>Catalyst</th><th>TV MCP Fri Close</th></tr>
+    <tr>
+      <td style="color:var(--green);font-weight:700;">APGE</td>
+      <td>Apogee Therapeutics</td>
+      <td class="pos">+46.76%</td>
+      <td>$132.64</td>
+      <td>2.58M</td>
+      <td>$6.77B</td>
+      <td style="color:var(--green);">AbbVie acquisition $135.11 cash · 49% premium · Definitive agreement</td>
+      <td>$90.38 (+5.87%)</td>
+    </tr>
+    <tr>
+      <td style="color:var(--green);font-weight:700;">DFTX</td>
+      <td>Definium Therapeutics</td>
+      <td class="pos">+37.87%</td>
+      <td>$33.75</td>
+      <td>1.06M</td>
+      <td>$2.67B</td>
+      <td style="color:var(--green);">Phase 3 MDD Emerge Study topline readout TODAY — positive (inferred from price)</td>
+      <td>$24.48 (+1.41%)</td>
+    </tr>
+    <tr>
+      <td style="color:var(--amber);font-weight:700;">ORKA</td>
+      <td>Oruka Therapeutics</td>
+      <td class="pos">+13.78%</td>
+      <td>$82.31</td>
+      <td>13K ⚠️</td>
+      <td>$4.36B</td>
+      <td style="color:var(--amber);">Catalyst UNCONFIRMED — investigate manually. Possible biotech sector momentum.</td>
+      <td>N/A (not in batch)</td>
+    </tr>
+    <tr>
+      <td style="color:var(--green);font-weight:700;">PENG</td>
+      <td>Penguin Solutions</td>
+      <td class="pos">+14.65%</td>
+      <td>$76.99</td>
+      <td>187K</td>
+      <td>$3.41B</td>
+      <td>AI infrastructure demand · Guidance raised to high end · Agentic AI workloads</td>
+      <td>$67.15 (+8.01%)</td>
+    </tr>
+    <tr>
+      <td style="color:var(--green);font-weight:700;">UMC</td>
+      <td>United Microelectronics</td>
+      <td class="pos">+13.41%</td>
+      <td>$27.31</td>
+      <td>837K</td>
+      <td>$63.58B</td>
+      <td>Wafer price +10% H2 2026 · Sold-out 2026 capacity · Unusual options activity</td>
+      <td>$24.08 (+8.13%)</td>
+    </tr>
+    <tr style="opacity:0.6;">
+      <td>GETY</td>
+      <td>Getty Images</td>
+      <td class="pos">+123.10%</td>
+      <td>$1.35</td>
+      <td>69.7M</td>
+      <td>$254M ❌ &lt;$1B</td>
+      <td>Getty/Shutterstock merger — UK CMA clearance advancing</td>
+      <td>$0.61 (-11.21%)</td>
+    </tr>
+  </table>
+  <div style="margin-top:8px;font-size:11px;color:var(--muted);">Notable loser &gt;$1B: <span class="neg">AGI (Alamos Gold) -12.38% pre-mkt · $31.84 · $12.42B mkt cap · GOLD MINERS CRASH</span></div>
+</section>
+
+<!-- ETF SWEEP -->
+<section>
+  <div class="section-title">🔭 57-ETF EMBEDDED UNIVERSE SWEEP <span class="badge badge-cyan">STEP 2</span> <span style="font-size:11px;color:var(--muted);font-weight:400;">TV MCP batch_run · Fri session closes · ~08:30 ET</span></div>
+  <table>
+    <tr><th>ETF</th><th>Theme</th><th>Close</th><th>Change</th><th>Vol</th><th>Avg Vol</th><th>Notes</th></tr>
+
+    <!-- INDEX/REGIME -->
+    <tr><td colspan="7" style="background:var(--bg3);color:var(--muted);font-size:11px;padding:4px 10px;">INDEX / REGIME</td></tr>
+    <tr><td>SPY</td><td>S&P 500</td><td>$746.74</td><td class="neutral">-0.35%</td><td>80.9M</td><td>83.4M</td><td></td></tr>
+    <tr><td>QQQ</td><td>Nasdaq 100</td><td>$739.81</td><td class="pos">+0.74%</td><td>50.2M</td><td>50.9M</td><td></td></tr>
+    <tr><td>IWM</td><td>Small Caps</td><td>$295.59</td><td class="pos">+1.07%</td><td>32.5M</td><td>36.2M</td><td></td></tr>
+    <tr><td>TLT</td><td>20Y Bonds</td><td>$86.75</td><td class="pos">+0.49%</td><td>32.4M</td><td>33.4M</td><td>Modest bond bid</td></tr>
+    <tr><td>HYG</td><td>High-Yield Credit</td><td>$80.01</td><td class="neutral">+0.03%</td><td>41.1M</td><td>44.1M</td><td>Credit stable</td></tr>
+    <tr><td>UUP</td><td>US Dollar</td><td>$28.30</td><td class="pos">+1.29%</td><td>2.1M</td><td>2.5M</td><td>Dollar strength = metals headwind</td></tr>
+    <tr class="etf-hot-bear"><td style="color:var(--red);font-weight:700;">GLD</td><td>Gold</td><td>$387.12</td><td class="neg">-2.69%</td><td>7.6M</td><td>10.5M</td><td>Goldman cut to $4,900 · Rate hike fears</td></tr>
+
+    <!-- SECTOR SPDRs -->
+    <tr><td colspan="7" style="background:var(--bg3);color:var(--muted);font-size:11px;padding:4px 10px;">SECTOR SPDRs</td></tr>
+    <tr class="etf-hot-bull"><td style="color:var(--green);font-weight:700;">XLK</td><td>Technology</td><td>$191.21</td><td class="pos">+1.29%</td><td>12.1M</td><td>13.2M</td><td>SMH leading tech higher</td></tr>
+    <tr><td>XLV</td><td>Healthcare/Pharma</td><td>$148.74</td><td class="neg">-1.74%</td><td>10.9M</td><td>10.9M</td><td>Large pharma weak despite biotech up</td></tr>
+    <tr><td>XLF</td><td>Financials</td><td>$53.38</td><td class="neg">-1.33%</td><td>37.8M</td><td>43.7M</td><td>Saudi CB pulling assets (Bloomberg)</td></tr>
+    <tr><td>XLE</td><td>Energy</td><td>$53.39</td><td class="neg">-2.70%</td><td>39.6M</td><td>39.1M</td><td>Oil under pressure</td></tr>
+    <tr><td>XLI</td><td>Industrials</td><td>$180.47</td><td class="pos">+0.52%</td><td>8.1M</td><td>9.6M</td><td></td></tr>
+    <tr><td>XLY</td><td>Consumer Disc.</td><td>$116.93</td><td class="neg">-0.55%</td><td>8.7M</td><td>8.9M</td><td></td></tr>
+    <tr><td>XLP</td><td>Consumer Staples</td><td>$82.73</td><td class="neg">-2.22%</td><td>10.4M</td><td>14.2M</td><td>Dollar strength pressure</td></tr>
+    <tr><td>XLU</td><td>Utilities</td><td>$44.48</td><td class="neutral">-0.13%</td><td>36.8M</td><td>29.5M</td><td>Vol elevated — defensive bid?</td></tr>
+    <tr><td>XLB</td><td>Materials/Chemicals</td><td>$51.62</td><td class="neg">-1.35%</td><td>11.9M</td><td>14.1M</td><td></td></tr>
+    <tr><td>XLC</td><td>Communications</td><td>$109.17</td><td class="neg">-1.82%</td><td>11.7M</td><td>10.6M</td><td>META -2.5% dragging; China AI concern</td></tr>
+    <tr><td>XLRE</td><td>REITs</td><td>$43.48</td><td class="neg">-2.45%</td><td>5.7M</td><td>8.6M</td><td>Rate hike fears</td></tr>
+
+    <!-- INDUSTRY GROUPS -->
+    <tr><td colspan="7" style="background:var(--bg3);color:var(--muted);font-size:11px;padding:4px 10px;">INDUSTRY GROUPS</td></tr>
+    <tr class="etf-hot-bull"><td style="color:var(--cyan);font-weight:700;">SMH</td><td>Semiconductors</td><td>$659.88</td><td class="pos">+4.17%</td><td>11.2M</td><td>10.9M</td><td>🚨 SEMI THEME-WIDE · NVDA/UMC/AMD leading</td></tr>
+    <tr><td>IGV</td><td>Software</td><td>$89.09</td><td class="neg">-1.93%</td><td>24.3M</td><td>22.0M</td><td></td></tr>
+    <tr><td>CIBR</td><td>Cybersecurity</td><td>$84.54</td><td class="neg">-0.63%</td><td>1.1M</td><td>1.3M</td><td></td></tr>
+    <tr class="etf-hot-bull"><td style="color:var(--green);font-weight:700;">XBI</td><td>Biotech Small-Cap</td><td>$140.58</td><td class="pos">+3.08%</td><td>9.6M</td><td>13.4M</td><td>APGE deal + DFTX Phase 3 · Biotech theme-wide</td></tr>
+    <tr class="etf-hot-bull"><td style="color:var(--green);">IBB</td><td>Biotech Large-Cap</td><td>$173.64</td><td class="pos">+1.14%</td><td>1.0M</td><td>1.1M</td><td>XBI+IBB both up = biotech theme</td></tr>
+    <tr><td>KRE</td><td>Regional Banks</td><td>$71.30</td><td class="neg">-0.79%</td><td>16.5M</td><td>22.0M</td><td></td></tr>
+    <tr><td>XOP</td><td>Oil & Gas E&P</td><td>$152.61</td><td class="neg">-1.98%</td><td>5.5M</td><td>5.5M</td><td>Oil weak</td></tr>
+    <tr class="etf-hot-bull"><td>XHB</td><td>Homebuilders</td><td>$110.88</td><td class="pos">+1.32%</td><td>4.3M</td><td>5.0M</td><td></td></tr>
+    <tr><td>XRT</td><td>Retail</td><td>$86.20</td><td class="neg">-0.70%</td><td>5.6M</td><td>6.3M</td><td></td></tr>
+    <tr><td>IYT</td><td>Transports</td><td>$83.94</td><td class="neg">-2.33%</td><td>882K</td><td>1.2M</td><td></td></tr>
+    <tr><td>JETS</td><td>Airlines</td><td>$31.00</td><td class="pos">+1.31%</td><td>3.9M</td><td>3.6M</td><td></td></tr>
+    <tr><td>PEJ</td><td>Travel/Leisure</td><td>$65.38</td><td class="neutral">+0.05%</td><td>15.6K</td><td>16K</td><td>⚠️ VERY LOW LIQUIDITY</td></tr>
+
+    <!-- AI/TECH THEMES -->
+    <tr><td colspan="7" style="background:var(--bg3);color:var(--muted);font-size:11px;padding:4px 10px;">AI / TECH THEMES</td></tr>
+    <tr class="etf-hot-bull"><td style="color:var(--cyan);font-weight:700;">DRAM</td><td>HBM Memory</td><td>$76.71</td><td class="pos">+6.91%</td><td>52.6M</td><td>47.2M</td><td>🚨 SEMI THEME-WIDE · SK Hynix/Micron/Samsung</td></tr>
+    <tr class="etf-hot-bull"><td>QTUM</td><td>Quantum</td><td>$167.97</td><td class="pos">+1.80%</td><td>595K</td><td>539K</td><td>Trump $2B equity stakes (May 21 — ongoing)</td></tr>
+    <tr><td>BOTZ</td><td>Robotics/Physical AI</td><td>$38.37</td><td class="pos">+0.52%</td><td>1.7M</td><td>1.4M</td><td></td></tr>
+    <tr class="etf-hot-bull"><td>ARKK</td><td>Speculative Growth</td><td>$80.19</td><td class="pos">+1.40%</td><td>8.0M</td><td>9.4M</td><td>Risk-on signal</td></tr>
+    <tr><td>ARKX</td><td>Space</td><td>$34.56</td><td class="neg">-1.06%</td><td>2.6M</td><td>3.3M</td><td>SpaceX IPO mania week 2 — not flowing to ARKX constituents</td></tr>
+    <tr class="etf-hot-bull"><td style="color:var(--green);">AIPO</td><td>AI & Power Infra</td><td>$34.00</td><td class="pos">+3.94%</td><td>1.3M</td><td>1.3M</td><td>Data center buildout · VRT/VST/GEV</td></tr>
+    <tr><td>DTCR</td><td>Data Center REITs</td><td>$31.92</td><td class="pos">+0.25%</td><td>5.7M</td><td>3.5M</td><td>Vol elevated</td></tr>
+    <tr><td>SHLD</td><td>Defense Tech/PLTR</td><td>$62.30</td><td class="neg">-2.58%</td><td>1.7M</td><td>1.6M</td><td>PLTR valuation compression driving SHLD down</td></tr>
+    <tr><td>ITA</td><td>Defense Primes</td><td>$238.99</td><td class="neg">-0.19%</td><td>919K</td><td>827K</td><td>SHLD down but ITA flat = PLTR-specific, not defense-wide</td></tr>
+    <tr class="etf-hot-bull"><td style="color:var(--green);">WGMI</td><td>BTC Miners/AI-HPC</td><td>$72.10</td><td class="pos">+4.30%</td><td>909K</td><td>787K</td><td>AI pivot: IREN $1.6B Dell deal · CIFR AI infra</td></tr>
+    <tr><td>IBIT</td><td>Spot Bitcoin</td><td>$35.62</td><td class="neg">-3.05%</td><td>47.9M</td><td>45.3M</td><td>Rate hike fears crushing BTC; miners pivot explains WGMI divergence</td></tr>
+
+    <!-- POWER/MATERIALS -->
+    <tr><td colspan="7" style="background:var(--bg3);color:var(--muted);font-size:11px;padding:4px 10px;">POWER / MATERIALS</td></tr>
+    <tr><td>URA</td><td>Uranium/Nuclear</td><td>$47.78</td><td class="neutral">-0.04%</td><td>4.0M</td><td>3.4M</td><td></td></tr>
+    <tr><td>NLR</td><td>Nuclear Utilities</td><td>$126.94</td><td class="pos">+1.14%</td><td>474K</td><td>424K</td><td></td></tr>
+    <tr><td>GRID</td><td>Grid Equipment</td><td>$194.68</td><td class="pos">+0.54%</td><td>2.0M</td><td>1.2M</td><td></td></tr>
+    <tr><td>TAN</td><td>Solar</td><td>$60.58</td><td class="pos">+0.32%</td><td>1.6M</td><td>1.5M</td><td></td></tr>
+    <tr class="etf-hot-bear"><td style="color:var(--red);font-weight:700;">COPX</td><td>Copper Miners</td><td>$85.48</td><td class="neg">-4.31%</td><td>4.6M</td><td>4.0M</td><td>🚨 METALS THEME-WIDE CRASH</td></tr>
+    <tr><td>REMX</td><td>Rare Earth</td><td>$95.55</td><td class="neg">-1.58%</td><td>892K</td><td>927K</td><td>MP Materials / USAR — metals pressure</td></tr>
+    <tr class="etf-hot-bear"><td class="neg">XME</td><td>Metals & Mining</td><td>$116.94</td><td class="neg">-1.86%</td><td>2.4M</td><td>2.2M</td><td></td></tr>
+    <tr><td>LIT</td><td>Lithium/Battery</td><td>$82.15</td><td class="neg">-1.84%</td><td>280K</td><td>244K</td><td></td></tr>
+    <tr class="etf-hot-bear"><td style="color:var(--red);font-weight:700;">GDX</td><td>Gold Miners Large</td><td>$82.51</td><td class="neg">-5.38%</td><td>37.2M</td><td>43.5M</td><td>🚨 Below-avg vol on -5%: no buyers</td></tr>
+    <tr class="etf-hot-bear"><td style="color:var(--red);font-weight:700;">GDXJ</td><td>Junior Gold Miners</td><td>$107.22</td><td class="neg">-6.52%</td><td>10.6M</td><td>12.1M</td><td>🚨 Leading gold crash · AGI -12% today</td></tr>
+    <tr class="etf-hot-bear"><td style="color:var(--red);font-weight:700;">SLV</td><td>Silver</td><td>$59.51</td><td class="neg">-6.35%</td><td>28.9M</td><td>31.2M</td><td>🚨 Silver high-beta gold crash</td></tr>
+
+    <!-- COMMODITIES/GLOBAL -->
+    <tr><td colspan="7" style="background:var(--bg3);color:var(--muted);font-size:11px;padding:4px 10px;">COMMODITIES / GLOBAL</td></tr>
+    <tr><td>USO</td><td>Crude Oil</td><td>$114.87</td><td class="neg">-0.49%</td><td>5.6M</td><td>5.5M</td><td></td></tr>
+    <tr class="etf-hot-bull"><td>UNG</td><td>Natural Gas</td><td>$11.74</td><td class="pos">+2.62%</td><td>6.8M</td><td>6.1M</td><td>LNG/power burn demand</td></tr>
+    <tr><td>MOO</td><td>Agriculture</td><td>$76.96</td><td class="neg">-1.27%</td><td>239K</td><td>280K</td><td>⚠️ LOW LIQUIDITY</td></tr>
+    <tr><td>KWEB</td><td>China Internet ADRs</td><td>$25.24</td><td class="neg">-2.21%</td><td>16.6M</td><td>18.8M</td><td>China AI gap closing concern · BABA/BIDU</td></tr>
+  </table>
+</section>
+
+<!-- NEWS & WIRE SCOOPS (side by side) -->
+<div class="grid-2">
+  <section>
+    <div class="section-title">📰 FINVIZ NEWS SCAN <span class="badge badge-amber">STEP 3</span></div>
+    <div style="font-size:11px;color:var(--muted);margin-bottom:8px;">Public feed only · Finviz Elite filter unavailable</div>
+
+    <div class="news-item">
+      <div class="headline">Alan Greenspan, former Fed Chairman, dies at 100</div>
+      <div class="meta">MarketWatch / CNBC / BBC · 07:18–08:17 AM ET · June 22, 2026</div>
+      <span class="etf-tag">UNCLASSIFIED</span>
+      <div style="font-size:11px;color:var(--muted);margin-top:4px;">Macro sentiment event. Watch for brief bond/gold reaction (safe-haven); ultimately neutral for equities. Markets likely to quickly move past this.</div>
+    </div>
+
+    <div class="news-item">
+      <div class="headline">Saudi Central Bank (SAMA) pulls money from at least two asset managers</div>
+      <div class="meta">Bloomberg · 08:14 AM ET (paywall)</div>
+      <span class="etf-tag">XLF</span>
+      <div style="font-size:11px;color:var(--muted);margin-top:4px;">Bearish for alternative asset managers. Dollar-supportive (repatriation). Compounds metals selling (Gulf oil nations reducing liquid assets).</div>
+    </div>
+
+    <div class="news-item">
+      <div class="headline">Is China closing the AI gap faster than expected?</div>
+      <div class="meta">New York Times · 08:08 AM ET</div>
+      <span class="etf-tag">XLK</span><span class="etf-tag">SMH</span>
+      <div style="font-size:11px;color:var(--muted);margin-top:4px;">Potentially bearish for US AI premium (NVDA, AMD, PLTR). Markets appear to be looking past it given semi rally — but watch as a medium-term headwind.</div>
+    </div>
+
+    <div class="news-item">
+      <div class="headline">SpaceX's first week as a public company sparks market mania</div>
+      <div class="meta">Reuters · 06:59 AM ET</div>
+      <span class="etf-tag">ARKX</span>
+      <div style="font-size:11px;color:var(--muted);margin-top:4px;">SPCX (SpaceX) went public June 12 at $135, hit $161 day 1. ARKX -1.06% Friday — space ETF NOT benefiting (RKLB/ASTS/PL are its holdings, not SPCX directly). SPCX is its own listing.</div>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-title">📡 WIRE SERVICE SCOOPS <span class="badge badge-orange">STEP 5</span></div>
+
+    <div class="news-item wire">
+      <div class="headline">🔑 Goldman Sachs Cuts 2026 Gold Target to $4,900/oz from $5,400</div>
+      <div class="meta">FXLeaders / Mining.com · <strong>June 21</strong> (Saturday) · Released into Sunday night futures</div>
+      <span class="etf-tag">GLD</span><span class="etf-tag">GDX</span><span class="etf-tag">GDXJ</span><span class="etf-tag">SLV</span>
+      <div style="font-size:11px;color:var(--muted);margin-top:4px;"><strong>PRIMARY CATALYST for metals crash Monday.</strong> Goldman no longer expects any Fed cuts in 2026; pushes next cuts to June/December 2027. Downside scenario: Fed hike → gold at $4,400 year-end. Source: <a href="https://www.fxleaders.com/news/2026/06/21/goldman-sachs-cuts-2026-gold-forecast-to-4900-oz-from-5400/">fxleaders.com</a></div>
+    </div>
+
+    <div class="news-item wire biotech">
+      <div class="headline">🔑 AbbVie to Acquire Apogee Therapeutics — $135.11/share cash, $10.9B deal</div>
+      <div class="meta">PR Newswire · June 22, 2026 pre-market · AbbVie investor call 8:00 AM CT today</div>
+      <span class="etf-tag">XBI</span><span class="etf-tag">IBB</span>
+      <div style="font-size:11px;color:var(--muted);margin-top:4px;">49% premium to Thursday close. Deepens AbbVie immunology/atopic dermatitis/asthma pipeline. Clean strategic rationale. Source: <a href="https://www.prnewswire.com/news-releases/abbvie-to-acquire-apogee-therapeutics-deepening-immunology-portfolio-302806296.html">prnewswire.com</a></div>
+    </div>
+
+    <div class="news-item wire">
+      <div class="headline">Bloomberg: Saudi Central Bank pulling money from managers</div>
+      <div class="meta">Bloomberg · 08:14 AM ET · Paywall</div>
+      <span class="etf-tag">XLF</span>
+      <div style="font-size:11px;color:var(--muted);margin-top:4px;">Source: <a href="https://bloomberg.com/news/articles/2026-06-22/saudi-arabia-s-central-bank-sama-pulls-money">bloomberg.com</a> (paywall)</div>
+    </div>
+
+    <div class="news-item wire">
+      <div class="headline">🔑 SNDK: Western Digital Share Swap Completes TODAY June 22</div>
+      <div class="meta">FinancialContent/Company IR · June 22, 2026</div>
+      <span class="etf-tag">SMH</span><span class="etf-tag">DRAM</span>
+      <div style="font-size:11px;color:var(--muted);margin-top:4px;">SanDisk becomes pure-play NAND/SSD company. Apple Cook confirmed "unavoidable" memory price hikes. SNDK up 725% YTD. Entire 2026 production sold out. Source: <a href="https://markets.financialcontent.com/stocks/article/finterra-2026-3-31-deep-dive-sandisk-sndk-and-the-2026-nand-flash-shortage">financialcontent.com</a></div>
+    </div>
+  </section>
+</div>
+
+<!-- POLICY/STAKE -->
+<section>
+  <div class="section-title">🏛️ POLICY / STAKE / RUMOR CATALYSTS <span class="badge badge-purple">STEP 4</span></div>
+
+  <div class="news-item policy">
+    <div class="headline">🏛️ Trump Administration: $2 Billion in Quantum Computing Equity Stakes</div>
+    <div class="meta">TheQuantumInsider · May 21, 2026 (ongoing follow-on momentum)</div>
+    <span class="etf-tag">QTUM</span>
+    <div style="font-size:11px;color:var(--muted);margin-top:4px;">DoC/NIST taking minority equity stakes. Recipients: IBM (50% of $2B), QBTS, RGTI, Infleqtion, Atom Computing, PsiQuantum, Quantinuum. QTUM +1.80% Friday = still in play. IONQ not confirmed in this round. Source: <a href="https://thequantuminsider.com/2026/05/21/reports-us-to-award-2-billion-to-quantum-companies-take-equity-stakes/">thequantuminsider.com</a></div>
+  </div>
+
+  <div class="news-item policy">
+    <div class="headline">SpaceX (SPCX) — 10 Days Public — Market Mania Continues</div>
+    <div class="meta">CNBC · June 12, 2026 IPO · Largest IPO in history ($86B raised)</div>
+    <span class="etf-tag">ARKX</span>
+    <div style="font-size:11px;color:var(--muted);margin-top:4px;">SPCX IPO June 12 at $135; closed day 1 at $160.95 (+19%). Market cap ~$2.1T. ARKX -1.06% Friday — space ETF constituents (RKLB, ASTS, PL) not riding SPCX mania. SPCX is separate listing not in ARKX yet. Source: <a href="https://www.cnbc.com/2026/06/12/spacex-ipo-spcx-live-updates.html">cnbc.com</a></div>
+  </div>
+
+  <div style="font-size:12px;color:var(--muted);padding:6px 0;">No fresh CHIPS Act / DoD / FDA approvals found for June 22. INTC, MP, IBM, RGTI, QBTS — no new government stake announcements today.</div>
+</section>
+
+<!-- OPTIONS FLOW -->
+<section>
+  <div class="section-title">🔵 OPTIONS FLOW <span class="badge badge-blue">STEP 6</span></div>
+  <div style="background:var(--blue-bg);border:1px solid var(--blue);border-radius:4px;padding:10px 14px;font-size:12px;color:var(--muted);margin-bottom:10px;">
+    ⚠️ Chrome MCP unavailable — Yahoo options chains skipped. web_search flow only. No specific real-time flow data found via free sources for June 22. All commentary below is <strong style="color:var(--amber);">price-action inference only — NOT confirmed flow data.</strong>
+  </div>
+  <div class="grid-2">
+    <div>
+      <div style="color:var(--muted);font-size:11px;margin-bottom:6px;">INFERRED FROM PRICE ACTION</div>
+      <div class="news-item"><strong style="color:var(--green);">SMH/DRAM calls:</strong> Implied by 6-7% single-day moves on above-avg volume. Institutional accumulation pattern. UMC noted for "massive unusual call buying" in prior sessions (tradingkey.com context).
+      </div>
+      <div class="news-item"><strong style="color:var(--green);">APGE arb bid:</strong> M&A arb funds loading $132–133 to capture $2.47 spread to $135.11 deal price. Classic institutional arb flow.
+      </div>
+      <div class="news-item"><strong style="color:var(--red);">GDX put buying:</strong> Inferred from -5.38% on below-average volume (37.2M vs 43.5M avg). Absence of buyers = put overhang. Goldman target cut creates new structural downside.
+      </div>
+    </div>
+    <div>
+      <div style="color:var(--muted);font-size:11px;margin-bottom:6px;">INDEX/MACRO</div>
+      <div class="news-item">VIX at 17.13 — not elevated. No panic buying in VIX calls. Market is rotating, not crashing. Put-call inference: balanced to slightly bearish on SPY (SPY -0.35% while QQQ +0.74% = sector rotation, not broad selloff).
+      </div>
+      <div class="news-item">IBIT -3.05% on elevated volume (47.9M vs 45.3M avg) — crypto selling is institutional/real. Rate hike signal from Fed meeting compressing crypto risk appetite.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WATCHLIST + FOLLOW-THROUGH SIDE BY SIDE -->
+<div class="grid-2">
+  <section>
+    <div class="section-title">👁️ WATCHLIST STATUS <span class="badge badge-amber">STEP 8</span></div>
+    <div style="font-size:11px;color:var(--muted);margin-bottom:8px;">TV MCP batch_run · Fri session closes · ~08:30 ET</div>
+    <table class="wl-row">
+      <tr><th>Ticker</th><th>Close</th><th>Change</th><th>Vol vs Avg</th><th>Notes</th></tr>
+      <tr><td>TSLA</td><td>$400.49</td><td class="neutral">-0.26%</td><td>58.4M / 51.0M = 1.15x</td><td>Flat; no catalyst</td></tr>
+      <tr><td style="color:var(--green);">NVDA</td><td>$210.69</td><td class="pos">+1.04%</td><td>241.3M / 184.8M = 1.30x</td><td>Semi rally beneficiary · Heavy institutional vol</td></tr>
+      <tr><td>SOFI</td><td>$17.91</td><td class="neutral">+0.56%</td><td>81.0M / 101.9M = 0.79x</td><td>Quiet; below avg volume</td></tr>
+      <tr><td style="color:var(--green);">AMD</td><td>$537.37</td><td class="pos">+1.46%</td><td>43.8M / 35.4M = 1.24x</td><td>Semi rally participant</td></tr>
+      <tr><td style="color:var(--red);">PLTR</td><td>$128.47</td><td class="neg">-2.50%</td><td>55.3M / 43.8M = 1.26x</td><td>⬇️ Valuation compression · -26% YTD · Insider selling $132–137 · 88x fwd P/E</td></tr>
+      <tr><td>MARA</td><td>$14.22</td><td class="neutral">-0.21%</td><td>32.8M / 33.6M = 0.98x</td><td>BTC under rate pressure</td></tr>
+      <tr><td style="color:var(--red);">COIN</td><td>$163.26</td><td class="neg">-1.97%</td><td>9.83M / 8.99M = 1.09x</td><td>Crypto selling; rate hike fears</td></tr>
+      <tr><td style="color:var(--cyan);font-weight:700;">SNDK</td><td>$2,184.75</td><td class="pos">+5.31%</td><td>12.2M / 10.7M = 1.14x</td><td>🔥 WD share swap completes TODAY · NAND supercycle · Apple "unavoidable" hikes</td></tr>
+      <tr><td style="color:var(--red);">META</td><td>$577.22</td><td class="neg">-2.50%</td><td>28.8M / 24.7M = 1.17x</td><td>XLC weak · China AI gap concern · Heavy selling</td></tr>
+      <tr><td>AMZN</td><td>$244.39</td><td class="neutral">-0.21%</td><td>75.6M / 60.2M = 1.26x</td><td>Flat; AWS resilient despite sector pressure</td></tr>
+    </table>
+  </section>
+
+  <section>
+    <div class="section-title">🔄 FOLLOW-THROUGH FROM FRIDAY JUN 19 <span class="badge badge-amber">STEP 7</span></div>
+    <div style="font-size:11px;color:var(--muted);margin-bottom:8px;">Most recent prior scan: premarket-catalyst-2026-06-19.html</div>
+    <table>
+      <tr><th>Theme/Flag</th><th>Status</th><th>Notes</th></tr>
+      <tr>
+        <td style="color:var(--cyan);">Semi/Memory (SMH, DRAM)</td>
+        <td style="color:var(--green);font-weight:700;">✅ ACCELERATING</td>
+        <td>SMH +4.17% Fri → UMC +13.41%, PENG +14.65% Mon pre. WD swap today = new catalyst.</td>
+      </tr>
+      <tr>
+        <td style="color:var(--red);">Metals crash (GDX/GDXJ/SLV)</td>
+        <td style="color:var(--red);font-weight:700;">✅ ACCELERATING</td>
+        <td>Goldman cut Saturday → AGI -12.38% Mon pre. Two-day continuation confirmed.</td>
+      </tr>
+      <tr>
+        <td style="color:var(--cyan);">SNDK NAND supercycle</td>
+        <td style="color:var(--green);font-weight:700;">✅ ACCELERATING</td>
+        <td>+5.31% Fri → WD swap TODAY is fresh catalyst.</td>
+      </tr>
+      <tr>
+        <td>Biotech (XBI)</td>
+        <td style="color:var(--green);font-weight:700;">🆕 NEW CATALYST</td>
+        <td>APGE acquisition + DFTX Phase 3 = fresh binary catalyst added Monday.</td>
+      </tr>
+      <tr>
+        <td>Quantum (QTUM)</td>
+        <td style="color:var(--amber);">⚠️ WEAKENING</td>
+        <td>Trump $2B announcement (May 21) is now stale. QTUM +1.80% Fri — momentum only, no fresh catalyst.</td>
+      </tr>
+      <tr>
+        <td style="color:var(--red);">Crypto (IBIT/COIN/MARA)</td>
+        <td style="color:var(--red);font-weight:700;">⬇️ FADING</td>
+        <td>Rate hike fears accelerating. IBIT -3.05%, COIN -1.97% Friday. MARA flat.</td>
+      </tr>
+    </table>
+  </section>
+</div>
+
+<!-- MACRO SCHEDULE -->
+<section>
+  <div class="section-title">📅 TODAY'S MACRO SCHEDULE <span class="badge badge-amber">STEP 9</span></div>
+  <table>
+    <tr><th>Time (ET)</th><th>Event</th><th>Impact</th><th>Notes</th></tr>
+    <tr><td>All day</td><td>Economic calendar — LIGHT</td><td>Neutral</td><td>No major data releases Monday. Light week opens.</td></tr>
+    <tr><td>8:00 AM CT</td><td>AbbVie investor call (APGE acquisition)</td><td>HIGH for APGE/XBI</td><td>Details on deal structure, timeline, financing.</td></tr>
+    <tr><td>All day</td><td>SNDK / Western Digital share swap</td><td>HIGH for SNDK/DRAM</td><td>Corporate action completes today — positions SanDisk as pure-play NAND.</td></tr>
+    <tr><td>All day</td><td>DFTX Phase 3 MDD results release</td><td>HIGH for DFTX/XBI</td><td>Emerge Study topline data press release due today. Price action (+37.87%) implies positive — await official data for confirmation.</td></tr>
+    <tr><td><strong>Thursday</strong></td><td>May PCE / Core PCE</td><td>🔴 HIGH RISK EVENT</td><td>Fed's preferred inflation gauge. Hot PCE → rate hike expectations = more gold/metals pain, crypto selling. Cool PCE → relief rally potential.</td></tr>
+  </table>
+</section>
+
+<!-- AVOID SECTION -->
+<section>
+  <div class="section-title">🚫 ETFs / STOCKS TO AVOID <span class="badge badge-red">STEP 10D</span></div>
+  <div class="avoid-item">GDX ⬇️</div>
+  <div class="avoid-item">GDXJ ⬇️</div>
+  <div class="avoid-item">SLV ⬇️</div>
+  <div class="avoid-item">GLD ⬇️</div>
+  <div class="avoid-item">COPX ⬇️</div>
+  <div class="avoid-item">PLTR ⬇️</div>
+  <div class="avoid-item">IBIT ⬇️</div>
+  <div class="avoid-item">COIN ⬇️</div>
+  <div class="avoid-item">MARA ⬇️</div>
+  <div class="avoid-item">META ⬇️</div>
+  <div class="avoid-item">XLC ⬇️</div>
+  <div class="avoid-item">IGV ⬇️</div>
+  <div style="font-size:12px;color:var(--muted);margin-top:10px;">
+    Metals: Goldman cut + Fed hike signal = structural trend down. PLTR: 26% YTD loss, insider selling, 88x fwd P/E. Crypto: rate hike pressure. META: China AI gap + elevated selling volume.
+  </div>
+</section>
+
+<!-- RISK EVENTS -->
+<section>
+  <div class="section-title">⚠️ RISK EVENTS <span class="badge badge-red">STEP 10E</span></div>
+  <div class="grid-2">
+    <div class="news-item">
+      <strong style="color:var(--amber);">PCE Thursday:</strong> Hot reading = gold selloff deepens, crypto falls more, semi rally may stall (rate hike repricing). Cool reading = gold/metals bounce possible.
+    </div>
+    <div class="news-item">
+      <strong style="color:var(--amber);">SNDK WD swap intraday:</strong> Corporate action may trigger volatility in SNDK during the session. Gap open could reverse before settling at new level.
+    </div>
+    <div class="news-item">
+      <strong style="color:var(--amber);">DFTX Phase 3 specifics:</strong> Price action implies positive results; actual data release today may cause reversal if details disappoint versus expectations (safety profile, magnitude, comparator arms).
+    </div>
+    <div class="news-item">
+      <strong style="color:var(--red);">APGE deal break risk:</strong> Small but present. AbbVie walks back / regulatory challenge = APGE returns to $90 area (-33% from $132). Size small.
+    </div>
+  </div>
+</section>
+
+<!-- ASSUMPTION AUDIT -->
+<section>
+  <div class="section-title">🔍 ASSUMPTION AUDIT <span class="badge badge-amber">STEP 11</span></div>
+  <table>
+    <tr><th>Assumption</th><th>What Changes If Wrong</th><th>Trade Impact</th></tr>
+    <tr class="audit-row"><td>UMC wafer hike drives semi rally</td><td>Hike reversed/walked back</td><td>UMC/SMH reversal — use tight stops on UMC</td></tr>
+    <tr class="audit-row"><td>DFTX Phase 3 was clean positive</td><td>Data shows marginal/safety issues</td><td>DFTX reversal on detail release today</td></tr>
+    <tr class="audit-row"><td>AbbVie/APGE deal closes at $135.11</td><td>AbbVie walks back / regulatory block</td><td>APGE -30%+ arb unwind — size small</td></tr>
+    <tr class="audit-row"><td>Goldman gold cut is primary metals catalyst</td><td>Markets reverse on Greenspan safe-haven/sentiment</td><td>GDX/GDXJ could bounce — watch pre-mkt behavior</td></tr>
+    <tr class="audit-row"><td>SNDK WD swap completes today</td><td>Corporate action delayed</td><td>SNDK gap may not hold</td></tr>
+    <tr class="audit-row"><td>Chrome MCP unavailable — top-20 %-sort only</td><td>Liquid mid/large-cap gappers in positions 21–50 missed</td><td>Additional semi names may exist</td></tr>
+    <tr class="audit-row"><td>TV MCP returns prior session close (not live pre-mkt)</td><td>Design by architecture; not an error</td><td>Pre-mkt prices sourced from stockanalysis.com</td></tr>
+    <tr class="audit-row"><td>No live options flow — price-action inference only</td><td>Institutional flow may contradict price</td><td>All flow commentary labeled inference only</td></tr>
+    <tr class="audit-row"><td>ORKA catalyst unconfirmed</td><td>Biotech momentum only, no hard catalyst</td><td>Do not trade ORKA without confirmed catalyst</td></tr>
+    <tr class="audit-row"><td>Finviz Elite filter unavailable — public feed used</td><td>Ticker-specific headlines may be missed</td><td>Some individual stock news gaps possible</td></tr>
+    <tr class="audit-row"><td>China AI gap (NYT) — low-conviction signal</td><td>If China AI threat accelerates, NVDA/AMD face headwinds</td><td>Monitor; not actionable today</td></tr>
+    <tr class="audit-row"><td>VIX 17.13 = moderate, no panic</td><td>If VIX spikes >22 intraday</td><td>Risk-off rotation accelerates; reduce longs</td></tr>
+  </table>
+</section>
+
+<hr class="divider">
+<div style="color:var(--muted);font-size:11px;text-align:center;padding:8px 0;">
+  PRE-MARKET CATALYST v7.7 HYBRID · Generated June 22, 2026 ~08:30 ET · All prices from TV MCP batch_run (Fri closes) + stockanalysis.com pre-mkt · Sources cited inline · ⚠️ Chrome MCP unavailable · Finviz Elite unavailable · Options flow: price-action inference only
+</div>
+
+</div>
+</body>
+</html>
