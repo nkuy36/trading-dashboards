@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pre-Market Catalyst — June 23, 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0e17; --bg2: #0f1520; --bg3: #141c2e;
+    --text: #e2e8f0; --muted: #8896aa; --border: #1e2d42;
+    --green: #22c55e; --green-dim: #166534; --green-bg: #052e16;
+    --red: #ef4444; --red-dim: #991b1b; --red-bg: #2d0a0a;
+    --amber: #f59e0b; --amber-bg: #1c1200;
+    --cyan: #22d3ee; --cyan-bg: #0a2231;
+    --purple: #a855f7; --purple-bg: #1a0d2e;
+    --orange: #fb923c; --orange-bg: #1c0e00;
+    --blue: #60a5fa; --blue-bg: #0c1a2e;
+    --yellow: #fde047; --yellow-bg: #1c1700;
+    --card: #111827;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: 'JetBrains Mono', monospace; font-size: 13px; line-height: 1.6; }
+  .container { max-width: 1400px; margin: 0 auto; padding: 16px 20px; }
+
+  .health-banner { background: var(--bg3); border: 1px solid var(--border); border-left: 4px solid var(--green); padding: 10px 16px; margin-bottom: 20px; border-radius: 4px; display: flex; align-items: center; gap: 20px; flex-wrap: wrap; }
+  .health-ok { color: var(--green); font-weight: 700; }
+  .health-warn { color: var(--amber); font-weight: 700; }
+  .health-item { color: var(--muted); font-size: 12px; }
+
+  .header { margin-bottom: 24px; }
+  .header h1 { font-size: 22px; font-weight: 700; color: var(--text); }
+  .header .sub { color: var(--muted); font-size: 12px; margin-top: 4px; }
+  .vix-badge { display: inline-block; background: var(--amber-bg); border: 1px solid var(--amber); color: var(--amber); padding: 3px 10px; border-radius: 3px; font-size: 12px; margin-left: 12px; }
+
+  .theme-alert { background: var(--cyan-bg); border: 1px solid var(--cyan); border-radius: 4px; padding: 10px 16px; margin-bottom: 12px; }
+  .theme-alert.bearish { background: var(--red-bg); border-color: var(--red); }
+  .theme-alert.warning { background: var(--amber-bg); border-color: var(--amber); }
+  .theme-alert .label { color: var(--cyan); font-weight: 700; font-size: 13px; }
+  .theme-alert.bearish .label { color: var(--red); }
+  .theme-alert.warning .label { color: var(--amber); }
+  .theme-alert p { color: var(--text); font-size: 12px; margin-top: 4px; }
+
+  section { margin-bottom: 28px; }
+  .section-title { font-size: 14px; font-weight: 700; color: var(--text); border-bottom: 1px solid var(--border); padding-bottom: 6px; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .section-title .badge { font-size: 11px; padding: 2px 8px; border-radius: 3px; font-weight: 500; }
+  .badge-green { background: var(--green-bg); color: var(--green); border: 1px solid var(--green-dim); }
+  .badge-red { background: var(--red-bg); color: var(--red); border: 1px solid var(--red-dim); }
+  .badge-amber { background: var(--amber-bg); color: var(--amber); }
+  .badge-cyan { background: var(--cyan-bg); color: var(--cyan); }
+  .badge-purple { background: var(--purple-bg); color: var(--purple); }
+  .badge-orange { background: var(--orange-bg); color: var(--orange); }
+  .badge-blue { background: var(--blue-bg); color: var(--blue); }
+
+  .briefing { background: var(--bg3); border: 1px solid var(--border); border-left: 4px solid var(--cyan); padding: 14px 18px; border-radius: 4px; line-height: 1.85; color: var(--text); font-size: 13px; }
+
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+  @media (max-width: 900px) { .grid-2, .grid-3 { grid-template-columns: 1fr; } }
+
+  .trade-card { background: var(--card); border: 1px solid var(--border); border-radius: 6px; padding: 14px 16px; }
+  .trade-card.high { border-top: 3px solid var(--green); }
+  .trade-card.medium { border-top: 3px solid var(--amber); }
+  .trade-card .ticker { font-size: 17px; font-weight: 700; color: var(--text); }
+  .trade-card .name { color: var(--muted); font-size: 11px; margin-bottom: 8px; }
+  .trade-card .conviction { float: right; font-size: 12px; padding: 2px 8px; border-radius: 3px; }
+  .conv-high { background: var(--green-bg); color: var(--green); border: 1px solid var(--green-dim); }
+  .conv-med { background: var(--amber-bg); color: var(--amber); border: 1px solid #78350f; }
+  .trade-card .row { display: flex; justify-content: space-between; margin-bottom: 4px; font-size: 12px; }
+  .trade-card .row .k { color: var(--muted); }
+  .trade-card .row .v { color: var(--text); font-weight: 500; }
+  .trade-card .row .v.green { color: var(--green); }
+  .trade-card .row .v.red { color: var(--red); }
+  .trade-card .note { font-size: 11px; color: var(--muted); margin-top: 8px; border-top: 1px solid var(--border); padding-top: 6px; }
+  .trade-card .catalyst-line { font-size: 11px; color: var(--cyan); margin-top: 6px; }
+
+  table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  th { background: var(--bg3); color: var(--muted); font-weight: 600; text-align: left; padding: 6px 10px; border-bottom: 1px solid var(--border); }
+  td { padding: 5px 10px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  tr:hover td { background: var(--bg2); }
+  .pos { color: var(--green); font-weight: 600; }
+  .neg { color: var(--red); font-weight: 600; }
+  .neutral { color: var(--muted); }
+  tr.etf-hot-bull td { background: rgba(34,197,94,0.06); }
+  tr.etf-hot-bear td { background: rgba(239,68,68,0.06); }
+  tr.etf-warn td { background: rgba(245,158,11,0.06); }
+
+  .news-item { background: var(--card); border: 1px solid var(--border); border-radius: 4px; padding: 10px 14px; margin-bottom: 8px; }
+  .news-item.wire { border-left: 3px solid var(--orange); }
+  .news-item.policy { border-left: 3px solid var(--purple); }
+  .news-item.biotech { border-left: 3px solid var(--green); }
+  .news-item.negative { border-left: 3px solid var(--red); }
+  .news-item.quantum { border-left: 3px solid var(--purple); }
+  .news-item .headline { font-size: 13px; color: var(--text); font-weight: 500; }
+  .news-item .meta { font-size: 11px; color: var(--muted); margin-top: 3px; }
+  .news-item .etf-tag { display: inline-block; background: var(--bg3); border: 1px solid var(--border); color: var(--cyan); font-size: 10px; padding: 1px 6px; border-radius: 2px; margin-right: 4px; margin-top: 3px; }
+
+  .pill { display: inline-block; padding: 2px 8px; border-radius: 12px; font-size: 11px; font-weight: 600; margin-right: 4px; }
+  .pill-green { background: var(--green-bg); color: var(--green); }
+  .pill-red { background: var(--red-bg); color: var(--red); }
+  .pill-amber { background: var(--amber-bg); color: var(--amber); }
+  .pill-purple { background: var(--purple-bg); color: var(--purple); }
+
+  .avoid-item { display: inline-block; background: var(--red-bg); border: 1px solid var(--red-dim); color: var(--red); padding: 4px 10px; border-radius: 3px; margin: 3px; font-size: 12px; }
+  .divider { border: none; border-top: 1px solid var(--border); margin: 24px 0; }
+  .step-label { font-size: 10px; color: var(--muted); font-weight: 500; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 2px; }
+  .audit-row td:first-child { color: var(--amber); font-size: 11px; }
+  .audit-row td { font-size: 11px; color: var(--muted); }
+  a { color: var(--blue); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  .followup-card { background: var(--card); border: 1px solid var(--border); border-radius: 4px; padding: 10px 14px; margin-bottom: 8px; display: flex; align-items: flex-start; gap: 12px; }
+  .followup-status { font-weight: 700; font-size: 13px; min-width: 90px; }
+  .status-on { color: var(--green); }
+  .status-risk { color: var(--amber); }
+  .status-faded { color: var(--red); }
+  .macro-item { background: var(--card); border: 1px solid var(--border); border-radius: 4px; padding: 8px 14px; margin-bottom: 6px; display: flex; gap: 16px; align-items: flex-start; }
+  .macro-time { color: var(--amber); font-weight: 700; min-width: 80px; font-size: 12px; }
+  .macro-desc { font-size: 12px; color: var(--text); }
+</style>
+</head>
+<body>
+<div class="container">
+
+<!-- TOOL HEALTH BANNER -->
+<div class="health-banner">
+  <span class="health-ok">✅ TV MCP LIVE</span>
+  <span class="health-ok">✅ StockAnalysis LIVE</span>
+  <span class="health-ok">✅ Finviz News LIVE</span>
+  <span class="health-warn">⚠️ Chrome MCP — Not tested (top-20 %-sort; Yahoo options skipped)</span>
+  <span class="health-warn">⚠️ Options flow: web_search only — no confirmed flow data found</span>
+  <span class="health-item">Price method: batch_run get_ohlcv · 57/57 ETFs returned · Data = prior session (Jun 22) close · No live premarket TV MCP prices (extended-hours not in daily bar)</span>
+</div>
+
+<!-- HEADER -->
+<div class="header">
+  <h1>☀️ PRE-MARKET CATALYST (v7.7 HYBRID) — June 23, 2026 <span class="vix-badge">VIX ~19.68 ⚠️ ELEVATED</span></h1>
+  <div class="sub">Pulled ~08:30 ET · SPY $744.39 (-0.45% Mon close) · QQQ $737.95 (+0.21% Mon close) · IWM $298.18 (+1.23% Mon close) · Nasdaq futures -2.6% · S&P futures -1.3% (web search) · Data source: TV MCP batch_run (prior session closes) + web search for today's premarket direction</div>
+</div>
+
+<!-- THEME-WIDE ALERTS -->
+<div class="theme-alert">
+  <div class="label">🚨 THEME-WIDE BREAKOUT — BIOTECH / M&A SUPERCYCLE (CONTINUING)</div>
+  <p>XBI +2.82% + IBB +1.25% (Monday closes, both ETFs) · AbbVie/APGE deal ($135.11 cash) confirmed · DFTX Phase 3 MDD positive · M&A deal pipeline $140–160B 2026 · Independent of tech selloff — rotation BENEFICIARY as money exits semi/tech</p>
+</div>
+<div class="theme-alert" style="background:var(--purple-bg);border-color:var(--purple);">
+  <div class="label" style="color:var(--purple);">🏛️ POLICY CATALYST — QUANTUM COMPUTING EXECUTIVE ORDERS (June 22)</div>
+  <p>Trump signed 2 EOs June 22: (1) DoE quantum computer by 2028 + quantum sensors by Sep 2028; (2) Federal agencies → quantum-resistant encryption by 2031. $2B in gov equity stakes awarded to 9 firms: RGTI, QBTS, IBM, GFS, INFQ others. IONQ/QBTS/RGTI all up 3%+ premarket June 23. QTUM +1.13% Monday close already pricing in EOs.</p>
+</div>
+<div class="theme-alert bearish">
+  <div class="label">🚨 GLOBAL TECH SELLOFF — SPACEX $600B WIPEOUT + KOSPI -10% CRASH</div>
+  <p>SpaceX -5% premarket (3rd day, -23% from IPO peak; $20B bond issuance to fund AI = dilution/leverage fear) · Korea KOSPI -10% (circuit breakers triggered TWICE) · Samsung -12% · SK Hynix -12% · Nasdaq futures -2.6% · S&P futures -1.3% · VIX 19.68 (+12.59% Mon) — elevated fear</p>
+</div>
+<div class="theme-alert warning">
+  <div class="label">⚠️ REVERSAL RISK — DRAM/SMH (YESTERDAY'S #1 PICK NOW FACING HEADWINDS)</div>
+  <p>DRAM +7.28% Monday (was top pick) · BUT: SK Hynix slowing HBM4 expansion, pivoting to conventional DRAM · Samsung/SK Hynix -12% in Korea · DRAM ETF LIKELY DOWN hard on open. SMH +3.14% Monday also faces reversal. DO NOT HOLD DRAM/SMH long without confirming open.</p>
+</div>
+<div class="theme-alert bearish">
+  <div class="label">🚨 THEME-WIDE CRASH — DEFENSE TECH (SHLD -5.27% + ITA -3.86% Monday)</div>
+  <p>PLTR -8.67% Monday (France drops PLTR; UK NHS £330M contract risk; BNP Underperform; 26% YTD decline; 113x fwd P/E) · SHLD + ITA both down = Defense theme-wide selloff</p>
+</div>
+<div class="theme-alert bearish">
+  <div class="label">🚨 THEME-WIDE DOWN — PRECIOUS METALS COMPLEX (ALL 4 ETFs DOWN)</div>
+  <p>GLD -1.70% · GDX -4.09% · GDXJ -4.39% · SLV -3.01% (Monday closes) · Goldman Sachs cut gold 2026 target Saturday · Fed higher-for-longer signal · AGI (gold miner) cascade accelerating</p>
+</div>
+<div class="theme-alert bearish">
+  <div class="label">🚨 THEME-WIDE DOWN — NUCLEAR (URA -2.32% + NLR -2.24% Monday)</div>
+  <p>Both nuclear ETFs down together = nuclear theme-wide selling. Catalyst: de-risking into PCE print Thursday; power demand narrative momentarily back-burner on tech selloff.</p>
+</div>
+
+<!-- MORNING BRIEFING -->
+<section>
+  <div class="step-label">Morning Briefing</div>
+  <div class="briefing">
+    Tuesday June 23 opens with a <strong style="color:var(--red)">global technology correction</strong> as the dominant risk — SpaceX's 3-day $600B wipeout (now down 23% from its June 12 IPO peak after announcing a $20B bond issuance to fund AI ambitions) and Korea's KOSPI crashing 10% with circuit breakers triggered twice (Samsung and SK Hynix each -12%, SK Hynix specifically slowing HBM4 expansion) are sending Nasdaq futures down 2.6%. The surprise counter-narrative is <strong style="color:var(--green)">biotech</strong>, which is running completely independent: XBI and IBB both advanced Monday on dual catalysts (AbbVie's APGE cash acquisition and DFTX's Phase 3 MDD positive), and yesterday's 2.82% XBI move is accelerating into a multi-day setup. The second positive catalyst is <strong style="color:var(--purple)">quantum</strong> — President Trump's back-to-back executive orders on quantum computing (signed June 22) plus $2B in government equity stakes are pushing QBTS, RGTI, and IONQ up 3%+ in premarket despite the Nasdaq -2.6% headwind. Yesterday's top pick <strong style="color:var(--amber)">DRAM (+7.28%)</strong> now faces a direct reversal catalyst: the Korea HBM4 slowdown story is the SAME underlying asset that drove DRAM's Monday surge — do not hold DRAM longs into today's open without confirmation. Defense is in a second day of freefall (PLTR -26% YTD, France the latest to cancel contracts, UK NHS $330M contract risk). <strong style="color:var(--amber)">VIX at 19.68</strong> signals elevated but not panic-level fear — disciplined traders can find setups in biotech and quantum if they avoid the tech wreckage.
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- TOP 3 ETF TRADES -->
+<section>
+  <div class="section-title">
+    📊 TOP 3 ETF TRADE IDEAS <span class="badge badge-cyan">STEP 10A</span>
+  </div>
+  <div class="grid-3">
+    <!-- XBI -->
+    <div class="trade-card high">
+      <span class="conviction conv-high">🟢 HIGH</span>
+      <div class="ticker">XBI</div>
+      <div class="name">SPDR S&P Biotech Small-Cap · Biotech sector</div>
+      <div class="row"><span class="k">Mon Close (TV MCP)</span><span class="v green">$145.86 (+2.82%)</span></div>
+      <div class="row"><span class="k">Mon Vol</span><span class="v green">16,738,694 (1.27x avg)</span></div>
+      <div class="row"><span class="k">Theme confirm</span><span class="v">IBB +1.25% ✅ THEME-WIDE</span></div>
+      <div class="row"><span class="k">Entry trigger</span><span class="v">Hold above $145; buy pull to $143</span></div>
+      <div class="row"><span class="k">Stop</span><span class="v red">Below $139 (3-day low)</span></div>
+      <div class="row"><span class="k">Target</span><span class="v green">$155 (+6.3% from close)</span></div>
+      <div class="catalyst-line">AbbVie/APGE $135.11 cash deal · DFTX Phase 3 MDD positive · M&A supercycle $140–160B 2026 · INDEPENDENT of tech selloff</div>
+      <div class="note">Proof: Stage 2 uptrend, above 20D/50D, multi-week base breakout. Firepower: 1.27x avg vol, AUM $13B+. Biotech rotation beneficiary as money exits tech.</div>
+    </div>
+
+    <!-- QTUM -->
+    <div class="trade-card medium">
+      <span class="conviction conv-med">🟡 MEDIUM</span>
+      <div class="ticker">QTUM</div>
+      <div class="name">Defiance Quantum ETF · Holdings: IONQ, RGTI, QBTS, ARQQ</div>
+      <div class="row"><span class="k">Mon Close (TV MCP)</span><span class="v green">$168.60 (+1.13%)</span></div>
+      <div class="row"><span class="k">Mon Vol</span><span class="v">800,893 (1.14x avg)</span></div>
+      <div class="row"><span class="k">Holdings premarket</span><span class="v green">IONQ/QBTS/RGTI +3%+ today</span></div>
+      <div class="row"><span class="k">Entry trigger</span><span class="v">Gap confirm >$170 on volume</span></div>
+      <div class="row"><span class="k">Stop</span><span class="v red">Below $162</span></div>
+      <div class="row"><span class="k">Target</span><span class="v green">$180+ (policy re-rating)</span></div>
+      <div class="catalyst-line">🏛️ Trump 2 QC EOs Jun 22 · $2B gov equity stakes (RGTI $100M LoI, QBTS, IBM, INFQ) · IONQ 755% revenue growth · $2B+ quantum hardware procurement by 2028</div>
+      <div class="note">AUM thin (~$700M) — smaller position. Policy catalyst fighting Nasdaq -2.6% headwind. Wait for gap to hold before entering. High-conviction policy play if tech stabilizes.</div>
+    </div>
+
+    <!-- UNG -->
+    <div class="trade-card medium">
+      <span class="conviction conv-med">🟡 MEDIUM</span>
+      <div class="ticker">UNG</div>
+      <div class="name">US Natural Gas Fund · LNG + AI power demand play</div>
+      <div class="row"><span class="k">Mon Close (TV MCP)</span><span class="v green">$11.77 (+3.16%)</span></div>
+      <div class="row"><span class="k">Mon Vol</span><span class="v">3,662,848 (0.70x avg — light)</span></div>
+      <div class="row"><span class="k">Sector (XLE)</span><span class="v">+0.57% Mon — defensive</span></div>
+      <div class="row"><span class="k">Entry trigger</span><span class="v">Hold above $11.75</span></div>
+      <div class="row"><span class="k">Stop</span><span class="v red">Below $11.25</span></div>
+      <div class="row"><span class="k">Target</span><span class="v green">$12.50</span></div>
+      <div class="catalyst-line">Golden Pass LNG Train 1 first cargo Apr 22 · AI data center power demand structural · Cheniere Corpus Christi Stage 3 ramp · LNG export capacity +0.9 Bcf/d YTD</div>
+      <div class="note">Defensive vs tech selloff. XLE +0.57% Monday shows energy relatively insulated. Caveat: futures ETF rollover cost (contango headwind). Volume light Monday — confirm on open. Best as hedge/diversifier, not primary long.</div>
+    </div>
+  </div>
+</section>
+
+<!-- TOP 3 INDIVIDUAL STOCKS -->
+<section>
+  <div class="section-title">
+    🎯 TOP 3 INDIVIDUAL STOCK SETUPS <span class="badge badge-green">STEP 10B</span>
+  </div>
+  <div class="grid-3">
+    <!-- ZETA -->
+    <div class="trade-card high">
+      <span class="conviction conv-high">🟢 HIGH</span>
+      <div class="ticker">ZETA</div>
+      <div class="name">Zeta Global Holdings · AI Marketing · Mkt Cap $4.60B</div>
+      <div class="row"><span class="k">Premarket price</span><span class="v green">~$20.11 (+8.88%)</span></div>
+      <div class="row"><span class="k">Pre-mkt volume</span><span class="v green">1,106,944 ✅</span></div>
+      <div class="row"><span class="k">Parent ETF</span><span class="v">IGV (software) — diverging positively</span></div>
+      <div class="row"><span class="k">Entry trigger</span><span class="v">$20–$20.50 on open confirm</span></div>
+      <div class="row"><span class="k">Stop</span><span class="v red">Below $18.75</span></div>
+      <div class="row"><span class="k">Target</span><span class="v green">$23–$24</span></div>
+      <div class="catalyst-line">🔵 OpenAI partnership expansion (ad ops + Athena AI agent) · Q1 2026 revenue +50% YoY to $396M · Full-year guidance raised · Athena AI marketing platform</div>
+      <div class="note">Proof: Company-specific catalyst separating from IGV's -2.51% Monday sector weakness. Firepower: 1.1M premarket vol is strong for this name. Source: ts2.tech (Zeta Global, Jun 23 premarket).</div>
+    </div>
+
+    <!-- SNDK -->
+    <div class="trade-card medium">
+      <span class="conviction conv-med">🟡 MEDIUM</span>
+      <div class="ticker">SNDK</div>
+      <div class="name">SanDisk Corp · Pure-play NAND/SSD · AI Storage</div>
+      <div class="row"><span class="k">Mon Close (TV MCP)</span><span class="v green">$2,273.73 (+11.20%)</span></div>
+      <div class="row"><span class="k">Mon Vol</span><span class="v green">9,977,599 (0.90x avg)</span></div>
+      <div class="row"><span class="k">YTD performance</span><span class="v green">+800% YTD (!)</span></div>
+      <div class="row"><span class="k">Entry trigger</span><span class="v">PULLBACK to $2,100–$2,200</span></div>
+      <div class="row"><span class="k">Stop</span><span class="v red">Below $2,000</span></div>
+      <div class="row"><span class="k">Target</span><span class="v green">New ATH >$2,350+</span></div>
+      <div class="catalyst-line">WD final 1,038,681 share swap COMPLETED Jun 22 (pure-play NAND unlocked) · Structural NAND shortage · Apple "unavoidable" memory price hike · AI data center storage sold out</div>
+      <div class="note">⚠️ DO NOT CHASE open with Nasdaq -2.6% headwind. Wait for intraday pullback/flag setup. Monday was ATH — stock extended. Highest-conviction long IF tech stabilizes intraday.</div>
+    </div>
+
+    <!-- EPC -->
+    <div class="trade-card medium">
+      <span class="conviction conv-med">🟡 MEDIUM</span>
+      <div class="ticker">EPC</div>
+      <div class="name">Edgewell Personal Care · Consumer Staples · Mkt Cap $1.05B</div>
+      <div class="row"><span class="k">Premarket price</span><span class="v green">~$24.90 (+9.60%)</span></div>
+      <div class="row"><span class="k">Pre-mkt volume</span><span class="v amber">142,904 ⚠️ light</span></div>
+      <div class="row"><span class="k">Parent ETF</span><span class="v">XLP (consumer staples)</span></div>
+      <div class="row"><span class="k">Entry trigger</span><span class="v">Hold $24.50+ at open confirm</span></div>
+      <div class="row"><span class="k">Stop</span><span class="v red">Below $23.00</span></div>
+      <div class="row"><span class="k">Target</span><span class="v green">$27–$28</span></div>
+      <div class="catalyst-line">Q2 2026 earnings beat · Strong U.S. + international market share gains · 8-K filed (SEC EDGAR, FY2026)</div>
+      <div class="note">Defensive sector play (XLP was -1.29% Monday) but company-specific beat. Volume light — must see open volume confirm before entry. Border-case mkt cap ($1.05B) — smallest tradeable name today.</div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- PRE-MARKET GAPPERS TABLE -->
+<section>
+  <div class="section-title">
+    📈 PRE-MARKET GAPPERS — &gt;$1B Market Cap <span class="badge badge-amber">STEP 1</span>
+    <span style="font-size:11px;color:var(--muted);font-weight:400;">Chrome MCP unavailable · top-20 %-sort · stockanalysis.com ~08:00 ET</span>
+  </div>
+
+  <div style="font-size:12px;color:var(--amber);margin-bottom:10px;">⚠️ NOTE: Top-20 %-sort is dominated by micro-caps (&lt;$50M). Only 2 names from GAINERS top-20 exceed $1B mkt cap. Chrome MCP volume-sort would surface additional liquid names. 0 names from LOSERS top-20 except PRIM ($5.88B) exceed tradeable threshold.</div>
+
+  <div style="font-size:12px;color:var(--muted);margin-bottom:8px;font-weight:600;">GAINERS (&gt;$1B only)</div>
+  <table>
+    <tr><th>Ticker</th><th>Company</th><th>Pre-Mkt %</th><th>Pre-Mkt Price</th><th>Pre-Mkt Vol</th><th>Mkt Cap</th><th>Catalyst</th><th>ETF Bucket</th></tr>
+    <tr class="etf-hot-bull">
+      <td style="color:var(--green);font-weight:700;">ZETA</td>
+      <td>Zeta Global Holdings</td>
+      <td class="pos">+8.88%</td>
+      <td>$20.11</td>
+      <td>1,106,944 ✅</td>
+      <td>$4.60B</td>
+      <td style="color:var(--green);">OpenAI partnership · Q1 rev +50% YoY · guidance raised</td>
+      <td>IGV (software)</td>
+    </tr>
+    <tr>
+      <td style="color:var(--green);font-weight:700;">EPC</td>
+      <td>Edgewell Personal Care</td>
+      <td class="pos">+9.60%</td>
+      <td>$24.90</td>
+      <td>142,904 ⚠️</td>
+      <td>$1.05B</td>
+      <td>Q2 2026 beat · market share gains (8-K filed)</td>
+      <td>XLP (staples)</td>
+    </tr>
+    <tr class="neutral">
+      <td style="color:var(--muted);">IONR</td>
+      <td>ioneer Ltd (lithium)</td>
+      <td class="pos">+13.12%</td>
+      <td>$4.36</td>
+      <td>313,925</td>
+      <td>$323M ❌ sub-$1B</td>
+      <td>Rare earth/lithium; notable but sub-threshold</td>
+      <td>LIT/REMX</td>
+    </tr>
+  </table>
+
+  <div style="font-size:12px;color:var(--muted);margin-bottom:8px;font-weight:600;margin-top:14px;">LOSERS (&gt;$1B only)</div>
+  <table>
+    <tr><th>Ticker</th><th>Company</th><th>Pre-Mkt %</th><th>Pre-Mkt Price</th><th>Pre-Mkt Vol</th><th>Mkt Cap</th><th>Catalyst</th></tr>
+    <tr class="etf-hot-bear">
+      <td style="color:var(--red);font-weight:700;">PRIM</td>
+      <td>Primoris Services Corp</td>
+      <td class="neg">-34.47%</td>
+      <td>$71.00</td>
+      <td>117,720</td>
+      <td>$5.88B</td>
+      <td style="color:var(--red);">Q1 2026 miss: EPS $0.59 vs $0.85 est (-31%); rev $1.56B vs $1.73B; FY2026 guidance cut; COO Jeremy Kinch RESIGNED. Renewables execution failure. Source: Seeking Alpha, Investing.com (Jun 22-23, 2026)</td>
+    </tr>
+    <tr>
+      <td style="color:var(--red);font-weight:700;">AMC</td>
+      <td>AMC Entertainment</td>
+      <td class="neg">-25.00%</td>
+      <td>$2.07</td>
+      <td>5,205,888</td>
+      <td>$2.08B</td>
+      <td>Catalyst UNCONFIRMED — no primary source found. Highly speculative.</td>
+    </tr>
+  </table>
+</section>
+
+<hr class="divider">
+
+<!-- ETF SWEEP -->
+<section>
+  <div class="section-title">
+    🌐 ETF SWEEP — 57 ETFs (All Prior Session June 22 Close, TV MCP batch_run ~08:30 ET) <span class="badge badge-cyan">STEP 2</span>
+  </div>
+
+  <div style="font-size:11px;color:var(--amber);margin-bottom:10px;">All values = June 22 session close. Pull time: ~08:30 ET. Method: batch_run get_ohlcv. TODAY's premarket direction: Nasdaq -2.6% (web search). DRAM/SMH/semi ETFs likely DOWN on open despite Monday gains.</div>
+
+  <div style="font-size:12px;font-weight:700;color:var(--muted);margin:10px 0 6px 0;">INDEX / REGIME</div>
+  <table>
+    <tr><th>ETF</th><th>Theme</th><th>Mon Close</th><th>Change %</th><th>Vol</th><th>Signal</th></tr>
+    <tr><td>SPY</td><td>S&amp;P 500</td><td>$744.39</td><td class="neg">-0.45%</td><td>46.6M (0.73x avg)</td><td class="neutral">Mild decline · Futures -1.3% today</td></tr>
+    <tr><td>QQQ</td><td>Nasdaq 100</td><td>$737.95</td><td class="pos">+0.21%</td><td>43.5M (0.93x avg)</td><td class="neg">Held Mon but futures -2.6% today</td></tr>
+    <tr><td>IWM</td><td>Small Caps</td><td>$298.18</td><td class="pos">+1.23%</td><td>22.8M (0.82x avg)</td><td class="pos">Small cap outperformance continues</td></tr>
+    <tr class="etf-hot-bear"><td>VIX</td><td>Volatility</td><td>$19.68</td><td class="neg">+12.59%</td><td>—</td><td class="neg">⚠️ ELEVATED — spike accelerating</td></tr>
+    <tr><td>HYG</td><td>High-Yield Credit</td><td>$79.94</td><td class="neg">-0.11%</td><td>26.5M (0.78x avg)</td><td class="neutral">Stable — credit not panicking yet</td></tr>
+    <tr><td>TLT</td><td>20Y Bonds / Rates</td><td>$86.09</td><td class="neg">-1.13%</td><td>28.6M (0.94x avg)</td><td class="neg">Rates rising — bearish for rate-sensitive growth</td></tr>
+    <tr><td>UUP</td><td>US Dollar</td><td>$28.36</td><td class="pos">+0.46%</td><td>2.5M (1.10x avg)</td><td class="neg">Dollar strength = headwind for metals/EM</td></tr>
+    <tr><td>GLD</td><td>Gold</td><td>$384.59</td><td class="neg">-1.70%</td><td>7.8M (1.01x avg)</td><td class="neg">Part of precious metals complex collapse</td></tr>
+  </table>
+
+  <div style="font-size:12px;font-weight:700;color:var(--muted);margin:14px 0 6px 0;">SECTOR SPDRs</div>
+  <table>
+    <tr><th>ETF</th><th>Theme</th><th>Mon Close</th><th>Change %</th><th>Signal</th></tr>
+    <tr><td>XLK</td><td>Technology</td><td>$192.15</td><td class="pos">+1.03%</td><td class="neg">Held Mon; Korea crash = likely reversal today</td></tr>
+    <tr><td>XLV</td><td>Healthcare</td><td>$150.06</td><td class="neg">-0.36%</td><td class="neutral">Mild — biotech (XBI) carrying the sector</td></tr>
+    <tr><td>XLF</td><td>Financials</td><td>$53.70</td><td class="neg">-1.21%</td><td class="neg">Regional banks (KRE) bucking mildly but sector weak</td></tr>
+    <tr><td>XLE</td><td>Energy Majors</td><td>$54.06</td><td class="pos">+0.57%</td><td class="pos">Relative strength — defensive vs tech selloff</td></tr>
+    <tr><td>XLI</td><td>Industrials</td><td>$181.80</td><td class="neg">-0.14%</td><td class="neutral">Flat</td></tr>
+    <tr class="etf-hot-bear"><td>XLY</td><td>Consumer Disc.</td><td>$114.94</td><td class="neg">-1.27%</td><td class="neg">Weak · AMZN -3.05% dragging</td></tr>
+    <tr class="etf-hot-bear"><td>XLP</td><td>Consumer Staples</td><td>$82.18</td><td class="neg">-1.29%</td><td class="neg">Weak despite defensive nature; EPC diverging positive</td></tr>
+    <tr><td>XLU</td><td>Utilities / AI Power</td><td>$44.72</td><td class="pos">+0.91%</td><td class="pos">Mild positive — power demand secular</td></tr>
+    <tr class="etf-hot-bear"><td>XLB</td><td>Materials</td><td>$51.62</td><td class="neg">-0.78%</td><td class="neg">Metals complex weighing on materials</td></tr>
+    <tr class="etf-hot-bear"><td>XLC</td><td>Communications (META, GOOGL)</td><td>$106.86</td><td class="neg">-2.48% 🚨</td><td class="neg">AI talent departures at Google; META weak; communications-wide selloff</td></tr>
+    <tr><td>XLRE</td><td>REITs</td><td>$44.02</td><td class="pos">+0.06%</td><td class="neutral">Essentially flat; SA warning on REIT losses</td></tr>
+  </table>
+
+  <div style="font-size:12px;font-weight:700;color:var(--muted);margin:14px 0 6px 0;">INDUSTRY GROUPS</div>
+  <table>
+    <tr><th>ETF</th><th>Theme</th><th>Mon Close</th><th>Change %</th><th>Signal</th></tr>
+    <tr class="etf-hot-bull etf-warn"><td>SMH</td><td>Semiconductors (NVDA, TSM, AVGO, MU)</td><td>$668.91</td><td class="pos">+3.14% 🚨</td><td class="neg">⚠️ REVERSAL RISK — Korea crash, Samsung/SK Hynix -12%. Was bullish Mon, now facing hard reversal.</td></tr>
+    <tr class="etf-hot-bear"><td>IGV</td><td>Software (MSFT, CRM, PLTR)</td><td>$87.31</td><td class="neg">-2.51% 🚨</td><td class="neg">PLTR -8.67% dragging; AI subscription model concerns; ZETA diverging positively</td></tr>
+    <tr class="etf-hot-bear"><td>CIBR</td><td>Cybersecurity (CRWD, PANW)</td><td>$83.58</td><td class="neg">-1.10%</td><td class="neg">Software weakness spreading to cyber</td></tr>
+    <tr class="etf-hot-bull"><td>XBI</td><td>Biotech Small-Cap (FDA/M&A)</td><td>$145.86</td><td class="pos">+2.82% 🚨</td><td class="pos">🚨 THEME-WIDE with IBB — M&A supercycle · AbbVie/APGE deal · DFTX Phase 3</td></tr>
+    <tr class="etf-hot-bull"><td>IBB</td><td>Biotech Large-Cap</td><td>$177.00</td><td class="pos">+1.25% 🚨</td><td class="pos">🚨 THEME-WIDE with XBI — both up = broad biotech rotation, not just one squeeze</td></tr>
+    <tr><td>KRE</td><td>Regional Banks</td><td>$71.99</td><td class="pos">+0.91%</td><td class="pos">Mild positive; small-cap outperformance theme</td></tr>
+    <tr><td>XOP</td><td>Oil &amp; Gas E&P</td><td>$154.90</td><td class="pos">+0.93%</td><td class="pos">Energy holding up; oil stable (USO +0.20%)</td></tr>
+    <tr><td>XHB</td><td>Homebuilders</td><td>$109.13</td><td class="pos">+0.11%</td><td class="neutral">Flat; rate headwinds from TLT -1.13%</td></tr>
+    <tr><td>XRT</td><td>Retail</td><td>$85.51</td><td class="pos">+0.37%</td><td class="neutral">Mild; consumer sentiment bounce helping</td></tr>
+    <tr><td>IYT</td><td>Transports</td><td>$84.60</td><td class="pos">+0.71%</td><td class="neutral">Mild positive; gas prices tumbling = fuel cost tailwind</td></tr>
+    <tr><td>JETS</td><td>Airlines</td><td>$30.98</td><td class="pos">+0.67%</td><td class="neutral">Mild; gas prices falling = margin support</td></tr>
+    <tr><td>PEJ</td><td>Travel/Leisure</td><td>$64.83</td><td class="neg">-0.83%</td><td class="neutral">JETS not confirming PEJ = no travel theme-wide breakout</td></tr>
+  </table>
+
+  <div style="font-size:12px;font-weight:700;color:var(--muted);margin:14px 0 6px 0;">AI / TECH THEMES</div>
+  <table>
+    <tr><th>ETF</th><th>Theme</th><th>Mon Close</th><th>Change %</th><th>Signal</th></tr>
+    <tr class="etf-hot-bull etf-warn"><td>DRAM</td><td>HBM Memory (SK Hynix, Micron, Samsung)</td><td>$80.72</td><td class="pos">+7.28% 🚨</td><td class="neg">⚠️ REVERSAL RISK — SK Hynix slowing HBM4, pivoting to DRAM. Korea names -12%. Was #1 pick Mon — DO NOT HOLD blindly.</td></tr>
+    <tr class="etf-hot-bull"><td>QTUM</td><td>Quantum (IONQ, RGTI, QBTS)</td><td>$168.60</td><td class="pos">+1.13%</td><td class="pos">🏛️ Trump 2 EOs Jun 22 + $2B stakes · Holdings up 3%+ premarket today · Policy catalyst CONFIRMED</td></tr>
+    <tr><td>BOTZ</td><td>Robotics/Physical AI</td><td>$38.33</td><td class="pos">+0.18%</td><td class="neutral">Flat; physical AI waiting for catalyst</td></tr>
+    <tr class="etf-hot-bear"><td>ARKK</td><td>Speculative Growth / Risk Appetite</td><td>$78.43</td><td class="neg">-1.36%</td><td class="neg">Risk-off signal; speculative names sold</td></tr>
+    <tr class="etf-hot-bear"><td>ARKX</td><td>Space (RKLB, ASTS, PL)</td><td>$33.36</td><td class="neg">-4.52% 🚨</td><td class="neg">SpaceX -5% today (3rd day); retail euphoria fizzling; $600B wipeout · AVOID</td></tr>
+    <tr class="etf-hot-bull"><td>AIPO</td><td>AI &amp; Power Infra (VRT, VST, GEV)</td><td>$34.77</td><td class="pos">+3.45%</td><td class="amber">Continuation from Friday · Data center power buildout · XLU +0.91% partial pair · Watch for tech headwind impact</td></tr>
+    <tr class="etf-hot-bull"><td>DTCR</td><td>Data Center REITs (EQIX, DLR)</td><td>$32.46</td><td class="pos">+1.37%</td><td class="pos">AI demand for data center real estate secular</td></tr>
+    <tr class="etf-hot-bear"><td>SHLD</td><td>Defense Tech (PLTR-heavy)</td><td>$60.59</td><td class="neg">-5.27% 🚨</td><td class="neg">🚨 THEME-WIDE with ITA · PLTR contract losses accelerating · AVOID</td></tr>
+    <tr class="etf-hot-bear"><td>ITA</td><td>Defense Primes (RTX, LMT, GD, BA)</td><td>$235.51</td><td class="neg">-3.86% 🚨</td><td class="neg">🚨 THEME-WIDE with SHLD — defense broad selloff, not just PLTR</td></tr>
+    <tr><td>WGMI</td><td>BTC Miners / AI-HPC (IREN, CIFR, MARA, RIOT)</td><td>$71.98</td><td class="pos">+0.64%</td><td class="neutral">MARA +3.56% bucking; COIN -1.73% counter · Mixed</td></tr>
+    <tr><td>IBIT</td><td>Spot Bitcoin</td><td>$36.50</td><td class="pos">+0.22%</td><td class="neutral">Bitcoin essentially flat Monday</td></tr>
+  </table>
+
+  <div style="font-size:12px;font-weight:700;color:var(--muted);margin:14px 0 6px 0;">POWER / MATERIALS</div>
+  <table>
+    <tr><th>ETF</th><th>Theme</th><th>Mon Close</th><th>Change %</th><th>Signal</th></tr>
+    <tr class="etf-hot-bear"><td>URA</td><td>Uranium/Nuclear (CCJ, OKLO, SMR)</td><td>$46.80</td><td class="neg">-2.32% 🚨</td><td class="neg">🚨 THEME-WIDE with NLR · Nuclear both down · De-risking</td></tr>
+    <tr class="etf-hot-bear"><td>NLR</td><td>Nuclear Utilities/Reactors</td><td>$124.55</td><td class="neg">-2.24% 🚨</td><td class="neg">🚨 THEME-WIDE with URA — nuclear sector-wide selloff confirmed</td></tr>
+    <tr class="etf-hot-bull"><td>GRID</td><td>Grid Equipment (ETN, HUBB)</td><td>$197.52</td><td class="pos">+1.81%</td><td class="pos">Grid infra benefiting from AI power demand even as nuclear pauses</td></tr>
+    <tr class="etf-hot-bull"><td>TAN</td><td>Solar</td><td>$61.11</td><td class="pos">+2.59%</td><td class="pos">Solar bucking nuclear weakness; AI power demand diversifying to solar</td></tr>
+    <tr class="etf-hot-bear"><td>COPX</td><td>Copper Miners</td><td>$84.89</td><td class="neg">-2.76% 🚨</td><td class="neg">Critical minerals complex under pressure; part of broad metals selloff</td></tr>
+    <tr><td>REMX</td><td>Rare Earth (MP, USAR)</td><td>$97.29</td><td class="pos">+0.59%</td><td class="neutral">Stable; MP Materials no specific news today</td></tr>
+    <tr class="etf-hot-bear"><td>XME</td><td>Metals &amp; Mining (steel, coal)</td><td>$115.22</td><td class="neg">-3.29% 🚨</td><td class="neg">Broad metals weakness · Dollar strength headwind</td></tr>
+    <tr><td>LIT</td><td>Lithium/Battery</td><td>$82.57</td><td class="pos">+0.11%</td><td class="neutral">Flat; IONR (ioneer) +13% premarket a minor positive signal</td></tr>
+    <tr class="etf-hot-bear"><td>GDX</td><td>Gold Miners Large (NEM, AEM)</td><td>$81.44</td><td class="neg">-4.09% 🚨</td><td class="neg">🚨 PRECIOUS METALS COMPLEX DOWN — GS target cut; dollar strength; rate rise</td></tr>
+    <tr class="etf-hot-bear"><td>GDXJ</td><td>Junior Gold Miners</td><td>$106.12</td><td class="neg">-4.39% 🚨</td><td class="neg">🚨 THEME-WIDE with GDX — juniors leading = real metals exodus, not just hedge</td></tr>
+    <tr class="etf-hot-bear"><td>SLV</td><td>Silver</td><td>$58.91</td><td class="neg">-3.01% 🚨</td><td class="neg">Part of precious metals collapse; industrial metals demand concerns</td></tr>
+  </table>
+
+  <div style="font-size:12px;font-weight:700;color:var(--muted);margin:14px 0 6px 0;">COMMODITIES / GLOBAL</div>
+  <table>
+    <tr><th>ETF</th><th>Theme</th><th>Mon Close</th><th>Change %</th><th>Signal</th></tr>
+    <tr><td>USO</td><td>Crude Oil</td><td>$112.69</td><td class="pos">+0.20%</td><td class="neutral">Stable; Iran $12B deal geopolitical wildcard</td></tr>
+    <tr class="etf-hot-bull"><td>UNG</td><td>Natural Gas (LNG, power burn)</td><td>$11.77</td><td class="pos">+3.16% 🚨</td><td class="pos">Structural LNG demand + AI power · Golden Pass LNG first cargo Apr 22 · Defensive vs tech</td></tr>
+    <tr><td>MOO</td><td>Agriculture</td><td>$76.90</td><td class="neg">-0.58%</td><td class="neutral">Flat; El Nino risk building (Finviz)</td></tr>
+    <tr class="etf-hot-bear"><td>KWEB</td><td>China Internet ADRs (BABA, PDD, BIDU)</td><td>$25.05</td><td class="neg">-1.20%</td><td class="neg">China ADRs weak; Korea crash negative spillover to Asia</td></tr>
+  </table>
+</section>
+
+<hr class="divider">
+
+<!-- FINVIZ NEWS -->
+<section>
+  <div class="section-title">
+    📰 FINVIZ NEWS DIGEST — Last 6 Hours <span class="badge badge-amber">STEP 3</span>
+    <span style="font-size:11px;color:var(--muted);font-weight:400;">Public feed (Finviz Elite unavailable) · Pulled ~08:13 ET</span>
+  </div>
+  <div class="news-item negative">
+    <div class="headline">📉 "Futures Slide As Tech Tumbles, Korea Crashes"</div>
+    <div class="meta">Zero Hedge · 07:59 AM · <span class="etf-tag">QQQ</span><span class="etf-tag">SMH</span><span class="etf-tag">DRAM</span></div>
+    <div class="meta">Korea KOSPI -10% circuit breakers; Nasdaq futures -2.6%; global tech selloff headline aggregation. Aggregator — NOT primary source.</div>
+  </div>
+  <div class="news-item negative">
+    <div class="headline">📉 "Retail Euphoria In SpaceX Fizzles After Stock Loses $600 Billion"</div>
+    <div class="meta">Zero Hedge · 07:35 AM · <span class="etf-tag">ARKX</span><span class="etf-tag">IBIT</span></div>
+    <div class="meta">SpaceX -5% premarket, -23% from IPO peak (Jun 12 listing). Primary source: CNBC, Japan Times, Bloomberg. $20B bond issuance for AI ambitions = dilution/leverage concern.</div>
+  </div>
+  <div class="news-item">
+    <div class="headline">📈 "AMD's AI Position Is Expanding"</div>
+    <div class="meta">Seeking Alpha · 05:51 AM · <span class="etf-tag">SMH</span></div>
+    <div class="meta">AMD closed +3.77% Monday. Bullish thesis on AI chip market share. But today faces tech headwind (Nasdaq -2.6%).</div>
+  </div>
+  <div class="news-item">
+    <div class="headline">📈 "Micron Is My Biggest Position — Here's Why I'm Not Selling"</div>
+    <div class="meta">Seeking Alpha · 07:30 AM · <span class="etf-tag">SMH</span><span class="etf-tag">DRAM</span></div>
+    <div class="meta">Bullish MU thesis. BUT: MU down 9% per CNBC live update — Korea HBM correction hitting Micron hard. Conviction note = individual opinion; weight cautiously.</div>
+  </div>
+  <div class="news-item">
+    <div class="headline">📊 "Big Bounce In Consumer Sentiment As Gas Prices Tumble"</div>
+    <div class="meta">Zero Hedge · 05:45 AM · <span class="etf-tag">XLY</span><span class="etf-tag">IYT</span><span class="etf-tag">JETS</span></div>
+    <div class="meta">Consumer sentiment macro positive; fuel cost decline supports airlines and transports. JETS +0.67% Monday.</div>
+  </div>
+  <div class="news-item">
+    <div class="headline">⚠️ "Warning: These REITs Could Suffer Large Losses"</div>
+    <div class="meta">Seeking Alpha · 07:15 AM · <span class="etf-tag">XLRE</span><span class="etf-tag">DTCR</span></div>
+    <div class="meta">Rate headwinds (TLT -1.13% Mon) creating REIT valuation pressure. XLRE +0.06% holding for now. Monitor if rates rise further on hot PCE Thursday.</div>
+  </div>
+  <div class="news-item">
+    <div class="headline">📈 "Market Is Paying Up, But The Earnings Path Still Works" (CDNS)</div>
+    <div class="meta">Seeking Alpha · 08:13 AM · <span class="etf-tag">IGV</span></div>
+    <div class="meta">Cadence Design Systems — EDA software bullish thesis. UNCLASSIFIED (no direct ETF theme-wide impact).</div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- POLICY / STAKE / RUMOR -->
+<section>
+  <div class="section-title">
+    🏛️ POLICY / STAKE / RUMOR CATALYSTS <span class="badge badge-purple">STEP 4</span>
+  </div>
+
+  <div class="news-item quantum">
+    <div class="headline" style="color:var(--purple);">🏛️ TRUMP SIGNS 2 QUANTUM COMPUTING EXECUTIVE ORDERS — June 22, 2026</div>
+    <div class="meta">Sources: Yahoo Finance, FP Journal (foreignpolicyjournal.com), Trefis (Jun 23, 2026) — CONFIRMED</div>
+    <div style="font-size:12px;color:var(--text);margin-top:6px;">
+      <strong>EO 1:</strong> Quantum Computer for Application Development and Discovery Science Initiative — DoE quantum computer by 2028; quantum sensors deployed by Sep 30, 2028.<br>
+      <strong>EO 2:</strong> Federal agencies → post-quantum cryptography migration: high-value assets by 2030 (key establishment), by 2031 (digital signatures).<br>
+      <strong>$2B in Equity Stakes:</strong> Commerce Dept letters of intent signed with 9 quantum firms: RGTI (Rigetti — $100M LoI over 3 years under CHIPS Act), QBTS (D-Wave), IBM, INFQ, GFS (GlobalFoundries) and others.<br>
+      <strong>Premarket June 23:</strong> IONQ, QBTS, RGTI all +3%+ premarket today. QTUM ETF (Mon close +1.13%) expected to gap up.<br>
+      ETF map: <span class="etf-tag">QTUM</span>
+    </div>
+  </div>
+
+  <div class="news-item policy">
+    <div class="headline" style="color:var(--purple);">🏛️ INTC INTEL — Gov Holds 9.9% Stake at $20.47/share ($11.1B grants)</div>
+    <div class="meta">Source: 247wallst.com / Yahoo Finance · Background context (Aug 2025 acquisition)</div>
+    <div style="font-size:12px;color:var(--text);margin-top:6px;">
+      INTC all-time high Jun 22 ($141.45), +250% YTD from $36.90. NOW: -7.41% premarket (-$10.44 to ~$130.50) dragged by Korea/tech selloff. Gov stake provides floor support but doesn't immunize from tech selloff. No specific new INTC policy catalyst today.
+    </div>
+  </div>
+
+  <div class="news-item policy">
+    <div class="headline" style="color:var(--purple);">🏛️ PLTR PALANTIR — FRANCE drops PLTR contract; UK NHS £330M contract at risk (Feb 2027 break clause)</div>
+    <div class="meta">Sources: FinancialContent.com, Yahoo Finance (Jun 22, 2026) · CONFIRMED</div>
+    <div style="font-size:12px;color:var(--text);margin-top:6px;">
+      French Prime Minister Sébastien Lecornu: France must transition to domestic AI providers to avoid foreign digital dependencies. UK MPs renewed pressure on NHS to prepare contingency for Feb 2027 break clause on PLTR's £330M FDP contract. PLTR closed -8.67% Monday. Down 26% YTD, 113x fwd P/E, $133M insider sales in 3 months. BNP Paribas "Underperform" initiated Jun 16.
+      <br>ETF map: <span class="etf-tag">SHLD</span><span class="etf-tag">IGV</span>
+    </div>
+  </div>
+
+  <div class="news-item policy">
+    <div class="headline">MP Materials, RGTI, QBTS, IONQ, INFQ, IBM — Active in Gov Portfolio</div>
+    <div class="meta">Background tracking</div>
+    <div style="font-size:12px;color:var(--text);margin-top:6px;">
+      No new MP/USAR/REMX policy catalyst today. RGTI confirmed $100M LoI with Commerce under quantum EOs. QBTS bookings +1,994% QoQ ($33.4M). IONQ revenue +755% YoY. IBM included in $2B quantum stakes initiative.
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- WIRE SERVICE SCOOPS -->
+<section>
+  <div class="section-title">
+    🔌 WIRE SERVICE SCOOPS <span class="badge badge-orange">STEP 5</span>
+  </div>
+
+  <div class="news-item wire">
+    <div class="headline" style="color:var(--orange);">📡 CNBC: "Nasdaq futures tumble led by tech stocks as Micron drops 9%; South Korea's Kospi falls 10%: Live updates"</div>
+    <div class="meta">CNBC Live (cnbc.com/2026/06/22/stock-market-today-live-updates.html) · Jun 22 PM – Jun 23 AM · FREE</div>
+    <div style="font-size:12px;color:var(--text);margin-top:4px;">MU -9% confirming Korea HBM impact hitting Micron. NQ -2.6%, ES -1.3%, YM -252pts. Circuit breakers triggered twice on KOSPI. ETF map: <span class="etf-tag">SMH</span><span class="etf-tag">DRAM</span><span class="etf-tag">QQQ</span></div>
+  </div>
+
+  <div class="news-item wire">
+    <div class="headline" style="color:var(--orange);">📡 BLOOMBERG: "Kospi Index Slides 4.6% With Samsung, SK Hynix Falling on Chip Concerns"</div>
+    <div class="meta">Bloomberg (bloomberg.com/news/articles/2026-06-23/korean-stocks-fall...) · Jun 23 AM · Paywalled</div>
+    <div style="font-size:12px;color:var(--text);margin-top:4px;">Samsung and SK Hynix chip concerns driving Korean selloff. Foreign investor liquidation. ETF map: <span class="etf-tag">SMH</span><span class="etf-tag">DRAM</span></div>
+  </div>
+
+  <div class="news-item wire">
+    <div class="headline" style="color:var(--orange);">📡 JAPAN TIMES / BLOOMBERG: "SpaceX Falls for Third Day, Erasing $600 Billion in Market Value"</div>
+    <div class="meta">Japan Times (japantimes.co.jp) + Bloomberg (bloomberg.com) · Jun 23 · Partially paywalled</div>
+    <div style="font-size:12px;color:var(--text);margin-top:4px;">SpaceX IPO Jun 12 at $135, peaked $225, now ~$147 (-5% premarket today). $20B investment-grade bond issuance (first-time) for AI ambitions. Three consecutive daily losses. ETF map: <span class="etf-tag">ARKX</span></div>
+  </div>
+
+  <div class="news-item wire">
+    <div class="headline" style="color:var(--orange);">📡 TRADINGKEY/INDEXBOX: "Korean Stocks Trigger Circuit Breakers Twice; SK Hynix and Samsung Both Plunge 12%; Kioxia -15%"</div>
+    <div class="meta">TradingKey (tradingkey.com) + IndexBox (indexbox.io) · Jun 23 · FREE</div>
+    <div style="font-size:12px;color:var(--text);margin-top:4px;">SK Hynix HBM4 expansion SLOWING — pivoting to conventional DRAM where margins improved. This is the direct bearish catalyst for DRAM ETF. Also: AI talent departures at Google; foreign investor net selling in KOSPI. ETF map: <span class="etf-tag">DRAM</span><span class="etf-tag">SMH</span></div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- OPTIONS FLOW -->
+<section>
+  <div class="section-title">
+    🔵 PRE-MARKET OPTIONS FLOW <span class="badge badge-blue">STEP 6</span>
+  </div>
+  <div style="background:var(--blue-bg);border:1px solid var(--blue);border-radius:4px;padding:10px 14px;font-size:12px;color:var(--text);">
+    ⚠️ <strong style="color:var(--amber);">No confirmed options flow data for June 23, 2026.</strong> Unusual Whales premarket data requires subscription (free tier = 15-min delayed, 4 symbols only). No Benzinga premarket options article found. Yahoo options chains skipped (Chrome MCP unavailable). ALL options commentary below is PRICE-ACTION INFERENCE ONLY — not confirmed flow.
+    <br><br>
+    <strong>Price-action inference:</strong><br>
+    • <span style="color:var(--red);">SPY/QQQ puts likely elevated</span> — Nasdaq -2.6% futures; VIX +12.59% Monday (19.68)<br>
+    • <span style="color:var(--purple);">QTUM/RGTI/QBTS calls likely active</span> — Trump EO + $2B stakes driving speculative call buying premarket<br>
+    • <span style="color:var(--green);">XBI calls likely active</span> — M&A speculation momentum; APGE arb spread + next deal speculation<br>
+    • <span style="color:var(--red);">PRIM puts confirmed</span> — -34.47% premarket; likely significant put activity pre-earnings<br>
+    • <span style="color:var(--red);">PLTR continued put pressure</span> — multi-catalyst selloff (France, UK, BNP); insider selling ongoing<br>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- FOLLOW-THROUGH FROM JUNE 22 SCAN -->
+<section>
+  <div class="section-title">
+    🔄 FOLLOW-THROUGH FROM JUNE 22 SCAN <span class="badge badge-amber">STEP 7</span>
+  </div>
+  <div class="followup-card">
+    <div class="followup-status status-risk">⚠️ REVERSAL RISK</div>
+    <div>
+      <strong>DRAM</strong> (ETF — Tier 1 pick, 🟢 HIGH on Jun 22) — Was $76.71 Fri close → $80.72 Monday (+7.28%). Hit our $77.50 entry trigger, target range $85–90 being approached. <strong style="color:var(--red);">NOW: Korea HBM4 slowdown directly undermines the HBM supercycle thesis. SK Hynix pivoting AWAY from HBM4. DRAM ETF likely DOWN sharply on open. Exit or tight stop if long from Monday.</strong>
+    </div>
+  </div>
+  <div class="followup-card">
+    <div class="followup-status status-on">🟢 STILL ON</div>
+    <div>
+      <strong>XBI</strong> (ETF — Tier 2 pick, 🟡 MEDIUM on Jun 22) — $140.58 Fri → $145.86 Monday (+3.7% cumulative). Entry was $141, target $150 still intact. Volume Mon 16.7M (1.27x avg) confirms institutional buying. Biotech theme INDEPENDENT of tech selloff — rotating capital from tech into biotech. <strong style="color:var(--green);">HOLD / ADD on pullback to $143.</strong>
+    </div>
+  </div>
+  <div class="followup-card">
+    <div class="followup-status status-risk">⚠️ CAUTION</div>
+    <div>
+      <strong>AIPO</strong> (ETF — Tier 3, 🟡 MEDIUM on Jun 22) — $34.00 Fri → $34.77 Monday (+2.27% cumulative). Modest continuation. Today faces tech headwind (Nasdaq -2.6%). Data center power demand remains structural but AI sentiment wavering. <strong style="color:var(--amber);">HOLD only if $34 holds at open; cut if breaks below $33.50.</strong>
+    </div>
+  </div>
+  <div class="followup-card">
+    <div class="followup-status status-on">🟢 STILL ON</div>
+    <div>
+      <strong>APGE M&amp;A Arb</strong> (Ind. stock — 🟢 HIGH, Jun 22) — Deal at $135.11 cash (AbbVie). Pre-mkt Jun 22: $132.64. Deal spread was $2.47 (1.83%). Deal confirmed definitive agreement. <strong style="color:var(--green);">Hold arb position if entered. Biotech M&amp;A theme intact accelerates next deal speculation.</strong>
+    </div>
+  </div>
+  <div class="followup-card">
+    <div class="followup-status status-risk">⚠️ FADING</div>
+    <div>
+      <strong>UMC</strong> (Ind. stock — 🟡 MEDIUM on Jun 22) — Pre-mkt $27.31 Jun 22 (we said "3rd day of extension — fade risk real"). Korea crash and Samsung/SK Hynix -12% will likely drag UMC hard today. No Jun 22 close data available (not in our watchlist). <strong style="color:var(--red);">Likely fading on Korea chip rout. If long, check stop.</strong>
+    </div>
+  </div>
+  <div class="followup-card">
+    <div class="followup-status" style="color:var(--muted);">MONITOR</div>
+    <div>
+      <strong>PENG</strong> (Ind. stock — 🟡 MEDIUM on Jun 22) — Pre-mkt Jun 22 $76.99 ("wait for flag"). Close not tracked. Penguin Solutions AI infra thesis intact but Nasdaq -2.6% headwind. No data to confirm continuation.
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- WATCHLIST -->
+<section>
+  <div class="section-title">
+    👁️ PERSONAL WATCHLIST STATUS <span class="badge badge-cyan">STEP 8</span>
+    <span style="font-size:11px;color:var(--muted);font-weight:400;">June 22 close · TV MCP batch_run · Pull time ~08:30 ET</span>
+  </div>
+  <table>
+    <tr><th>Ticker</th><th>Mon Close</th><th>Change %</th><th>Avg Vol</th><th>Mon Vol</th><th>Signal / Notes</th></tr>
+    <tr>
+      <td>TSLA</td>
+      <td>$405.05</td>
+      <td class="pos">+1.75%</td>
+      <td>53.1M</td>
+      <td>47.8M (0.90x)</td>
+      <td>Mild recovery; will face tech headwind today. No specific catalyst found.</td>
+    </tr>
+    <tr>
+      <td>NVDA</td>
+      <td>$208.65</td>
+      <td class="pos">+0.64%</td>
+      <td>181.7M</td>
+      <td>122.0M (0.67x ⚠️ low vol)</td>
+      <td class="neg">Korea crash hits NVDA — Samsung/SK Hynix -12% = HBM supply chain concern. Likely DOWN on open. Low Monday vol = distribution warning signal. No new analyst action confirmed.</td>
+    </tr>
+    <tr>
+      <td>SOFI</td>
+      <td>$17.10</td>
+      <td class="neg">-4.07%</td>
+      <td>78.3M</td>
+      <td>75.6M (0.97x)</td>
+      <td class="neg">Notable decline; no specific catalyst confirmed. Rate-sensitive fintech facing TLT -1.13% headwind.</td>
+    </tr>
+    <tr>
+      <td>AMD</td>
+      <td>$551.63</td>
+      <td class="pos">+3.77%</td>
+      <td>34.9M</td>
+      <td>26.0M (0.75x ⚠️)</td>
+      <td class="neg">Strong Monday on AI position expansion thesis; but Korea crash = risk-off for semis today. Low vol on Monday = caution. Likely reversal at open.</td>
+    </tr>
+    <tr class="etf-hot-bear">
+      <td>PLTR</td>
+      <td>$119.50</td>
+      <td class="neg">-8.67% 🚨</td>
+      <td>56.1M</td>
+      <td>56.9M (1.01x)</td>
+      <td class="neg">MAJOR DROP. France drops PLTR; UK NHS £330M contract break clause risk; BNP Underperform; -26% YTD; 113x fwd P/E; $133M insider sales. Pattern: AVOID until 26-week MA recaptured. <strong>SHLD dragged -5.27%, ITA -3.86%.</strong></td>
+    </tr>
+    <tr>
+      <td>MARA</td>
+      <td>$14.85</td>
+      <td class="pos">+3.56%</td>
+      <td>49.9M</td>
+      <td>67.1M (1.34x)</td>
+      <td class="pos">Volume confirm on Monday. Bitcoin flat (IBIT +0.22%) so MARA running on AI-HPC pivot narrative. Watchlist.</td>
+    </tr>
+    <tr>
+      <td>COIN</td>
+      <td>$164.84</td>
+      <td class="neg">-1.73%</td>
+      <td>9.2M</td>
+      <td>8.5M (0.93x)</td>
+      <td class="neutral">Crypto weak; Bitcoin flat; no specific COIN catalyst. Skip today.</td>
+    </tr>
+    <tr class="etf-hot-bull">
+      <td>SNDK</td>
+      <td>$2,273.73</td>
+      <td class="pos">+11.20% 🚨</td>
+      <td>11.1M</td>
+      <td>10.0M (0.90x)</td>
+      <td class="pos"><strong>ATH. WD final share swap COMPLETED Jun 22.</strong> +800% YTD. AI NAND storage demand; Apple memory hike "unavoidable." Wait for pullback to $2,100–$2,200 before entry. Do not chase open.</td>
+    </tr>
+    <tr class="etf-hot-bear">
+      <td>META</td>
+      <td>$563.85</td>
+      <td class="neg">-1.57%</td>
+      <td>22.1M</td>
+      <td>15.4M (0.70x ⚠️)</td>
+      <td class="neg">XLC -2.48%; AI talent departures at Google hitting comms sector; low volume = weak conviction on move. Avoid.</td>
+    </tr>
+    <tr class="etf-hot-bear">
+      <td>AMZN</td>
+      <td>$232.79</td>
+      <td class="neg">-3.05% 🚨</td>
+      <td>72.0M</td>
+      <td>68.4M (0.95x)</td>
+      <td class="neg">Notable selloff; large-cap tech/XLC weakness. AWS demand concerns correlating with broader tech selloff. Avoid.</td>
+    </tr>
+  </table>
+</section>
+
+<hr class="divider">
+
+<!-- MACRO / SCHEDULED EVENTS -->
+<section>
+  <div class="section-title">
+    📅 MACRO / SCHEDULED EVENTS TODAY (June 23, 2026) <span class="badge badge-amber">STEP 9</span>
+  </div>
+  <div class="macro-item">
+    <div class="macro-time">All Day</div>
+    <div class="macro-desc"><strong style="color:var(--red);">Korea Circuit Breaker Aftershocks</strong> — KOSPI triggered circuit breakers twice Jun 23; overnight trading uncertainty. Monitor for spillover into US equity futures throughout morning. Impact: BEARISH for SMH, DRAM, NVDA, AMD.</div>
+  </div>
+  <div class="macro-item">
+    <div class="macro-time">Pre-Mkt</div>
+    <div class="macro-desc"><strong style="color:var(--red);">SpaceX Bond Issuance Overhang</strong> — $20B+ investment-grade bonds first-time offering. SpaceX -5% premarket continuing. Negative sentiment for mega-cap tech risk appetite. Impact: BEARISH for ARKX, speculative tech growth names.</div>
+  </div>
+  <div class="macro-item">
+    <div class="macro-time">Light today</div>
+    <div class="macro-desc"><strong>Economic Calendar</strong> — Light schedule following Juneteenth week. No major US data releases June 23 confirmed.</div>
+  </div>
+  <div class="macro-item">
+    <div class="macro-time">Thurs Jun 26</div>
+    <div class="macro-desc"><strong style="color:var(--amber);">PCE + Core PCE (BIG EVENT THIS WEEK)</strong> — Fed's preferred inflation gauge. Well Fargo est: PCE +0.5% MoM → 4.1% annual (energy-driven); Core PCE +0.3% MoM / +3.4% YoY. Hot print = rate-hike bias = pressure on rate-sensitive growth. Fed Chair Kevin Warsh unchanged at June FOMC. Impact: CRITICAL for TLT, rate-sensitive ETFs (XLRE, XBI), speculative growth.</div>
+  </div>
+  <div class="macro-item">
+    <div class="macro-time">Ongoing</div>
+    <div class="macro-desc"><strong>Geopolitical</strong> — Iran: US to unfreeze $12B (fund control dispute ongoing). Ukraine: Crimea strike (Half of Crimea goes dark). Israel: 3 conditions for South Lebanon exit. These are risk events but not direct market catalysts today unless escalation.</div>
+  </div>
+  <div class="macro-item">
+    <div class="macro-time">Backdrop</div>
+    <div class="macro-desc"><strong>Fed Chair Warsh</strong> — Rates UNCHANGED at June FOMC. Higher energy prices creating upward pressure on inflation. Higher-for-longer signal embedded in market pricing (TLT -1.13% Monday). No Fed speakers confirmed for June 23.</div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- THEME ROTATION + AVOID -->
+<section>
+  <div class="section-title">📊 THEME ROTATION READ / ETFs TO AVOID <span class="badge badge-cyan">STEP 10C/D</span></div>
+  <div class="grid-2">
+    <div>
+      <div style="font-size:12px;font-weight:700;color:var(--green);margin-bottom:8px;">🔥 HOTTEST THEMES</div>
+      <div style="font-size:12px;line-height:2;">
+        <span class="pill pill-green">BIOTECH</span> XBI+IBB theme-wide; M&amp;A supercycle; independent of tech selloff<br>
+        <span class="pill pill-purple">QUANTUM</span> Trump EOs + $2B stakes; QTUM holdings up 3%+ premarket<br>
+        <span class="pill pill-green">NAND/AI STORAGE</span> SNDK ATH; pure-play NAND; AI data center sold out<br>
+        <span class="pill pill-green">NAT GAS</span> UNG +3.16%; LNG structural; AI data center power demand<br>
+        <span class="pill pill-green">SOLAR</span> TAN +2.59%; AI power demand diversifying away from nuclear
+      </div>
+    </div>
+    <div>
+      <div style="font-size:12px;font-weight:700;color:var(--red);margin-bottom:8px;">❌ THEMES WEAKENING / AVOID</div>
+      <div style="font-size:12px;line-height:2;">
+        <span class="pill pill-red">SEMIS/HBM</span> DRAM reversal risk; Korea crash; Samsung/SK Hynix -12%<br>
+        <span class="pill pill-red">DEFENSE TECH</span> SHLD+ITA theme-wide selloff; PLTR contract losses<br>
+        <span class="pill pill-red">PRECIOUS METALS</span> GLD/GDX/GDXJ/SLV all down; GS target cut; dollar strength<br>
+        <span class="pill pill-red">NUCLEAR</span> URA+NLR theme-wide down; de-risking into PCE Thursday<br>
+        <span class="pill pill-red">SPACE (ARKX)</span> SpaceX -5% premarket; retail euphoria fizzling; $600B wipeout<br>
+        <span class="pill pill-red">PLTR/SHLD</span> Contract losses accelerating; avoid until valuation resets
+      </div>
+    </div>
+  </div>
+
+  <div style="margin-top:16px;">
+    <div style="font-size:12px;font-weight:700;color:var(--red);margin-bottom:8px;">ETFs / STOCKS TO AVOID TODAY</div>
+    <span class="avoid-item">DRAM — HBM reversal</span>
+    <span class="avoid-item">SMH — Korea crash</span>
+    <span class="avoid-item">SHLD — PLTR meltdown</span>
+    <span class="avoid-item">ITA — defense selloff</span>
+    <span class="avoid-item">GDX — metals crash</span>
+    <span class="avoid-item">GDXJ — metals crash</span>
+    <span class="avoid-item">SLV — metals crash</span>
+    <span class="avoid-item">URA — nuclear down</span>
+    <span class="avoid-item">NLR — nuclear down</span>
+    <span class="avoid-item">ARKX — SpaceX wipeout</span>
+    <span class="avoid-item">PLTR — multi-catalyst fail</span>
+    <span class="avoid-item">PRIM — earnings disaster</span>
+    <span class="avoid-item">XLC — AI talent exodus</span>
+    <span class="avoid-item">IGV — software weak</span>
+    <span class="avoid-item">AMZN — large-cap pressure</span>
+    <span class="avoid-item">META — comms sector weak</span>
+  </div>
+
+  <div style="margin-top:16px;background:var(--red-bg);border:1px solid var(--red-dim);border-radius:4px;padding:12px 16px;">
+    <div style="font-size:12px;font-weight:700;color:var(--red);margin-bottom:6px;">⚡ RISK EVENTS</div>
+    <div style="font-size:12px;color:var(--text);line-height:1.8;">
+      • <strong>PCE Thursday (Jun 26):</strong> Hot print → rate hike bias → kills XBI, XLRE, growth names overnight positions<br>
+      • <strong>Korea KOSPI extension:</strong> If circuit breakers trigger again at open → SMH/NVDA/AMD hit harder<br>
+      • <strong>SpaceX bond pricing:</strong> $20B issuance → sucking liquidity from risk markets<br>
+      • <strong>PLTR UK NHS:</strong> Any announcement activating Feb 2027 break clause early → SHLD -5%+ more<br>
+      • <strong>Biotech FDA:</strong> Next PDUFA date Gedatolisib scheduled Jul 17 — intermediate risk horizon, not today
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ASSUMPTION AUDIT -->
+<section>
+  <div class="section-title">🔍 ASSUMPTION AUDIT <span class="badge badge-amber">STEP 11</span></div>
+  <table>
+    <tr class="audit-row"><td>TV MCP price data</td><td>batch_run + quote_get both return PRIOR SESSION (Jun 22) close data (time: 1782135000). No live premarket extended-hours prices available from TV MCP. Today's premarket direction sourced from web search (Nasdaq futures -2.6%, S&amp;P -1.3%).</td></tr>
+    <tr class="audit-row"><td>Chrome MCP</td><td>Not tested this session. Assumed unavailable. Gap discovery limited to top-20 %-sort (fallback). Liquid mid/large-cap gappers above page 1 may be missed. Yahoo options chains skipped.</td></tr>
+    <tr class="audit-row"><td>Options flow</td><td>No confirmed flow data for Jun 23. Unusual Whales requires subscription. Benzinga premarket article not found. ALL options commentary is price-action inference only — clearly labeled as such.</td></tr>
+    <tr class="audit-row"><td>Finviz Elite</td><td>Unavailable (public feed only). Headlines less filtered; sources include aggregators (Zero Hedge) used for discovery only, not cited as primary.</td></tr>
+    <tr class="audit-row"><td>DRAM reversal</td><td>DRAM was +7.28% Monday (yesterday's #1 pick). Korea HBM4 slowdown is the primary reversal catalyst. If SK Hynix HBM expansion news is misread (e.g., it's a temporary reallocation, not permanent pivot), DRAM could stabilize. Verify on open before shorting.</td></tr>
+    <tr class="audit-row"><td>QTUM vs Nasdaq headwind</td><td>QTUM EO rally is fighting Nasdaq -2.6% headwind. If quantum rally is purely policy-driven (not earnings), it may survive. Historical analog: MP Materials held up on gov stake announcement even as materials sector sold off. Assumption: EO tailwind &gt; Nasdaq headwind for specific quantum names.</td></tr>
+    <tr class="audit-row"><td>EPC catalyst</td><td>Q2 EPC beat confirmed via SEC 8-K filing (EDGAR). Not confirmed via specific earnings release detail — assume earnings beat drove premarket gap. Volume light (142K) — open confirmation critical.</td></tr>
+    <tr class="audit-row"><td>Biotech independence</td><td>XBI/IBB running independent of tech selloff assumed to continue. Risk: if VIX spikes to 25+, all sectors correlate. Current VIX 19.68 = contained. If market deteriorates into panic, biotech will sell off too.</td></tr>
+    <tr class="audit-row"><td>UNCLASSIFIED headlines</td><td>CDNS analysis (Cadence) → IGV bucket but no direct ETF-wide impact; listed as UNCLASSIFIED for theme-wide purposes. El Nino food market story → MOO bucket but no price impact today.</td></tr>
+    <tr class="audit-row"><td>Wire scoops</td><td>Bloomberg Korea headline partially paywalled. CNBC live updates fully accessible. Japan Times fully accessible. TradingKey and IndexBox fully accessible for Korea circuit breaker details.</td></tr>
+    <tr class="audit-row"><td>AMC -25% catalyst</td><td>Catalyst UNCONFIRMED — no primary source found. AMC highly speculative; no position recommended.</td></tr>
+    <tr class="audit-row"><td>SNDK price sanity</td><td>SNDK $2,273.73 with 11M avg volume implies ~$25B market cap for a NAND storage company. Plausible given +800% YTD context. Price confirmed by multiple sources (TradingKey, Macrotrends). Sanity check: no data suspect flag.</td></tr>
+  </table>
+</section>
+
+</div><!-- /container -->
+</body>
+</html>
