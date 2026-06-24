@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>After-Hours Gaps Scan (v7.7) — June 24, 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0e17;
+    --bg2: #0f1624;
+    --bg3: #161e30;
+    --border: #1e2d45;
+    --text: #e2e8f0;
+    --muted: #7a8fa6;
+    --accent: #38bdf8;
+    --green: #4ade80;
+    --red: #f87171;
+    --yellow: #fbbf24;
+    --orange: #fb923c;
+    --purple: #a78bfa;
+    --cyan: #22d3ee;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    line-height: 1.6;
+    padding: 24px;
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+  h1 { font-size: 20px; color: var(--accent); border-bottom: 1px solid var(--border); padding-bottom: 12px; margin-bottom: 16px; }
+  h2 { font-size: 14px; color: var(--cyan); margin: 28px 0 10px; text-transform: uppercase; letter-spacing: 0.05em; border-left: 3px solid var(--cyan); padding-left: 10px; }
+  h3 { font-size: 13px; color: var(--accent); margin: 16px 0 8px; }
+  .tool-health {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--green);
+    padding: 12px 16px;
+    margin-bottom: 20px;
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .tool-health.warn { border-left-color: var(--yellow); }
+  .badge {
+    padding: 2px 8px;
+    border-radius: 3px;
+    font-weight: 700;
+    font-size: 11px;
+  }
+  .badge-ok { background: rgba(74,222,128,0.15); color: var(--green); border: 1px solid rgba(74,222,128,0.3); }
+  .badge-warn { background: rgba(251,191,36,0.15); color: var(--yellow); border: 1px solid rgba(251,191,36,0.3); }
+  .badge-fail { background: rgba(248,113,113,0.15); color: var(--red); border: 1px solid rgba(248,113,113,0.3); }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 16px;
+    font-size: 12px;
+  }
+  th {
+    background: var(--bg3);
+    color: var(--muted);
+    text-align: left;
+    padding: 6px 10px;
+    border-bottom: 1px solid var(--border);
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 10px;
+    letter-spacing: 0.05em;
+  }
+  td {
+    padding: 6px 10px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+  tr:hover td { background: var(--bg2); }
+  .up { color: var(--green); font-weight: 600; }
+  .down { color: var(--red); font-weight: 600; }
+  .neutral { color: var(--muted); }
+  .ticker { color: var(--accent); font-weight: 700; }
+  .tag {
+    display: inline-block;
+    padding: 1px 6px;
+    border-radius: 3px;
+    font-size: 10px;
+    font-weight: 600;
+    margin-right: 3px;
+  }
+  .tag-earn { background: rgba(56,189,248,0.15); color: var(--accent); border: 1px solid rgba(56,189,248,0.3); }
+  .tag-ma { background: rgba(167,139,250,0.15); color: var(--purple); border: 1px solid rgba(167,139,250,0.3); }
+  .tag-sector { background: rgba(251,191,36,0.15); color: var(--yellow); border: 1px solid rgba(251,191,36,0.3); }
+  .tag-unknown { background: rgba(122,143,166,0.15); color: var(--muted); border: 1px solid rgba(122,143,166,0.3); }
+  .tag-comm { background: rgba(248,113,113,0.15); color: var(--red); border: 1px solid rgba(248,113,113,0.3); }
+  .breakout {
+    background: rgba(251,146,60,0.08);
+    border: 1px solid rgba(251,146,60,0.25);
+    border-left: 3px solid var(--orange);
+    padding: 8px 12px;
+    margin: 8px 0;
+    font-size: 12px;
+  }
+  .section {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    padding: 16px;
+    margin-bottom: 20px;
+    border-radius: 2px;
+  }
+  .etf-row { display: flex; flex-wrap: wrap; gap: 8px; margin: 8px 0; }
+  .etf-chip {
+    padding: 4px 10px;
+    border-radius: 3px;
+    font-size: 11px;
+    font-weight: 600;
+    border: 1px solid;
+  }
+  .chip-up { background: rgba(74,222,128,0.08); color: var(--green); border-color: rgba(74,222,128,0.3); }
+  .chip-down { background: rgba(248,113,113,0.08); color: var(--red); border-color: rgba(248,113,113,0.3); }
+  .chip-flat { background: rgba(122,143,166,0.08); color: var(--muted); border-color: rgba(122,143,166,0.3); }
+  .note {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--muted);
+    padding: 8px 12px;
+    margin: 8px 0;
+    font-size: 11px;
+    color: var(--muted);
+  }
+  .highlight {
+    background: rgba(56,189,248,0.05);
+    border: 1px solid rgba(56,189,248,0.2);
+    border-left: 3px solid var(--accent);
+    padding: 8px 12px;
+    margin: 8px 0;
+    font-size: 12px;
+  }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .conv-high { color: var(--green); }
+  .conv-med { color: var(--yellow); }
+  @media (max-width: 900px) { .grid2 { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+
+<h1>🌙 After-Hours Gaps Scan (v7.7) — June 24, 2026</h1>
+
+<!-- TOOL HEALTH BANNER -->
+<div class="tool-health warn">
+  <strong>TOOL HEALTH:</strong>
+  <span class="badge badge-ok">✅ TV MCP batch_run — 57/57 ETFs</span>
+  <span class="badge badge-ok">✅ stockanalysis.com AH pages</span>
+  <span class="badge badge-ok">✅ Finviz public news feed</span>
+  <span class="badge badge-warn">⚠️ Chrome MCP — not tested (optional); AH discovery limited to WebFetch top-20 %-sort; $1B+ names beyond page 1 may be missed</span>
+  <span class="badge badge-warn">⚠️ Finviz Elite filter unavailable — public feed used</span>
+  <span style="color:var(--muted);font-size:11px;">Price method: batch_run (ETF sweep) · quote_get (spot checks) · chart_set_symbol + 5-min OHLCV (MU, QCOM AH volume)</span>
+</div>
+
+<!-- ===== STEP 1: TRADEABLE AH GAPPERS ===== -->
+<h2>⚡ Tradeable AH Gappers — &gt;$1B Mkt Cap, &gt;3% Gap</h2>
+<div class="section">
+
+<div class="highlight">
+  <strong>HEADLINE:</strong> Micron earnings blowout triggered a storage/memory sector-wide AH rally — MU +14%, SNDK +11%, WDC +11%, STX +8.7%, SIMO +9%. QCOM +12% AH recovering from intraday selloff on $3.9B Modular AI acquisition. BVN +31% AH — catalyst unconfirmed vs gold sector flush.
+</div>
+
+<h3>AH GAINERS</h3>
+<table>
+  <tr>
+    <th>Ticker</th><th>Mkt Cap</th><th>Reg Close</th><th>AH %</th><th>AH Price</th><th>AH Vol</th><th>Catalyst</th><th>ETF Bucket</th><th>Conv.</th>
+  </tr>
+  <tr>
+    <td class="ticker">MU</td>
+    <td>$1.18T</td>
+    <td>$1,048.51 <span class="down">(-2.92%)</span></td>
+    <td class="up">+14.26%</td>
+    <td>~$1,177–1,205</td>
+    <td>~1.36M ✅</td>
+    <td><span class="tag tag-earn">EARNINGS</span> Q3 EPS $25.11 vs $20.20 est (+24.3%); Rev $41.46B vs $34.66B est; Q4 guide $50B</td>
+    <td>SMH · DRAM</td>
+    <td class="conv-high">🟢 HIGH</td>
+  </tr>
+  <tr>
+    <td class="ticker">QCOM</td>
+    <td>$208.07B</td>
+    <td>$197.41 <span class="down">(-4.79%)</span></td>
+    <td class="up">+11.19%</td>
+    <td>~$219.50</td>
+    <td>~312K ✅</td>
+    <td><span class="tag tag-ma">M&amp;A</span> $3.9B acquisition of Modular AI startup (data-center + edge AI software); AH recovering from intraday selloff</td>
+    <td>XLK · IGV</td>
+    <td class="conv-med">🟡 MED</td>
+  </tr>
+  <tr>
+    <td class="ticker">BVN</td>
+    <td>$7.56B</td>
+    <td>$29.75 <span class="down">(-3.66%)</span></td>
+    <td class="up">+31.56%</td>
+    <td>$39.14</td>
+    <td>unverified</td>
+    <td><span class="tag tag-unknown">UNCONFIRMED</span> Probable M&amp;A offer — counterintuitive: GLD -3.1% / GDX -4.1% / SLV -7.8% today; company-specific event strongly implied. Flag for 8 PM scan.</td>
+    <td>GDX (countertrend)</td>
+    <td class="conv-med">🟡 MED (unconfirmed)</td>
+  </tr>
+  <tr>
+    <td class="ticker">SNDK</td>
+    <td>$283.51B</td>
+    <td>$1,914.46 <span class="down">(-4.64%)</span></td>
+    <td class="up">+11.15%</td>
+    <td>$2,128</td>
+    <td>AH vol unverified</td>
+    <td><span class="tag tag-sector">SECTOR</span> MU earnings read-through — NAND flash storage demand confirmed by Micron blowout</td>
+    <td>SMH</td>
+    <td class="conv-med">🟡 MED</td>
+  </tr>
+  <tr>
+    <td class="ticker">WDC</td>
+    <td>$221.92B</td>
+    <td>$643.83 <span class="down">(-3.21%)</span></td>
+    <td class="up">+11.05%</td>
+    <td>$715</td>
+    <td>AH vol unverified</td>
+    <td><span class="tag tag-sector">SECTOR</span> MU earnings read-through — HDD/flash storage beneficiary</td>
+    <td>SMH</td>
+    <td class="conv-med">🟡 MED</td>
+  </tr>
+  <tr>
+    <td class="ticker">STX</td>
+    <td>$224.72B</td>
+    <td>$993.25 <span class="up">(+0.91%)</span></td>
+    <td class="up">+8.73%</td>
+    <td>$1,080</td>
+    <td>AH vol unverified</td>
+    <td><span class="tag tag-sector">SECTOR</span> MU earnings read-through — Seagate HDD storage</td>
+    <td>SMH</td>
+    <td class="conv-med">🟡 MED</td>
+  </tr>
+  <tr>
+    <td class="ticker">SIMO</td>
+    <td>$10.91B</td>
+    <td>$321.66 <span class="up">(+3.43%)</span></td>
+    <td class="up">+9.12%</td>
+    <td>$350.98</td>
+    <td>AH vol unverified</td>
+    <td><span class="tag tag-sector">SECTOR</span> MU earnings read-through — NAND controllers/SSD enterprise AI workload demand; strong prior momentum (Bull of the Day Jun 17)</td>
+    <td>SMH</td>
+    <td class="conv-med">🟡 MED</td>
+  </tr>
+  <tr>
+    <td class="ticker">IRS (IRSA)</td>
+    <td>$1.35B</td>
+    <td>N/A</td>
+    <td class="up">+9.85%</td>
+    <td>$17.40</td>
+    <td>AH vol unverified</td>
+    <td><span class="tag tag-unknown">UNCONFIRMED</span> Argentine real estate — possible EM policy/peso-related event. Flag for 8 PM scan.</td>
+    <td>UNCLASSIFIED</td>
+    <td class="conv-med">🟡 MED (unconfirmed)</td>
+  </tr>
+</table>
+
+<h3>AH LOSERS &gt;$1B</h3>
+<table>
+  <tr>
+    <th>Ticker</th><th>Mkt Cap</th><th>Reg Close</th><th>AH %</th><th>AH Price</th><th>AH Vol</th><th>Catalyst</th><th>ETF Bucket</th><th>Conv.</th>
+  </tr>
+  <tr>
+    <td class="ticker">SPRY</td>
+    <td>$1.05B</td>
+    <td>$10.54</td>
+    <td class="down">-25.10%</td>
+    <td>$7.90</td>
+    <td>AH vol unverified</td>
+    <td><span class="tag tag-comm">COMMERCIAL</span> Neffy (nasal epinephrine) received NO new formulary wins in the July 1 payer cycle; CVS Caremark exclusion continues. Announced 4:05 PM Jun 24. Cash breakeven pushed further out.</td>
+    <td>XBI (adjacent)</td>
+    <td class="conv-high">🟢 HIGH</td>
+  </tr>
+</table>
+
+<div class="note">
+  ⚠️ AH volume unverified for SNDK, WDC, STX, SIMO, BVN, IRS, SPRY — TV MCP intraday volume pulled only for MU (~1.36M ✅) and QCOM (~312K ✅). Unverified names capped at 🟡 conviction per protocol. All prices sourced: stockanalysis.com (AH), TV MCP batch_run (regular session). SKY Hynix ($29.65B Nasdaq IPO filed June 24, ticker SKHY) not yet listed — not in gapper table but see ETF section.
+</div>
+</div>
+
+<!-- ===== STEP 2: ETF AH SWEEP ===== -->
+<h2>📊 ETF Session Sweep — All 57 ETFs (TV MCP batch_run)</h2>
+<div class="section">
+<div class="note">All data = regular session closes (not AH). batch_run pulled all 57 ETFs successfully at time of analysis (Jun 24, 2026, ~17:30 ET est). AH ETF price changes are minimal; the SMH gap tomorrow AM is the actionable signal from MU/SNDK/WDC AH moves.</div>
+
+<div class="breakout">
+  🚨 <strong>THEME-WIDE BREAKOUT #1: BIOTECH</strong> — XBI <span class="up">+3.89%</span> + IBB <span class="up">+2.93%</span> — both moving = sector-wide rally. Driven by broad 2026 biotech M&amp;A wave ($106B in deals YTD) + risk-on environment (VIX -5.34%). Specific June 24 individual FDA catalyst unconfirmed — flag for 8 PM scan.
+</div>
+<div class="breakout">
+  🚨 <strong>THEME-WIDE BREAKOUT #2: TRAVEL</strong> — JETS <span class="up">+6.49%</span> + PEJ <span class="up">+2.13%</span> — Hormuz Strait reopening announced (~noon ET), crude oil flooded markets, jet fuel costs drop. Airlines/travel/leisure benefit directly.
+</div>
+<div class="breakout">
+  🚨 <strong>THEME-WIDE FLUSH: GOLD MINERS</strong> — GDX <span class="down">-4.10%</span> + GDXJ <span class="down">-4.97%</span> — JUNIORS LEADING = real metals run DOWN (not a hedge bid). GLD -3.12%, SLV -7.80%. Hormuz risk premium unwinding removed geopolitical floor from precious metals. BVN's +31% AH is STRONGLY COUNTERTREND here — company-specific event implied.
+</div>
+
+<h3>Major Session Movers by Category</h3>
+<div class="grid2">
+  <div>
+    <p style="color:var(--green);font-weight:700;margin-bottom:6px;">WINNERS (session)</p>
+    <div class="etf-row">
+      <span class="etf-chip chip-up">XHB +5.90%</span>
+      <span class="etf-chip chip-up">JETS +6.49%</span>
+      <span class="etf-chip chip-up">XBI +3.89%</span>
+      <span class="etf-chip chip-up">XRT +3.56%</span>
+      <span class="etf-chip chip-up">KRE +2.81%</span>
+      <span class="etf-chip chip-up">IBB +2.93%</span>
+      <span class="etf-chip chip-up">PEJ +2.13%</span>
+      <span class="etf-chip chip-up">XLU +1.77%</span>
+      <span class="etf-chip chip-up">TLT +1.46%</span>
+      <span class="etf-chip chip-up">IYT +1.49%</span>
+      <span class="etf-chip chip-up">ITA +1.30%</span>
+      <span class="etf-chip chip-up">XLV +1.23%</span>
+      <span class="etf-chip chip-up">IWM +1.17%</span>
+    </div>
+    <p style="font-size:11px;color:var(--muted);margin-top:8px;">
+      XHB: Congress passed affordable housing bill.<br>
+      JETS+PEJ: Hormuz reopening → oil collapse → cheaper jet fuel.<br>
+      XBI+IBB: Biotech M&amp;A wave + risk-on (VIX -5.34%).<br>
+      KRE: Big banks aced annual Fed stress test.<br>
+      XRT: Wendy's meme rally (+37%) lifted retail equal-weight.<br>
+      ITA: Defense primes held — SHLD -2.62% (PLTR drag) diverged.<br>
+      TLT: Bonds bid as oil falls; rate cut speculation.
+    </p>
+  </div>
+  <div>
+    <p style="color:var(--red);font-weight:700;margin-bottom:6px;">LOSERS (session)</p>
+    <div class="etf-row">
+      <span class="etf-chip chip-down">SLV -7.80%</span>
+      <span class="etf-chip chip-down">COPX -5.30%</span>
+      <span class="etf-chip chip-down">GDXJ -4.97%</span>
+      <span class="etf-chip chip-down">USO -4.17%</span>
+      <span class="etf-chip chip-down">GDX -4.10%</span>
+      <span class="etf-chip chip-down">XME -3.86%</span>
+      <span class="etf-chip chip-down">IBIT -3.53%</span>
+      <span class="etf-chip chip-down">GLD -3.12%</span>
+      <span class="etf-chip chip-down">SHLD -2.62%</span>
+      <span class="etf-chip chip-down">QTUM -1.24%</span>
+      <span class="etf-chip chip-down">SMH -1.12%</span>
+      <span class="etf-chip chip-down">IGV -1.50%</span>
+      <span class="etf-chip chip-down">WGMI -1.39%</span>
+    </div>
+    <p style="font-size:11px;color:var(--muted);margin-top:8px;">
+      SLV: Silver -7.8% — largest single-day drop in universe.<br>
+      COPX/XME: Metals broadly crushed (Hormuz + China concerns).<br>
+      GDX/GDXJ: Gold miners flushed; juniors leading = real metals sell.<br>
+      USO: Crude oil -4%+ on Hormuz supply flood.<br>
+      IBIT: Bitcoin broke below $60K.<br>
+      SHLD: PLTR -5.53% drags defense tech; ITA diverged (primes OK).<br>
+      SMH: Down session but poised to gap UP ~10%+ tomorrow on MU.
+    </p>
+  </div>
+</div>
+
+<h3>Expected AH ETF Impact (Tomorrow AM Gap)</h3>
+<div class="note">
+  ETFs don't trade actively AH but will gap at open. Projections based on today's AH gappers:<br>
+  • <strong>SMH</strong> — likely gap UP ~8-12% tomorrow (MU +14%, SNDK +11%, WDC +11%, STX +9%, SIMO +9%). Highest confidence single-ETF gap of the scan.<br>
+  • <strong>DRAM</strong> — likely gap UP (MU earnings + SK Hynix Nasdaq IPO filing Jun 24, $29.65B raise, SKHY; trading starts ~July 10).<br>
+  • <strong>XLK</strong> — mixed: QCOM +11% AH positive vs PLTR -5.53% session and NVDA -1.57%.<br>
+  • <strong>IGV</strong> — mixed: QCOM acquisition of Modular (software AI startup) marginally positive.
+</div>
+</div>
+
+<!-- ===== STEP 3: FINVIZ NEWS ===== -->
+<h2>📰 After-Hours News Digest (Finviz public feed)</h2>
+<div class="section">
+<table>
+  <tr><th>Time (ET)</th><th>Ticker</th><th>Headline</th><th>Source</th><th>ETF Bucket</th></tr>
+  <tr>
+    <td>04:28 PM</td>
+    <td class="ticker">SKHY</td>
+    <td>Korea's SK Hynix To Make Nasdaq Debut — <strong>$29.65B ADR listing filed</strong>, ticker SKHY, trading ~July 10. Biggest AI memory chip maker after Samsung now listing in US.</td>
+    <td>WSJ</td>
+    <td><span class="up">DRAM · SMH</span></td>
+  </tr>
+  <tr>
+    <td>04:24 PM</td>
+    <td class="ticker">MU</td>
+    <td>Stocks Climb Late After Micron's Blowout Outlook</td>
+    <td>Bloomberg</td>
+    <td><span class="up">SMH · DRAM</span></td>
+  </tr>
+  <tr>
+    <td>04:13 PM</td>
+    <td>—</td>
+    <td>Big Banks Ace an Easier Annual Stress Test</td>
+    <td>WSJ</td>
+    <td><span class="up">KRE · XLF</span></td>
+  </tr>
+  <tr>
+    <td>04:02 PM</td>
+    <td>—</td>
+    <td>Nasdaq, S&amp;P end lower as tech stocks fell; Dow gained</td>
+    <td>MarketWatch</td>
+    <td>Regime</td>
+  </tr>
+  <tr>
+    <td>04:00 PM</td>
+    <td>—</td>
+    <td>Federal Reserve: US banks can withstand $708B in losses</td>
+    <td>CNBC</td>
+    <td><span class="up">KRE · XLF</span></td>
+  </tr>
+  <tr>
+    <td>02:47 PM</td>
+    <td>—</td>
+    <td>US homebuilders advance after Congress passes affordable housing bill</td>
+    <td>Reuters</td>
+    <td><span class="up">XHB +5.9%</span></td>
+  </tr>
+  <tr>
+    <td>02:48 PM</td>
+    <td>—</td>
+    <td>Alphabet's Dow Debut Shows Index Headache in Tech-Driven Economy</td>
+    <td>Bloomberg</td>
+    <td>XLC · GOOGL</td>
+  </tr>
+  <tr>
+    <td>02:02 PM</td>
+    <td>BTC</td>
+    <td>Bitcoin Breaks $60,000 Again as Crypto's Biggest Buyers Wobble</td>
+    <td>Bloomberg</td>
+    <td><span class="down">IBIT -3.53% · WGMI · COIN</span></td>
+  </tr>
+  <tr>
+    <td>01:35 PM</td>
+    <td>—</td>
+    <td>Hormuz Reopening Flooding Oil Markets With Supply</td>
+    <td>Bloomberg</td>
+    <td><span class="up">JETS+PEJ ↑</span> <span class="down">USO · GLD · COPX ↓</span></td>
+  </tr>
+  <tr>
+    <td>11:43 AM</td>
+    <td class="ticker">RUN · TSLA</td>
+    <td>Sunrun Surges Over 30% on Tesla Deal to Supply Power for AI</td>
+    <td>Bloomberg</td>
+    <td>XLU · AIPO (adjacent)</td>
+  </tr>
+  <tr>
+    <td>09:35 AM</td>
+    <td class="ticker">JPM</td>
+    <td>J.P. Morgan raises S&amp;P 500 year-end target to 7,800</td>
+    <td>Reuters</td>
+    <td>Regime</td>
+  </tr>
+  <tr>
+    <td>08:00 AM</td>
+    <td class="ticker">QCOM</td>
+    <td>Qualcomm Confirms Buying Modular to Help AI Market Push — $3.9B acquisition</td>
+    <td>Bloomberg</td>
+    <td><span class="up">XLK · IGV</span></td>
+  </tr>
+  <tr>
+    <td>04:56 PM</td>
+    <td>—</td>
+    <td>Hidden PCE triggers could force a Fed rate hike</td>
+    <td>MarketWatch</td>
+    <td>TLT · Regime risk</td>
+  </tr>
+</table>
+<div class="note">UNCLASSIFIED: "Hormuz Reopening" — macro geopolitical event with sector-wide impact; no single ETF bucket fits. Attributed across USO (crude), JETS+PEJ (airlines/travel), GLD/SLV (precious metals risk premium). "PCE rate hike" headline — tail risk for tomorrow's open.</div>
+</div>
+
+<!-- ===== STEP 4: WATCHLIST AH ACTIVITY ===== -->
+<h2>👁 Watchlist AH Activity (TV MCP)</h2>
+<div class="section">
+<table>
+  <tr><th>Ticker</th><th>Reg Close</th><th>Session %</th><th>AH Price</th><th>AH %</th><th>Notes</th></tr>
+  <tr>
+    <td class="ticker">MU</td>
+    <td>$1,048.51</td>
+    <td class="down">-2.92%</td>
+    <td>~$1,177–1,205</td>
+    <td class="up">+12–14%</td>
+    <td>EARNINGS BLOWOUT — see Step 5. AH vol ~1.36M ✅. Pulled back from $1,218 peak to ~$1,177. Price volatile in AH.</td>
+  </tr>
+  <tr>
+    <td class="ticker">QCOM</td>
+    <td>$197.41</td>
+    <td class="down">-4.79%</td>
+    <td>~$219.50</td>
+    <td class="up">+11.2%</td>
+    <td>Modular acquisition recovery. AH vol ~312K ✅. Fell intraday as investors disliked $3.9B price; recovering AH. Second AI deal after Tenstorrent negotiations ($10B).</td>
+  </tr>
+  <tr>
+    <td class="ticker">SNDK</td>
+    <td>$1,914.46</td>
+    <td class="down">-4.64%</td>
+    <td>~$2,128</td>
+    <td class="up">+11.15%</td>
+    <td>MU read-through. AH vol unverified. Sandisk/flash storage direct beneficiary.</td>
+  </tr>
+  <tr>
+    <td class="ticker">TSLA</td>
+    <td>$375.53</td>
+    <td class="down">-4.35%</td>
+    <td>N/A</td>
+    <td class="neutral">—</td>
+    <td>Tesla-Sunrun power deal announced AM; TSLA fell anyway (capital allocation concern). No material AH move observed. Separate from MU/QCOM story.</td>
+  </tr>
+  <tr>
+    <td class="ticker">NVDA</td>
+    <td>$199.00</td>
+    <td class="down">-1.57%</td>
+    <td>N/A</td>
+    <td class="neutral">—</td>
+    <td>Held $199 support. SK Hynix Nasdaq IPO (HBM supplier) potentially bullish for NVDA mid-term. Bond sale noted (Nvidia + SpaceX drove June high-grade bond sales to record).</td>
+  </tr>
+  <tr>
+    <td class="ticker">AMD</td>
+    <td>$519.74</td>
+    <td class="up">+2.09%</td>
+    <td>N/A</td>
+    <td class="neutral">—</td>
+    <td>Outperformed vs NVDA. No specific catalyst identified — general AI semi strength.</td>
+  </tr>
+  <tr>
+    <td class="ticker">PLTR</td>
+    <td>$113.50</td>
+    <td class="down">-5.53%</td>
+    <td>N/A</td>
+    <td class="neutral">—</td>
+    <td>UK parliamentary scrutiny of NHS contracts + £240M no-bid MOD contract questioned. PLTR down ~26-30% YTD. SHLD ETF dragged -2.62% vs ITA +1.30% (divergence: primes held, PLTR didn't).</td>
+  </tr>
+  <tr>
+    <td class="ticker">SOFI</td>
+    <td>$17.31</td>
+    <td class="up">+3.44%</td>
+    <td>N/A</td>
+    <td class="neutral">—</td>
+    <td>Bank stress test benefit; KRE +2.81%. Strong session relative to tech names.</td>
+  </tr>
+  <tr>
+    <td class="ticker">COIN</td>
+    <td>$150.11</td>
+    <td class="down">-4.38%</td>
+    <td>N/A</td>
+    <td class="neutral">—</td>
+    <td>Bitcoin broke $60K. IBIT -3.53%, WGMI -1.39%. Crypto on weak footing tonight.</td>
+  </tr>
+  <tr>
+    <td class="ticker">MARA</td>
+    <td>$14.00</td>
+    <td class="down">-0.21%</td>
+    <td>N/A</td>
+    <td class="neutral">—</td>
+    <td>Relatively resilient vs COIN. Bitcoin miner.</td>
+  </tr>
+  <tr>
+    <td class="ticker">META</td>
+    <td>$557.67</td>
+    <td class="down">-0.81%</td>
+    <td>N/A</td>
+    <td class="neutral">—</td>
+    <td>Minor tech drag. XLC flat (+0.02%). GOOGL Dow index debut noted.</td>
+  </tr>
+  <tr>
+    <td class="ticker">AMZN</td>
+    <td>$234.27</td>
+    <td class="up">+0.74%</td>
+    <td>N/A</td>
+    <td class="neutral">—</td>
+    <td>Modest positive session. Consumer discretionary (XLY +0.98%) and AWS cloud steady.</td>
+  </tr>
+</table>
+<div class="note">SPY/QQQ sanity check: SPY $733.24 (-0.08%), QQQ $710.62 (-0.72%). Both within normal range; changes are well below the 5% sanity-check threshold. ✅</div>
+</div>
+
+<!-- ===== STEP 5: AMC EARNINGS ===== -->
+<h2>📋 AMC Earnings Results — June 24, 2026</h2>
+<div class="section">
+<h3>MU — Micron Technology (Q3 FY2026) ⚡ BLOWOUT</h3>
+<table>
+  <tr><th>Metric</th><th>Actual</th><th>Estimate</th><th>Surprise</th></tr>
+  <tr><td>EPS (non-GAAP)</td><td class="up">$25.11</td><td>$20.20</td><td class="up">+24.3%</td></tr>
+  <tr><td>Revenue</td><td class="up">$41.46B</td><td>$34.66B</td><td class="up">+19.6%</td></tr>
+  <tr><td>Q4 Revenue Guide</td><td class="up">$50.0B</td><td>~$40B est</td><td class="up">~+25%</td></tr>
+  <tr><td>AH Reaction</td><td colspan="3" class="up">+14.26% (stockanalysis.com) → ~+12-14% live (TV MCP 5-min)</td></tr>
+</table>
+<p style="margin-top:8px;font-size:12px;color:var(--muted);">
+  <strong>Driver:</strong> Record revenues from HBM (High Bandwidth Memory) for AI data centers. Demand from NVDA, Google AI infrastructure build-out is accelerating. Net income $28.86B. This is a generational beat — EPS +24.3% vs est on revenue that was +19.6% above consensus with Q4 guided +25% higher still.<br><br>
+  <strong>Sector read-through:</strong> Confirms the AI memory/storage supercycle is intact. Bullish for SMH, DRAM, SNDK, WDC, STX, SIMO. SK Hynix Nasdaq IPO ($29.65B, SKHY) announced same day — timing likely deliberate (hype cycle peak).
+</p>
+</div>
+
+<!-- ===== STEP 6: CATALYST ATTRIBUTION ===== -->
+<h2>🔍 Catalyst Attribution — Tradeable AH Gappers</h2>
+<div class="section">
+<table>
+  <tr><th>Ticker</th><th>Type</th><th>Catalyst Summary</th><th>Source</th><th>Direction</th><th>Tomorrow Setup</th><th>ETF Bucket</th></tr>
+  <tr>
+    <td class="ticker">MU</td>
+    <td><span class="tag tag-earn">EARNINGS</span></td>
+    <td>Q3 FY2026: EPS $25.11 (+24.3% beat); Rev $41.46B (+19.6% beat); Q4 guide $50B. HBM demand from AI data centers driving record results.</td>
+    <td><a href="https://www.sec.gov/Archives/edgar/data/0000723125/000072312526000013/a2026q3ex991-pressrelease.htm" style="color:var(--accent);">SEC 8-K</a></td>
+    <td class="up">UP ▲</td>
+    <td>Gap-and-go likely; watch for fade back to $1,150 area if broader tech sells off. Huge implied move; consider adding only on 5-min pullback above $1,180.</td>
+    <td>SMH · DRAM</td>
+  </tr>
+  <tr>
+    <td class="ticker">QCOM</td>
+    <td><span class="tag tag-ma">M&amp;A</span></td>
+    <td>$3.9B acquisition of Modular (AI software startup for data center + edge AI). AH recovering from intraday selloff — investors reconsidering. Second major AI deal (also in advanced Tenstorrent talks, up to $10B).</td>
+    <td><a href="https://investor.qualcomm.com/news-events/press-releases/news-details/2026/Qualcomm-to-Acquire-Modular/default.aspx" style="color:var(--accent);">QCOM IR</a></td>
+    <td class="up">UP ▲</td>
+    <td>Chop possible — stock sold off during regular session on deal news, AH recovery may not stick. Watch open vs $205 (prior support). Favor gap-and-hold above $215.</td>
+    <td>XLK · IGV</td>
+  </tr>
+  <tr>
+    <td class="ticker">BVN</td>
+    <td><span class="tag tag-unknown">UNCONFIRMED</span></td>
+    <td>+31.56% AH counterintuitive to gold sector (GLD -3.1%, GDX -4.1%, SLV -7.8%). Four searches returned no specific June 24 catalyst. Probable M&amp;A offer (magnitude + countertrend). Do NOT trade without catalyst confirmation.</td>
+    <td>Catalyst unconfirmed — flag for 8 PM scan, check EDGAR 20-F/6-K</td>
+    <td class="neutral">UNKNOWN</td>
+    <td>No trade recommendation until catalyst confirmed. Flag for 8 PM deep scan.</td>
+    <td>GDX (countertrend)</td>
+  </tr>
+  <tr>
+    <td class="ticker">SNDK</td>
+    <td><span class="tag tag-sector">SECTOR</span></td>
+    <td>MU earnings blowout → NAND flash storage demand confirmed. SNDK = Sandisk (flash storage pure-play).</td>
+    <td>MU 8-K (primary)</td>
+    <td class="up">UP ▲</td>
+    <td>Gap-and-go likely; will track MU open closely. Smaller news catalyst = fades faster than MU itself.</td>
+    <td>SMH</td>
+  </tr>
+  <tr>
+    <td class="ticker">WDC</td>
+    <td><span class="tag tag-sector">SECTOR</span></td>
+    <td>MU earnings blowout → HDD/flash storage demand. Western Digital manufactures both HDD and NAND flash.</td>
+    <td>MU 8-K (primary)</td>
+    <td class="up">UP ▲</td>
+    <td>Gap-and-go likely with MU. Fade risk higher than primary — secondary beneficiary.</td>
+    <td>SMH</td>
+  </tr>
+  <tr>
+    <td class="ticker">STX</td>
+    <td><span class="tag tag-sector">SECTOR</span></td>
+    <td>MU earnings → HDD storage demand (Seagate is HDD focused). Less direct than SNDK/WDC but AI storage cycle lifts all.</td>
+    <td>MU 8-K (primary)</td>
+    <td class="up">UP ▲</td>
+    <td>Gap likely; fade possible faster than SNDK/WDC as least directly linked to NAND.</td>
+    <td>SMH</td>
+  </tr>
+  <tr>
+    <td class="ticker">SIMO</td>
+    <td><span class="tag tag-sector">SECTOR</span></td>
+    <td>MU earnings → SSD controller/NAND demand. SIMO makes NAND flash controllers. Already strong momentum (Bull of Day June 17, +3.43% session).</td>
+    <td>MU 8-K (primary) · StocksToTrade</td>
+    <td class="up">UP ▲</td>
+    <td>Strong setup — already leading into MU print. Gap-and-go most likely here given prior momentum.</td>
+    <td>SMH</td>
+  </tr>
+  <tr>
+    <td class="ticker">IRS</td>
+    <td><span class="tag tag-unknown">UNCONFIRMED</span></td>
+    <td>IRSA Argentine real estate +9.85% AH. Possible peso/EM policy event. Catalyst unconfirmed.</td>
+    <td>Catalyst unconfirmed</td>
+    <td class="neutral">UNKNOWN</td>
+    <td>No trade recommendation. AH vol unverified. Flag for 8 PM scan.</td>
+    <td>UNCLASSIFIED</td>
+  </tr>
+  <tr>
+    <td class="ticker">SPRY</td>
+    <td><span class="tag tag-comm">COMMERCIAL</span></td>
+    <td>Neffy (nasal epinephrine) blocked out of ALL July 1 formulary updates. No CVS Caremark, no new wins. Cash breakeven now pushed further out. Announced 4:05 PM.</td>
+    <td><a href="https://ir.ars-pharma.com/" style="color:var(--accent);">ARS Pharma IR</a> · stocktitan.net</td>
+    <td class="down">DOWN ▼</td>
+    <td>Continued pressure likely — payer access story is broken near-term. Could be acquisition target at depressed prices but no evidence yet.</td>
+    <td>XBI (adjacent)</td>
+  </tr>
+</table>
+</div>
+
+<!-- ===== STEP 7: TOMORROW'S EARNINGS PREVIEW ===== -->
+<h2>📅 Tomorrow's Earnings Preview — June 25, 2026</h2>
+<div class="section">
+<table>
+  <tr><th>Ticker</th><th>Company</th><th>Time</th><th>EPS Est.</th><th>Rev Est.</th><th>YoY Growth</th><th>Theme Impact</th></tr>
+  <tr>
+    <td class="ticker">DRI</td>
+    <td>Darden Restaurants</td>
+    <td>BMO</td>
+    <td>$3.64</td>
+    <td>$3.73B</td>
+    <td class="up">EPS +22%, Rev +14%</td>
+    <td>Consumer health check. Beneficiary of Hormuz oil drop (lower food/energy input costs). XLY, XRT read-through. Estimate consensus from 26 analysts — range $3.58–$3.75 EPS.</td>
+  </tr>
+  <tr>
+    <td class="ticker">AYI</td>
+    <td>Acuity Brands</td>
+    <td>BMO</td>
+    <td>TBD</td>
+    <td>TBD</td>
+    <td>—</td>
+    <td>Industrial lighting / building tech. XLI read-through.</td>
+  </tr>
+  <tr>
+    <td class="ticker">BB</td>
+    <td>BlackBerry</td>
+    <td>BMO</td>
+    <td>TBD</td>
+    <td>TBD</td>
+    <td>—</td>
+    <td>Cybersecurity / IoT. CIBR adjacent.</td>
+  </tr>
+  <tr>
+    <td class="ticker">CMC</td>
+    <td>Commercial Metals</td>
+    <td>BMO</td>
+    <td>TBD</td>
+    <td>TBD</td>
+    <td>—</td>
+    <td>Steel / metals. XME read-through. Note XME fell -3.86% today.</td>
+  </tr>
+  <tr>
+    <td class="ticker">SNX</td>
+    <td>TD SYNNEX</td>
+    <td>BMO</td>
+    <td>TBD</td>
+    <td>TBD</td>
+    <td>—</td>
+    <td>IT distribution. IGV adjacent — AI infrastructure hardware read-through.</td>
+  </tr>
+</table>
+<div class="note">DRI is the most market-relevant tomorrow. A beat supports XLY/XRT and validates consumer spending resilience. An inline/miss in the context of oil falling today and housing bill passing could cause confusion re: cost deflation timing. Option-implied move not pulled — verify manually.</div>
+</div>
+
+<!-- ===== STEP 8: PERSONAL POSITIONS ===== -->
+<h2>🎯 Personal Positions Plan</h2>
+<div class="section">
+<div class="note">No specific position data available to the scanner. Framework provided below based on tonight's macro setup.</div>
+
+<p style="margin-bottom:10px;"><strong>Theme bias for tomorrow: MIXED with tech-memory BULLISH skew</strong></p>
+<ul style="list-style:none;padding:0;font-size:12px;line-height:2;">
+  <li>✅ <strong>Memory/storage longs (MU, SNDK, WDC, STX, SIMO, SMH):</strong> Strong overnight risk. MU +14% AH on genuine earnings blowout with raised guidance. These have real fundamental backing. Consider adding on any 5-min pullback at open if risk-on confirmed.</li>
+  <li>✅ <strong>SOFI / KRE positions:</strong> Overnight risk positive — bank stress tests cleared. Hold.</li>
+  <li>✅ <strong>XHB / homebuilder longs:</strong> Housing bill passed — strong session, hold overnight.</li>
+  <li>✅ <strong>Airlines (JETS, PEJ, individual names):</strong> Hormuz reopening removes jet fuel cost ceiling. Structural positive — overnight risk positive.</li>
+  <li>⚠️ <strong>GLD/SLV/GDX long positions:</strong> Serious overnight risk. Hormuz risk premium fully unwound; SLV -7.8% is extreme. Consider trim or tight stops.</li>
+  <li>⚠️ <strong>IBIT/crypto positions:</strong> BTC below $60K. Buyer base wobbling. Overnight risk negative.</li>
+  <li>⚠️ <strong>PLTR positions:</strong> UK political risk ongoing. -5.53% today. Avoid adding until UK narrative stabilizes.</li>
+  <li>⚠️ <strong>TSLA:</strong> -4.35% session. Sunrun deal narrative mixed. Watch $370 support.</li>
+  <li>❌ <strong>SPRY:</strong> Formulary story broken. Exit on any bounce or accept AH gap down.</li>
+  <li>❓ <strong>BVN:</strong> Do NOT hold without knowing the catalyst. If long, consider exiting AH or at open until the +31% move is attributed.</li>
+</ul>
+<p style="margin-top:12px;font-size:12px;"><strong>Watchlist for EOD entries still valid tomorrow:</strong> SIMO (momentum + MU read-through), DRI (consumer health + oil deflation tailwind), XHB (housing bill follow-through).</p>
+</div>
+
+<!-- ===== STEP 9: ASSUMPTION AUDIT ===== -->
+<h2>🔎 Assumption Audit</h2>
+<div class="section">
+<table>
+  <tr><th>Item</th><th>Status</th><th>Detail</th></tr>
+  <tr><td>TV MCP price method</td><td class="up">✅</td><td>batch_run (57-ETF sweep, watchlist), quote_get (SPRY/BVN spot check), chart_set_symbol + chart_set_timeframe(5min) + data_get_ohlcv (MU and QCOM AH intraday volume). quote_get appears fixed (returns requested symbol correctly).</td></tr>
+  <tr><td>Chrome MCP</td><td class="down">⚠️</td><td>Not tested — not needed for this scan. AH gap discovery limited to WebFetch top-20 %-sort. $1B+ names on pages 2+ may be missed. Banner warning applied.</td></tr>
+  <tr><td>Finviz Elite filter</td><td class="down">⚠️</td><td>Unavailable — public feed used. May miss post-4PM news items that require Elite filtering.</td></tr>
+  <tr><td>AH volume: MU</td><td class="up">✅</td><td>~1.36M shares verified via TV MCP 5-min extended bars (15+ post-earnings bars counted).</td></tr>
+  <tr><td>AH volume: QCOM</td><td class="up">✅</td><td>~312K shares verified via TV MCP 5-min extended bars.</td></tr>
+  <tr><td>AH volume: SNDK, WDC, STX, SIMO, BVN, IRS, SPRY</td><td class="neutral">⚠️</td><td>AH volume unverified — not pulled. All capped at 🟡 conviction per protocol.</td></tr>
+  <tr><td>BVN catalyst</td><td class="down">⚠️</td><td>UNCONFIRMED after 4+ searches. No SEC 6-K/20-F dated June 24 found. Probable M&A. Flag for 8 PM scan to check EDGAR directly.</td></tr>
+  <tr><td>IRS (IRSA) catalyst</td><td class="down">⚠️</td><td>UNCONFIRMED. Argentine real estate — EM policy event suspected. Not investigated further. Flag for 8 PM.</td></tr>
+  <tr><td>Biotech (XBI/IBB) specific June 24 catalyst</td><td class="neutral">⚠️</td><td>Broad sector rally confirmed (+3.89%/+2.93%) but individual June 24 FDA trigger unconfirmed. Attributed to broad M&amp;A wave + risk-on. Check BioPharmCatalyst.com for specific PDUFA dates tonight.</td></tr>
+  <tr><td>SPRY catalyst</td><td class="up">✅</td><td>Confirmed: neffy formulary lockout for July 1 payer cycle. No CVS Caremark win. Announced 4:05 PM Jun 24 via commercial/financial update 8-K.</td></tr>
+  <tr><td>MU earnings source</td><td class="up">✅</td><td>SEC 8-K (FY2026 Q3 press release) + WebSearch GuruFocus/public.com consensus. EPS $25.11 / Rev $41.46B confirmed via multiple sources.</td></tr>
+  <tr><td>QCOM deal source</td><td class="up">✅</td><td>BusinessWire press release 20260624 + Qualcomm IR + SEC 8-K ref. $3.9B Modular acquisition confirmed.</td></tr>
+  <tr><td>SK Hynix Nasdaq IPO</td><td class="up">✅</td><td>SEC filing confirmed (WSJ 4:28 PM). $29.65B raise, ticker SKHY, trading ~July 10. Bullish for DRAM ETF.</td></tr>
+  <tr><td>SPY/QQQ sanity check</td><td class="up">✅</td><td>SPY $733.24 (-0.08%), QQQ $710.62 (-0.72%). Both well within 5% sanity bound. No suspect values.</td></tr>
+  <tr><td>UNCLASSIFIED headlines</td><td class="neutral">1</td><td>"Hormuz Reopening" — macro geopolitical event; attributed across multiple ETF buckets (USO, JETS, PEJ, GLD, SLV) rather than force-fit into one.</td></tr>
+  <tr><td>Earnings calendar source</td><td class="neutral">⚠️</td><td>stockanalysis.com/markets/earnings/ returned 404; fallback via WebSearch. DRI confirmed by multiple sources (Alphastreet, Benzinga). Other June 25 names (AYI, BB, WGO, CMC, SNX) confirmed by single search result — verify individually.</td></tr>
+</table>
+</div>
+
+<div style="margin-top:24px;padding:12px;background:var(--bg3);border:1px solid var(--border);font-size:11px;color:var(--muted);">
+  Generated by CATALYST SCANS after-hours scanner v7.7 · June 24, 2026 · ~17:30–18:00 ET est<br>
+  Data sources: TV MCP (batch_run, quote_get, 5-min OHLCV) · stockanalysis.com · finviz.com/news (public) · SEC EDGAR · WebSearch<br>
+  Not financial advice. For informational purposes only.
+</div>
+
+</body>
+</html>
