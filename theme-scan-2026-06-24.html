@@ -1,0 +1,879 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Daily Theme Scanner — 2026-06-24</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #0a0e17;
+    --bg2: #0f1625;
+    --bg3: #141e33;
+    --border: #1e2d4a;
+    --text: #e2e8f0;
+    --text-muted: #8fa0bd;
+    --text-dim: #4a6080;
+    --high: #10b981;
+    --medium: #f59e0b;
+    --low: #ef4444;
+    --accent: #3b82f6;
+    --accent2: #8b5cf6;
+    --ticker: #60a5fa;
+  }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'JetBrains Mono', 'Courier New', monospace;
+    font-size: 13px;
+    line-height: 1.7;
+    padding: 0;
+  }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  /* Header */
+  .site-header {
+    background: var(--bg2);
+    border-bottom: 1px solid var(--border);
+    padding: 24px 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .site-header h1 {
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    color: var(--text);
+  }
+  .site-header h1 span { color: var(--accent); }
+  .header-date {
+    font-size: 11px;
+    color: var(--text-muted);
+    letter-spacing: 0.12em;
+  }
+
+  /* Layout */
+  .container { max-width: 1100px; margin: 0 auto; padding: 40px 40px 80px; }
+
+  /* Section titles */
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin: 56px 0 28px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+  }
+  .section-header h2 {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+  .section-icon {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+    flex-shrink: 0;
+  }
+
+  /* Cards */
+  .card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 28px 32px;
+    margin-bottom: 20px;
+    position: relative;
+    transition: border-color 0.2s;
+  }
+  .card:hover { border-color: #2a3f66; }
+  .card-num {
+    position: absolute;
+    top: 20px;
+    right: 24px;
+    font-size: 10px;
+    color: var(--text-dim);
+    letter-spacing: 0.12em;
+  }
+
+  /* Card header */
+  .card-header { margin-bottom: 20px; }
+  .card-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 10px;
+    line-height: 1.4;
+  }
+  .card-badges { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 4px; }
+  .badge {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    padding: 3px 10px;
+    border-radius: 3px;
+    text-transform: uppercase;
+  }
+  .badge-high { background: rgba(16,185,129,0.12); color: var(--high); border: 1px solid rgba(16,185,129,0.25); }
+  .badge-medium { background: rgba(245,158,11,0.12); color: var(--medium); border: 1px solid rgba(245,158,11,0.25); }
+  .badge-low { background: rgba(239,68,68,0.12); color: var(--low); border: 1px solid rgba(239,68,68,0.25); }
+  .badge-stage { background: rgba(59,130,246,0.1); color: var(--accent); border: 1px solid rgba(59,130,246,0.2); }
+  .badge-strong { background: rgba(16,185,129,0.12); color: var(--high); border: 1px solid rgba(16,185,129,0.25); }
+  .badge-moderate { background: rgba(245,158,11,0.12); color: var(--medium); border: 1px solid rgba(245,158,11,0.25); }
+  .badge-weak { background: rgba(239,68,68,0.12); color: var(--low); border: 1px solid rgba(239,68,68,0.25); }
+  .badge-type { background: rgba(139,92,246,0.1); color: #a78bfa; border: 1px solid rgba(139,92,246,0.2); }
+
+  /* Fields */
+  .field { margin-bottom: 14px; }
+  .field-label {
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-bottom: 4px;
+  }
+  .field-value {
+    font-size: 12px;
+    color: var(--text-muted);
+    line-height: 1.6;
+  }
+
+  /* Tickers */
+  .ticker-group { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
+  .ticker {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--ticker);
+    background: rgba(96,165,250,0.08);
+    border: 1px solid rgba(96,165,250,0.18);
+    padding: 2px 8px;
+    border-radius: 3px;
+    letter-spacing: 0.06em;
+  }
+  .ticker-loser {
+    color: var(--low);
+    background: rgba(239,68,68,0.07);
+    border-color: rgba(239,68,68,0.18);
+  }
+  .ticker-secondary {
+    color: #94a3b8;
+    background: rgba(148,163,184,0.07);
+    border-color: rgba(148,163,184,0.15);
+  }
+
+  /* Evidence */
+  .evidence-list { list-style: none; }
+  .evidence-list li {
+    padding: 8px 0 8px 16px;
+    border-left: 2px solid var(--border);
+    margin-bottom: 8px;
+    font-size: 12px;
+    color: var(--text-muted);
+    line-height: 1.6;
+  }
+  .evidence-list li:last-child { margin-bottom: 0; }
+
+  /* Summary box */
+  .summary-box {
+    background: var(--bg3);
+    border-left: 3px solid var(--accent);
+    padding: 16px 20px;
+    border-radius: 0 6px 6px 0;
+    margin-top: 20px;
+    font-size: 12.5px;
+    color: var(--text);
+    line-height: 1.75;
+  }
+
+  /* Trade idea */
+  .trade-box {
+    background: rgba(16,185,129,0.05);
+    border: 1px solid rgba(16,185,129,0.15);
+    padding: 14px 18px;
+    border-radius: 6px;
+    margin-top: 12px;
+    font-size: 12px;
+    color: #6ee7b7;
+    line-height: 1.65;
+  }
+  .trade-label {
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--high);
+    margin-bottom: 6px;
+  }
+
+  /* Grid for fields */
+  .fields-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0 32px; }
+  @media (max-width: 700px) { .fields-grid { grid-template-columns: 1fr; } }
+
+  /* Action items */
+  .action-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+  @media (max-width: 900px) { .action-grid { grid-template-columns: 1fr; } }
+  .action-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 22px 24px;
+  }
+  .action-card-title {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 16px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border);
+  }
+  .action-item {
+    font-size: 12px;
+    color: var(--text-muted);
+    padding: 6px 0;
+    border-bottom: 1px solid rgba(30,45,74,0.5);
+    line-height: 1.55;
+  }
+  .action-item:last-child { border-bottom: none; }
+  .action-ticker { color: var(--ticker); font-weight: 600; }
+  .action-buy { color: var(--high); font-weight: 600; }
+  .action-sell { color: var(--low); font-weight: 600; }
+
+  /* Surprise scenario */
+  .surprise-box {
+    background: rgba(245,158,11,0.05);
+    border: 1px solid rgba(245,158,11,0.15);
+    padding: 12px 16px;
+    border-radius: 6px;
+    font-size: 12px;
+    color: #fcd34d;
+    line-height: 1.6;
+    margin-top: 8px;
+  }
+  .surprise-label {
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--medium);
+    margin-bottom: 4px;
+  }
+
+  /* Divider */
+  hr { border: none; border-top: 1px solid var(--border); margin: 32px 0; }
+
+  /* Footer */
+  .footer {
+    text-align: center;
+    font-size: 10px;
+    color: var(--text-dim);
+    padding: 40px 20px;
+    border-top: 1px solid var(--border);
+    letter-spacing: 0.08em;
+    line-height: 1.8;
+  }
+
+  /* TOC bar */
+  .toc-bar {
+    background: var(--bg2);
+    border-bottom: 1px solid var(--border);
+    padding: 10px 40px;
+    display: flex;
+    gap: 24px;
+    font-size: 10px;
+    color: var(--text-dim);
+    letter-spacing: 0.1em;
+    overflow-x: auto;
+  }
+  .toc-bar a { color: var(--text-dim); white-space: nowrap; }
+  .toc-bar a:hover { color: var(--accent); }
+
+  .dot-sep { color: var(--border); }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <h1>📊 DAILY THEME SCANNER <span>// 2026-06-24</span></h1>
+  <div class="header-date">PRE-MARKET INTELLIGENCE REPORT &nbsp;|&nbsp; WEDNESDAY JUN 24 2026</div>
+</header>
+
+<div class="toc-bar">
+  <a href="#narratives">NARRATIVES (5)</a>
+  <span class="dot-sep">·</span>
+  <a href="#signals">EARNINGS SIGNALS (5)</a>
+  <span class="dot-sep">·</span>
+  <a href="#catalysts">CATALYSTS (5)</a>
+  <span class="dot-sep">·</span>
+  <a href="#action">ACTION ITEMS</a>
+</div>
+
+<div class="container">
+
+  <!-- NARRATIVES -->
+  <div class="section-header" id="narratives">
+    <div class="section-icon"></div>
+    <h2>Emerging Narratives</h2>
+  </div>
+
+  <!-- Narrative 1 -->
+  <div class="card">
+    <div class="card-num">01 / 05</div>
+    <div class="card-header">
+      <div class="card-title">AI ROI Skepticism: The Infrastructure Reckoning</div>
+      <div class="card-badges">
+        <span class="badge badge-high">HIGH Conviction</span>
+        <span class="badge badge-stage">DEVELOPING Stage</span>
+      </div>
+    </div>
+
+    <div class="field">
+      <div class="field-label">Evidence</div>
+      <ul class="evidence-list">
+        <li>Bank of America published a note warning that AI infrastructure investments "may generate weaker-than-expected returns," triggering a <strong>1.44% S&amp;P 500 decline</strong> and <strong>2.21% Nasdaq drop</strong> on June 23. <a href="https://www.thestreet.com/stock-market-today/stock-market-today-dow-jones-sp-500-nasdaq-updates-june-23-2026">[TheStreet]</a></li>
+        <li>Hyperscalers projected to spend <strong>$602–$755B</strong> in AI capex 2026, funded heavily via debt ($108B raised in 2025 alone). Oracle's 5-year CDS more than tripled since September. <a href="https://www.cnbc.com/2026/04/30/ai-boom-big-tech-capital-expenditures-now-seen-topping-1-trillion-in-2027-.html">[CNBC]</a></li>
+        <li>Mag 7 forward guidance described as "mixed," with capex commentary doing <strong>more damage than actual earnings prints</strong>. <a href="https://www.factset.com/earningsinsight">[FactSet]</a></li>
+      </ul>
+    </div>
+
+    <div class="fields-grid">
+      <div class="field">
+        <div class="field-label">Primary Beneficiaries</div>
+        <div class="ticker-group"><span class="ticker">IBM</span><span class="ticker">ORCL</span><span class="ticker">SAP</span><span class="ticker">CRM</span><span class="ticker">NOW</span></div>
+        <div class="field-value" style="margin-top:6px;font-size:11px;">Enterprise software collecting AI ROI fees</div>
+      </div>
+      <div class="field">
+        <div class="field-label">Secondary Beneficiaries</div>
+        <div class="ticker-group"><span class="ticker ticker-secondary">CSCO</span><span class="ticker ticker-secondary">HPE</span><span class="ticker ticker-secondary">DELL</span></div>
+        <div class="field-value" style="margin-top:6px;font-size:11px;">Value-priced infrastructure plays</div>
+      </div>
+      <div class="field">
+        <div class="field-label">Losers / Disrupted</div>
+        <div class="ticker-group"><span class="ticker ticker-loser">NVDA</span><span class="ticker ticker-loser">AMD</span><span class="ticker ticker-loser">SMCI</span><span class="ticker ticker-loser">ARM</span></div>
+        <div class="field-value" style="margin-top:6px;font-size:11px;">Pure-play AI infrastructure facing ROI scrutiny</div>
+      </div>
+      <div class="field">
+        <div class="field-label">Earnings Timeline</div>
+        <div class="field-value">1–3 quarters; next checkpoint Q2 hyperscaler earnings (July)</div>
+      </div>
+    </div>
+
+    <div class="summary-box">After years of unquestioned AI capex enthusiasm, the market is beginning to stress-test whether the spend will yield commensurate revenue. BofA's note was the catalyst for a sharp tech selloff, but the underlying concern has been building for months. The next rotation may favor enterprise software players who can demonstrate clear AI revenue per seat over infrastructure companies whose growth is tied to NVIDIA allocation cycles. Key tell: if July hyperscaler earnings show slowing cloud revenue growth alongside rising capex, this narrative inflects from "developing" to "maturing" fast.</div>
+  </div>
+
+  <!-- Narrative 2 -->
+  <div class="card">
+    <div class="card-num">02 / 05</div>
+    <div class="card-header">
+      <div class="card-title">Fed Rate Hike Repricing: Higher-for-Longer 2.0</div>
+      <div class="card-badges">
+        <span class="badge badge-high">HIGH Conviction</span>
+        <span class="badge badge-stage">EARLY Stage</span>
+      </div>
+    </div>
+
+    <div class="field">
+      <div class="field-label">Evidence</div>
+      <ul class="evidence-list">
+        <li>Bank of America reversed its dovish forecast, now predicting <strong>three 25bp hikes in Sep, Oct, Dec 2026</strong> — 25bps more hawkish and 3 months earlier than market consensus. <a href="https://www.cnbc.com/2026/06/22/bank-of-america-sees-3-fed-hikes-in-2026-inflation-unambiguously-worse.html">[CNBC]</a></li>
+        <li>New Fed Chair Kevin Warsh held rates at 3.50–3.75% at June FOMC but signaled hawkish bias; May CPI came in at <strong>4.2% YoY</strong> driven by 23.5% energy surge. <a href="https://www.federalreserve.gov/newsevents/pressreleases/monetary20260617a.htm">[Federal Reserve]</a></li>
+        <li><strong>U.S. dollar index hit new 2026 high above 101</strong> this morning, consistent with repricing of Fed path. <a href="https://www.thestreet.com/stock-market-today/stock-market-today-dow-jones-sp-500-nasdaq-updates-june-24-2026">[TheStreet]</a></li>
+      </ul>
+    </div>
+
+    <div class="fields-grid">
+      <div class="field">
+        <div class="field-label">Primary Beneficiaries</div>
+        <div class="ticker-group"><span class="ticker">JPM</span><span class="ticker">BAC</span><span class="ticker">GS</span><span class="ticker">MS</span><span class="ticker">WFC</span><span class="ticker">UUP</span></div>
+        <div class="field-value" style="margin-top:6px;font-size:11px;">NIM expansion + dollar ETF</div>
+      </div>
+      <div class="field">
+        <div class="field-label">Secondary Beneficiaries</div>
+        <div class="ticker-group"><span class="ticker ticker-secondary">SCHW</span><span class="ticker ticker-secondary">BX</span><span class="ticker ticker-secondary">KKR</span></div>
+        <div class="field-value" style="margin-top:6px;font-size:11px;">Floating-rate beneficiaries</div>
+      </div>
+      <div class="field">
+        <div class="field-label">Losers / Disrupted</div>
+        <div class="ticker-group"><span class="ticker ticker-loser">XLRE</span><span class="ticker ticker-loser">XLU</span><span class="ticker ticker-loser">TLT</span></div>
+        <div class="field-value" style="margin-top:6px;font-size:11px;">REITs, utilities, long-duration growth</div>
+      </div>
+      <div class="field">
+        <div class="field-label">Earnings Timeline</div>
+        <div class="field-value">September FOMC is first live hike; July 14 CPI is the key input</div>
+      </div>
+    </div>
+
+    <div class="summary-box">BofA's call is the most hawkish major bank forecast on the street, sharply at odds with consensus. The thesis: sticky inflation (4.2% CPI), resilient labor market, and an incoming Fed chair with orthodoxy bona fides create conditions for a hiking cycle reversal. If June CPI (July 14) prints above 4%, expect BofA's call to be rapidly adopted. The risk is asymmetric — markets are priced for patience, so a single hot CPI number could cause significant repricing. Watch 2-year Treasury yields as the leading indicator.</div>
+  </div>
+
+  <!-- Narrative 3 -->
+  <div class="card">
+    <div class="card-num">03 / 05</div>
+    <div class="card-header">
+      <div class="card-title">HBM4 Memory Supercycle: The Next Chip Upcycle</div>
+      <div class="card-badges">
+        <span class="badge badge-high">HIGH Conviction</span>
+        <span class="badge badge-stage">DEVELOPING Stage</span>
+      </div>
+    </div>
+
+    <div class="field">
+      <div class="field-label">Evidence</div>
+      <ul class="evidence-list">
+        <li>Micron reports Q3 FY2026 tonight with consensus calling for <strong>998% EPS growth</strong>, $34.66B revenue. BofA raised price target <strong>58% to $1,500</strong> despite yesterday's 13.2% selloff. <a href="https://moneymorning.com/2026/06/24/micron-technology-mu-earnings-q3-2026-hbm-ai-memory">[Money Morning]</a></li>
+        <li>SK Hynix supplies <strong>~70% of NVIDIA's HBM4</strong> for Vera Rubin platform; Samsung &amp; SK Hynix scaling capacity 50%+ in 2026. HBM4 pricing 20–30% above prior models. <a href="https://www.trendforce.com/news/2026/01/28/news-sk-hynix-reportedly-to-supply-about-two-thirds-of-nvidia-hbm4-samsung-targets-early-delivery/">[TrendForce]</a></li>
+        <li>HBM revenue mix shifting to <strong>55% HBM4 / 45% HBM3E</strong> by late 2026. DRAM prices expected to rise 40–50% through H1 2026. <a href="https://news.skhynix.com/2026-market-outlook-focus-on-the-hbm-led-memory-supercycle/">[SK Hynix News]</a></li>
+      </ul>
+    </div>
+
+    <div class="fields-grid">
+      <div class="field">
+        <div class="field-label">Primary Beneficiaries</div>
+        <div class="ticker-group"><span class="ticker">MU</span><span class="ticker">000660.KS</span><span class="ticker">005930.KS</span></div>
+        <div class="field-value" style="margin-top:6px;font-size:11px;">Micron, SK Hynix, Samsung</div>
+      </div>
+      <div class="field">
+        <div class="field-label">Secondary Beneficiaries</div>
+        <div class="ticker-group"><span class="ticker ticker-secondary">NVDA</span><span class="ticker ticker-secondary">AMAT</span><span class="ticker ticker-secondary">LRCX</span></div>
+        <div class="field-value" style="margin-top:6px;font-size:11px;">Next-gen GPU + memory equipment</div>
+      </div>
+      <div class="field">
+        <div class="field-label">Losers / Disrupted</div>
+        <div class="ticker-group"><span class="ticker ticker-loser">CRUS</span></div>
+        <div class="field-value" style="margin-top:6px;font-size:11px;">Legacy DRAM players without HBM capability</div>
+      </div>
+      <div class="field">
+        <div class="field-label">Earnings Timeline</div>
+        <div class="field-value">Tonight's MU earnings is immediate catalyst; HBM4 ramp throughout H2 2026</div>
+      </div>
+    </div>
+
+    <div class="summary-box">The HBM memory trade is the intersection of AI infrastructure buildout and a traditional semiconductor upcycle. Unlike prior cycles, demand is driven by a single specific workload (LLM training and inference) requiring radically higher memory bandwidth. The selloff in MU yesterday — down 13.2% ahead of earnings expected to show 998% EPS growth — is a classic fear-of-disappointment setup that may create an attractive entry point if guidance holds. Key risks: supply coming online faster than demand (Samsung ramp) and any hyperscaler capex pullback reducing GPU orders and thus HBM demand.</div>
+  </div>
+
+  <!-- Narrative 4 -->
+  <div class="card">
+    <div class="card-num">04 / 05</div>
+    <div class="card-header">
+      <div class="card-title">Enterprise AI Monetization: Software Eats the Capex Cycle</div>
+      <div class="card-badges">
+        <span class="badge badge-medium">MEDIUM Conviction</span>
+        <span class="badge badge-stage">DEVELOPING Stage</span>
+      </div>
+    </div>
+
+    <div class="field">
+      <div class="field-label">Evidence</div>
+      <ul class="evidence-list">
+        <li>JPMorgan upgraded IBM from Neutral to Overweight, raising PT $270 → $291, citing AI platform adoption via watsonx and Red Hat/OpenShift ($2B ARR). Morgan Stanley also upgraded simultaneously. <a href="https://invezz.com/news/2026/06/23/ibm-stock-jumps-after-jpmorgan-upgrade-on-ai-and-software-growth/">[Invezz]</a></li>
+        <li><strong>78% of enterprises</strong> have adopted AI in at least one function (up from 55% in 2023), but only <strong>28%</strong> are in production at scale — massive runway for enterprise software. <a href="https://medhacloud.com/blog/enterprise-ai-statistics-2026">[MedhaCloud]</a></li>
+        <li>40 SaaS earnings calls uniformly cited AI as revenue tailwind; Salesforce autonomous agent handled <strong>2.8M support requests</strong>, saving hundreds of thousands of employee hours. <a href="https://blossomstreetventures.medium.com/40-saas-earnings-calls-show-ai-will-be-the-biggest-boon-to-the-space-d51e93349500">[Blossom Street Ventures]</a></li>
+      </ul>
+    </div>
+
+    <div class="fields-grid">
+      <div class="field">
+        <div class="field-label">Primary Beneficiaries</div>
+        <div class="ticker-group"><span class="ticker">IBM</span><span class="ticker">CRM</span><span class="ticker">NOW</span><span class="ticker">ORCL</span><span class="ticker">SAP</span></div>
+      </div>
+      <div class="field">
+        <div class="field-label">Secondary Beneficiaries</div>
+        <div class="ticker-group"><span class="ticker ticker-secondary">WDAY</span><span class="ticker ticker-secondary">PAYC</span><span class="ticker ticker-secondary">PAYX</span></div>
+      </div>
+      <div class="field">
+        <div class="field-label">Losers / Disrupted</div>
+        <div class="ticker-group"><span class="ticker ticker-loser">WIT</span><span class="ticker ticker-loser">INFY</span></div>
+        <div class="field-value" style="margin-top:6px;font-size:11px;">Offshore IT services without AI differentiation</div>
+      </div>
+      <div class="field">
+        <div class="field-label">Earnings Timeline</div>
+        <div class="field-value">2–4 quarters for meaningful revenue recognition; AI margin pressure near-term</div>
+      </div>
+    </div>
+
+    <div class="summary-box">As the ROI question looms over hardware, enterprise software players are emerging as more defensible beneficiaries — they charge per seat for AI features, don't carry capex burden, and are embedded in mission-critical workflows. IBM's dual upgrade from JPMorgan and Morgan Stanley on the same day the broader tech sector sold off is a notable signal of institutional rotation. Challenge: AI is currently margin-neutral to margin-dilutive for most software companies as they build inference capacity before pricing power is established.</div>
+  </div>
+
+  <!-- Narrative 5 -->
+  <div class="card">
+    <div class="card-num">05 / 05</div>
+    <div class="card-header">
+      <div class="card-title">Quantum Computing: Government Catalyst Creates Asymmetric Opportunities</div>
+      <div class="card-badges">
+        <span class="badge badge-medium">MEDIUM Conviction</span>
+        <span class="badge badge-stage">EARLY Stage</span>
+      </div>
+    </div>
+
+    <div class="field">
+      <div class="field-label">Evidence</div>
+      <ul class="evidence-list">
+        <li>Trump administration announced <strong>$2B in quantum incentives</strong> to 9 companies under CHIPS Act with federal government taking minority equity stakes. IBM receives $1B for new quantum foundry "Anderon." <a href="https://www.cnbc.com/2026/05/21/quantum-stocks--us-taking-equity-stakes.html">[CNBC]</a></li>
+        <li>IBM independently committed <strong>$10B+ to quantum</strong> over five years, targeting world's first fault-tolerant quantum computer by 2029. <a href="https://newsroom.ibm.com/2026-06-02-ibm-commits-more-than-10-billion-to-quantum-computing,-funding-its-roadmap-from-todays-leading-systems-to-the-worlds-first-fault-tolerant-quantum-computers">[IBM Newsroom]</a></li>
+        <li>IonQ excluded from initial award list yet <strong>rose ~10%</strong> on sector-wide quantum sentiment lift. <a href="https://finance.yahoo.com/sectors/technology/articles/donald-trump-announces-2-billion-123856110.html">[Yahoo Finance]</a></li>
+      </ul>
+    </div>
+
+    <div class="fields-grid">
+      <div class="field">
+        <div class="field-label">Primary Beneficiaries</div>
+        <div class="ticker-group"><span class="ticker">IBM</span><span class="ticker">IONQ</span><span class="ticker">RGTI</span><span class="ticker">QUBT</span></div>
+      </div>
+      <div class="field">
+        <div class="field-label">Secondary Beneficiaries</div>
+        <div class="ticker-group"><span class="ticker ticker-secondary">RTX</span><span class="ticker ticker-secondary">LMT</span><span class="ticker ticker-secondary">NOC</span></div>
+        <div class="field-value" style="margin-top:6px;font-size:11px;">Defense primes with quantum programs</div>
+      </div>
+      <div class="field">
+        <div class="field-label">Losers / Disrupted</div>
+        <div class="field-value">Classical cryptography vendors; incumbents in optimization markets</div>
+      </div>
+      <div class="field">
+        <div class="field-label">Earnings Timeline</div>
+        <div class="field-value">3–5 years commercial quantum; government milestones are near-term catalysts</div>
+      </div>
+    </div>
+
+    <div class="summary-box">The presidential quantum initiative is early-stage but notable for its mechanism — the government taking equity stakes creates a quasi-strategic subsidy that reduces development risk. The fact that IonQ rallied 10% despite being excluded from the initial round shows powerful sector sentiment. The near-term trade is around announcement-driven volatility. For longer-duration portfolios, IBM's combined AI+quantum+government support thesis offers an unusual convergence of catalysts at a time when the stock is outperforming the sector.</div>
+  </div>
+
+  <!-- EARNINGS SIGNALS -->
+  <div class="section-header" id="signals">
+    <div class="section-icon" style="background: var(--medium)"></div>
+    <h2>Earnings Signals</h2>
+  </div>
+
+  <!-- Signal 1 -->
+  <div class="card">
+    <div class="card-num">SIG 01</div>
+    <div class="card-header">
+      <div class="card-title">Micron Q3 FY2026 — Historic Quarter or Selloff Trap?</div>
+      <div class="card-badges">
+        <span class="badge badge-type">Guidance + Read-Through</span>
+        <span class="badge badge-strong">STRONG Strength</span>
+      </div>
+    </div>
+    <div class="field">
+      <div class="field-label">Companies Involved</div>
+      <div class="ticker-group"><span class="ticker">MU</span><span class="ticker ticker-secondary">NVDA</span><span class="ticker ticker-secondary">AMD</span><span class="ticker ticker-secondary">AMAT</span><span class="ticker ticker-secondary">LRCX</span><span class="ticker ticker-secondary">MRVL</span></div>
+    </div>
+    <div class="field">
+      <div class="field-label">Broader Implication</div>
+      <div class="field-value">If Micron delivers 998% EPS growth and guides HBM4 demand ahead of expectations, it validates the AI memory supercycle and is a "buy the earnings" setup for the entire semiconductor supply chain. If guidance disappoints despite record results, it confirms the AI hardware cycle is cresting.</div>
+    </div>
+    <div class="trade-box">
+      <div class="trade-label">Trade Idea</div>
+      Long MU into earnings (13% selloff may be the reset). If earnings confirm demand, consider AMAT and LRCX as derivative plays with lower valuation risk. Watch options pricing — market had elevated IV pre-earnings.
+    </div>
+    <div class="summary-box">Micron is reporting what could be the largest earnings quarter in its history tonight — 998% EPS growth and $34.66B in revenue — yet the stock fell 13.2% yesterday in what appears to be a fear-driven pre-earnings flush. BofA's 58% PT hike to $1,500 held firm through the selloff. The key question is forward guidance: HBM4 allocation, DRAM pricing outlook, and any color on hyperscaler capex plans will determine whether this is buy-the-dip or sell-the-news. <a href="https://stockstory.org/us/stocks/nasdaq/mu/news/why-up-down/why-micron-mu-shares-are-getting-obliterated-today">[StockStory]</a></div>
+  </div>
+
+  <!-- Signal 2 -->
+  <div class="card">
+    <div class="card-num">SIG 02</div>
+    <div class="card-header">
+      <div class="card-title">Fed Bank Stress Tests — Capital Release Catalyst</div>
+      <div class="card-badges">
+        <span class="badge badge-type">Policy + Unusual Guidance</span>
+        <span class="badge badge-strong">STRONG Strength</span>
+      </div>
+    </div>
+    <div class="field">
+      <div class="field-label">Companies Involved</div>
+      <div class="ticker-group"><span class="ticker">JPM</span><span class="ticker">BAC</span><span class="ticker">GS</span><span class="ticker">MS</span><span class="ticker">WFC</span><span class="ticker">C</span><span class="ticker ticker-secondary">XLF</span></div>
+    </div>
+    <div class="field">
+      <div class="field-label">Broader Implication</div>
+      <div class="field-value">2026 stress test results will NOT trigger capital requirement changes, meaning banks can immediately deploy excess capital into buybacks and dividends without waiting for buffer adjustments.</div>
+    </div>
+    <div class="trade-box">
+      <div class="trade-label">Trade Idea</div>
+      Long major bank stocks around stress test results (released 4pm ET today). JPM and GS have historically announced largest capital return programs. XLF is the ETF proxy. Rate hike thesis provides additional tailwind.
+    </div>
+    <div class="summary-box">The Federal Reserve released stress test results for 32 large U.S. banks at 4pm ET today, evaluating resilience against severe recession (10% unemployment, 30% housing decline, 39% commercial real estate decline). Crucially, the 2026 tests are decoupled from capital buffer adjustments. In a rising rate environment where banks benefit from wider net interest margins, the stress test capital release is an additional structural tailwind. <a href="https://www.investing.com/news/economy-news/us-fed-to-release-2026-bank-stress-test-results-on-june-24-4733998">[Investing.com/Reuters]</a></div>
+  </div>
+
+  <!-- Signal 3 -->
+  <div class="card">
+    <div class="card-num">SIG 03</div>
+    <div class="card-header">
+      <div class="card-title">Paychex Q4 FY2026 — Small Business & Labor Market Pulse</div>
+      <div class="card-badges">
+        <span class="badge badge-type">Language Shift + Recurring Theme</span>
+        <span class="badge badge-moderate">MODERATE Strength</span>
+      </div>
+    </div>
+    <div class="field">
+      <div class="field-label">Companies Involved</div>
+      <div class="ticker-group"><span class="ticker">PAYX</span><span class="ticker ticker-secondary">ADP</span><span class="ticker ticker-secondary">PAYC</span><span class="ticker ticker-secondary">HUBS</span></div>
+    </div>
+    <div class="field">
+      <div class="field-label">Broader Implication</div>
+      <div class="field-value">Paychex serves primarily small businesses — one of the best real-time indicators of small business health, hiring intent, and AI impact on HR workflows. Deterioration in client retention would be an early warning on labor market softening.</div>
+    </div>
+    <div class="trade-box">
+      <div class="trade-label">Trade Idea</div>
+      Watch for commentary on AI-driven HR automation (new "WISE" AI layer and HR Copilot). Strong adoption = bullish for PAYC/ADP. Rising client attrition = bearish signal that AI-driven headcount reduction is hitting small business.
+    </div>
+    <div class="summary-box">Paychex reported Q4 FY2026 before market open today (EPS $1.31, revenue $1.61B consensus). Beyond the numbers, the earnings call commentary on small business hiring and client retention is the key read-through. The company is also launching "WISE" — an AI intelligence layer across all its platforms — positioning it directly against AI-native competitors. The dual question: can incumbent HR platforms monetize AI before AI-native startups disrupt, and will the macro labor environment slow small business hiring? <a href="https://www.stocktitan.net/news/PAYX/paychex-schedules-fourth-quarter-fiscal-2026-earnings-conference-9zgq44hynief.html">[StockTitan]</a></div>
+  </div>
+
+  <!-- Signal 4 -->
+  <div class="card">
+    <div class="card-num">SIG 04</div>
+    <div class="card-header">
+      <div class="card-title">Enterprise Software AI Margin Squeeze — Recurring Theme</div>
+      <div class="card-badges">
+        <span class="badge badge-type">Recurring Theme</span>
+        <span class="badge badge-moderate">MODERATE Strength</span>
+      </div>
+    </div>
+    <div class="field">
+      <div class="field-label">Companies Involved</div>
+      <div class="ticker-group"><span class="ticker">CRM</span><span class="ticker">NOW</span><span class="ticker">ORCL</span><span class="ticker">WDAY</span><span class="ticker ticker-secondary">SAP</span></div>
+    </div>
+    <div class="field">
+      <div class="field-label">Broader Implication</div>
+      <div class="field-value">Consistent across 40+ SaaS earnings calls: AI features drive revenue beats but create margin pressure, as compute costs for inference run ahead of per-seat pricing. Gap between near-term GAAP margin and long-term unit economics.</div>
+    </div>
+    <div class="trade-box">
+      <div class="trade-label">Trade Idea</div>
+      Favor enterprise software with subscription models (NOW, CRM) over project-based revenue. Consider AI margin pressure is temporary if pricing power materializes. IBM outperformance during the selloff is a signal to monitor.
+    </div>
+    <div class="summary-box">Analysis of 40 SaaS earnings calls reveals AI is the biggest software tailwind but a near-term margin headwind. Salesforce demonstrated clearest ROI (2.8M autonomous support interactions). Oracle embedded AI at no extra cost to defend market share. SAP bet its enterprise strategy on "Autonomous Enterprise." IBM's outperformance during yesterday's tech selloff suggests investors are rotating toward companies with proven software margins and AI monetization clarity. <a href="https://blossomstreetventures.medium.com/40-saas-earnings-calls-show-ai-will-be-the-biggest-boon-to-the-space-d51e93349500">[Blossom Street Ventures]</a></div>
+  </div>
+
+  <!-- Signal 5 -->
+  <div class="card">
+    <div class="card-num">SIG 05</div>
+    <div class="card-header">
+      <div class="card-title">Hyperscaler Capex Guidance Anomaly — 70%+ vs. 40% Consensus</div>
+      <div class="card-badges">
+        <span class="badge badge-type">Unusual Guidance Change</span>
+        <span class="badge badge-strong">STRONG Strength</span>
+      </div>
+    </div>
+    <div class="field">
+      <div class="field-label">Companies Involved</div>
+      <div class="ticker-group"><span class="ticker">GOOGL</span><span class="ticker">MSFT</span><span class="ticker">AMZN</span><span class="ticker">META</span><span class="ticker ticker-secondary">NVDA</span><span class="ticker ticker-secondary">MU</span><span class="ticker ticker-secondary">VST</span><span class="ticker ticker-secondary">CEG</span><span class="ticker ticker-secondary">OKLO</span></div>
+    </div>
+    <div class="field">
+      <div class="field-label">Broader Implication</div>
+      <div class="field-value">Consensus expected ~40% hyperscaler capex growth; actual guidance came in at 70%+. Creates bifurcated narrative: spend is real (bullish for picks-and-shovels), but ROI uncertain (bearish for hyperscalers' own multiples).</div>
+    </div>
+    <div class="trade-box">
+      <div class="trade-label">Trade Idea</div>
+      Energy infrastructure as the overlooked AI capex play — VST, CEG, OKLO, NRG benefit from power-hungry data center growth without AI ROI uncertainty and at much lower multiples than semiconductor suppliers.
+    </div>
+    <div class="summary-box">When hyperscaler guidance came in at 70%+ capex growth vs. 40% consensus, the reaction was mixed. The secondary beneficiary the market may be underpricing: power infrastructure. Data centers require massive, continuous electricity — and power companies supplying AI campuses trade at much lower multiples than semiconductor suppliers despite equivalent demand certainty. $108B in hyperscaler debt raised in 2025 alone creates credit risk if AI revenue doesn't materialize quickly. <a href="https://www.costar.com/article/907046102/hyperscalers-680-billion-ai-capital-expenditure-investment-raises-the-stakes">[CoStar]</a></div>
+  </div>
+
+  <!-- CATALYSTS -->
+  <div class="section-header" id="catalysts">
+    <div class="section-icon" style="background: var(--low)"></div>
+    <h2>Upcoming Catalysts</h2>
+  </div>
+
+  <!-- Catalyst 1 -->
+  <div class="card">
+    <div class="card-num">CAT 01</div>
+    <div class="card-header">
+      <div class="card-title">Micron Q3 Earnings</div>
+      <div class="card-badges">
+        <span class="badge badge-low">🔴 TONIGHT — June 24, 2026</span>
+      </div>
+    </div>
+    <div class="fields-grid">
+      <div class="field">
+        <div class="field-label">Expected Outcome</div>
+        <div class="field-value">Record $34.66B revenue, 998% EPS growth, strong HBM4 demand commentary</div>
+      </div>
+      <div class="field">
+        <div class="field-label">Current Positioning</div>
+        <div class="field-value">Bearish/hedged — stock fell 13.2% ahead of potentially best quarter ever</div>
+      </div>
+      <div class="field">
+        <div class="field-label">Exposed Tickers</div>
+        <div class="ticker-group"><span class="ticker">MU</span><span class="ticker ticker-secondary">NVDA</span><span class="ticker ticker-secondary">AMD</span><span class="ticker ticker-secondary">AMAT</span><span class="ticker ticker-secondary">LRCX</span><span class="ticker ticker-secondary">MRVL</span></div>
+      </div>
+    </div>
+    <div class="surprise-box">
+      <div class="surprise-label">⚡ Surprise Scenario</div>
+      Guidance softness citing Samsung HBM competition, hyperscaler capex risk, or gross margin compression. Would confirm AI hardware cycle cresting.
+    </div>
+    <div class="summary-box">Tonight's Micron earnings is the most important near-term event for semiconductors. The 13.2% pre-earnings selloff appears disconnected from fundamentals and more driven by macro fears and technical selling. BofA's 58% PT hike to $1,500 signals institutional conviction. If Micron delivers AND provides strong HBM4 guidance, it could catalyze a broad semiconductor recovery. Tail risk: softer margins or any NVIDIA HBM allocation reduction.</div>
+  </div>
+
+  <!-- Catalyst 2 -->
+  <div class="card">
+    <div class="card-num">CAT 02</div>
+    <div class="card-header">
+      <div class="card-title">June CPI Release — The Rate Hike Confirmation</div>
+      <div class="card-badges">
+        <span class="badge badge-medium">🟡 July 14, 2026</span>
+      </div>
+    </div>
+    <div class="fields-grid">
+      <div class="field">
+        <div class="field-label">Expected Outcome</div>
+        <div class="field-value">Continued elevated CPI ~4%; energy prices remain key driver</div>
+      </div>
+      <div class="field">
+        <div class="field-label">Current Positioning</div>
+        <div class="field-value">79.5% probability of no action at July FOMC; BofA calling September as first live hike</div>
+      </div>
+      <div class="field">
+        <div class="field-label">Exposed Tickers</div>
+        <div class="ticker-group"><span class="ticker ticker-loser">TLT</span><span class="ticker">UUP</span><span class="ticker">XLF</span><span class="ticker ticker-loser">XLRE</span><span class="ticker ticker-loser">XLU</span></div>
+      </div>
+    </div>
+    <div class="surprise-box">
+      <div class="surprise-label">⚡ Surprise Scenario</div>
+      CPI prints 4.5%+ forcing 100% September hike pricing. Or surprise drop below 3.5% neutralizing BofA's hawkish call entirely.
+    </div>
+    <div class="summary-box">The single most important macro data point between now and year-end. BofA's three-hike call hinges on inflation staying "unambiguously worse." The energy component (23.5% surge in May) is the wildcard — Middle East tensions could drive another spike. If CPI stays hot, the July FOMC becomes a live meeting for the first time in 2026. Asymmetric trade: short TLT, long XLF, short XLRE as rates-repricing hedge. <a href="https://www.cnbc.com/2026/06/22/bank-of-america-sees-3-fed-hikes-in-2026-inflation-unambiguously-worse.html">[CNBC]</a></div>
+  </div>
+
+  <!-- Catalyst 3 -->
+  <div class="card">
+    <div class="card-num">CAT 03</div>
+    <div class="card-header">
+      <div class="card-title">Fed Bank Stress Test Results</div>
+      <div class="card-badges">
+        <span class="badge badge-low">🔴 TODAY 4pm ET — June 24, 2026</span>
+      </div>
+    </div>
+    <div class="fields-grid">
+      <div class="field">
+        <div class="field-label">Expected Outcome</div>
+        <div class="field-value">All 32 banks pass; capital return announcements begin flowing within 48h</div>
+      </div>
+      <div class="field">
+        <div class="field-label">Current Positioning</div>
+        <div class="field-value">Modest positive expectation priced in; banks near highs on rate hike thesis</div>
+      </div>
+      <div class="field">
+        <div class="field-label">Exposed Tickers</div>
+        <div class="ticker-group"><span class="ticker">JPM</span><span class="ticker">BAC</span><span class="ticker">GS</span><span class="ticker">MS</span><span class="ticker">WFC</span><span class="ticker">C</span><span class="ticker ticker-secondary">KEY</span><span class="ticker ticker-secondary">RF</span></div>
+      </div>
+    </div>
+    <div class="surprise-box">
+      <div class="surprise-label">⚡ Surprise Scenario</div>
+      One or more mid-tier banks flagged for inadequate capital. Or surprise changes to capital framework that limit buyback optionality.
+    </div>
+    <div class="summary-box">The 2026 stress tests are uniquely benign — results will not trigger capital buffer changes (Fed froze framework changes until 2027 public comment period). Banks can immediately plan enhanced buybacks and dividends. Higher-for-longer rate environment additionally boosts NIM outlook. Watch for JPM, BAC, GS to announce large buyback programs within 48 hours. <a href="https://www.fool.com/investing/2026/06/03/bank-stress-tests-are-coming-in-late-june-these-bi/">[Motley Fool]</a></div>
+  </div>
+
+  <!-- Catalyst 4 -->
+  <div class="card">
+    <div class="card-num">CAT 04</div>
+    <div class="card-header">
+      <div class="card-title">FOMC Meeting — First Potentially Live Hike Meeting</div>
+      <div class="card-badges">
+        <span class="badge badge-stage">July 28-29, 2026</span>
+      </div>
+    </div>
+    <div class="fields-grid">
+      <div class="field">
+        <div class="field-label">Expected Outcome</div>
+        <div class="field-value">Hold at 3.50–3.75% (79.5% market probability)</div>
+      </div>
+      <div class="field">
+        <div class="field-label">Current Positioning</div>
+        <div class="field-value">Market priced for patience — only 20.5% probability of any action at July meeting</div>
+      </div>
+      <div class="field">
+        <div class="field-label">Exposed Tickers</div>
+        <div class="ticker-group"><span class="ticker ticker-loser">TLT</span><span class="ticker ticker-loser">HYG</span><span class="ticker ticker-loser">LQD</span><span class="ticker">UUP</span><span class="ticker">XLF</span></div>
+      </div>
+    </div>
+    <div class="surprise-box">
+      <div class="surprise-label">⚡ Surprise Scenario</div>
+      25bp hike or hawkish language telegraphing September hike. Under BofA's scenario, markets are significantly mispricing this tail risk.
+    </div>
+    <div class="summary-box">The July FOMC is a sleeper catalyst — 79.5% no-action means a hold causes minimal market reaction. But under BofA's scenario of persistent inflation and hawkish Warsh Fed, this meeting could deliver a major surprise. Kevin Warsh's first meeting already produced a notably hawkish statement. If June CPI prints hot on July 14, the two weeks before the FOMC see intense repricing. Simplest hedge: modest short TLT or long dollar positions. <a href="https://www.federalreserve.gov/newsevents/pressreleases/monetary20260617a.htm">[Federal Reserve]</a></div>
+  </div>
+
+  <!-- Catalyst 5 -->
+  <div class="card">
+    <div class="card-num">CAT 05</div>
+    <div class="card-header">
+      <div class="card-title">IBM Quantum Initiative — Commerce Dept. Funding Milestones</div>
+      <div class="card-badges">
+        <span class="badge badge-stage">July 2026 onward</span>
+      </div>
+    </div>
+    <div class="fields-grid">
+      <div class="field">
+        <div class="field-label">Expected Outcome</div>
+        <div class="field-value">IBM and 8 other companies begin formal funding agreements with Commerce Dept.</div>
+      </div>
+      <div class="field">
+        <div class="field-label">Current Positioning</div>
+        <div class="field-value">IBM outperforming sector; quantum pure-plays rose ~10% on sector sentiment</div>
+      </div>
+      <div class="field">
+        <div class="field-label">Exposed Tickers</div>
+        <div class="ticker-group"><span class="ticker">IBM</span><span class="ticker">IONQ</span><span class="ticker">RGTI</span><span class="ticker">QUBT</span><span class="ticker ticker-secondary">RTX</span><span class="ticker ticker-secondary">LMT</span></div>
+      </div>
+    </div>
+    <div class="surprise-box">
+      <div class="surprise-label">⚡ Surprise Scenario</div>
+      Additional companies added to funding list (IonQ most likely). Or geopolitical quantum export controls on China that create competitive moat for domestic players.
+    </div>
+    <div class="summary-box">The $2B presidential quantum initiative creates a multi-year funding runway with a government put on R&amp;D risk. IBM's $1B government match plus its own $10B five-year commitment is the most concrete quantum investment thesis available. Near-term catalyst: formal funding agreement execution and potential expansion to IonQ and QUBT. Quantum is a long-duration optionality play that now has a government backstop — asymmetric for small position sizing. <a href="https://www.cnbc.com/2026/05/21/quantum-stocks--us-taking-equity-stakes.html">[CNBC]</a></div>
+  </div>
+
+  <!-- ACTION ITEMS -->
+  <div class="section-header" id="action">
+    <div class="section-icon" style="background: var(--high)"></div>
+    <h2>Action Items</h2>
+  </div>
+
+  <div class="action-grid">
+    <div class="action-card">
+      <div class="action-card-title">🎯 Top 3 Tickers to Research</div>
+      <div class="action-item"><span class="action-ticker">MU</span> — Earnings tonight. 13% selloff vs. 998% EPS growth = potential asymmetric setup. Watch HBM4 guidance closely.</div>
+      <div class="action-item"><span class="action-ticker">IBM</span> — Dual upgrade (JPMorgan + Morgan Stanley) while sector sold off. Quantum + enterprise AI convergence is a signal.</div>
+      <div class="action-item"><span class="action-ticker">JPM / BAC / GS</span> — Stress test results at 4pm ET today. Capital return announcements imminent. Rate hike tailwind from BofA call.</div>
+    </div>
+
+    <div class="action-card">
+      <div class="action-card-title">⚖️ Position Adjustments</div>
+      <div class="action-item"><span class="action-sell">REDUCE/HEDGE:</span> <span class="action-ticker">NVDA, AMD, SMCI</span> — pure-play AI infrastructure until MU earnings clarity and Q2 hyperscaler earnings confirm demand</div>
+      <div class="action-item"><span class="action-buy">INITIATE/ADD:</span> <span class="action-ticker">JPM, BAC, GS</span> — stress test capital release + rate hike double tailwind</div>
+      <div class="action-item"><span class="action-buy">ROTATE INTO:</span> <span class="action-ticker">IBM, NOW, CRM</span> — AI ROI beneficiaries over infrastructure capex plays</div>
+      <div class="action-item"><span class="action-buy">CONSIDER:</span> <span class="action-ticker">VST, CEG, NRG</span> — power infrastructure as underpriced AI capex derivative</div>
+      <div class="action-item"><span class="action-sell">HEDGE:</span> Short <span class="action-ticker">TLT</span> or long <span class="action-ticker">UUP</span> as BofA rate hike tail risk hedge</div>
+    </div>
+
+    <div class="action-card">
+      <div class="action-card-title">📅 Key Dates This Week & Ahead</div>
+      <div class="action-item"><strong>TODAY Jun 24:</strong> Micron Q3 earnings (after close) | Fed stress test results (4pm ET) | May New Home Sales | Paychex Q4 (pre-market, already reported)</div>
+      <div class="action-item"><strong>Jul 14:</strong> June CPI release — critical input for Fed path and rate hike repricing</div>
+      <div class="action-item"><strong>Jul 28-29:</strong> FOMC meeting — first potential live hike meeting of 2026</div>
+      <div class="action-item"><strong>Late July:</strong> Q2 hyperscaler earnings (MSFT, GOOGL, META, AMZN) — AI ROI narrative confirmation or denial</div>
+    </div>
+  </div>
+
+</div>
+
+<div class="footer">
+  DAILY THEME SCANNER — 2026-06-24<br>
+  Sources: TheStreet · CNBC · Bank of America · Federal Reserve · Bloomberg · Money Morning · TrendForce · SK Hynix News · Invezz · IBM Newsroom · StockTitan · Motley Fool · FactSet · Blossom Street Ventures · CoStar · Investing.com<br>
+  <br>
+  ⚠️ This report is for informational purposes only and does not constitute investment advice. All positions involve risk of loss.
+</div>
+
+</body>
+</html>
