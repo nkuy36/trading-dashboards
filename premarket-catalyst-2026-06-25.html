@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pre-Market Catalyst v7.7 — June 25, 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0e17; --bg2: #0f1420; --bg3: #151b2e;
+    --text: #e2e8f0; --muted: #8899aa;
+    --green: #00e676; --green-dim: #1a3a2a; --green-text: #00e676;
+    --red: #ff4444; --red-dim: #3a1a1a; --red-text: #ff6666;
+    --amber: #ffaa00; --amber-dim: #2a2000; --amber-text: #ffcc44;
+    --purple: #aa66ff; --purple-dim: #1e1030; --purple-text: #bb88ff;
+    --cyan: #00ccff; --cyan-dim: #001a2a; --cyan-text: #44ddff;
+    --orange: #ff8800; --orange-dim: #2a1a00; --orange-text: #ffaa44;
+    --blue: #4499ff; --blue-dim: #0a1a30; --blue-text: #66aaff;
+    --yellow: #ffee00; --yellow-dim: #252200; --yellow-text: #ffee44;
+    --border: #1e2a40;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: 'JetBrains Mono', monospace; font-size: 13px; line-height: 1.6; }
+  .container { max-width: 1400px; margin: 0 auto; padding: 16px; }
+  h1 { font-size: 20px; font-weight: 700; color: var(--amber); margin-bottom: 4px; }
+  h2 { font-size: 15px; font-weight: 700; color: var(--cyan); margin: 20px 0 8px; border-bottom: 1px solid var(--border); padding-bottom: 4px; }
+  h3 { font-size: 13px; font-weight: 700; color: var(--text); margin: 12px 0 6px; }
+  .tool-health { background: var(--bg2); border: 1px solid var(--border); border-left: 4px solid var(--green); padding: 10px 14px; margin-bottom: 16px; }
+  .tool-health .status { display: flex; gap: 16px; flex-wrap: wrap; margin-top: 4px; font-size: 12px; }
+  .ok { color: var(--green); } .warn { color: var(--amber); } .err { color: var(--red); }
+  .briefing { background: var(--bg3); border: 1px solid var(--purple); border-left: 4px solid var(--purple); padding: 12px 14px; margin-bottom: 16px; color: var(--purple-text); }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
+  @media(max-width: 900px) { .grid2 { grid-template-columns: 1fr; } }
+  .card { background: var(--bg2); border: 1px solid var(--border); border-radius: 4px; padding: 12px; }
+  .card h3 { color: var(--cyan); margin-bottom: 8px; }
+  .entry { border-bottom: 1px solid var(--border); padding: 8px 0; }
+  .entry:last-child { border-bottom: none; }
+  .ticker { font-weight: 700; font-size: 15px; }
+  .bull { color: var(--green); } .bear { color: var(--red); } .neut { color: var(--amber); }
+  .pct-bull { color: var(--green); font-weight: 700; }
+  .pct-bear { color: var(--red); font-weight: 700; }
+  .conv-high { color: var(--green); font-weight: 700; }
+  .conv-med { color: var(--amber); font-weight: 700; }
+  .conv-low { color: var(--red); font-weight: 700; }
+  table { width: 100%; border-collapse: collapse; margin: 8px 0; font-size: 12px; }
+  th { background: var(--bg3); color: var(--muted); text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--border); font-weight: 500; }
+  td { padding: 5px 8px; border-bottom: 1px solid #1a2233; vertical-align: top; }
+  tr:hover td { background: #111827; }
+  .section { background: var(--bg2); border: 1px solid var(--border); border-radius: 4px; margin-bottom: 12px; overflow: hidden; }
+  .section-header { padding: 10px 14px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; background: var(--bg3); }
+  .section-header:hover { background: #1a2233; }
+  .section-body { padding: 12px 14px; }
+  .tag { display: inline-block; padding: 1px 6px; border-radius: 3px; font-size: 11px; margin-right: 4px; }
+  .tag-green { background: var(--green-dim); color: var(--green-text); }
+  .tag-red { background: var(--red-dim); color: var(--red-text); }
+  .tag-amber { background: var(--amber-dim); color: var(--amber-text); }
+  .tag-cyan { background: var(--cyan-dim); color: var(--cyan-text); }
+  .tag-purple { background: var(--purple-dim); color: var(--purple-text); }
+  .tag-orange { background: var(--orange-dim); color: var(--orange-text); }
+  .tag-blue { background: var(--blue-dim); color: var(--blue-text); }
+  .tag-yellow { background: var(--yellow-dim); color: var(--yellow-text); }
+  .theme-alert { padding: 8px 12px; margin: 6px 0; border-radius: 3px; font-size: 12px; }
+  .theme-bull { background: var(--green-dim); border-left: 3px solid var(--green); }
+  .theme-bear { background: var(--red-dim); border-left: 3px solid var(--red); }
+  .theme-wide { background: #1a2a0a; border-left: 3px solid #88ff00; color: #ccff88; }
+  .meta-row { color: var(--muted); font-size: 11px; margin-top: 2px; }
+  .source-url { color: var(--blue); font-size: 11px; }
+  .flag { color: var(--amber); font-style: italic; }
+  .divider { border: none; border-top: 1px solid var(--border); margin: 10px 0; }
+  .news-item { padding: 5px 0; border-bottom: 1px solid #1a2233; }
+  .news-time { color: var(--amber); font-size: 11px; margin-right: 8px; }
+  .news-src { color: var(--orange); font-size: 11px; }
+  a { color: var(--blue); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  .regime-bar { display: flex; gap: 8px; flex-wrap: wrap; margin: 8px 0; }
+  .regime-pill { padding: 3px 10px; border-radius: 12px; font-size: 11px; font-weight: 600; }
+  .audit-item { padding: 4px 0; border-bottom: 1px solid #1a2233; font-size: 12px; color: var(--muted); }
+  .audit-item span { color: var(--text); }
+  #topbar { position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border); z-index: 100; padding: 6px 16px; display: flex; align-items: center; gap: 16px; }
+  .topbar-logo { color: var(--amber); font-weight: 700; font-size: 14px; }
+  .topbar-date { color: var(--muted); font-size: 12px; }
+  .risk-box { background: var(--amber-dim); border: 1px solid var(--amber); border-radius: 4px; padding: 10px 14px; margin: 8px 0; }
+  .risk-box .risk-title { color: var(--amber); font-weight: 700; margin-bottom: 4px; }
+  .flow-box { background: var(--blue-dim); border: 1px solid var(--blue); border-radius: 4px; padding: 10px 14px; margin: 8px 0; }
+  .wire-box { background: var(--orange-dim); border: 1px solid var(--orange); border-radius: 4px; padding: 10px 14px; margin: 6px 0; }
+  .policy-box { background: var(--purple-dim); border: 1px solid var(--purple); border-radius: 4px; padding: 10px 14px; margin: 6px 0; }
+  .follow-on { background: var(--cyan-dim); border: 1px solid var(--cyan); border-radius: 4px; padding: 8px 12px; margin: 6px 0; font-size: 12px; }
+  .gap-row-bull { background: #1a2a1a; }
+  .gap-row-bear { background: #2a1a1a; }
+  .sched-row td:first-child { color: var(--amber); font-weight: 700; }
+  .watch-row td:nth-child(3) { color: var(--green); }
+</style>
+</head>
+<body>
+
+<div id="topbar">
+  <span class="topbar-logo">☀️ PRE-MARKET CATALYST v7.7 HYBRID</span>
+  <span class="topbar-date">June 25, 2026 · ~08:05 ET</span>
+  <span class="warn" style="font-size:12px;">⚠️ Chrome MCP unavailable · gap top-20 %-sort only</span>
+</div>
+
+<div class="container">
+
+<!-- TOOL HEALTH -->
+<div class="tool-health">
+  <div style="font-weight:700; color:var(--amber);">🔧 TOOL HEALTH — June 25, 2026</div>
+  <div class="status">
+    <span class="ok">✅ TV MCP batch_run (56/57 ETFs · prior session close only)</span>
+    <span class="ok">✅ stockanalysis.com (gainers + losers populated)</span>
+    <span class="ok">✅ Finviz public news (headlines returned)</span>
+    <span class="warn">⚠️ Chrome MCP — UNAVAILABLE · gap top-20 %-sort only · Yahoo options skipped</span>
+    <span class="warn">⚠️ Finviz Elite — unavailable · public feed used</span>
+    <span class="warn">⚠️ Options flow — web_search only · NO confirmed block data</span>
+    <span class="warn">⚠️ TV MCP price note — quote_get + batch_run return prior session close (Jun 24) only · pre-market prices from stockanalysis.com</span>
+  </div>
+</div>
+
+<!-- REGIME -->
+<div class="regime-bar">
+  <span class="regime-pill" style="background:#0a2a0a; color:#88ff00; border:1px solid #44aa44;">🚨 AI CHIPS: BIGGEST GAP IN YEARS</span>
+  <span class="regime-pill" style="background:var(--green-dim); color:var(--green);">🟩 BIOTECH: DAY 4 RALLY + M&A</span>
+  <span class="regime-pill" style="background:var(--green-dim); color:var(--green);">🟩 TRAVEL: HORMUZ OPEN</span>
+  <span class="regime-pill" style="background:var(--green-dim); color:var(--green);">🟩 HOUSING: DUAL CATALYST</span>
+  <span class="regime-pill" style="background:var(--red-dim); color:var(--red);">🔴 METALS: HISTORIC CRASH</span>
+  <span class="regime-pill" style="background:var(--red-dim); color:var(--red);">🔴 BITCOIN: BELOW $60K</span>
+  <span class="regime-pill" style="background:var(--amber-dim); color:var(--amber);">⚡ PCE 8:30 AM — HOT EXPECTED</span>
+</div>
+
+<!-- MORNING BRIEFING -->
+<div class="briefing">
+  <div style="font-weight:700; margin-bottom:6px; color:var(--text);">⚡ MORNING BRIEFING — 30-SECOND READ</div>
+  This is the biggest semiconductor morning in years. Micron's record fiscal Q3 (<strong>$41.5B revenue, EPS $25.11 — 24% beat</strong>) paired with Qualcomm's Investor Day bombshell (META as silicon partner, 2029 $40B non-handset revenue, $4B Modular acquisition to challenge CUDA) ignited a $400B+ AI hardware rally: <strong>MU +16.93%, SNDK +15.72%, WDC +12.43%, QCOM ~+17.5%</strong> pre-market. Simultaneously, <strong>Bio-Techne +19.83%</strong> on Merck KGaA's $11.3B acquisition ($73/share, 36% premium) extends the biotech theme to <strong>Day 4</strong> (XBI + IBB both in uptrend). Iran Strait of Hormuz remains open; oil at $70/bbl keeps airlines strong (JETS +6.49% yesterday). <strong style="color:var(--amber);">Primary risk: PCE at 8:30 AM ET</strong> (headline +4.1% YoY expected — accelerating). Wait for the print before sizing rate-sensitive longs. Precious metals in historic multi-ETF collapse.
+  <div style="margin-top:8px; color:var(--amber); font-size:11px;"><strong>THEME OF THE MORNING:</strong> AI memory hardware cycle — MU + QCOM double earnings/Investor Day kills the semi bear thesis. HBM is hardware-constrained, not demand-constrained.</div>
+</div>
+
+<!-- TOP PICKS SIDE BY SIDE -->
+<div class="grid2">
+
+<!-- ETF TOP 3 -->
+<div class="card">
+  <h3>🏆 TOP 3 ETF TRADE IDEAS</h3>
+
+  <div class="entry">
+    <div><span class="ticker bull">SMH</span> <span class="tag tag-green">AI CHIPS / MEMORY</span> <span class="conv-high">🟢 HIGH</span></div>
+    <div class="meta-row">Session close $618.92 (TV MCP, Jun 24 batch_run) · Avg vol 15.5M · Gap expected +10-15%</div>
+    <div style="font-size:12px; margin-top:4px;">MU +16.93% + QCOM +~17.5% Investor Day double catalyst. WDC, SNDK, NVDA all gapping. Largest semi gap day in years. Constituents leading: MU, SNDK, WDC, QCOM.</div>
+    <div style="margin-top:4px;"><strong>Entry:</strong> Gap-and-go above $680 on vol >2x avg · <strong>Stop:</strong> $658 · <strong>Target:</strong> $700–720</div>
+    <div class="meta-row">Source: <a href="https://www.stocktitan.net/news/MU/micron-technology-inc-reports-record-results-for-the-third-quarter-6f50161e5zxh.html">StockTitan MU Q3</a> · <a href="https://www.cnbc.com/2026/06/24/qualcomm-data-center-cpu-meta.html">CNBC QCOM Investor Day</a></div>
+  </div>
+
+  <div class="entry">
+    <div><span class="ticker bull">XBI</span> <span class="tag tag-green">BIOTECH + M&A</span> <span class="conv-high">🟢 HIGH</span></div>
+    <div class="meta-row">Session close $149.71 (+3.89% Jun 24) · IBB $181.53 (+2.93%) — 🚨 THEME-WIDE Day 4</div>
+    <div style="font-size:12px; margin-top:4px;">Merck KGaA acquires Bio-Techne (TECH) for $73/share, $11.3B deal (+36% premium) adds M&A premium to XBI/IBB. Day 4 of sector-wide uptrend.</div>
+    <div style="margin-top:4px;"><strong>Entry:</strong> Hold $150 at open · <strong>Stop:</strong> $146 · <strong>Target:</strong> $158–163</div>
+    <div class="meta-row">Source: <a href="https://www.gurufocus.com/news/8931373/biotechne-tech-surges-22-on-merck-kgaa-acquisition-offer">GuruFocus TECH/Merck</a></div>
+  </div>
+
+  <div class="entry">
+    <div><span class="ticker bull">JETS</span> <span class="tag tag-green">TRAVEL / HORMUZ</span> <span class="conv-high">🟢 HIGH</span></div>
+    <div class="meta-row">Session close $32.48 (+6.49% Jun 24) · PEJ $66.04 (+2.13%) — 🚨 TRAVEL THEME-WIDE</div>
+    <div style="font-size:12px; margin-top:4px;">Iran Strait of Hormuz remains open; WTI oil $70.34/bbl (-3.92%). Fuel cost relief. JETS+PEJ both up = travel sector, not one name.</div>
+    <div style="margin-top:4px;"><span class="flag">⚠️ SIZE AFTER 8:30 AM PCE PRINT</span></div>
+    <div style="margin-top:2px;"><strong>Entry:</strong> Hold $32 post-PCE · <strong>Stop:</strong> $30.80 · <strong>Target:</strong> $34.50–36</div>
+  </div>
+</div>
+
+<!-- STOCK TOP 3 -->
+<div class="card">
+  <h3>🎯 TOP 3 INDIVIDUAL STOCK SETUPS</h3>
+
+  <div class="entry">
+    <div><span class="ticker bull">MU</span> <span class="tag tag-yellow">EARNINGS BLOWOUT</span> <span class="tag tag-green">SMH · DRAM</span> <span class="conv-high">🟢 HIGH</span></div>
+    <div class="meta-row">Session close $1,048.51 (TV MCP Jun 24) · Pre-mkt $1,226.06 <span class="pct-bull">+16.93%</span> · Vol 3,359,314 (stockanalysis ~08:00 ET)</div>
+    <div style="font-size:12px; margin-top:4px;"><strong>PRIMARY CATALYST.</strong> Q3: Rev $41.46B vs $35.25B est; EPS $25.11 vs $20.20 est (+24.3% beat). Q4 guide: $50B ±$1B rev, 86% GM, EPS ~$30.73. HBM 2026 supply SOLD OUT. 16 long-term customer contracts.</div>
+    <div style="margin-top:4px;"><strong>Entry:</strong> Open range high confirm · <strong>Stop:</strong> $1,160 · <strong>Target:</strong> $1,280–1,320</div>
+    <div class="meta-row">Source: <a href="https://www.stocktitan.net/news/MU/micron-technology-inc-reports-record-results-for-the-third-quarter-6f50161e5zxh.html">StockTitan</a> · <a href="https://www.sec.gov/Archives/edgar/data/0000723125/000072312526000013/a2026q3ex991-pressrelease.htm">SEC 8-K</a></div>
+  </div>
+
+  <div class="entry">
+    <div><span class="ticker bull">QCOM</span> <span class="tag tag-yellow">INVESTOR DAY</span> <span class="tag tag-green">SMH · XLC</span> <span class="conv-high">🟢 HIGH</span></div>
+    <div class="meta-row">Session close $197.41 · AH $222.62 (+15%) · Pre-mkt ~$232 <span class="flag">⚠️ CONFLICTING DATA — verify</span></div>
+    <div style="font-size:12px; margin-top:4px;"><strong>INVESTOR DAY BOMBSHELL + M&A.</strong> META as hyperscaler custom silicon partner. 2029 non-handset $22B→$40B. Datacenter target $15B. Modular acquisition $4B — CUDA challenger. 2nd unnamed hyperscaler Dec 2026.</div>
+    <div style="margin-top:4px;"><strong>Entry:</strong> Confirm above $220–225 · <strong>Stop:</strong> $208 · <strong>Target:</strong> $245–255</div>
+    <div class="meta-row">Source: <a href="https://www.cnbc.com/2026/06/24/qualcomm-ai-chip-modular-software.html">CNBC</a> · <a href="https://www.bloomberg.com/news/articles/2026-06-24/qualcomm-confirms-buying-modular-to-help-ai-market-push">Bloomberg</a></div>
+  </div>
+
+  <div class="entry">
+    <div><span class="ticker bull">SNDK</span> <span class="tag tag-amber">MU READ-THROUGH</span> <span class="tag tag-green">SMH</span> <span class="conv-med">🟡 MED (confirm vol)</span></div>
+    <div class="meta-row">Session close $1,914.46 (TV MCP Jun 24, -4.64%) · Pre-mkt $2,215.35 <span class="pct-bull">+15.72%</span> · Vol 474,411 (stockanalysis ~08:00 ET)</div>
+    <div style="font-size:12px; margin-top:4px;">Flash + HDD storage demand implied by MU Q4 $50B guide. ⚠️ Pre-market volume 474K is modest — confirm institutional follow-through at open before committing.</div>
+    <div style="margin-top:4px;"><strong>Entry:</strong> Hold $2,100 at open · <strong>Stop:</strong> $1,980 · <strong>Target:</strong> $2,300–2,400</div>
+  </div>
+</div>
+</div><!-- end grid2 -->
+
+<!-- PRE-MARKET GAPPERS TABLE -->
+<h2>📊 PRE-MARKET GAPPERS — stockanalysis.com (~08:00 ET)</h2>
+<div class="section">
+  <div class="section-body">
+    <div style="font-size:11px; color:var(--amber); margin-bottom:8px;">⚠️ Chrome MCP unavailable — top-20 %-sort only; liquid mid/large-cap gappers may be missed. Market cap filter: >$1B for tradeable.</div>
+    <h3 style="color:var(--green);">▲ GAINERS (tradeable >$1B)</h3>
+    <table>
+      <tr><th>Ticker</th><th>Mkt Cap</th><th>Pre-Mkt %</th><th>Price</th><th>Volume</th><th>Catalyst</th><th>ETF Bucket</th></tr>
+      <tr class="gap-row-bull"><td><strong class="bull">TECH</strong></td><td>$9.22B</td><td class="pct-bull">+19.83%</td><td>$70.55</td><td>2,088,672</td><td>Merck KGaA acquisition $73/sh, $11.3B deal (36% prem)</td><td><span class="tag tag-green">XBI IBB</span></td></tr>
+      <tr class="gap-row-bull"><td><strong class="bull">MU</strong></td><td>$1.18T</td><td class="pct-bull">+16.93%</td><td>$1,226.06</td><td>3,359,314</td><td>Record Q3: $41.5B rev; EPS $25.11 vs $20.20 est</td><td><span class="tag tag-green">SMH DRAM</span></td></tr>
+      <tr class="gap-row-bull"><td><strong class="bull">SNDK</strong></td><td>$283.51B</td><td class="pct-bull">+15.72%</td><td>$2,215.35</td><td>474,411</td><td>MU AI memory sector read-through</td><td><span class="tag tag-green">SMH</span></td></tr>
+      <tr class="gap-row-bull"><td><strong class="bull">WDC</strong></td><td>$221.92B</td><td class="pct-bull">+12.43%</td><td>$723.88</td><td>271,563</td><td>MU read-through (flash/HDD storage)</td><td><span class="tag tag-green">SMH</span></td></tr>
+    </table>
+    <div style="font-size:11px; color:var(--muted);">Sub-$1B excluded: WYY +48.47% ($170.78M), VELO +12.69% ($537.91M), MEI +13.52% ($463.78M)</div>
+    <h3 style="color:var(--red); margin-top:12px;">▼ LOSERS (tradeable >$1B)</h3>
+    <table>
+      <tr><th>Ticker</th><th>Mkt Cap</th><th>Pre-Mkt %</th><th>Price</th><th>Volume</th><th>Catalyst</th><th>ETF Bucket</th></tr>
+      <tr class="gap-row-bear"><td><strong class="bear">SPRY</strong></td><td>$1.05B</td><td class="pct-bear">-25.05%</td><td>$7.90</td><td>102,890</td><td>No new payer formulary for neffy; 2026 spending cut to $248M</td><td><span class="tag tag-red">XBI (negative)</span></td></tr>
+    </table>
+    <div style="font-size:11px; color:var(--muted);">All sub-$1B losers excluded (DCX -40%, PAVS -34%, ELME -28%, etc.)</div>
+  </div>
+</div>
+
+<!-- ETF SWEEP -->
+<h2>📡 ETF SWEEP — 57 ETFs (TV MCP batch_run · prior session June 24 close)</h2>
+<div style="font-size:11px; color:var(--amber); margin-bottom:8px;">⚠️ All % changes = June 24 regular session. Today's June 25 pre-market ETF moves NOT available from TV MCP. Batch_run used; 56/57 successful.</div>
+
+<div class="theme-alert theme-wide">🚨 THEME-WIDE BREAKOUT — BIOTECH: XBI +3.89% + IBB +2.93% (Day 3 session) → TODAY Day 4 with TECH/Merck M&A catalyst</div>
+<div class="theme-alert theme-wide">🚨 THEME-WIDE BREAKOUT — TRAVEL: JETS +6.49% + PEJ +2.13% → Hormuz Strait reopened, oil to $70/bbl</div>
+<div class="theme-alert theme-bear">🚨 THEME-WIDE BREAKDOWN — METALS: GLD -3.12% · GDX -4.10% · GDXJ -4.97% · SLV -7.80% · COPX -5.30% · XME -3.86% (6-ETF historic crash)</div>
+<div class="theme-alert theme-wide">🚨 EXPECTED THEME-WIDE TODAY — AI CHIPS: SMH expected +10-15% on MU +16.93% + QCOM +17.5% (SMH closed $618.92; DRAM closed $69.93)</div>
+
+<div class="section">
+  <div class="section-header" onclick="this.nextElementSibling.classList.toggle('open-more')">
+    <span style="color:var(--cyan);">📈 ETF Moves — Bullish (prior session Jun 24)</span><span>▼</span>
+  </div>
+  <div class="section-body">
+    <table>
+      <tr><th>ETF</th><th>Theme</th><th>Session %</th><th>Close</th><th>Vol vs Avg</th><th>Conviction</th><th>Notes</th></tr>
+      <tr><td class="bull"><strong>JETS</strong></td><td>Airlines</td><td class="pct-bull">+6.49%</td><td>$32.48</td><td>1.29x</td><td class="conv-high">🟢 HIGH</td><td>Hormuz reopened; fuel cost relief. PEJ paired ✅</td></tr>
+      <tr><td class="bull"><strong>XHB</strong></td><td>Homebuilders</td><td class="pct-bull">+5.90%</td><td>$114.28</td><td>1.54x</td><td class="conv-high">🟢 HIGH</td><td>Congress Affordable Housing Act + Berkshire/TMHC $6.8B</td></tr>
+      <tr><td class="bull"><strong>XBI</strong></td><td>Biotech S-C</td><td class="pct-bull">+3.89%</td><td>$149.71</td><td>1.13x</td><td class="conv-high">🟢 HIGH</td><td>Theme-wide Day 3; IBB paired ✅</td></tr>
+      <tr><td class="bull"><strong>XRT</strong></td><td>Retail</td><td class="pct-bull">+3.56%</td><td>$88.22</td><td>1.43x</td><td class="conv-med">🟡 MED</td><td>Consumer strength</td></tr>
+      <tr><td class="bull"><strong>IBB</strong></td><td>Biotech L-C</td><td class="pct-bull">+2.93%</td><td>$181.53</td><td>1.23x</td><td class="conv-high">🟢 HIGH</td><td>Theme-wide paired with XBI ✅</td></tr>
+      <tr><td class="bull"><strong>KRE</strong></td><td>Regional Banks</td><td class="pct-bull">+2.81%</td><td>$73.97</td><td>0.91x</td><td class="conv-med">🟡 MED</td><td>Banks passed Fed stress tests; JPM $50B buyback</td></tr>
+      <tr><td class="bull"><strong>PEJ</strong></td><td>Travel/Leisure</td><td class="pct-bull">+2.13%</td><td>$66.04</td><td>1.54x</td><td class="conv-high">🟢 HIGH</td><td>Travel theme-wide; paired with JETS ✅</td></tr>
+      <tr><td class="bull"><strong>XLU</strong></td><td>Utilities/AI Power</td><td class="pct-bull">+1.77%</td><td>$45.54</td><td>0.92x</td><td class="conv-med">🟡 MED</td><td>AI power demand; rate-sensitive (PCE risk today)</td></tr>
+      <tr><td class="bull"><strong>IYT</strong></td><td>Transports</td><td class="pct-bull">+1.49%</td><td>$85.30</td><td>1.83x</td><td class="conv-med">🟡 MED</td><td>Fuel cost benefit</td></tr>
+      <tr><td class="bull"><strong>TLT</strong></td><td>20Y Bonds</td><td class="pct-bull">+1.46%</td><td>$87.38</td><td>1.37x</td><td class="conv-med">🟡 MED</td><td>Rate easing bid; supports XHB. PCE risk today.</td></tr>
+      <tr><td class="bull"><strong>ITA</strong></td><td>Defense Primes</td><td class="pct-bull">+1.30%</td><td>$236.19</td><td>1.21x</td><td class="conv-med">🟡 MED</td><td>Note: SHLD -2.62% = PLTR-specific; NOT defense theme-wide</td></tr>
+      <tr><td class="bull"><strong>CIBR</strong></td><td>Cybersecurity</td><td class="pct-bull">+1.13%</td><td>$83.73</td><td>0.78x</td><td class="conv-med">🟡 MED</td><td></td></tr>
+    </table>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-header" onclick="this.nextElementSibling.classList.toggle('open-more')">
+    <span style="color:var(--red);">📉 ETF Moves — Bearish (prior session Jun 24)</span><span>▼</span>
+  </div>
+  <div class="section-body">
+    <table>
+      <tr><th>ETF</th><th>Theme</th><th>Session %</th><th>Close</th><th>Notes</th></tr>
+      <tr><td class="bear"><strong>SLV</strong></td><td>Silver</td><td class="pct-bear">-7.80%</td><td>$51.78</td><td>🚨 Historic crash — Hormuz safe-haven unwind</td></tr>
+      <tr><td class="bear"><strong>GDXJ</strong></td><td>Junior Gold Miners</td><td class="pct-bear">-4.97%</td><td>$96.08</td><td>🚨 Multi-ETF breakdown; leads GDX = real metals crash</td></tr>
+      <tr><td class="bear"><strong>COPX</strong></td><td>Copper Miners</td><td class="pct-bear">-5.30%</td><td>$75.70</td><td>🚨 Pairs with XME = critical minerals breakdown</td></tr>
+      <tr><td class="bear"><strong>USO</strong></td><td>Crude Oil</td><td class="pct-bear">-4.17%</td><td>$106.29</td><td>Hormuz reopened; WTI $70.34/bbl</td></tr>
+      <tr><td class="bear"><strong>GDX</strong></td><td>Large Gold Miners</td><td class="pct-bear">-4.10%</td><td>$74.59</td><td>🚨 Theme-wide crash with GDXJ</td></tr>
+      <tr><td class="bear"><strong>XME</strong></td><td>Metals & Mining</td><td class="pct-bear">-3.86%</td><td>$107.22</td><td>🚨 Pairs with COPX</td></tr>
+      <tr><td class="bear"><strong>IBIT</strong></td><td>Bitcoin</td><td class="pct-bear">-3.53%</td><td>$33.87</td><td>BTC below $60K; WGMI -1.39% confirms crypto-wide</td></tr>
+      <tr><td class="bear"><strong>GLD</strong></td><td>Gold</td><td class="pct-bear">-3.12%</td><td>$365.92</td><td>🚨 Safe-haven unwind; multiple-session decline</td></tr>
+      <tr><td class="bear"><strong>SHLD</strong></td><td>Defense Tech</td><td class="pct-bear">-2.62%</td><td>$58.88</td><td>PLTR-specific (-5.53%); NOT defense-wide (ITA +1.30%)</td></tr>
+      <tr><td class="bear"><strong>WGMI</strong></td><td>BTC Miners</td><td class="pct-bear">-1.39%</td><td>$66.76</td><td>Pairs with IBIT = crypto theme-wide</td></tr>
+      <tr><td class="bear"><strong>SMH</strong></td><td>Semiconductors</td><td class="pct-bear">-1.12%</td><td>$618.92</td><td>YESTERDAY: closed down. TODAY: Expected +10-15% on MU/QCOM</td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- FINVIZ NEWS -->
+<h2>📰 FINVIZ NEWS DIGEST (public feed ~08:00 ET)</h2>
+<div class="section">
+  <div class="section-body">
+    <div style="font-size:11px; color:var(--amber); margin-bottom:8px;">Finviz Elite unavailable — public feed only. Last ~6 hours.</div>
+    <div class="news-item"><span class="news-time">07:31</span><strong class="bull">MU</strong> — Micron's strong earnings forecast reignites AI chip sector optimism — sparked $400B+ rally, Nasdaq futures +2% <span class="news-src">Bloomberg/Reuters</span> <span class="tag tag-green">SMH DRAM</span></div>
+    <div class="news-item"><span class="news-time">~03:30</span><strong class="bull">QCOM</strong> — Strong forward guidance + Investor Day bolsters semiconductor confidence <span class="news-src">Bloomberg</span> <span class="tag tag-green">SMH XLC</span></div>
+    <div class="news-item"><span class="news-time">08:02</span><strong>WEN</strong> — Shares soar 2nd day as retail investors pile into new meme darling <span class="news-src">CNBC</span> <span class="tag tag-amber">UNCLASSIFIED</span></div>
+    <div class="news-item"><span class="news-time">Jun 24</span><strong class="bear">BABA</strong> — Slides to 16-month low after Anthropic accuses firm of AI model illicit distillation <span class="news-src">Bloomberg/BBC</span> <span class="tag tag-red">KWEB</span></div>
+    <div class="news-item"><span class="news-time">07:59</span><strong>MACRO</strong> — <strong style="color:var(--amber);">PCE Inflation — main event is 8:30 AM ET</strong> <span class="news-src">MarketWatch</span></div>
+    <div class="news-item"><span class="news-time">Jun 24</span><strong class="bear">OIL</strong> — Oil prices falling toward pre-Iran-war levels as Gulf shipping resumes (WTI $70.34, -3.92%) <span class="news-src">Reuters</span> <span class="tag tag-red">USO</span> <span class="tag tag-green">JETS PEJ</span></div>
+    <div class="news-item"><span class="news-time">Jun 24</span><strong>BONDS</strong> — Global bond weakness amid surging US Dollar; Hormuz safe-haven unwind <span class="news-src">Bloomberg</span> <span class="tag tag-amber">TLT UUP</span></div>
+  </div>
+</div>
+
+<!-- POLICY/STAKE -->
+<h2 style="color:var(--purple-text);">🏛️ POLICY / STAKE / RUMOR CATALYSTS</h2>
+<div class="policy-box">
+  <div style="font-weight:700; color:var(--purple-text); margin-bottom:6px;">🏛️ QUANTUM $2 BILLION GOVERNMENT INVESTMENT — EOs Signed June 22, 2026</div>
+  <table>
+    <tr><th>Company</th><th>Amount</th><th>Structure</th><th>Status</th><th>ETF</th></tr>
+    <tr><td><strong>IBM</strong></td><td>~$1B</td><td>Quantum foundry "Anderon" + sub-1nm chip</td><td>Announced. Already ran Jun 22-23.</td><td>SMH, QTUM</td></tr>
+    <tr><td><strong>GlobalFoundries (GFS)</strong></td><td>~$375M</td><td>Equity stake (Dept. Commerce)</td><td>Announced. Already ran.</td><td>SMH</td></tr>
+    <tr><td><strong>QBTS (D-Wave)</strong></td><td>~$100M</td><td>Common stock equity stake</td><td>Announced. QTUM -1.08% Jun 24 = buy-news-sell-off.</td><td>QTUM</td></tr>
+    <tr><td><strong>RGTI (Rigetti)</strong></td><td>~$100M</td><td>CHIPS Act + equity stake</td><td>Announced. Already ran Jun 22-23.</td><td>QTUM</td></tr>
+    <tr><td><strong>Infleqtion (INFQ)</strong></td><td>~$100M</td><td>Equity stake</td><td>Announced.</td><td>QTUM</td></tr>
+  </table>
+  <div style="font-size:11px; color:var(--muted); margin-top:6px;">⚠️ TIMING NOTE: Quantum stocks already ran on June 22-23 announcement. QTUM -1.08% June 24 = possible buy-news-sell-off in progress. NOT a fresh catalyst today. Monitor QTUM for re-entry if it retests base.</div>
+  <div class="meta-row">Sources: <a href="https://www.thestreet.com/investing/stocks/white-house-makes-bold-2-billion-bet-on-quantum-stocks">TheStreet</a> · <a href="https://www.tipranks.com/news/trumps-2-billion-quantum-bet-lifts-ibm-d-wave-and-rigetti-and-sends-quantum-etf-qtum-toward-5-billion-in-assets">TipRanks</a> · <a href="https://www.tikr.com/blog/rgti-rigetti-computing-nasdaq-stock-secures-one-hundred-million-dollars-in-chips-act-funding-to-advance-federal-artificial-intelligence-priorities">TIKR RGTI</a></div>
+</div>
+
+<div class="policy-box" style="margin-top:8px;">
+  <div style="font-weight:700; color:var(--purple-text); margin-bottom:6px;">🏛️ BABA — Anthropic Accusation Escalation</div>
+  Anthropic wrote to White House & US senators accusing Alibaba of "illicit adversarial distillation" of Claude AI models. 28.8 million exchanges, ~25,000 fraudulent accounts, April–June 2026. Characterized as "largest known attempt by Chinese firm to exploit a leading US AI lab." BABA -3% to -4.9% (16-month low).<br>
+  <span class="tag tag-red">KWEB</span> — BABA is top KWEB holding. Risk of escalation: potential US export controls on Qwen models.<br>
+  <div class="meta-row">Source: <a href="https://www.cnbc.com/2026/06/24/anthropic-alibaba-distillation-campaign.html">CNBC June 24</a></div>
+</div>
+
+<!-- WIRE SCOOPS -->
+<h2 style="color:var(--orange-text);">📡 WIRE SERVICE SCOOPS</h2>
+<div class="wire-box">
+  <div style="font-weight:700; color:var(--orange-text); margin-bottom:6px;">🟠 WIRE: QCOM acquires Modular for $4B (all-stock) — Challenge Nvidia CUDA Dominance</div>
+  Bloomberg & CNBC confirmed (June 24). Modular's platform enables AI inference on ANY AI processor — bridges CUDA-exclusive ecosystem. 150-person team integrates into QCOM engineering. Close H2 2026.<br>
+  Tickers: QCOM (+17.5% pre-mkt) | NVDA (threat to CUDA moat, but +1.3% — market not pricing risk yet)<br>
+  <span class="tag tag-green">SMH</span> <span class="tag tag-green">XLC</span><br>
+  <div class="meta-row">Sources: <a href="https://www.bloomberg.com/news/articles/2026-06-24/qualcomm-confirms-buying-modular-to-help-ai-market-push">Bloomberg</a> · <a href="https://www.cnbc.com/2026/06/24/qualcomm-ai-chip-modular-software.html">CNBC</a> · <a href="https://techstartups.com/2026/06/24/qualcomm-acquires-ai-startup-modular-in-4-billion-deal-to-challenge-nvidias-cuda-dominance/">TechStartups</a></div>
+</div>
+<div class="wire-box">
+  <div style="font-weight:700; color:var(--orange-text); margin-bottom:6px;">🟠 WIRE: Merck KGaA acquires Bio-Techne (TECH) for $73/sh, $11.3B deal (+36% premium)</div>
+  TECH +19.83% pre-market. Greg Abel's life sciences bet. Deal approved by both boards; expected close late 2026 / early 2027. Merck gains research reagents, proteins, antibodies, scientific instruments.<br>
+  <span class="tag tag-green">XBI</span> <span class="tag tag-green">IBB</span> — M&A premium now bid into entire biotech sector<br>
+  <div class="meta-row">Sources: <a href="https://www.gurufocus.com/news/8931373/biotechne-tech-surges-22-on-merck-kgaa-acquisition-offer">GuruFocus</a> · <a href="https://www.globalbankingandfinance.com/germanys-merck-buy-bio-techne-73-per-share/">GlobeBanking</a></div>
+</div>
+<div class="wire-box">
+  <div style="font-weight:700; color:var(--orange-text); margin-bottom:6px;">🟠 WIRE: Berkshire Hathaway / Greg Abel acquires Taylor Morrison (TMHC) $6.8B, 24% premium</div>
+  Abel's first major deal as Berkshire CEO. All-cash. Signals conviction that US housing cycle is turning after years of cooling. Lifted entire XHB sector yesterday.<br>
+  <span class="tag tag-green">XHB</span><br>
+  <div class="meta-row">Sources: <a href="https://www.investing.com/analysis/xhb-homebuilders-break-out--and-buffetts-successor-just-cosigned-the-move-200681349">Investing.com Analysis</a></div>
+</div>
+<div class="wire-box">
+  <div style="font-weight:700; color:var(--orange-text); margin-bottom:6px;">🟠 WIRE: Trump — Iran says NO Strait of Hormuz tolls for commercial shipping</div>
+  WTI crude collapsed to $70.34/bbl (-3.92%, lowest since pre-Iran-war Feb 2026). Brent $73.74 (-4.33%). Airlines get fuel cost relief (JETS +6.49%). Oil complex weak.<br>
+  <span class="tag tag-red">USO</span> <span class="tag tag-green">JETS PEJ</span> <span class="tag tag-red">XLE XOP</span><br>
+</div>
+<div class="wire-box">
+  <div style="font-weight:700; color:var(--orange-text); margin-bottom:6px;">🟠 WIRE: Congress passes Affordable Housing Act (Reuters 2:47 PM ET June 24)</div>
+  Drove XHB +5.90% alongside Berkshire/TMHC announcement. Dual catalyst.<br>
+  <span class="tag tag-green">XHB XLRE</span><br>
+</div>
+<div class="wire-box">
+  <div style="font-weight:700; color:var(--orange-text); margin-bottom:6px;">🟠 WIRE: IBM sub-1nm chip announcement + $1B CHIPS Act quantum grant (June 22-24)</div>
+  Part of Trump $2B quantum EOs. IBM anchors new US quantum foundry "Anderon." Sub-1nm chip positions IBM at forefront of advanced semiconductor fabrication.<br>
+  <span class="tag tag-green">SMH</span> <span class="tag tag-purple">QTUM</span><br>
+</div>
+
+<!-- OPTIONS FLOW -->
+<h2 style="color:var(--blue-text);">🔵 PRE-MARKET OPTIONS FLOW</h2>
+<div class="flow-box">
+  <div style="font-weight:700; color:var(--amber); margin-bottom:6px;">⚠️ ALL COMMENTS BELOW ARE PRICE-ACTION INFERENCE ONLY — NOT CONFIRMED FLOW DATA</div>
+  Web_search returned no specific @unusual_whales, @FlowAlgo, or Benzinga alerts for June 25, 2026 premarket. Yahoo options chains skipped (Chrome MCP unavailable).
+  <div class="divider"></div>
+  <div><strong>Inferred (NOT confirmed):</strong></div>
+  <div class="meta-row" style="margin-top:4px;">• <strong>SMH/MU calls</strong>: Likely heavy given +16.93% MU and +17.5% QCOM overnight. Institutional earnings positioning would show via calls.</div>
+  <div class="meta-row">• <strong>XBI calls</strong>: M&A premium from TECH/Merck acquisition may have triggered sector call buying.</div>
+  <div class="meta-row">• <strong>JETS calls</strong>: Hormuz sustained open could attract calls on continued oil weakness.</div>
+  <div class="meta-row">• <strong>GLD/SLV puts</strong>: Metals multi-day breakdown likely attracting put flow.</div>
+  <div class="meta-row">• <strong>QCOM</strong>: Investor Day call volume almost certainly elevated; data unavailable.</div>
+</div>
+
+<!-- FOLLOW-THROUGH -->
+<h2>🔄 OVERNIGHT FOLLOW-THROUGH (from gap-attribution-2026-06-24.html)</h2>
+<div class="section">
+  <div class="section-body">
+    <div style="font-size:12px; color:var(--muted); margin-bottom:8px;">Prior evening scan flagged the following Tier 1 picks. Follow-through status as of June 25 pre-market:</div>
+    <table>
+      <tr><th>Pick</th><th>Prior Thesis</th><th>Prior Level</th><th>Today</th><th>Status</th></tr>
+      <tr><td class="bull"><strong>SMH</strong></td><td>Expected +8-12% gap on MU+QCOM double-earnings</td><td>$618.92 close</td><td>MU +16.93% confirms; QCOM +17.5% confirms</td><td class="bull">✅ STILL ON — STRONGER</td></tr>
+      <tr><td class="bull"><strong>XBI</strong></td><td>Day 3 biotech theme-wide; hold $148</td><td>$149.71 close</td><td>TECH/Merck $11.3B M&A → Day 4 M&A premium</td><td class="bull">✅ STILL ON + NEW CATALYST</td></tr>
+      <tr><td class="bull"><strong>JETS</strong></td><td>Hold $32; Hormuz open; oil weak</td><td>$32.48 close</td><td>Hormuz remains open; WTI $70/bbl</td><td class="bull">✅ LIKELY STILL ON</td></tr>
+      <tr><td class="bull"><strong>XHB</strong></td><td>Hold $113; Congress Housing Act</td><td>$114.28 close</td><td>Berkshire/TMHC $6.8B + Housing Act = dual catalyst</td><td class="bull">✅ STILL ON + ADDITIONAL CATALYST</td></tr>
+      <tr><td class="neut"><strong>DRAM</strong></td><td>Confirm open direction; MU HBM</td><td>$69.93 close</td><td>MU blowout confirms HBM demand; ⚠️ vol anomaly flagged (82M shares, mapping error risk)</td><td class="neut">⚠️ MONITOR — likely up but confirm</td></tr>
+      <tr><td class="bull"><strong>MU</strong></td><td>Entry above open range; stop $1,160</td><td>AH $1,213.69</td><td>Pre-mkt $1,226 (+16.93%) — slight AH extension</td><td class="bull">✅ STILL ON</td></tr>
+      <tr><td class="bull"><strong>QCOM</strong></td><td>Entry above $218; stop $210</td><td>AH $222.62</td><td>Pre-mkt ~$232 ⚠️ conflicting data; verify before entry</td><td class="neut">✅ LIKELY ON — verify price</td></tr>
+      <tr><td class="bull"><strong>WDC</strong></td><td>Hold above $710; stop $685</td><td>AH $723.36</td><td>Pre-mkt $723.88 (+12.43%) — holding AH level</td><td class="bull">✅ STILL ON</td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- WATCHLIST -->
+<h2>👁️ PERSONAL WATCHLIST STATUS</h2>
+<div class="section">
+  <div class="section-body">
+    <table>
+      <tr><th>Ticker</th><th>Session Close (Jun 24)</th><th>Session %</th><th>Pre-Mkt</th><th>Pre-Mkt %</th><th>Notes + Analyst/8-K</th></tr>
+      <tr><td class="bear"><strong>TSLA</strong></td><td>$375.53</td><td class="pct-bear">-4.35%</td><td>unavailable</td><td>—</td><td>Significant drop; no clear reversal catalyst</td></tr>
+      <tr><td class="bull"><strong>NVDA</strong></td><td>$199.00</td><td>~flat</td><td>$201.60</td><td class="pct-bull">+1.3%</td><td>Modest sympathetic on MU; $4.8T mkt cap</td></tr>
+      <tr><td class="bull"><strong>SOFI</strong></td><td>$17.31</td><td class="pct-bull">+3.44%</td><td>unavailable</td><td>—</td><td>Strong with KRE banks (Fed stress tests)</td></tr>
+      <tr><td class="bull"><strong>AMD</strong></td><td>$519.74</td><td class="pct-bull">+2.09%</td><td>unavailable</td><td>—</td><td>Semi strength; should gap today on MU catalyst</td></tr>
+      <tr><td class="bear"><strong>PLTR</strong></td><td>$113.50</td><td class="pct-bear">-5.53%</td><td>unavailable</td><td>—</td><td>⚠️ Significant drop; explains SHLD ETF drag</td></tr>
+      <tr><td class="bear"><strong>MARA</strong></td><td>$14.00</td><td class="pct-bear">-0.21%</td><td>unavailable</td><td>—</td><td>Flat; BTC below $60K headwind</td></tr>
+      <tr><td class="bear"><strong>COIN</strong></td><td>$150.11</td><td class="pct-bear">-4.38%</td><td>unavailable</td><td>—</td><td>Crypto sell-off; IBIT -3.53%</td></tr>
+      <tr><td class="bull"><strong>SNDK</strong></td><td>$1,914.46</td><td class="pct-bear">-4.64%</td><td>$2,215.35</td><td class="pct-bull">+15.72%</td><td>MU earnings read-through; vol 474K</td></tr>
+      <tr><td class="bull"><strong>META</strong></td><td>$557.67</td><td class="pct-bear">-0.81%</td><td>unavailable</td><td>—</td><td>TODAY CATALYST: QCOM named META as custom silicon partner</td></tr>
+      <tr><td class="bull"><strong>AMZN</strong></td><td>$234.27</td><td class="pct-bull">+0.74%</td><td>unavailable</td><td>—</td><td>Modest; cloud AI demand tailwind</td></tr>
+    </table>
+    <div style="font-size:11px; color:var(--muted); margin-top:6px;">Session data: TV MCP batch_run (Jun 24 close). Pre-market: stockanalysis.com ~08:00 ET. Analyst actions/8-Ks this morning: none confirmed via pull.</div>
+  </div>
+</div>
+
+<!-- TODAY'S SCHEDULE -->
+<h2>📅 TODAY'S SCHEDULE — June 25, 2026</h2>
+<div class="section">
+  <div class="section-body">
+    <table class="sched-row">
+      <tr><th>Time ET</th><th>Event</th><th>Consensus</th><th>Market Impact</th></tr>
+      <tr><td>08:30 AM</td><td><strong style="color:var(--red);">⚠️ PCE Price Index (May)</strong></td><td>Headline +4.1% YoY (prior +3.8%); Core +3.3% YoY</td><td>HIGH — primary risk. Hot → rate hike fears → XHB, TLT, XLU selloff. SIZE JETS/XHB AFTER PRINT.</td></tr>
+      <tr><td>08:30 AM</td><td>Core PCE MoM</td><td>+0.37% (prior +0.24%)</td><td>Accelerating MoM is concerning for Fed</td></tr>
+      <tr><td>TBD</td><td>Fed Speakers</td><td>—</td><td>Post-PCE commentary could amplify rate move</td></tr>
+      <tr><td>BMO/AMC</td><td>Major Earnings</td><td>MU already reported AH Jun 24</td><td>No major earnings today; focus is macro</td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- AVOIDS -->
+<h2>🚫 ETFs / STOCKS TO AVOID</h2>
+<div class="section">
+  <div class="section-body">
+    <table>
+      <tr><th>Ticker</th><th>Reason</th><th>Conviction</th></tr>
+      <tr><td class="bear"><strong>GLD, GDX, GDXJ, SLV</strong></td><td>Historic multi-session precious metals crash; safe-haven bid dead on Hormuz reopening</td><td class="conv-high">🔴 AVOID</td></tr>
+      <tr><td class="bear"><strong>IBIT, WGMI, COIN, MARA</strong></td><td>BTC below $60K; crypto environment broadly negative</td><td class="conv-high">🔴 AVOID</td></tr>
+      <tr><td class="bear"><strong>TSLA</strong></td><td>-4.35% prior session; no clear reversal catalyst identified</td><td class="conv-high">🔴 AVOID</td></tr>
+      <tr><td class="bear"><strong>PLTR</strong></td><td>-5.53% prior session; SHLD ETF drag</td><td class="conv-high">🔴 AVOID</td></tr>
+      <tr><td class="bear"><strong>XLE, XOP</strong></td><td>Oil falling on Hormuz; energy fundamentals negative near-term</td><td class="conv-high">🔴 AVOID</td></tr>
+      <tr><td class="bear"><strong>KWEB, BABA</strong></td><td>Anthropic accusation + geopolitical escalation risk (potential sanctions)</td><td class="conv-high">🔴 AVOID</td></tr>
+      <tr><td class="bear"><strong>COPX, XME, REMX</strong></td><td>Industrial metals theme-wide breakdown alongside precious metals</td><td class="conv-high">🔴 AVOID</td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- RISK EVENTS -->
+<div class="risk-box">
+  <div class="risk-title">⚡ KEY RISK EVENTS</div>
+  <div style="margin-top:4px;"><strong>1. PCE at 8:30 AM (PRIMARY):</strong> +4.1% YoY expected (accelerating). Hot print → rate hike repricing → XHB, TLT, XLU at risk. AI/semi names (MU, SMH) have earnings-catalyst buffer. <strong>SIZE JETS AND XHB AFTER 8:30 PRINT.</strong></div>
+  <div style="margin-top:6px;"><strong>2. Gap-and-fail risk:</strong> After +10-17% overnight moves (MU, SNDK, QCOM), early profit-taking by weak holders is real. Use open range breakout entries (confirm first 5-min bar), NOT market orders at open bell.</div>
+  <div style="margin-top:6px;"><strong>3. QCOM pre-market data uncertainty:</strong> Conflicting prices found ($203.01 vs $232.17). Use only confirmed entry above $218-220; verify via broker before any QCOM trade.</div>
+  <div style="margin-top:6px;"><strong>4. DRAM volume anomaly:</strong> Prior scan flagged 82M shares — possible ticker mapping error. Monitor DRAM at open before committing to size.</div>
+</div>
+
+<!-- ASSUMPTION AUDIT -->
+<h2>🔍 ASSUMPTION AUDIT</h2>
+<div class="section">
+  <div class="section-body">
+    <div class="audit-item">TV MCP price method: <span>batch_run get_ohlcv (all 56 ETFs). quote_get tried but returned same prior close. All TV MCP numbers = June 24 session close.</span></div>
+    <div class="audit-item">Pre-market prices: <span>Exclusively from stockanalysis.com WebFetch (~08:00 ET). NVDA $201.60 also from web_search.</span></div>
+    <div class="audit-item">Chrome MCP: <span>UNAVAILABLE — gap discovery limited to top-20 %-sort; liquid names may be missed. Yahoo options skipped.</span></div>
+    <div class="audit-item">Finviz Elite: <span>UNAVAILABLE — public feed only. No ticker-filtered news.</span></div>
+    <div class="audit-item">Options flow: <span>NO confirmed block data. All flow commentary labeled "price-action inference only."</span></div>
+    <div class="audit-item">QCOM pre-market: <span>⚠️ CONFLICTING DATA — $203.01 and $232.17 both found in web_search. Using $232.17 as consistent with AH $222.62 extension. Verify manually.</span></div>
+    <div class="audit-item">XHB dual catalyst: <span>Congress Affordable Housing Act (Reuters, prior evening scan) + Berkshire/TMHC $6.8B (web_search). Both bullish. HOT PCE at 8:30 could reverse XHB trade.</span></div>
+    <div class="audit-item">TECH catalyst: <span>Confirmed via GuruFocus + GlobeBankingAndFinance. Merck KGaA $73/sh $11.3B deal.</span></div>
+    <div class="audit-item">Quantum catalysts: <span>EOs signed June 22. Stocks already ran June 22-23. QTUM -1.08% June 24 = possible buy-news-sell-off. Not a fresh catalyst today.</span></div>
+    <div class="audit-item">SNDK read-through: <span>Pre-market vol 474K is below institutional threshold for a $283B cap stock. Confirm open volume before committing size.</span></div>
+    <div class="audit-item">UNCLASSIFIED: <span>WEN (Wendy's meme stock) — no clean ETF bucket.</span></div>
+    <div class="audit-item">Numbers flagged unavailable: <span>QCOM June 25 pre-market (conflicting); all ETF pre-market prices (TV MCP returns prior session only); personal watchlist pre-market except SNDK and NVDA.</span></div>
+    <div class="audit-item">Wire scoops paywall: <span>Bloomberg, WSJ confirmed via search aggregators; direct article content paywalled. Facts cross-checked vs multiple sources.</span></div>
+  </div>
+</div>
+
+<div style="text-align:center; color:var(--muted); font-size:11px; margin-top:20px; padding-bottom:20px;">
+  Pre-Market Catalyst Report v7.7 HYBRID · June 25, 2026 · ~08:05 ET<br>
+  Sources: stockanalysis.com · finviz.com/news (public) · web_search · TV MCP batch_run · SEC EDGAR · Reuters · Bloomberg (aggregated via search)<br>
+  <a href="https://nkuy36.github.io/trading-dashboards/">trading-dashboards index</a>
+</div>
+
+</div><!-- end container -->
+</body>
+</html>
