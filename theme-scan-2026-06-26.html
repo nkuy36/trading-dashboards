@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Daily Theme Scanner — 2026-06-26</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0e17;
+    --bg2: #0f1623;
+    --bg3: #151d2e;
+    --border: #1e2d45;
+    --text: #e2e8f0;
+    --text-muted: #7a8aa0;
+    --text-dim: #4a5568;
+    --high: #10b981;
+    --medium: #f59e0b;
+    --low: #ef4444;
+    --accent: #3b82f6;
+    --accent2: #8b5cf6;
+    --link: #60a5fa;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    line-height: 1.7;
+    padding: 0;
+  }
+  .header {
+    background: linear-gradient(135deg, #0a0e17 0%, #0f1a2e 50%, #091420 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 32px 48px 24px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+  .header h1 {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+  .header h1 span { color: var(--accent); }
+  .header .date {
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-top: 4px;
+    letter-spacing: 0.1em;
+  }
+  .header .ticker-bar {
+    font-size: 11px;
+    color: var(--high);
+    display: flex;
+    gap: 16px;
+    margin-top: 12px;
+  }
+  .header .ticker-bar span { color: var(--text-muted); }
+  .container { max-width: 1100px; margin: 0 auto; padding: 32px 48px 64px; }
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 40px 0 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border);
+  }
+  .section-header h2 {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--text-muted);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+  }
+  .section-header .count {
+    background: var(--bg3);
+    color: var(--accent);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    padding: 1px 6px;
+    font-size: 10px;
+  }
+  .card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 24px;
+    margin-bottom: 16px;
+    transition: border-color 0.2s;
+  }
+  .card:hover { border-color: #2a3f5f; }
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 16px;
+    gap: 16px;
+  }
+  .card-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text);
+  }
+  .badges { display: flex; gap: 8px; flex-wrap: wrap; flex-shrink: 0; }
+  .badge {
+    font-size: 10px;
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: 3px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  .badge-high { background: rgba(16,185,129,0.15); color: var(--high); border: 1px solid rgba(16,185,129,0.3); }
+  .badge-medium { background: rgba(245,158,11,0.15); color: var(--medium); border: 1px solid rgba(245,158,11,0.3); }
+  .badge-low { background: rgba(239,68,68,0.15); color: var(--low); border: 1px solid rgba(239,68,68,0.3); }
+  .badge-early { background: rgba(59,130,246,0.15); color: #93c5fd; border: 1px solid rgba(59,130,246,0.3); }
+  .badge-developing { background: rgba(139,92,246,0.15); color: #c4b5fd; border: 1px solid rgba(139,92,246,0.3); }
+  .badge-maturing { background: rgba(245,158,11,0.15); color: #fcd34d; border: 1px solid rgba(245,158,11,0.3); }
+  .badge-strong { background: rgba(16,185,129,0.15); color: var(--high); border: 1px solid rgba(16,185,129,0.3); }
+  .badge-moderate { background: rgba(245,158,11,0.15); color: var(--medium); border: 1px solid rgba(245,158,11,0.3); }
+  .badge-weak { background: rgba(239,68,68,0.15); color: var(--low); border: 1px solid rgba(239,68,68,0.3); }
+  .meta-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 12px;
+    margin: 16px 0;
+  }
+  .meta-item { }
+  .meta-label {
+    font-size: 9px;
+    color: var(--text-dim);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+  .meta-value {
+    font-size: 12px;
+    color: var(--text);
+  }
+  .tickers {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .ticker {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    color: var(--accent);
+    padding: 2px 7px;
+    border-radius: 3px;
+    font-size: 11px;
+    font-weight: 600;
+  }
+  .ticker.negative { color: var(--low); border-color: rgba(239,68,68,0.3); background: rgba(239,68,68,0.05); }
+  .ticker.secondary { color: var(--text-muted); }
+  .divider { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
+  .evidence {
+    background: var(--bg3);
+    border-left: 3px solid var(--accent);
+    padding: 12px 16px;
+    margin: 14px 0;
+    border-radius: 0 4px 4px 0;
+  }
+  .evidence ul { list-style: none; }
+  .evidence li { 
+    padding: 4px 0;
+    color: var(--text-muted);
+    font-size: 12px;
+  }
+  .evidence li::before { content: "→ "; color: var(--accent); }
+  .summary {
+    font-size: 13px;
+    color: #b0bec5;
+    line-height: 1.8;
+    margin-top: 14px;
+    padding-top: 14px;
+    border-top: 1px solid var(--border);
+  }
+  .trade-idea {
+    background: rgba(16,185,129,0.05);
+    border: 1px solid rgba(16,185,129,0.2);
+    border-radius: 4px;
+    padding: 10px 14px;
+    margin: 12px 0;
+    font-size: 12px;
+    color: #a7f3d0;
+  }
+  .trade-idea::before { content: "⚡ TRADE IDEA: "; color: var(--high); font-weight: 700; font-size: 10px; }
+  a { color: var(--link); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  .action-box {
+    background: var(--bg2);
+    border: 1px solid var(--accent);
+    border-radius: 6px;
+    padding: 28px;
+    margin-top: 40px;
+  }
+  .action-box h3 {
+    font-size: 12px;
+    color: var(--accent);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+  }
+  .action-section { margin-bottom: 24px; }
+  .action-section h4 {
+    font-size: 10px;
+    color: var(--text-muted);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  .action-ticker {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .action-ticker:last-child { border-bottom: none; }
+  .action-num {
+    color: var(--accent);
+    font-weight: 700;
+    font-size: 18px;
+    line-height: 1;
+    margin-top: 2px;
+    min-width: 20px;
+  }
+  .action-ticker-name {
+    color: var(--high);
+    font-weight: 700;
+    font-size: 15px;
+    margin-bottom: 2px;
+  }
+  .action-ticker-desc { color: var(--text-muted); font-size: 12px; }
+  .dates-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+  }
+  .dates-table th {
+    text-align: left;
+    font-size: 9px;
+    color: var(--text-dim);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    padding: 6px 12px;
+    border-bottom: 1px solid var(--border);
+  }
+  .dates-table td {
+    padding: 8px 12px;
+    border-bottom: 1px solid rgba(30,45,69,0.5);
+    font-size: 12px;
+    color: var(--text-muted);
+    vertical-align: top;
+  }
+  .dates-table tr:last-child td { border-bottom: none; }
+  .dates-table .date-col { color: var(--medium); white-space: nowrap; }
+  .dates-table .key-event { color: var(--text); font-weight: 600; }
+  .footer {
+    margin-top: 48px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+    color: var(--text-dim);
+    font-size: 10px;
+    letter-spacing: 0.05em;
+  }
+  .signal-type {
+    display: inline-block;
+    background: rgba(139,92,246,0.1);
+    border: 1px solid rgba(139,92,246,0.3);
+    color: #c4b5fd;
+    padding: 2px 8px;
+    border-radius: 3px;
+    font-size: 10px;
+    margin-right: 6px;
+  }
+</style>
+</head>
+<body>
+<div class="header">
+  <div class="header-top">
+    <div>
+      <h1>📊 Daily Theme <span>Scanner</span></h1>
+      <div class="date">PRE-MARKET RESEARCH BRIEF — FRIDAY, JUNE 26, 2026</div>
+    </div>
+    <div style="text-align:right;">
+      <div style="font-size:10px;color:var(--text-muted);letter-spacing:0.1em;">MARKET STATUS</div>
+      <div style="font-size:12px;color:var(--low);margin-top:4px;">NASDAQ FUTURES ▼ 0.89%</div>
+      <div style="font-size:11px;color:var(--text-muted);">S&P 500 ▼ 0.44% | DOW ▲ 0.21%</div>
+    </div>
+  </div>
+  <div class="ticker-bar">
+    <span>FOCUS:</span>
+    MU ▼4.5% &nbsp;|&nbsp; ON ▼9.0% &nbsp;|&nbsp; NKE (Jun 30) &nbsp;|&nbsp; PCE (Jun 27) &nbsp;|&nbsp; ORCL RPO $638B &nbsp;|&nbsp; BRENT ▼ $103
+  </div>
+</div>
+
+<div class="container">
+
+<!-- ===================== EMERGING NARRATIVES ===================== -->
+<div class="section-header">
+  <h2>Emerging Narratives</h2>
+  <span class="count">5</span>
+</div>
+
+<!-- Narrative 1 -->
+<div class="card">
+  <div class="card-header">
+    <div class="card-title">1. AI Memory Supercycle — Structural, Not Cyclical</div>
+    <div class="badges">
+      <span class="badge badge-high">HIGH</span>
+      <span class="badge badge-developing">DEVELOPING</span>
+    </div>
+  </div>
+  <div class="evidence">
+    <ul>
+      <li>Micron (MU) reported record $41.46B revenue (+346% YoY), guiding Q4 to ~$50B — $7B above consensus. HBM supply sold out through CY2026. BofA PT $1,500; Needham PT $1,550. <a href="https://www.bloomberg.com/news/articles/2026-06-24/micron-sales-forecast-tops-estimates-on-insatiable-memory-demand">[Bloomberg]</a></li>
+      <li>SK Hynix confirmed full sell-out of DRAM, NAND, and HBM through 2026. All three major suppliers supply-constrained into 2027. <a href="https://www.notebookcheck.net/SK-hynix-sells-out-its-DRAM-NAND-and-HBM-chip-supply-to-Nvidia-through-2026-as-AI-demand-outpaces-Samsung-and-Micron-s-capacity.1151402.0.html">[Notebookcheck]</a></li>
+      <li>Hyperscalers guiding $700B+ in 2026 capex (+62% YoY). Data center capacity gap: 11 GW today, 45 GW cumulative shortfall by 2028. <a href="https://finance.yahoo.com/sectors/technology/articles/hyperscalers-hit-700-billion-2026-111243744.html">[Yahoo Finance]</a></li>
+    </ul>
+  </div>
+  <div class="meta-grid">
+    <div class="meta-item">
+      <div class="meta-label">Primary Beneficiaries</div>
+      <div class="tickers"><span class="ticker">MU</span><span class="ticker">NVDA</span><span class="ticker">CRWV</span></div>
+    </div>
+    <div class="meta-item">
+      <div class="meta-label">Secondary Beneficiaries</div>
+      <div class="tickers"><span class="ticker secondary">AMD</span><span class="ticker secondary">AMAT</span><span class="ticker secondary">LRCX</span><span class="ticker secondary">WDC</span><span class="ticker secondary">STX</span></div>
+    </div>
+    <div class="meta-item">
+      <div class="meta-label">Losers / Disrupted</div>
+      <div class="tickers"><span class="ticker negative">PC OEMs</span><span class="ticker negative">cost-sensitive cloud</span></div>
+    </div>
+    <div class="meta-item">
+      <div class="meta-label">Earnings Impact Timeline</div>
+      <div class="meta-value">Immediate — 1-2 quarters. HBM4 ASPs locked through 2027.</div>
+    </div>
+  </div>
+  <div class="summary">This is not a cyclical inventory bounce — it's a secular rerate. Micron's $41.5B quarter and $50B guide obliterated the sell-side model. The key signal: management explicitly disclosed HBM is sold out through CY2026 and Nvidia has certified Micron for HBM4. The market initially surged +16% on earnings, then pulled back ~4.5% today — classic profit-taking after a stock that's tripled. The read-through is clearest for equipment suppliers (AMAT, LRCX) and data center REITs (EQIX, DLR) where the capacity constraint is structural.</div>
+</div>
+
+<!-- Narrative 2 -->
+<div class="card">
+  <div class="card-header">
+    <div class="card-title">2. Physical AI / Edge Inference Buildout</div>
+    <div class="badges">
+      <span class="badge badge-high">HIGH</span>
+      <span class="badge badge-early">EARLY</span>
+    </div>
+  </div>
+  <div class="evidence">
+    <ul>
+      <li>Jensen Huang declared "the ChatGPT moment for physical AI is here"; NVIDIA Jetson Thor (7.5x perf leap) adopted by Amazon Robotics, Boston Dynamics, Figure, Caterpillar. <a href="https://247wallst.com/investing/2026/05/18/jensen-huang-calls-it-the-next-wave-of-ai-5-etfs-built-for-the-embodied-ai-era/">[247 Wall St.]</a></li>
+      <li>ON Semiconductor acquires Synaptics for $7B all-stock to build Edge AI + Physical AI compute franchise, expanding TAM to $243B by 2030. <a href="https://www.onsemi.com/company/news-media/press-announcements/en/onsemi-to-acquire-synaptics-to-enable-the-next-generation-of-intelligent-systems-for-physical-ai">[onsemi.com]</a></li>
+      <li>Cognex (CGNX) shipping new NVIDIA/Qualcomm AI inference platforms. Ambarella: 70%+ of Q1 FY26 revenue from edge AI, up 58% YoY. <a href="https://247wallst.com/investing/2026/05/29/5-stocks-with-real-revenue-from-physical-ai-today-not-2030-promises/">[247 Wall St.]</a></li>
+    </ul>
+  </div>
+  <div class="meta-grid">
+    <div class="meta-item">
+      <div class="meta-label">Primary Beneficiaries</div>
+      <div class="tickers"><span class="ticker">NVDA</span><span class="ticker">ON</span><span class="ticker">CGNX</span><span class="ticker">TER</span></div>
+    </div>
+    <div class="meta-item">
+      <div class="meta-label">Secondary Beneficiaries</div>
+      <div class="tickers"><span class="ticker secondary">QCOM</span><span class="ticker secondary">AMBA</span><span class="ticker secondary">ISRG</span></div>
+    </div>
+    <div class="meta-item">
+      <div class="meta-label">Losers / Disrupted</div>
+      <div class="tickers"><span class="ticker negative">Legacy PLC vendors</span></div>
+    </div>
+    <div class="meta-item">
+      <div class="meta-label">Earnings Impact Timeline</div>
+      <div class="meta-value">2-4 quarters. Revenue real but early. Commentary amplifies Q2/Q3 cycle.</div>
+    </div>
+  </div>
+  <div class="summary">Physical AI is the transition from data-center AI to AI that acts in the physical world — robots, autonomous vehicles, smart cameras, surgical systems. ON Semi's $7B acquisition of Synaptics is strategic confirmation that edge silicon is the next battleground. ON fell 9% on the deal announcement (dilution fear + all-stock), potentially creating an entry point. Ambarella (AMBA) is the stealth beneficiary: 70%+ of Q1 FY26 revenue from edge AI, up 58% YoY, yet still trading at a fraction of NVDA multiples.</div>
+</div>
+
+<!-- Narrative 3 -->
+<div class="card">
+  <div class="card-header">
+    <div class="card-title">3. US-Iran Ceasefire → Energy & Airline Rotation</div>
+    <div class="badges">
+      <span class="badge badge-medium">MEDIUM</span>
+      <span class="badge badge-developing">DEVELOPING</span>
+    </div>
+  </div>
+  <div class="evidence">
+    <ul>
+      <li>US-Iran preliminary MOU signed June 15; Strait of Hormuz ceasefire declared. Brent fell from $115 to ~$103. Sanctions on Iranian oil partially waived. <a href="https://www.npr.org/2026/06/15/nx-s1-5858590/us-iran-deal-updates">[NPR]</a> <a href="https://www.cnbc.com/2026/06/22/us-iran-roadmap-final-deal-switzerland-talks-lebanon-deconfliction.html">[CNBC]</a></li>
+      <li>60-day final deal window opened. Nuclear enrichment + Israel-Lebanon tensions remain unresolved — key spoiler risks. <a href="https://www.aljazeera.com/news/2026/6/23/what-the-us-and-iran-agreed-and-disagreed-on-first-day-of-talks">[Al Jazeera]</a></li>
+      <li>Oil hit lowest level since before the war on June 24. Goldman Sachs published dedicated deal oil price analysis. <a href="https://www.goldmansachs.com/insights/goldman-sachs-exchanges/how-the-us-iran-deal-could-affect-oil-prices">[Goldman Sachs]</a></li>
+    </ul>
+  </div>
+  <div class="meta-grid">
+    <div class="meta-item">
+      <div class="meta-label">Primary Beneficiaries</div>
+      <div class="tickers"><span class="ticker">AAL</span><span class="ticker">DAL</span><span class="ticker">UAL</span><span class="ticker">MPC</span><span class="ticker">PSX</span></div>
+    </div>
+    <div class="meta-item">
+      <div class="meta-label">Losers / Disrupted</div>
+      <div class="tickers"><span class="ticker negative">XOM</span><span class="ticker negative">COP</span><span class="ticker negative">OXY</span><span class="ticker negative">RTX</span><span class="ticker negative">LMT</span></div>
+    </div>
+    <div class="meta-item">
+      <div class="meta-label">Earnings Impact Timeline</div>
+      <div class="meta-value">3-8 weeks. Airline fuel cost tailwind appears in Q3 guidance.</div>
+    </div>
+  </div>
+  <div class="summary">The Hormuz ceasefire is the single biggest macro event of Q2 2026. Crude's $12 decline from peak is obvious; the less-obvious trade is the downstream read-through — airlines benefit from lower jet fuel (roughly 20-25% of operating cost). The 60-day countdown for a final deal creates an event-driven window: if talks break down (Netanyahu's Lebanon stance is the known spoiler), oil spikes and you get a reversal. Conviction is MEDIUM because multiple unresolved tripwires remain.</div>
+</div>
+
+<!-- Narrative 4 -->
+<div class="card">
+  <div class="card-header">
+    <div class="card-title">4. Hawkish Fed Reset — Rate Hike Repricing</div>
+    <div class="badges">
+      <span class="badge badge-high">HIGH</span>
+      <span class="badge badge-early">EARLY</span>
+    </div>
+  </div>
+  <div class="evidence">
+    <ul>
+      <li>New Fed Chair Warsh's debut FOMC (June 17): held rates at 3.50-3.75% but 9 of 18 officials projected a 2026 hike. Median year-end dot 3.8% (from 3.4%). S&P 500 worst new-Fed-Chair debut since 1994. <a href="https://finance.yahoo.com/economy/policy/articles/warsh-hawkish-shock-9-fed-180221394.html">[Yahoo Finance]</a></li>
+      <li>2-year Treasury yields jumped 16 bps to 4.21% — highest in over a year. Persistent CPI running ~4.2% YoY. <a href="https://www.cnn.com/2026/06/17/business/live-news/federal-reserve-interest-rate-kevin-warsh">[CNN]</a></li>
+      <li>Market pricing first hike as early as October 2026; July 29 FOMC underpriced as live risk event. <a href="https://www.npr.org/2026/06/17/nx-s1-5860084/fed-chief-warsh-first-fomc-meeting">[NPR]</a></li>
+    </ul>
+  </div>
+  <div class="meta-grid">
+    <div class="meta-item">
+      <div class="meta-label">Primary Beneficiaries</div>
+      <div class="tickers"><span class="ticker">JPM</span><span class="ticker">BAC</span><span class="ticker">GS</span><span class="ticker">BRK</span><span class="ticker">KRE</span></div>
+    </div>
+    <div class="meta-item">
+      <div class="meta-label">Losers / Disrupted</div>
+      <div class="tickers"><span class="ticker negative">Long-duration growth</span><span class="ticker negative">REITs</span><span class="ticker negative">Utilities</span></div>
+    </div>
+    <div class="meta-item">
+      <div class="meta-label">Earnings Impact Timeline</div>
+      <div class="meta-value">Immediate on positioning. Bank Q2 earnings mid-July are first test.</div>
+    </div>
+  </div>
+  <div class="summary">Warsh's debut was a regime change, not an iteration. The removal of the easing bias and shift from "cuts" to "hike" in 9 dots is a structural repricing of the risk-free rate. Markets have not fully adjusted — rate-sensitive sectors (utilities, REITs) still reflect the prior Powell dovish baseline. Warsh has explicitly rejected forward guidance, making each meeting a live decision. Most contrarian opportunity: bank stocks likely underpriced for a higher-for-longer + NIM expansion scenario heading into Q2 earnings.</div>
+</div>
+
+<!-- Narrative 5 -->
+<div class="card">
+  <div class="card-header">
+    <div class="card-title">5. Tariff-Driven Margin Pressure — Consumer Brand Inflection</div>
+    <div class="badges">
+      <span class="badge badge-medium">MEDIUM</span>
+      <span class="badge badge-maturing">MATURING</span>
+    </div>
+  </div>
+  <div class="evidence">
+    <ul>
+      <li>Nike (NKE) guided Q4 gross margin -25 to -75 bps including ~250 bps tariff headwind; Greater China -20%. Q4 FY26 report due June 30. <a href="https://www.investing.com/analysis/nike-earnings-continued-lack-of-revenue-growth-is-particularly-disheartening-200677995">[Investing.com]</a></li>
+      <li>Procter & Gamble raised prices on 25% of products due to $1B annual tariff impact. GM estimated $3.1B hit in 2025. <a href="https://www.cnbc.com/2026/04/03/trump-tariffs-trade-war-impact.html">[CNBC]</a></li>
+      <li>53% of executives expect increased reshoring due to tariffs; US-footprint capex names getting tailwind. <a href="https://www.morganlewis.com/pubs/2026/01/us-international-trade-and-investment-key-shifts-in-2025-and-what-businesses-know-for-2026">[Morgan Lewis]</a></li>
+    </ul>
+  </div>
+  <div class="meta-grid">
+    <div class="meta-item">
+      <div class="meta-label">Primary Beneficiaries</div>
+      <div class="tickers"><span class="ticker">NUE</span><span class="ticker">X</span><span class="ticker">CARR</span><span class="ticker">RXO</span></div>
+    </div>
+    <div class="meta-item">
+      <div class="meta-label">Losers / Disrupted</div>
+      <div class="tickers"><span class="ticker negative">NKE</span><span class="ticker negative">PG</span><span class="ticker negative">GM</span><span class="ticker negative">STZ</span></div>
+    </div>
+    <div class="meta-item">
+      <div class="meta-label">Earnings Impact Timeline</div>
+      <div class="meta-value">Ongoing — Nike June 30 is the key read-through.</div>
+    </div>
+  </div>
+  <div class="summary">The tariff narrative is maturing (approaching consensus), but stock-level differentiation is still early. Nike's June 30 report is the most important consumer earnings event of the next week. Management's guidance that Q2 FY2027 is the last quarter of material tariff headwind creates a potential relief-rally setup if confirmed. The more interesting trade: reshoring beneficiaries remain under-owned relative to the size of the structural shift underway.</div>
+</div>
+
+
+<!-- ===================== EARNINGS SIGNALS ===================== -->
+<div class="section-header">
+  <h2>Earnings Signals</h2>
+  <span class="count">5</span>
+</div>
+
+<!-- Signal 1 -->
+<div class="card">
+  <div class="card-header">
+    <div class="card-title">Signal 1: MU Blockbuster Beat → HBM4 Rerate Event</div>
+    <div class="badges"><span class="badge badge-strong">STRONG</span></div>
+  </div>
+  <div style="margin-bottom:12px;">
+    <span class="signal-type">UNUSUAL GUIDANCE</span>
+    <span style="font-size:11px;color:var(--text-muted);">MU / NVDA, AMD, AMAT, LRCX (read-throughs)</span>
+  </div>
+  <p style="color:var(--text-muted);font-size:12px;"><strong style="color:var(--text);">Implication:</strong> Micron's $50B Q4 guide (vs. $43B consensus) implies AI memory demand compounding 30-40% faster than the sell-side can model. Forces rerate of the entire memory supply chain. SK Hynix, AMAT, LRCX are the most direct read-throughs.</p>
+  <div class="trade-idea">MU post-earnings pullback (-4.5% today) may be a buy-the-dip on a structurally rerated stock. AMAT and LRCX lag MU by 1-2 quarters on earnings — set alerts for their next reports.</div>
+  <div class="summary">The magnitude of the Micron beat is the story — $5.7B above consensus revenue and $7B above consensus in the forward guide. When management explicitly says HBM is sold out through December 2026 and Nvidia has certified them for HBM4, you have a multi-year pricing tailwind. Post-earnings pullback after a +16% move is a known pattern; the dip should be evaluated on a 3-6 month horizon. <a href="https://www.bloomberg.com/news/articles/2026-06-24/micron-sales-forecast-tops-estimates-on-insatiable-memory-demand">[Bloomberg]</a> <a href="https://www.cnbc.com/2026/06/25/micron-stock-3q-earnings-memory.html">[CNBC]</a></div>
+</div>
+
+<!-- Signal 2 -->
+<div class="card">
+  <div class="card-header">
+    <div class="card-title">Signal 2: Oracle $638B RPO Backlog — AI Cloud De-risked</div>
+    <div class="badges"><span class="badge badge-strong">STRONG</span></div>
+  </div>
+  <div style="margin-bottom:12px;">
+    <span class="signal-type">LANGUAGE SHIFT</span>
+    <span class="signal-type">UNUSUAL GUIDANCE</span>
+    <span style="font-size:11px;color:var(--text-muted);">ORCL / MSFT, AMZN, GOOGL (read-throughs)</span>
+  </div>
+  <p style="color:var(--text-muted);font-size:12px;"><strong style="color:var(--text);">Implication:</strong> Oracle's remaining performance obligations grew $85B in Q4 alone (to $638B total). Cloud infrastructure +93% YoY. RPO is multi-year contracted commitments — de-risks Oracle's growth trajectory into 2028.</p>
+  <div class="trade-idea">ORCL trades as legacy enterprise software but RPO data argues for rerate as AI infrastructure play. Compare to MSFT Azure and AMZN AWS multiples — ORCL may be significantly undervalued on this basis.</div>
+  <div class="summary">Oracle's Q4 2026 print was the quiet monster of the earnings cycle. Revenue $19.2B (+21%), cloud infra $5.8B (+93%), $638B backlog. FY2027 guide of $90B revenue with Q1 at 27-29% cloud growth means Oracle is accelerating, not decelerating. The RPO signal is critical: these are multi-year, contracted commitments from hyperscalers — not speculative projections. <a href="https://investor.oracle.com/investor-news/news-details/2026/Oracle-Announces-Record-Q4-and-FY-2026-Results-Driven-by-Cloud-Infrastructure--Cloud-Applications/default.aspx">[Oracle IR]</a> <a href="https://erp.today/oracle-q4-2026-earnings-ai-cloud-backlog-funding/">[ERP Today]</a></div>
+</div>
+
+<!-- Signal 3 -->
+<div class="card">
+  <div class="card-header">
+    <div class="card-title">Signal 3: FedEx Beats But Freight Warns — Two-Speed Economy</div>
+    <div class="badges"><span class="badge badge-moderate">MODERATE</span></div>
+  </div>
+  <div style="margin-bottom:12px;">
+    <span class="signal-type">SECTOR READ-THROUGH</span>
+    <span style="font-size:11px;color:var(--text-muted);">FDX / UPS, XPO, ODFL (peers)</span>
+  </div>
+  <p style="color:var(--text-muted);font-size:12px;"><strong style="color:var(--text);">Implication:</strong> FedEx beat Q4 ($6.31 EPS vs. $5.92 est.) but FedEx Freight revenue -5% YoY, operating income -24%. B2C parcel (e-commerce) is healthy; B2B freight (industrial) remains soft. Economy is two-speed.</p>
+  <div class="trade-idea">UPS is more B2B freight-exposed than FedEx — FDX freight weakness suggests elevated UPS Q2 guide risk. Pure-play e-commerce logistics benefits from consumer package strength.</div>
+  <div class="summary">FedEx Freight's -24% operating income decline is the canary for industrial demand. The bifurcation between e-commerce strength and freight weakness tells you the economy is running at two speeds: AI-driven consumer spending healthy; old-economy industrial activity sluggish. This divergence should inform sector allocation through the July earnings season. <a href="https://www.investing.com/news/company-news/fedex-q4-fy26-slides-beats-estimates-but-shares-fall-on-outlook-93CH-4756936">[Investing.com]</a></div>
+</div>
+
+<!-- Signal 4 -->
+<div class="card">
+  <div class="card-header">
+    <div class="card-title">Signal 4: AI Infrastructure Confirmation Across Multiple Reporters</div>
+    <div class="badges"><span class="badge badge-strong">STRONG</span></div>
+  </div>
+  <div style="margin-bottom:12px;">
+    <span class="signal-type">RECURRING THEME</span>
+    <span style="font-size:11px;color:var(--text-muted);">NVDA, ORCL, CRWV, DELL, SNOW, HPE</span>
+  </div>
+  <p style="color:var(--text-muted);font-size:12px;"><strong style="color:var(--text);">Implication:</strong> NVDA $81.6B (+85%), Dell +32.8% single session, Snowflake +36%, HPE +20%, Oracle cloud infra +93%. Synchronized demand signal across the entire AI infrastructure stack — enterprise AI adoption has crossed "prove it" into deployment phase.</p>
+  <div class="trade-idea">Consensus has caught up to GPU demand (NVDA at peak multiple). Second-order beneficiaries — power infra (VST, CEG, TALEN), cooling (VRT, SMCI), fiber (CCOI, LITE) — have not received the same rerate.</div>
+  <div class="summary">When Dell, Snowflake, HPE, Oracle, and Micron all confirm AI infrastructure demand acceleration in the same earnings cycle, the signal is unambiguous. The more interesting research: power infrastructure and cooling are the most underpriced sub-themes. Data centers need 45+ GW of new capacity by 2028 against a current 11 GW gap. <a href="https://marketsense.substack.com/p/market-notes-june-2026">[Market Sense Substack]</a></div>
+</div>
+
+<!-- Signal 5 -->
+<div class="card">
+  <div class="card-header">
+    <div class="card-title">Signal 5: Nike Tariff Inflection Timeline Guidance</div>
+    <div class="badges"><span class="badge badge-moderate">MODERATE</span></div>
+  </div>
+  <div style="margin-bottom:12px;">
+    <span class="signal-type">LANGUAGE SHIFT</span>
+    <span style="font-size:11px;color:var(--text-muted);">NKE / ADDYY, UA, VFC, PVH (apparel peers)</span>
+  </div>
+  <p style="color:var(--text-muted);font-size:12px;"><strong style="color:var(--text);">Implication:</strong> Nike guided Q2 FY2027 as "the final quarter where higher tariffs continue to be a material YoY headwind," with gross margin expansion beginning then. Concrete timeline that could catalyze a consumer apparel group re-rating if confirmed June 30.</p>
+  <div class="trade-idea">Low bar + potential tariff refund beat + FY2027 headwind expiration guide = setup for relief rally in NKE on June 30. Key phrase to watch: "digital is still too promotional" — if absent, bullish signal.</div>
+  <div class="summary">Nike's Q4 FY26 report is the most important near-term catalyst for consumer discretionary. The stock has been punished on tariff headwinds and China weakness, but the forward framework suggests a bottom is in sight. New CFO David Denton (ex-CVS Health) brings operational credibility. Risk: Greater China worse than -20% guided. <a href="https://www.gurufocus.com/news/8928431/nike-nke-set-to-release-q4-and-fy-2026-results-on-june-30">[Gurufocus]</a></div>
+</div>
+
+
+<!-- ===================== UPCOMING CATALYSTS ===================== -->
+<div class="section-header">
+  <h2>Upcoming Catalysts</h2>
+  <span class="count">5</span>
+</div>
+
+<!-- Catalyst 1 -->
+<div class="card">
+  <div class="card-header">
+    <div class="card-title">Catalyst 1: PCE Inflation Report (May 2026 Data)</div>
+    <div class="badges"><span class="badge" style="background:rgba(239,68,68,0.15);color:#f87171;border:1px solid rgba(239,68,68,0.3);">TOMORROW</span></div>
+  </div>
+  <div class="meta-grid">
+    <div class="meta-item"><div class="meta-label">Date</div><div class="meta-value" style="color:var(--low);">June 27, 2026</div></div>
+    <div class="meta-item"><div class="meta-label">Consensus</div><div class="meta-value">Modest deceleration from 4.2% YoY core PCE</div></div>
+    <div class="meta-item"><div class="meta-label">Surprise Scenario</div><div class="meta-value">Hot &gt;4.5% → accelerates Warsh hike to September. Cool &lt;3.8% → growth stock relief rally.</div></div>
+  </div>
+  <div class="meta-item" style="margin:12px 0;">
+    <div class="meta-label">Exposed Tickers</div>
+    <div class="tickers" style="margin-top:6px;"><span class="ticker">AMZN</span><span class="ticker">META</span><span class="ticker">GOOGL</span><span class="ticker">TSLA</span><span class="ticker negative">NEE</span><span class="ticker negative">O</span><span class="ticker secondary">GLD</span></div>
+  </div>
+  <div class="summary">The May PCE report is the most proximate market catalyst in the next 24 hours. After Warsh's hawkish debut with CPI at 4.2%, any upside print creates pressure on the July 29 FOMC. The S&P 500 is already down 0.44% premarket, suggesting defensive positioning ahead of the print. A cool reading would be fuel for a relief rally in rate-sensitive growth names.</div>
+</div>
+
+<!-- Catalyst 2 -->
+<div class="card">
+  <div class="card-header">
+    <div class="card-title">Catalyst 2: Nike Q4 FY2026 Earnings</div>
+    <div class="badges"><span class="badge badge-medium">HIGH IMPACT</span></div>
+  </div>
+  <div class="meta-grid">
+    <div class="meta-item"><div class="meta-label">Date</div><div class="meta-value" style="color:var(--medium);">June 30, 2026 (after close)</div></div>
+    <div class="meta-item"><div class="meta-label">Consensus</div><div class="meta-value">Revenue -2% to -4%, GM -25 to -75 bps, China -20%</div></div>
+    <div class="meta-item"><div class="meta-label">Positioning</div><div class="meta-value">Pessimistic — low bar for positive surprise</div></div>
+    <div class="meta-item"><div class="meta-label">Surprise Scenario</div><div class="meta-value">Tariff refund windfall beats EPS; FY2027 headwind expiration reaffirmed.</div></div>
+  </div>
+  <div class="meta-item" style="margin:12px 0;">
+    <div class="meta-label">Exposed Tickers</div>
+    <div class="tickers" style="margin-top:6px;"><span class="ticker">NKE</span><span class="ticker secondary">ADDYY</span><span class="ticker secondary">UA</span><span class="ticker secondary">VFC</span><span class="ticker secondary">PVH</span><span class="ticker secondary">LULU</span></div>
+  </div>
+  <div class="summary">Nike reports June 30 with the bar set low after multiple guidance reductions. Key: not revenue but gross margin language and FY2027 tariff trajectory. A potential one-time tariff refund benefit creates a beat-and-raise setup on adjusted numbers. China is the binary risk. <a href="https://www.gurufocus.com/news/8928431/nike-nke-set-to-release-q4-and-fy-2026-results-on-june-30">[Gurufocus]</a></div>
+</div>
+
+<!-- Catalyst 3 -->
+<div class="card">
+  <div class="card-header">
+    <div class="card-title">Catalyst 3: FOMC Meeting</div>
+    <div class="badges"><span class="badge badge-high">REGIME-DEFINING</span></div>
+  </div>
+  <div class="meta-grid">
+    <div class="meta-item"><div class="meta-label">Date</div><div class="meta-value" style="color:var(--medium);">July 29, 2026</div></div>
+    <div class="meta-item"><div class="meta-label">Consensus</div><div class="meta-value">Hold at 3.50-3.75%; data-dependent language</div></div>
+    <div class="meta-item"><div class="meta-label">Positioning</div><div class="meta-value">Futures pricing hike no sooner than October — July underpriced as live risk</div></div>
+    <div class="meta-item"><div class="meta-label">Surprise Scenario</div><div class="meta-value">Explicit hike signal = 1994-style repricing. Cool CPI = growth stock relief rally.</div></div>
+  </div>
+  <div class="meta-item" style="margin:12px 0;">
+    <div class="meta-label">Exposed Tickers</div>
+    <div class="tickers" style="margin-top:6px;"><span class="ticker negative">META</span><span class="ticker negative">AMZN</span><span class="ticker negative">GOOGL</span><span class="ticker negative">NEE</span><span class="ticker">JPM</span><span class="ticker">BAC</span><span class="ticker">GS</span></div>
+  </div>
+  <div class="summary">Warsh's rejection of forward guidance means every FOMC is a live meeting. July 29 is the next inflection point. If June CPI (July 15) shows deceleration, July becomes dovish. The asymmetry: market is positioned for a hold, so the upside surprise (hike signal) is the bigger market mover. <a href="https://www.cnn.com/2026/06/17/business/live-news/federal-reserve-interest-rate-kevin-warsh">[CNN]</a></div>
+</div>
+
+<!-- Catalyst 4 -->
+<div class="card">
+  <div class="card-header">
+    <div class="card-title">Catalyst 4: Q2 2026 Earnings Season Kickoff — Big Banks</div>
+    <div class="badges"><span class="badge badge-high">HIGH IMPACT</span></div>
+  </div>
+  <div class="meta-grid">
+    <div class="meta-item"><div class="meta-label">Date</div><div class="meta-value" style="color:var(--medium);">July 14-18, 2026</div></div>
+    <div class="meta-item"><div class="meta-label">Consensus</div><div class="meta-value">Bank EPS -10% YoY; Tech EPS +43.6% YoY; S&P 500 +22% YoY</div></div>
+    <div class="meta-item"><div class="meta-label">Positioning</div><div class="meta-value">Tech extremely bullish; banks at low expectations</div></div>
+    <div class="meta-item"><div class="meta-label">Surprise Scenario</div><div class="meta-value">Banks beat on NIM expansion (Warsh tailwind); tech misses on AI capex cost inflation.</div></div>
+  </div>
+  <div class="summary">Q2 earnings season begins with banks setting the tone. Warsh's hawkish rate shift is a direct NIM tailwind — the -10% bank EPS consensus may be stale relative to the new rate environment. If banks beat and raise, financials (underowned vs. tech) get a catalyst. Mega-cap tech faces a +43.6% bar — any miss on AI-related cost inflation is a significant de-risking event. <a href="https://finance.yahoo.com/markets/stocks/articles/previewing-2026-q2-earnings-season-224600034.html">[Yahoo Finance]</a></div>
+</div>
+
+<!-- Catalyst 5 -->
+<div class="card">
+  <div class="card-header">
+    <div class="card-title">Catalyst 5: US-Iran Final Deal Deadline</div>
+    <div class="badges"><span class="badge badge-medium">EVENT-DRIVEN</span></div>
+  </div>
+  <div class="meta-grid">
+    <div class="meta-item"><div class="meta-label">Date</div><div class="meta-value" style="color:var(--medium);">~August 15, 2026</div></div>
+    <div class="meta-item"><div class="meta-label">Consensus</div><div class="meta-value">Optimistic — market has priced partial Hormuz normalization (Brent ~$103)</div></div>
+    <div class="meta-item"><div class="meta-label">Positioning</div><div class="meta-value">~50% of risk premium reduction priced in</div></div>
+    <div class="meta-item"><div class="meta-label">Surprise Scenario</div><div class="meta-value">Israel-Lebanon spoiler → oil back to $115+. Full deal → Iranian crude, Brent $85-90.</div></div>
+  </div>
+  <div class="meta-item" style="margin:12px 0;">
+    <div class="meta-label">Exposed Tickers</div>
+    <div class="tickers" style="margin-top:6px;"><span class="ticker">DAL</span><span class="ticker">AAL</span><span class="ticker">UAL</span><span class="ticker secondary">MPC</span><span class="ticker negative">XOM</span><span class="ticker negative">COP</span><span class="ticker negative">RTX</span><span class="ticker negative">LMT</span></div>
+  </div>
+  <div class="summary">The 60-day final deal window creates a hard catalyst around August 15. Netanyahu has publicly refuted the Lebanon ceasefire claim — the key spoiler risk. Airlines are the most asymmetric position for the deal-holds scenario: jet fuel is 20-25% of operating costs and the full Hormuz-open scenario is not yet fully priced in. <a href="https://www.cnbc.com/2026/06/22/us-iran-roadmap-final-deal-switzerland-talks-lebanon-deconfliction.html">[CNBC]</a> <a href="https://www.csis.org/analysis/united-states-and-iran-announce-deal-end-war-state-play">[CSIS]</a></div>
+</div>
+
+
+<!-- ===================== ACTION ITEMS ===================== -->
+<div class="action-box">
+  <h3>⚡ Action Items</h3>
+
+  <div class="action-section">
+    <h4>Top 3 Tickers to Research Further Today</h4>
+    <div class="action-ticker">
+      <div class="action-num">1</div>
+      <div>
+        <div class="action-ticker-name">MU — Micron Technology</div>
+        <div class="action-ticker-desc">Post-earnings pullback (-4.5%) after +16% surge on blockbuster results. HBM sold out through CY2026, HBM4 certified by NVIDIA. Evaluate entry on structurally rerated AI memory supplier. What is the right multiple for a company guiding $50B revenue with supply constraints locking in elevated ASPs through 2027?</div>
+      </div>
+    </div>
+    <div class="action-ticker">
+      <div class="action-num">2</div>
+      <div>
+        <div class="action-ticker-name">ORCL — Oracle</div>
+        <div class="action-ticker-desc">$638B RPO backlog and +93% cloud infrastructure growth underappreciated by a market that still sees Oracle as legacy database. FY2027 guide of $90B at 27-29% Q1 cloud growth. Evaluate vs. hyperscaler cloud infra multiples — may be significantly undervalued relative to the contracted backlog.</div>
+      </div>
+    </div>
+    <div class="action-ticker">
+      <div class="action-num">3</div>
+      <div>
+        <div class="action-ticker-name">DAL / UAL — Delta, United Airlines</div>
+        <div class="action-ticker-desc">Largest beneficiaries of US-Iran ceasefire through jet fuel cost reduction. 60-day deal window creates defined catalyst. Full Hormuz opening scenario not yet fully priced into airline stocks — jet fuel is 20-25% of operating costs.</div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <div class="action-section">
+    <h4>Position Adjustments Suggested</h4>
+    <div style="color:var(--text-muted);font-size:12px;line-height:1.9;">
+      <div style="padding:6px 0;border-bottom:1px solid var(--border);">▸ <strong style="color:var(--text);">Watch NKE on June 30</strong> — Low bar + potential tariff refund beat + FY2027 headwind expiration guidance. Consider long into earnings with stop below recent lows if China guidance deteriorates beyond -20%.</div>
+      <div style="padding:6px 0;border-bottom:1px solid var(--border);">▸ <strong style="color:var(--text);">Reduce rate-sensitive REIT/utility exposure ahead of June 27 PCE</strong> — Warsh hawkish baseline + hot PCE = asymmetric downside for long-duration rate-sensitive names. Utilities (NEE, SO) and REITs (O, WELL) still pricing in prior dovish Powell regime.</div>
+      <div style="padding:6px 0;">▸ <strong style="color:var(--text);">Evaluate ON Semi (ON) dip</strong> — -9% on Synaptics deal announcement may be overreaction to dilution fears. Physical AI TAM expansion to $243B by 2030 is a credible strategic rationale. Wait 2-3 weeks for deal digest before adding.</div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <div class="action-section">
+    <h4>Key Dates to Watch</h4>
+    <table class="dates-table">
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Event</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="date-col">Jun 26 (Today)</td>
+          <td>University of Michigan final June consumer sentiment</td>
+        </tr>
+        <tr>
+          <td class="date-col" style="color:var(--low);">Jun 27 ★</td>
+          <td class="key-event">PCE Inflation Report (May data) — BINARY RATE EVENT</td>
+        </tr>
+        <tr>
+          <td class="date-col" style="color:var(--low);">Jun 30 ★</td>
+          <td class="key-event">Nike Q4 FY2026 Earnings (after close) — consumer tariff read-through</td>
+        </tr>
+        <tr>
+          <td class="date-col">Jul 14-18</td>
+          <td>Q2 2026 earnings season kickoff — major banks (JPM, BAC, GS)</td>
+        </tr>
+        <tr>
+          <td class="date-col">Jul 15</td>
+          <td>June CPI Report — will determine Warsh's July 29 FOMC posture</td>
+        </tr>
+        <tr>
+          <td class="date-col" style="color:var(--low);">Jul 29 ★</td>
+          <td class="key-event">FOMC Rate Decision — Warsh / live meeting risk</td>
+        </tr>
+        <tr>
+          <td class="date-col">~Aug 15</td>
+          <td>US-Iran Final Deal Deadline (60-day MOU window expires)</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="footer">
+  <div>DAILY THEME SCANNER — 2026-06-26 | Pre-Market Research Brief</div>
+  <div style="margin-top:4px;">Sources: Bloomberg, CNBC, Oracle IR, NPR, Goldman Sachs, Yahoo Finance, Investing.com, 247 Wall St., Al Jazeera, ERP Today, Market Sense Substack, Notebookcheck, CSIS</div>
+  <div style="margin-top:4px;color:var(--text-dim);">This report is for informational purposes only and does not constitute investment advice. Past performance is not indicative of future results.</div>
+</div>
+
+</div>
+</body>
+</html>
