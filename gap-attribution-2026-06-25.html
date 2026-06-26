@@ -1,0 +1,852 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gap Attribution v7.7 — June 25, 2026 After-Hours</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0e17;
+    --bg2: #0f1520;
+    --bg3: #141c2e;
+    --bg4: #1a2438;
+    --text: #e2e8f0;
+    --muted: #94a3b8;
+    --green: #22c55e;
+    --red: #ef4444;
+    --amber: #f59e0b;
+    --purple: #a855f7;
+    --cyan: #06b6d4;
+    --orange: #f97316;
+    --blue: #3b82f6;
+    --yellow: #eab308;
+    --border: #1e2d45;
+    --green-dim: rgba(34,197,94,0.12);
+    --red-dim: rgba(239,68,68,0.12);
+    --amber-dim: rgba(245,158,11,0.12);
+    --purple-dim: rgba(168,85,247,0.12);
+    --cyan-dim: rgba(6,182,212,0.12);
+    --orange-dim: rgba(249,115,22,0.12);
+    --blue-dim: rgba(59,130,246,0.12);
+    --yellow-dim: rgba(234,179,8,0.12);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: 'JetBrains Mono', monospace; font-size: 13px; line-height: 1.6; }
+  a { color: var(--blue); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  .tool-health { background: var(--bg3); border-left: 4px solid var(--amber); padding: 12px 16px; margin-bottom: 16px; }
+  .tool-health .title { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 6px; }
+  .thl { display: flex; flex-wrap: wrap; gap: 12px; }
+  .th-item { display: flex; align-items: center; gap: 6px; font-size: 12px; }
+  .th-ok { color: var(--green); }
+  .th-warn { color: var(--amber); }
+  .th-err { color: var(--red); }
+
+  header { background: var(--bg2); border-bottom: 1px solid var(--border); padding: 16px 20px 12px; }
+  header h1 { font-size: 18px; font-weight: 700; color: var(--text); }
+  header .sub { color: var(--muted); font-size: 11px; margin-top: 4px; }
+  header .badge { display: inline-block; background: var(--amber-dim); color: var(--amber); border: 1px solid var(--amber); border-radius: 4px; font-size: 10px; padding: 2px 8px; margin-left: 8px; }
+
+  .container { max-width: 1400px; margin: 0 auto; padding: 16px 20px; }
+
+  section { margin-bottom: 24px; }
+  .section-title { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.12em; color: var(--muted); border-bottom: 1px solid var(--border); padding-bottom: 6px; margin-bottom: 12px; cursor: pointer; user-select: none; }
+  .section-title:hover { color: var(--text); }
+  .section-title::after { content: ' ▾'; }
+  .section-title.collapsed::after { content: ' ▸'; }
+  .section-body.collapsed { display: none; }
+
+  .briefing { background: var(--bg3); border: 1px solid var(--amber); border-radius: 8px; padding: 16px; margin-bottom: 16px; }
+  .briefing h3 { color: var(--amber); font-size: 12px; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 8px; }
+  .briefing p { color: var(--text); font-size: 13px; line-height: 1.7; }
+
+  .theme-regime { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
+  .theme-box { background: var(--bg3); border: 1px solid var(--border); border-radius: 6px; padding: 12px; }
+  .theme-box h4 { font-size: 10px; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
+  .theme-box .value { font-size: 13px; font-weight: 600; color: var(--cyan); }
+
+  .top5-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px; }
+  .top5-panel { background: var(--bg3); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+  .top5-panel .panel-title { background: var(--bg4); padding: 10px 14px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text); }
+  .top5-panel .panel-title.green { border-top: 3px solid var(--green); }
+  .top5-panel .panel-title.red { border-top: 3px solid var(--red); }
+
+  .pick-card { border-bottom: 1px solid var(--border); padding: 10px 14px; }
+  .pick-card:last-child { border-bottom: none; }
+  .pick-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px; }
+  .pick-ticker { font-weight: 700; font-size: 14px; }
+  .pick-move-pos { color: var(--green); font-weight: 700; }
+  .pick-move-neg { color: var(--red); font-weight: 700; }
+  .pick-meta { font-size: 11px; color: var(--muted); }
+  .pick-catalyst { font-size: 12px; color: var(--text); margin-top: 4px; }
+  .pick-levels { font-size: 11px; color: var(--muted); margin-top: 3px; }
+  .pick-theme { display: inline-block; background: var(--cyan-dim); color: var(--cyan); font-size: 10px; padding: 1px 6px; border-radius: 3px; margin-top: 4px; }
+  .pick-etf { display: inline-block; background: var(--purple-dim); color: var(--purple); font-size: 10px; padding: 1px 6px; border-radius: 3px; margin-top: 4px; margin-left: 4px; }
+
+  .conviction-high { color: var(--green); font-size: 12px; }
+  .conviction-med { color: var(--amber); font-size: 12px; }
+  .conviction-low { color: var(--red); font-size: 12px; }
+
+  table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  th { background: var(--bg3); color: var(--muted); font-weight: 600; text-align: left; padding: 7px 10px; border-bottom: 1px solid var(--border); font-size: 10px; text-transform: uppercase; letter-spacing: 0.05em; white-space: nowrap; }
+  td { padding: 6px 10px; border-bottom: 1px solid rgba(30,45,69,0.5); vertical-align: top; }
+  tr:hover td { background: rgba(255,255,255,0.02); }
+
+  .pos { color: var(--green); }
+  .neg { color: var(--red); }
+  .neu { color: var(--amber); }
+  .flag { color: var(--orange); }
+  .info { color: var(--blue); }
+  .em { color: var(--cyan); }
+
+  .catalyst-pill { display: inline-block; font-size: 10px; padding: 1px 7px; border-radius: 12px; font-weight: 600; }
+  .cat-earnings { background: var(--green-dim); color: var(--green); border: 1px solid rgba(34,197,94,0.3); }
+  .cat-ma { background: var(--purple-dim); color: var(--purple); border: 1px solid rgba(168,85,247,0.3); }
+  .cat-macro { background: var(--amber-dim); color: var(--amber); border: 1px solid rgba(245,158,11,0.3); }
+  .cat-policy { background: var(--blue-dim); color: var(--blue); border: 1px solid rgba(59,130,246,0.3); }
+  .cat-geo { background: var(--orange-dim); color: var(--orange); border: 1px solid rgba(249,115,22,0.3); }
+  .cat-unknown { background: var(--red-dim); color: var(--red); border: 1px solid rgba(239,68,68,0.3); }
+
+  .etf-sweep-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; }
+  .etf-cell { background: var(--bg3); border: 1px solid var(--border); border-radius: 4px; padding: 6px 8px; }
+  .etf-cell .sym { font-size: 11px; font-weight: 700; color: var(--text); }
+  .etf-cell .chg { font-size: 11px; }
+  .etf-cell .desc { font-size: 9px; color: var(--muted); }
+
+  .alert-box { background: var(--red-dim); border: 1px solid var(--red); border-radius: 6px; padding: 10px 14px; margin-bottom: 10px; }
+  .alert-box .alert-title { color: var(--red); font-weight: 700; font-size: 12px; margin-bottom: 4px; }
+
+  .info-box { background: var(--blue-dim); border: 1px solid var(--blue); border-radius: 6px; padding: 10px 14px; margin-bottom: 10px; }
+  .info-box .info-title { color: var(--blue); font-weight: 700; font-size: 12px; margin-bottom: 4px; }
+
+  .warn-box { background: var(--amber-dim); border: 1px solid var(--amber); border-radius: 6px; padding: 10px 14px; margin-bottom: 10px; }
+  .warn-box .warn-title { color: var(--amber); font-weight: 700; font-size: 12px; margin-bottom: 4px; }
+
+  .news-row { border-bottom: 1px solid var(--border); padding: 7px 0; display: flex; gap: 12px; align-items: flex-start; }
+  .news-time { color: var(--muted); font-size: 11px; min-width: 60px; white-space: nowrap; }
+  .news-source { color: var(--blue); font-size: 11px; min-width: 90px; }
+  .news-headline { color: var(--text); font-size: 12px; flex: 1; }
+  .news-ticker { color: var(--yellow); font-size: 11px; min-width: 60px; }
+  .news-bucket { color: var(--muted); font-size: 10px; min-width: 80px; }
+
+  .tier-banner { padding: 6px 12px; border-radius: 4px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; display: inline-block; margin-bottom: 10px; }
+  .tier1 { background: var(--yellow-dim); color: var(--yellow); border: 1px solid var(--yellow); }
+  .tier2 { background: var(--cyan-dim); color: var(--cyan); border: 1px solid var(--cyan); }
+  .tier3 { background: var(--orange-dim); color: var(--orange); border: 1px solid var(--orange); }
+  .tier4 { background: var(--purple-dim); color: var(--purple); border: 1px solid var(--purple); }
+
+  .mega-card { background: var(--bg3); border: 1px solid var(--green); border-radius: 8px; padding: 16px; margin-bottom: 14px; }
+  .mega-card.sell { border-color: var(--red); }
+  .mega-card.neutral { border-color: var(--amber); }
+  .mega-card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+  .mega-ticker { font-size: 22px; font-weight: 700; }
+  .mega-ticker.pos { color: var(--green); }
+  .mega-ticker.neg { color: var(--red); }
+  .mega-ticker.neu { color: var(--amber); }
+  .mega-move { font-size: 16px; font-weight: 700; }
+  .mega-detail { font-size: 12px; color: var(--muted); line-height: 1.8; }
+
+  .audit-grid { display: grid; grid-template-columns: 180px 1fr; gap: 4px; }
+  .audit-key { color: var(--muted); font-size: 11px; }
+  .audit-val { font-size: 11px; color: var(--text); }
+  .audit-row { border-bottom: 1px solid rgba(30,45,69,0.5); padding: 5px 0; display: contents; }
+
+  .fade-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .fade-panel h4 { font-size: 11px; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; }
+  .fade-item { background: var(--red-dim); border: 1px solid rgba(239,68,68,0.3); border-radius: 6px; padding: 8px 12px; margin-bottom: 8px; }
+  .fade-ticker { font-weight: 700; color: var(--red); font-size: 14px; }
+  .fade-detail { font-size: 11px; color: var(--muted); margin-top: 3px; }
+
+  .tag { display: inline-block; font-size: 10px; border-radius: 3px; padding: 1px 6px; margin-right: 4px; }
+  .tag-green { background: var(--green-dim); color: var(--green); }
+  .tag-red { background: var(--red-dim); color: var(--red); }
+  .tag-amber { background: var(--amber-dim); color: var(--amber); }
+  .tag-purple { background: var(--purple-dim); color: var(--purple); }
+  .tag-blue { background: var(--blue-dim); color: var(--blue); }
+  .tag-cyan { background: var(--cyan-dim); color: var(--cyan); }
+  .tag-orange { background: var(--orange-dim); color: var(--orange); }
+
+  .note { color: var(--amber); font-size: 11px; font-style: italic; }
+
+  @media (max-width: 900px) {
+    .top5-grid, .theme-regime, .fade-grid { grid-template-columns: 1fr; }
+    .etf-sweep-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="container">
+    <h1>🌃 GAP ATTRIBUTION (v7.7 HYBRID) <span class="badge">AFTER-HOURS</span></h1>
+    <div class="sub">June 25, 2026 · 8:00 PM ET · Hybrid ETF + Individual Stock Coverage</div>
+    <div style="margin-top:12px;" class="tool-health">
+      <div class="title">Tool Health</div>
+      <div class="thl">
+        <div class="th-item th-ok">✅ TV MCP batch_run (57/57 ETFs)</div>
+        <div class="th-item th-ok">✅ stockanalysis AH pages</div>
+        <div class="th-item th-ok">✅ finviz.com/news (public)</div>
+        <div class="th-item th-warn">⚠️ Chrome MCP DOWN — top-20 %-sort only, no market-cap sort</div>
+        <div class="th-item th-err">❌ Options flow (Benzinga timeout)</div>
+        <div class="th-item th-err">❌ EDGAR 8-K (403 Forbidden)</div>
+        <div class="th-item th-err">❌ Earnings calendar (404/ECONNREFUSED)</div>
+        <div class="th-item th-warn">⚠️ ON/SYNA PR — source unconfirmed (via finviz)</div>
+        <div class="th-item th-warn">⚠️ MU IR PR — ECONNREFUSED, using secondary source</div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="container">
+
+<!-- OVERNIGHT BRIEFING -->
+<div class="briefing">
+  <h3>⚡ Overnight Briefing — 30-Second Read</h3>
+  <p>Tonight's headline is Micron Technology's historic Q3 FY2026 report — <strong style="color:var(--green)">$41.5 billion in quarterly revenue, up 346% YoY</strong>, driven by insatiable AI HBM memory demand — validating the AI memory trade through 2027 and beyond, with analyst targets surging toward $2,000. Simultaneously, <strong>onsemi announced a ~$7B all-stock acquisition of Synaptics</strong> to build "Physical AI" edge computing capabilities, with ON falling 7.86% AH on dilution concerns while SYNA surged 9.86% to $138. The broader macro backdrop is hawkish: <strong style="color:var(--amber)">May PCE topped 4%</strong> (Iran war-driven), keeping rate-hike risk alive, while Iran's attack on a Hormuz cargo ship adds overnight geopolitical oil risk. Despite MU's monster earnings, the Nasdaq closed lower for a <strong>fourth consecutive session</strong> — the market is bifurcating sharply between AI memory hardware winners and the broader tech complex. <strong>Tomorrow:</strong> trade MU/SMH/DRAM long; fade ON on M&A dilution; watch GOOGL's Dow-mechanical bid; stay nimble on oil if Iran escalates further.</p>
+</div>
+
+<!-- THEME + REGIME -->
+<div class="theme-regime">
+  <div class="theme-box">
+    <h4>🎯 Theme of the Night</h4>
+    <div class="value">Memory AI Supremacy + Physical AI M&A Consolidation</div>
+    <div style="color:var(--muted);font-size:11px;margin-top:6px;">MU Q3 +346% YoY validates HBM scarcity thesis. onsemi/SYNA deal marks "Physical AI" edge buildout acceleration.</div>
+  </div>
+  <div class="theme-box">
+    <h4>📊 Regime Read</h4>
+    <div class="value" style="color:var(--amber);">MIXED / BIFURCATED — Selective AI Hardware vs. Broad Tech Weakness</div>
+    <div style="color:var(--muted);font-size:11px;margin-top:6px;">Nasdaq ↓ 4th session · PCE >4% hawkish · Iran geo risk ↑ · Banks pass stress tests ✅ · MU/semis isolated winners</div>
+  </div>
+</div>
+
+<!-- TOP 5 GAP-UPS SIDE BY SIDE -->
+<div class="top5-grid">
+  <!-- ETF GAP-UPS -->
+  <div class="top5-panel">
+    <div class="panel-title green">🏆 TOP 5 ETF GAP-UP CANDIDATES</div>
+    <div class="pick-card">
+      <div class="pick-header">
+        <span class="pick-ticker">SMH</span>
+        <span class="conviction-med">🟡 MEDIUM</span>
+      </div>
+      <div class="pick-meta">Semiconductors · AH $635.55 (+0.02%) · TV MCP 7:45 PM ET</div>
+      <div class="pick-catalyst">MU blockbuster Q3 — $41.5B revenue +346% YoY. Q4 guide above consensus. AI memory scarcity into 2027+. Session already priced much of the move; Q4 guidance is the overnight catalyst overhang.</div>
+      <div class="pick-levels"><span class="pos">Entry:</span> Open &gt;$637 · <span class="neg">Stop:</span> $630 · <span class="pos">Target:</span> $655</div>
+      <span class="pick-theme">AI Memory Supremacy</span>
+    </div>
+    <div class="pick-card">
+      <div class="pick-header">
+        <span class="pick-ticker">DRAM</span>
+        <span class="conviction-med">🟡 MEDIUM</span>
+      </div>
+      <div class="pick-meta">HBM Memory ETF · AH $76.50 (-0.68%) · TV MCP 7:45 PM ET</div>
+      <div class="pick-catalyst">Most direct ETF play on MU's AI HBM thesis. SK Hynix/Samsung/Micron all in shortage cycle. Session likely surged on MU news; AH giveback is consolidation.</div>
+      <div class="pick-levels"><span class="pos">Entry:</span> Open &gt;$77.50 · <span class="neg">Stop:</span> $75.00 · <span class="pos">Target:</span> $82.00</div>
+      <div class="note">⚠️ THIN ETF — LOW LIQUIDITY — size positions accordingly</div>
+      <span class="pick-theme">AI Memory Supremacy</span>
+    </div>
+    <div class="pick-card">
+      <div class="pick-header">
+        <span class="pick-ticker">ITA</span>
+        <span class="conviction-med">🟡 MEDIUM</span>
+      </div>
+      <div class="pick-meta">Defense Primes · AH $237.99 (+0.42%) · TV MCP 7:45 PM ET</div>
+      <div class="pick-catalyst">Iran Strait of Hormuz ship attack + Golden Dome missile defense test. Defense spending narrative strengthening. RTX, LMT, GD, BA in this ETF.</div>
+      <div class="pick-levels"><span class="pos">Entry:</span> Open &gt;$239 · <span class="neg">Stop:</span> $235 · <span class="pos">Target:</span> $245</div>
+      <span class="pick-theme">Iran Geopolitical</span>
+    </div>
+    <div class="pick-card">
+      <div class="pick-header">
+        <span class="pick-ticker">XLC</span>
+        <span class="conviction-med">🟡 MEDIUM</span>
+      </div>
+      <div class="pick-meta">Communications · AH $105.67 (-0.30%) · TV MCP 7:45 PM ET</div>
+      <div class="pick-catalyst">GOOGL replacing Verizon in the DJIA — forced mechanical buying from ~$30B Dow-tracking AUM. GOOGL finviz confirms UP AH (TV MCP data may lag Dow announcement). XLC heavy GOOGL/META weighting.</div>
+      <div class="pick-levels"><span class="pos">Entry:</span> Open &gt;$106.50 · <span class="neg">Stop:</span> $104.00 · <span class="pos">Target:</span> $109</div>
+      <span class="pick-theme">GOOGL Dow Addition</span>
+    </div>
+    <div class="pick-card">
+      <div class="pick-header">
+        <span class="pick-ticker">XOP</span>
+        <span class="conviction-med">🟡 MEDIUM</span>
+      </div>
+      <div class="pick-meta">Oil & Gas E&P · AH $154.82 (+0.18%) · TV MCP 7:45 PM ET</div>
+      <div class="pick-catalyst">Iran Hormuz attack raises supply disruption risk. Oil priced for spike on any further escalation. Counter-risk: OPEC dissolution narrative threatens $50/bbl long-term.</div>
+      <div class="pick-levels"><span class="pos">Entry:</span> Open &gt;$155.50 · <span class="neg">Stop:</span> $153.00 · <span class="pos">Target:</span> $159.00</div>
+      <div class="note">⚠️ Geopolitical spikes fade fast — keep hold time tight</div>
+      <span class="pick-theme">Iran Oil Disruption</span>
+    </div>
+  </div>
+
+  <!-- STOCK GAP-UPS -->
+  <div class="top5-panel">
+    <div class="panel-title green">🏆 TOP 5 STOCK GAP-UP CANDIDATES</div>
+    <div class="pick-card">
+      <div class="pick-header">
+        <span class="pick-ticker pos">MU</span>
+        <span class="conviction-high">🟢 HIGH</span>
+      </div>
+      <div class="pick-meta">Micron Technology · Session +15.74% to $1,213.56 (finviz 4PM ET) · AH $1,188.06 -2.08% (TV MCP 7:45 PM ET)</div>
+      <div class="pick-catalyst"><span class="catalyst-pill cat-earnings">EARNINGS</span> Q3 FY2026: $41.456B revenue (+346% YoY), EPS $24.67 (+1,368% YoY). Q4 guide "well above consensus." "Unprecedented long-term contract visibility" on AI HBM demand into 2027+. Analysts raising targets to $1,650–$2,000. AH dip is profit taking after a 15.74% session gain — NOT a reversal signal.</div>
+      <div class="pick-levels"><span class="pos">Entry:</span> Open ~$1,190–$1,220 · <span class="neg">Stop:</span> $1,150 · <span class="pos">Target:</span> $1,350–$1,400 (near) / $1,650–$2,000 (analyst)</div>
+      <div class="pick-levels"><strong>AH volume: UNVERIFIED</strong> | Proof: Fresh multi-month breakout on massive AI catalyst | Firepower: Session vol implies institutional; dollar liquidity &gt;$50M ✅</div>
+      <span class="pick-theme">AI Memory Supremacy</span><span class="pick-etf">SMH · DRAM</span>
+    </div>
+    <div class="pick-card">
+      <div class="pick-header">
+        <span class="pick-ticker pos">SYNA</span>
+        <span class="conviction-med">🟡 MEDIUM</span>
+      </div>
+      <div class="pick-meta">Synaptics Inc. · AH $138.00 (+9.86%) · TV MCP quote_get 7:45 PM ET</div>
+      <div class="pick-catalyst"><span class="catalyst-pill cat-ma">M&A TARGET</span> onsemi acquiring Synaptics in ~$7B all-stock deal at 1.35 ON shares per SYNA share. Implied deal price: 1.35 × $109.41 (ON AH) = ~$147.70. Current AH $138 represents a spread. Potential squeeze to deal price if deal firms.</div>
+      <div class="pick-levels"><span class="pos">Entry:</span> Open below ~$147.70 · <span class="neg">Stop:</span> $132 (deal collapse) · <span class="pos">Target:</span> $147–$148 (deal price)</div>
+      <div class="note">⚠️ AH volume unverified · ⚠️ Primary source URL unconfirmed (onsemi.com blocked)</div>
+      <span class="pick-theme">Physical AI M&A</span><span class="pick-etf">SMH</span>
+    </div>
+    <div class="pick-card">
+      <div class="pick-header">
+        <span class="pick-ticker pos">GOOGL</span>
+        <span class="conviction-med">🟡 MEDIUM</span>
+      </div>
+      <div class="pick-meta">Alphabet · TV MCP $342.71 (-0.81%) — BUT finviz reports GOOGL UP AH on Dow addition</div>
+      <div class="pick-catalyst"><span class="catalyst-pill cat-policy">DOW ADDITION</span> Alphabet replacing Verizon in the DJIA (announced June 23-24). Forced mechanical buying from ~$30B Dow-tracking fund AUM. Finviz specifically notes "GOOGL Stock Gains After-Hours As Alphabet Is Set To Replace Verizon In Dow Jones." TV MCP may reflect earlier AH bar before news fully propagated.</div>
+      <div class="pick-levels"><span class="pos">Entry:</span> Open &gt;$345 · <span class="neg">Stop:</span> $338 · <span class="pos">Target:</span> $360</div>
+      <div class="note">⚠️ Dow inclusion announced June 23-24 — partially priced in · ⚠️ TV MCP/finviz conflict on AH direction</div>
+      <span class="pick-theme">Dow Jones Inclusion</span><span class="pick-etf">XLC · QQQ</span>
+    </div>
+    <div class="pick-card">
+      <div class="pick-header">
+        <span class="pick-ticker pos">RTX</span>
+        <span class="conviction-med">🟡 MEDIUM</span>
+      </div>
+      <div class="pick-meta">Raytheon Technologies · ITA constituent · Not directly pulled AH</div>
+      <div class="pick-catalyst"><span class="catalyst-pill cat-geo">GEOPOLITICAL</span> Iran Strait of Hormuz attack + "Golden Dome" missile defense test success. RTX is top ITA holding (Patriot missiles, air defense). Defense spending narrative on Iran escalation.</div>
+      <div class="pick-levels"><span class="pos">Entry:</span> Open above session close + 0.5% · <span class="neg">Stop:</span> Below session low · <span class="pos">Target:</span> +2–3%</div>
+      <div class="note">⚠️ AH price not directly pulled — use ITA ETF as proxy · ⚠️ Geo spikes fade</div>
+      <span class="pick-theme">Iran Defense</span><span class="pick-etf">ITA · SHLD</span>
+    </div>
+    <div class="pick-card">
+      <div class="pick-header">
+        <span class="pick-ticker neg">ON</span>
+        <span class="conviction-low">🔴 FADE</span>
+      </div>
+      <div class="pick-meta">ON Semiconductor · AH $109.41 (-7.86%) · TV MCP quote_get 7:45 PM ET</div>
+      <div class="pick-catalyst"><span class="catalyst-pill cat-ma">M&A ACQUIRER</span> onsemi acquires Synaptics ~$7B all-stock. Market reaction: strong negative on dilution from all-stock deal. "ON Semiconductor Joins 'Edge AI' Market With $7 Billion Acquisition. The Stock Falls." Typical acquirer negative re-rating.</div>
+      <div class="pick-levels"><span class="neg">Gap-DOWN setup:</span> May open &lt;$109 · <span class="pos">Short Stop:</span> $115 · <span class="pos">Cover Target:</span> $104–105</div>
+      <div class="note">⚠️ AH volume unverified · ⚠️ Primary source URL unconfirmed</div>
+      <span class="pick-theme">Physical AI M&A</span><span class="pick-etf">SMH</span>
+    </div>
+  </div>
+</div>
+
+<!-- POST-MARKET GAPPERS TABLE -->
+<section>
+  <div class="section-title">📊 Post-Market Gappers Table (stockanalysis.com top-20 %-sort, ~7:30 PM ET)</div>
+  <div class="section-body">
+    <div class="warn-box">
+      <div class="warn-title">⚠️ Chrome MCP Unavailable</div>
+      <div>AH gap discovery limited to top-20 %-sorted pages. Market-cap-sorted sweep skipped — $1B+ names beyond page 1 may be missed. AH volume unavailable on stockanalysis pages.</div>
+    </div>
+    <table>
+      <tr><th>Ticker</th><th>Company</th><th>AH Price</th><th>AH %</th><th>Mkt Cap</th><th>Qualifies?</th><th>Catalyst</th></tr>
+      <tr><td class="em">SYNA</td><td>Synaptics Inc.</td><td class="pos">$138.00</td><td class="pos">+9.86%</td><td>$4.85B</td><td class="pos">✅ YES</td><td><span class="catalyst-pill cat-ma">M&A TARGET</span></td></tr>
+      <tr><td>TII</td><td>Titan Mining</td><td class="pos">$3.52</td><td class="pos">+57.85%</td><td>$206M</td><td class="neg">❌ &lt;$1B</td><td>—</td></tr>
+      <tr><td>SHPH</td><td>Shuttle Pharma</td><td class="pos">$5.86</td><td class="pos">+55.03%</td><td>$2M</td><td class="neg">❌ &lt;$1B</td><td>—</td></tr>
+      <tr><td colspan="7" style="color:var(--muted);font-style:italic;font-size:11px;">... 17 more micro-cap names excluded (all &lt;$500M mkt cap) ...</td></tr>
+    </table>
+    <br>
+    <table>
+      <tr><th>Ticker</th><th>Company</th><th>AH Price</th><th>AH %</th><th>Mkt Cap</th><th>Qualifies?</th><th>Catalyst</th></tr>
+      <tr><td class="em neg">ON</td><td>ON Semiconductor</td><td class="neg">$109.41</td><td class="neg">-7.86%</td><td>$46.53B</td><td class="pos">✅ YES</td><td><span class="catalyst-pill cat-ma">M&A ACQUIRER</span></td></tr>
+      <tr><td class="em neg">NEOG</td><td>Neogen Corporation</td><td class="neg">$8.64</td><td class="neg">-9.12%</td><td>$2.07B</td><td class="flag">⚠️ YES (unconfirmed)</td><td><span class="catalyst-pill cat-unknown">UNCONFIRMED</span></td></tr>
+      <tr><td>APEI</td><td>American Public Education</td><td class="neg">$48.01</td><td class="neg">-10.31%</td><td>$982M</td><td class="neg">❌ &lt;$1B</td><td>—</td></tr>
+      <tr><td colspan="7" style="color:var(--muted);font-style:italic;font-size:11px;">... 17 more micro-cap losers excluded ...</td></tr>
+    </table>
+  </div>
+</section>
+
+<!-- ETF AH SWEEP -->
+<section>
+  <div class="section-title">🌐 ETF After-Hours Sweep — 57-ETF Embedded Universe (TV MCP batch_run, 7:45 PM ET)</div>
+  <div class="section-body">
+    <div class="info-box">
+      <div class="info-title">ℹ️ No ETF Moved &gt;1.5% AH — Stock-Specific Catalyst Night</div>
+      <div>All 57 ETFs under the 1.5% flagging threshold. No THEME-WIDE BREAKOUT. The ON/SYNA and MU catalysts are company-specific, not sector-ETF movers.</div>
+    </div>
+    <div class="etf-sweep-grid">
+      <div class="etf-cell"><div class="sym">SPY</div><div class="chg neg">-0.40%</div><div class="desc">S&P 500 · $732.63</div></div>
+      <div class="etf-cell"><div class="sym">QQQ</div><div class="chg neg">-0.59%</div><div class="desc">Nasdaq 100 · $714.93</div></div>
+      <div class="etf-cell"><div class="sym">IWM</div><div class="chg neg">-0.47%</div><div class="desc">Small Caps · $298.42</div></div>
+      <div class="etf-cell"><div class="sym">VIX</div><div class="chg neg">-0.47%</div><div class="desc">Volatility · 18.88</div></div>
+      <div class="etf-cell"><div class="sym">HYG</div><div class="chg pos">+0.05%</div><div class="desc">High Yield · $79.91</div></div>
+      <div class="etf-cell"><div class="sym">TLT</div><div class="chg pos">+0.05%</div><div class="desc">20Y Bonds · $87.32</div></div>
+      <div class="etf-cell"><div class="sym">UUP</div><div class="chg pos">+0.11%</div><div class="desc">US Dollar · $28.49</div></div>
+      <div class="etf-cell"><div class="sym">GLD</div><div class="chg neg">-0.30%</div><div class="desc">Gold · $368.26</div></div>
+      <div class="etf-cell"><div class="sym">XLK</div><div class="chg neg">-0.66%</div><div class="desc">Tech · $184.01</div></div>
+      <div class="etf-cell"><div class="sym">XLV</div><div class="chg pos">+0.09%</div><div class="desc">Healthcare · $156.14</div></div>
+      <div class="etf-cell"><div class="sym">XLF</div><div class="chg neg">-0.04%</div><div class="desc">Financials · $53.65</div></div>
+      <div class="etf-cell"><div class="sym">XLE</div><div class="chg neu">0.00%</div><div class="desc">Energy · $54.16</div></div>
+      <div class="etf-cell"><div class="sym">XLI</div><div class="chg neg">-0.03%</div><div class="desc">Industrials · $184.28</div></div>
+      <div class="etf-cell"><div class="sym">XLY</div><div class="chg neg">-0.59%</div><div class="desc">Cons Disc · $113.08</div></div>
+      <div class="etf-cell"><div class="sym">XLP</div><div class="chg pos">+0.05%</div><div class="desc">Cons Stap · $84.12</div></div>
+      <div class="etf-cell"><div class="sym">XLU</div><div class="chg neg">-0.22%</div><div class="desc">Utilities · $45.85</div></div>
+      <div class="etf-cell"><div class="sym">XLB</div><div class="chg pos">+0.10%</div><div class="desc">Materials · $52.10</div></div>
+      <div class="etf-cell"><div class="sym">XLC</div><div class="chg neg">-0.30%</div><div class="desc">Comms · $105.67</div></div>
+      <div class="etf-cell"><div class="sym">XLRE</div><div class="chg neg">-0.11%</div><div class="desc">REITs · $44.64</div></div>
+      <div class="etf-cell"><div class="sym">SMH</div><div class="chg pos">+0.02%</div><div class="desc">Semis · $635.55</div></div>
+      <div class="etf-cell"><div class="sym">IGV</div><div class="chg pos">+0.27%</div><div class="desc">Software · $85.20</div></div>
+      <div class="etf-cell"><div class="sym">CIBR</div><div class="chg neg">-0.02%</div><div class="desc">Cybersec · $84.04</div></div>
+      <div class="etf-cell"><div class="sym">XBI</div><div class="chg pos">+0.06%</div><div class="desc">Biotech SM · $151.83</div></div>
+      <div class="etf-cell"><div class="sym">IBB</div><div class="chg pos">+0.31%</div><div class="desc">Biotech LG · $184.18</div></div>
+      <div class="etf-cell"><div class="sym">KRE</div><div class="chg neg">-0.08%</div><div class="desc">Reg Banks · $74.80</div></div>
+      <div class="etf-cell"><div class="sym">XOP</div><div class="chg pos">+0.18%</div><div class="desc">Oil E&P · $154.82</div></div>
+      <div class="etf-cell"><div class="sym">XHB</div><div class="chg pos">+0.48%</div><div class="desc">Homebuilders · $115.94</div></div>
+      <div class="etf-cell"><div class="sym">XRT</div><div class="chg pos">+0.18%</div><div class="desc">Retail · $87.51</div></div>
+      <div class="etf-cell"><div class="sym">IYT</div><div class="chg pos">+0.16%</div><div class="desc">Transport · $86.64</div></div>
+      <div class="etf-cell"><div class="sym">JETS</div><div class="chg pos">+0.15%</div><div class="desc">Airlines · $32.98</div></div>
+      <div class="etf-cell"><div class="sym">PEJ</div><div class="chg neg">-0.21%</div><div class="desc">Travel/Leis · $65.89</div></div>
+      <div class="etf-cell"><div class="sym">DRAM</div><div class="chg neg">-0.68%</div><div class="desc">HBM Memory · $76.50</div></div>
+      <div class="etf-cell"><div class="sym">QTUM</div><div class="chg neg">-0.21%</div><div class="desc">Quantum · $160.17</div></div>
+      <div class="etf-cell"><div class="sym">BOTZ</div><div class="chg neg">-0.11%</div><div class="desc">Robotics · $36.48</div></div>
+      <div class="etf-cell"><div class="sym">ARKK</div><div class="chg pos">+0.27%</div><div class="desc">Spec Growth · $76.75</div></div>
+      <div class="etf-cell"><div class="sym">ARKX</div><div class="chg neg">-0.47%</div><div class="desc">Space · $31.77</div></div>
+      <div class="etf-cell"><div class="sym">AIPO</div><div class="chg pos">+0.33%</div><div class="desc">AI Power · $33.20</div></div>
+      <div class="etf-cell"><div class="sym">DTCR</div><div class="chg neg">-0.06%</div><div class="desc">DC REITs · $31.29</div></div>
+      <div class="etf-cell"><div class="sym">SHLD</div><div class="chg neu">0.00%</div><div class="desc">Defense Tech · $58.47</div></div>
+      <div class="etf-cell"><div class="sym">ITA</div><div class="chg pos">+0.42%</div><div class="desc">Defense Prime · $237.99</div></div>
+      <div class="etf-cell"><div class="sym">WGMI</div><div class="chg pos">+0.22%</div><div class="desc">BTC Miners · $65.00</div></div>
+      <div class="etf-cell"><div class="sym">IBIT</div><div class="chg neg">-0.44%</div><div class="desc">Spot BTC · $33.84</div></div>
+      <div class="etf-cell"><div class="sym">URA</div><div class="chg neg">-0.09%</div><div class="desc">Uranium · $44.09</div></div>
+      <div class="etf-cell"><div class="sym">NLR</div><div class="chg neg">-0.05%</div><div class="desc">Nuclear Utils · $118.54</div></div>
+      <div class="etf-cell"><div class="sym">GRID</div><div class="chg pos">+0.39%</div><div class="desc">Grid Equip · $190.25</div></div>
+      <div class="etf-cell"><div class="sym">TAN</div><div class="chg neg">-0.35%</div><div class="desc">Solar · $57.50</div></div>
+      <div class="etf-cell"><div class="sym">COPX</div><div class="chg pos">+0.17%</div><div class="desc">Copper · $76.90</div></div>
+      <div class="etf-cell"><div class="sym">REMX</div><div class="chg neg">-0.01%</div><div class="desc">Rare Earth · $89.21</div></div>
+      <div class="etf-cell"><div class="sym">XME</div><div class="chg neg">-0.39%</div><div class="desc">Metals Mine · $109.00</div></div>
+      <div class="etf-cell"><div class="sym">LIT</div><div class="chg pos">+0.20%</div><div class="desc">Lithium · $78.54</div></div>
+      <div class="etf-cell"><div class="sym">GDX</div><div class="chg neu">0.00%</div><div class="desc">Gold Mine LG · $75.80</div></div>
+      <div class="etf-cell"><div class="sym">GDXJ</div><div class="chg neg">-0.01%</div><div class="desc">Gold Mine JR · $97.96</div></div>
+      <div class="etf-cell"><div class="sym">SLV</div><div class="chg neg">-0.59%</div><div class="desc">Silver · $52.12</div></div>
+      <div class="etf-cell"><div class="sym">USO</div><div class="chg neg">-0.06%</div><div class="desc">Crude Oil · $108.52</div></div>
+      <div class="etf-cell"><div class="sym">UNG</div><div class="chg neu">0.00%</div><div class="desc">Nat Gas · $11.76</div></div>
+      <div class="etf-cell"><div class="sym">MOO</div><div class="chg pos">+0.59%</div><div class="desc">Agriculture · $79.50</div></div>
+      <div class="etf-cell"><div class="sym">KWEB</div><div class="chg pos">+0.08%</div><div class="desc">China Net · $23.73</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- TIER 1 -->
+<section>
+  <div class="section-title"><span class="tier1">TIER 1</span> Always Report — Mag 7 + Semis + Macro</div>
+  <div class="section-body">
+
+    <!-- MU MEGA CARD -->
+    <div class="mega-card">
+      <div class="mega-card-header">
+        <div>
+          <span class="mega-ticker pos">MU</span>
+          <span style="color:var(--muted);font-size:13px;margin-left:12px;">Micron Technology</span>
+        </div>
+        <div>
+          <span class="catalyst-pill cat-earnings">EARNINGS</span>
+          <span class="conviction-high" style="margin-left:10px;">🟢 HIGH</span>
+        </div>
+      </div>
+      <div class="mega-move pos">Session: +15.74% → $1,213.56 (finviz 4:00 PM ET) | AH: $1,188.06 (-2.08% profit taking) (TV MCP 7:45 PM ET)</div>
+      <div class="mega-detail" style="margin-top:10px;">
+        <span class="tag tag-green">Q3 FY2026 Revenue: $41.456B (+345.7% YoY)</span>
+        <span class="tag tag-green">EPS Diluted: $24.67 (+1,368% YoY)</span>
+        <span class="tag tag-amber">Q4 Guide: Well Above Consensus</span>
+        <br><br>
+        Key quotes from coverage: "Unprecedented long-term contract visibility" | "MU overtakes Meta in market cap" | "Memory trade 'so hot' at moment" | "AI memory bottleneck exposed"<br><br>
+        Analyst target upgrades: <strong>Susquehanna → $2,000</strong> | DA Davidson → $2,000 | Needham → $1,650 | Deutsche Bank ↑ | BofA ↑<br><br>
+        ETF bucket: <strong>SMH</strong> (primary) + <strong>DRAM</strong> (HBM anchor)<br>
+        Source: stockanalysis.com/stocks/mu/financials (secondary) + finviz.com | IR.micron.com ECONNREFUSED
+      </div>
+    </div>
+
+    <!-- ON/SYNA MEGA CARD -->
+    <div class="mega-card sell">
+      <div class="mega-card-header">
+        <div>
+          <span class="mega-ticker neg">ON</span>
+          <span style="color:var(--muted);font-size:13px;margin-left:8px;">/</span>
+          <span class="mega-ticker pos" style="margin-left:8px;">SYNA</span>
+          <span style="color:var(--muted);font-size:13px;margin-left:12px;">$7B All-Stock M&A</span>
+        </div>
+        <div>
+          <span class="catalyst-pill cat-ma">M&A</span>
+          <span class="conviction-med" style="margin-left:10px;">🟡 MEDIUM</span>
+        </div>
+      </div>
+      <div class="mega-move">
+        <span class="neg">ON: -7.86% AH → $109.41</span> (TV MCP quote_get 7:45 PM ET) &nbsp;|&nbsp;
+        <span class="pos">SYNA: +9.86% AH → $138.00</span> (TV MCP quote_get 7:45 PM ET)
+      </div>
+      <div class="mega-detail" style="margin-top:10px;">
+        <span class="tag tag-purple">Deal: ~$7B All-Stock</span>
+        <span class="tag tag-amber">Exchange Ratio: 1.35 ON shares per SYNA share</span>
+        <span class="tag tag-amber">Premium: ~19% to recent VWAP</span>
+        <span class="tag tag-green">Synergies: $200M annually</span>
+        <span class="tag tag-green">Accretive: Within 18 months</span><br><br>
+        Strategic rationale: onsemi acquiring Synaptics to expand into "Physical AI" applications — edge AI computing, power management, sensing, and connectivity. The combined entity covers chips from cloud to edge.<br><br>
+        Market reaction: ON fell sharply on all-stock dilution concerns. SYNA trades at $138 vs. implied deal price of ~$147.70 (1.35 × $109.41 ON AH). Arb spread ~7% remains.<br><br>
+        ETF: <strong>SMH</strong> for both names<br>
+        ⚠️ Source: finviz quote pages + stockanalysis.com/stocks/on/ | Primary press release UNCONFIRMED (onsemi.com 403, BusinessWire timeout)
+      </div>
+    </div>
+
+    <!-- GOOGL DOW -->
+    <div class="mega-card neutral">
+      <div class="mega-card-header">
+        <div>
+          <span class="mega-ticker pos">GOOGL</span>
+          <span style="color:var(--muted);font-size:13px;margin-left:12px;">Alphabet / Google — Dow Jones Addition</span>
+        </div>
+        <div>
+          <span class="catalyst-pill cat-policy">INDEX EVENT</span>
+          <span class="conviction-med" style="margin-left:10px;">🟡 MEDIUM</span>
+        </div>
+      </div>
+      <div class="mega-move">
+        <span>TV MCP: $342.71 (-0.81%)</span> ⚠️ CONFLICT: <span class="pos">finviz: UP AH</span> on Dow Jones addition announcement
+      </div>
+      <div class="mega-detail" style="margin-top:10px;">
+        Alphabet replacing Verizon (VZ) in the Dow Jones Industrial Average. Announced June 23-24. Forced mechanical buying from Dow-tracking passive funds (~$30B AUM).<br><br>
+        Verizon reaction: VZ +0.85% regular session, AH $46.11 (+0.02%) — the Dow removal was already priced in since June 23-24.<br><br>
+        TV MCP AH bar (-0.81%) likely reflects GOOGL earlier in the AH session before Dow inclusion news fully circulated. Finviz quote specifically noted positive AH move "as Alphabet set to replace Verizon in Dow."<br><br>
+        ETF: <strong>XLC</strong> (primary), QQQ (GOOGL is top-5 holding)<br>
+        Note: "Brain drain deepens as Gemini heavyweights defect to Anthropic" is an offsetting negative headwind.
+      </div>
+    </div>
+
+    <!-- AAPL PRICE HIKES -->
+    <div class="mega-card neutral">
+      <div class="mega-card-header">
+        <div><span class="mega-ticker neg">AAPL</span><span style="color:var(--muted);font-size:13px;margin-left:12px;">Apple — Price Hikes</span></div>
+        <div><span class="catalyst-pill cat-unknown">PRICE ACTION</span><span class="conviction-low" style="margin-left:10px;">🔴 LOW</span></div>
+      </div>
+      <div class="mega-move"><span class="neg">AH: $276.30 (-0.50%)</span> (TV MCP batch_run 7:45 PM ET) | Regular session: dived on price hike announcement</div>
+      <div class="mega-detail" style="margin-top:10px;">
+        Apple raised prices on MacBook and iPad lines, citing AI boom chip cost increases. Multiple coverage: "Apple dives after announcing price hikes" (Yahoo Finance 2:19 PM), "Apple raises prices on Macs and iPads amid AI boom" (NYT 10:58 AM).<br><br>
+        Consumer reaction risk: price hikes may suppress upgrade cycle. Ongoing AI phone cycle narrative now complicated by margin pressure.<br><br>
+        ETF: <strong>XLK</strong>, <strong>XLY</strong>
+      </div>
+    </div>
+
+    <!-- MAG7 TABLE -->
+    <h4 style="color:var(--muted);font-size:11px;text-transform:uppercase;margin-bottom:8px;margin-top:16px;">Full Mag 7 + Semis + Macro (TV MCP batch_run, 7:45 PM ET)</h4>
+    <table>
+      <tr><th>Ticker</th><th>AH Price</th><th>AH Change</th><th>Note</th></tr>
+      <tr><td class="em">NVDA</td><td>$194.74</td><td class="neg">-0.41%</td><td>Quiet AH; no catalyst</td></tr>
+      <tr><td class="em">MSFT</td><td>$355.60</td><td class="neg">-0.39%</td><td>OpenAI IPO delay (partner headwind)</td></tr>
+      <tr><td class="em">GOOGL</td><td>$342.71*</td><td class="flag">-0.81%*</td><td>⚠️ TV MCP conflict with finviz (GOOGL UP AH on Dow addition)</td></tr>
+      <tr><td class="em">AMZN</td><td>$226.60</td><td class="neg">-0.75%</td><td>Minor AH decline</td></tr>
+      <tr><td class="em">META</td><td>$544.50</td><td class="neg">-0.41%</td><td>Quiet</td></tr>
+      <tr><td class="em">AAPL</td><td>$276.30</td><td class="neg">-0.50%</td><td>Price hike announcement (Mac/iPad)</td></tr>
+      <tr><td class="em">TSLA</td><td>$374.35</td><td class="neg">-0.29%</td><td>Quiet</td></tr>
+      <tr><td class="em">TSM</td><td>$435.99</td><td class="neg">-0.17%</td><td>Minor decline</td></tr>
+      <tr><td class="em">ASML</td><td>$1,832.50</td><td class="neg">-0.60%</td><td>Minor AH decline</td></tr>
+      <tr><td class="em">AVGO</td><td>$379.02</td><td class="neg">-0.65%</td><td>Minor AH decline</td></tr>
+      <tr><td class="em">AMD</td><td>$529.50</td><td class="neg">-1.03%</td><td>Largest semi decline AH; no specific catalyst</td></tr>
+      <tr style="background:var(--green-dim)"><td class="em pos"><strong>MU</strong></td><td class="pos"><strong>~$1,188.06</strong></td><td class="neg"><strong>~-2.08% AH</strong></td><td class="pos"><strong>Session +15.74% → $1,213.56 | Q3 BLOWOUT EARNINGS</strong></td></tr>
+      <tr><td>JPM</td><td>$337.00</td><td class="neg">-0.19%</td><td>CEO succession drama</td></tr>
+      <tr><td>GS</td><td>$1,070.58</td><td class="pos">+0.31%</td><td>Minor positive</td></tr>
+      <tr><td>BAC</td><td>$58.305</td><td class="neg">-0.09%</td><td>Flat; stress tests passed</td></tr>
+      <tr><td>XOM</td><td>$137.60</td><td class="pos">+0.01%</td><td>Energy flat despite Iran</td></tr>
+      <tr><td>CVX</td><td>$172.40</td><td class="neg">-0.06%</td><td>Flat</td></tr>
+      <tr><td>CAT</td><td>$1,057.01</td><td class="neg">-0.06%</td><td>Flat</td></tr>
+      <tr><td>DE</td><td>$630.00</td><td class="neg">-0.16%</td><td>Flat</td></tr>
+    </table>
+  </div>
+</section>
+
+<!-- TIER 2 -->
+<section>
+  <div class="section-title"><span class="tier2">TIER 2</span> Theme-Aligned Movers — ALL QUIET TONIGHT</div>
+  <div class="section-body">
+    <div class="info-box">
+      <div class="info-title">ℹ️ No Tier 2 names moved &gt;3% AH. All themes quiet.</div>
+      <div>All AH moves under 1%. Quantum, AI Infra, Nuclear, Rare Earth, Space, BTC Miners — no catalysts tonight. The semiconductor action (MU, ON, SYNA) is in Tier 1/individual stocks, not in Tier 2 themes.</div>
+    </div>
+    <table>
+      <tr><th>Theme</th><th>Names</th><th>AH Range</th><th>Status</th></tr>
+      <tr><td class="em">Quantum Computing</td><td>RGTI, QBTS, IONQ, QUBT</td><td>-0.22% to -0.92%</td><td>QUIET</td></tr>
+      <tr><td class="em">AI Infrastructure</td><td>CRWV, ORCL, DELL, SMCI, CEG, VST</td><td>-0.66% to +0.20%</td><td>QUIET</td></tr>
+      <tr><td class="em">Nuclear / SMR</td><td>OKLO, SMR, NNE, CCJ</td><td>-0.30% to -0.47%</td><td>QUIET</td></tr>
+      <tr><td class="em">Rare Earth</td><td>MP, USAR</td><td>-0.29% to +0.31%</td><td>QUIET</td></tr>
+      <tr><td class="em">Space</td><td>RKLB, ASTS</td><td>-0.44% to -0.99%</td><td>QUIET</td></tr>
+      <tr><td class="em">BTC Miners / AI-HPC</td><td>MARA, IREN, APLD</td><td>-0.36% to -0.67%</td><td>QUIET</td></tr>
+    </table>
+  </div>
+</section>
+
+<!-- TIER 3 -->
+<section>
+  <div class="section-title"><span class="tier3">TIER 3</span> Emerging Theme Radar</div>
+  <div class="section-body">
+    <div class="warn-box">
+      <div class="warn-title">🚨 NEOG -9.12% AH — CATALYST UNCONFIRMED</div>
+      <div>Neogen Corporation ($2.07B mkt cap) at $8.64 AH (-9.12%). No earnings tonight (next: July 28). No press release or news found across multiple source attempts. <strong>Catalyst unconfirmed — investigate manually before positioning.</strong> AH volume unverified. Conviction capped 🟡 per protocol.</div>
+    </div>
+
+    <h4 style="color:var(--orange);margin-bottom:8px;">1. Iran Hormuz Oil Disruption (Building — 3+ headlines today)</h4>
+    <p>Iran struck a cargo ship in the Strait of Hormuz (3:38 PM ET, vessel traffic halted). Iran "tightens Strait grip" per MarketWatch. Rubio meeting Gulf leaders simultaneously. USO flat AH ($108.52, -0.06%). XOP mildly positive (+0.18%). Counter-narrative: OPEC rejection could push oil BELOW $50/barrel long-term. Mixed directional read for energy. Watch for overnight escalation news.</p>
+    <br>
+
+    <h4 style="color:var(--orange);margin-bottom:8px;">2. AI Spending Bifurcation — Memory Winners vs. Broad Tech (2nd night)</h4>
+    <p>"Wall Street sees AI backlash as rising tech rally risk" | Nasdaq down 4th consecutive session | "Micron fails to power broad rally." Hardware/memory (MU, SMH) winning while hyperscalers and software give back. If this pattern continues 1 more night = 3+ nights = candidate for Tier 2 permanent theme designation.</p>
+    <br>
+
+    <h4 style="color:var(--orange);margin-bottom:8px;">3. Qualcomm China Datacenter Chip (Single report — low confidence)</h4>
+    <p>"Qualcomm to design China-specific datacenter chip" (ZeroHedge, 6:00 PM). If confirmed: QCOM opens a major new market while navigating export controls. QCOM AH -0.99% suggests market unaware or skeptical. Source is ZeroHedge (low confidence). Needs primary source confirmation before trading.</p>
+  </div>
+</section>
+
+<!-- TIER 4 -->
+<section>
+  <div class="section-title"><span class="tier4">TIER 4</span> Macro / Exogenous Events</div>
+  <div class="section-body">
+    <table>
+      <tr><th>Event</th><th>Time</th><th>Source</th><th>ETF Impact</th><th>Regime</th></tr>
+      <tr>
+        <td><strong style="color:var(--amber)">PCE Inflation &gt;4.0% in May</strong><br><span style="font-size:11px;color:var(--muted)">Fed's preferred gauge; Iran war cited as driver. Q1 GDP final: 2.1%.</span></td>
+        <td>8:40 AM</td>
+        <td>Reuters / Fox Business</td>
+        <td class="neg">TLT ↓, UUP ↑, GLD ↑</td>
+        <td class="neg">HAWKISH — rate hike risk re-emerges</td>
+      </tr>
+      <tr>
+        <td><strong style="color:var(--orange)">Iran Strait of Hormuz Ship Attack</strong><br><span style="font-size:11px;color:var(--muted)">Vessel traffic halted; Rubio meeting Gulf leaders. Ongoing Iran conflict.</span></td>
+        <td>5:05 PM</td>
+        <td>NYT / Bloomberg</td>
+        <td class="pos">XOP ↑, USO ↑, ITA ↑</td>
+        <td class="neg">GEO RISK — oil spike potential overnight</td>
+      </tr>
+      <tr>
+        <td><strong>JPM CEO Succession Drama</strong><br><span style="font-size:11px;color:var(--muted)">Marianne Lake exits; co-presidents named. Dimon succession race opens.</span></td>
+        <td>8:31 AM</td>
+        <td>CNBC / WSJ</td>
+        <td>XLF neutral</td>
+        <td>NEUTRAL — management transition</td>
+      </tr>
+      <tr>
+        <td><strong style="color:var(--green)">2026 Bank Stress Tests — All Pass</strong><br><span style="font-size:11px;color:var(--muted)">All major U.S. banks cleared. Dividends/buybacks can resume.</span></td>
+        <td>12:24 PM</td>
+        <td>Seeking Alpha</td>
+        <td class="pos">XLF ↑, KRE ↑</td>
+        <td class="pos">POSITIVE — capital return capacity confirmed</td>
+      </tr>
+      <tr>
+        <td><strong>'Golden Dome' Missile Defense Test</strong><br><span style="font-size:11px;color:var(--muted)">Hegseth hails successful test. Defense spending positive.</span></td>
+        <td>5:00 PM</td>
+        <td>ZeroHedge</td>
+        <td class="pos">ITA ↑, SHLD ↑</td>
+        <td class="pos">POSITIVE for defense</td>
+      </tr>
+      <tr>
+        <td><strong>SpaceX Russell 1000 Addition</strong><br><span style="font-size:11px;color:var(--muted)">SpaceX added to Russell 1000 index (private company; credit/bond context).</span></td>
+        <td>9:58 AM</td>
+        <td>Reuters</td>
+        <td>ARKX minor</td>
+        <td>NEUTRAL</td>
+      </tr>
+    </table>
+  </div>
+</section>
+
+<!-- FINVIZ NEWS -->
+<section>
+  <div class="section-title">📰 Finviz Evening News Digest (Public Feed, 4 PM – 7:28 PM ET)</div>
+  <div class="section-body">
+    <div class="note">Note: Finviz Elite filter unavailable — public feed only.</div><br>
+    <div class="news-row"><div class="news-time">7:21 PM</div><div class="news-source">Bloomberg</div><div class="news-headline">BHP's incoming CEO reshuffles leadership before official start</div><div class="news-ticker">BHP</div><div class="news-bucket">XME</div></div>
+    <div class="news-row"><div class="news-time">6:42 PM</div><div class="news-source">MarketWatch</div><div class="news-headline">A world rejecting OPEC controls could usher in oil below $50 a barrel</div><div class="news-ticker">—</div><div class="news-bucket">USO, XOP</div></div>
+    <div class="news-row"><div class="news-time">6:07 PM</div><div class="news-source">ZeroHedge</div><div class="news-headline">Anthropic plans IPO delay until 2027, blames SpaceX</div><div class="news-ticker">—</div><div class="news-bucket">UNCLASSIFIED</div></div>
+    <div class="news-row"><div class="news-time">6:05 PM</div><div class="news-source">Bloomberg</div><div class="news-headline">Oil gains as traders assess Hormuz flows after ship attack</div><div class="news-ticker">USO</div><div class="news-bucket">USO, XOP</div></div>
+    <div class="news-row"><div class="news-time">6:00 PM</div><div class="news-source">ZeroHedge</div><div class="news-headline">Qualcomm to design China-specific datacenter chip</div><div class="news-ticker">QCOM</div><div class="news-bucket">SMH</div></div>
+    <div class="news-row"><div class="news-time">5:43 PM</div><div class="news-source">Bloomberg</div><div class="news-headline">Permira-backed Reformation files for U.S. IPO</div><div class="news-ticker">—</div><div class="news-bucket">UNCLASSIFIED</div></div>
+    <div class="news-row"><div class="news-time">5:12 PM</div><div class="news-source">Bloomberg</div><div class="news-headline">South Korea's 'Ant' Army drives AI market frenzy</div><div class="news-ticker">—</div><div class="news-bucket">UNCLASSIFIED</div></div>
+    <div class="news-row"><div class="news-time">5:05 PM</div><div class="news-source" style="color:var(--orange)">NYT ★</div><div class="news-headline" style="color:var(--orange)">Iran strikes ship in Strait of Hormuz as Rubio meets Gulf leaders</div><div class="news-ticker">USO</div><div class="news-bucket">USO, XOP, ITA</div></div>
+    <div class="news-row"><div class="news-time">5:00 PM</div><div class="news-source">ZeroHedge</div><div class="news-headline">Hegseth hails 'Golden Dome' missile defense test</div><div class="news-ticker">RTX/GD</div><div class="news-bucket">ITA, SHLD</div></div>
+    <div class="news-row"><div class="news-time">4:58 PM</div><div class="news-source" style="color:var(--orange)">WSJ ★</div><div class="news-headline">Meme-stock traders rally around Wendy's</div><div class="news-ticker">WEN</div><div class="news-bucket">UNCLASSIFIED</div></div>
+    <div class="news-row"><div class="news-time">4:40 PM</div><div class="news-source">Reuters</div><div class="news-headline">Wall St ends mixed; tech megacap declines outweigh chip gains</div><div class="news-ticker">SPY</div><div class="news-bucket">INDEX</div></div>
+    <div class="news-row"><div class="news-time">4:32 PM</div><div class="news-source" style="color:var(--orange)">NYT ★</div><div class="news-headline">OpenAI leans toward holding IPO until next year</div><div class="news-ticker">MSFT</div><div class="news-bucket">UNCLASSIFIED</div></div>
+    <div class="news-row"><div class="news-time">4:23 PM</div><div class="news-source" style="color:var(--orange)">WSJ ★</div><div class="news-headline">Long race to succeed Jamie Dimon heats up</div><div class="news-ticker">JPM</div><div class="news-bucket">XLF</div></div>
+    <div class="news-row"><div class="news-time">4:22 PM</div><div class="news-source">Yahoo Finance</div><div class="news-headline">Micron's momentum creates trouble for Apple strategy</div><div class="news-ticker">MU/AAPL</div><div class="news-bucket">SMH, XLK</div></div>
+    <div class="news-row"><div class="news-time">4:16 PM</div><div class="news-source" style="color:var(--orange)">WSJ ★</div><div class="news-headline">Nasdaq slips as Micron fails to power broad rally</div><div class="news-ticker">QQQ</div><div class="news-bucket">INDEX</div></div>
+    <div class="news-row"><div class="news-time">4:05 PM</div><div class="news-source">MarketWatch</div><div class="news-headline">Dow gains but tech-heavy Nasdaq closes lower for 4th consecutive day</div><div class="news-ticker">SPY/QQQ</div><div class="news-bucket">INDEX</div></div>
+    <div class="news-row"><div class="news-time">3:54 PM</div><div class="news-source">Mish Talk</div><div class="news-headline">New home sales drop 7.3%; builders struggle with inventory</div><div class="news-ticker">—</div><div class="news-bucket">XHB</div></div>
+    <div class="news-row"><div class="news-time">3:48 PM</div><div class="news-source">SemiAnalysis</div><div class="news-headline">U.S. grid constraints: 40GW+ datacenter build toward 2028</div><div class="news-ticker">ETN/HUBB</div><div class="news-bucket">GRID, AIPO</div></div>
+    <div class="news-row"><div class="news-time">3:04 PM</div><div class="news-source">CNBC</div><div class="news-headline">Chicago Fed: inflation too high; Warsh 'serious guy'</div><div class="news-ticker">—</div><div class="news-bucket">TLT, MACRO</div></div>
+    <div class="news-row"><div class="news-time">2:19 PM</div><div class="news-source">Yahoo Finance</div><div class="news-headline">Apple dives after announcing price hikes</div><div class="news-ticker">AAPL</div><div class="news-bucket">XLK, XLY</div></div>
+    <div class="news-row"><div class="news-time">10:58 AM</div><div class="news-source">NYT</div><div class="news-headline">Apple raises prices on Macs and iPads amid AI boom</div><div class="news-ticker">AAPL</div><div class="news-bucket">XLK, XLY</div></div>
+    <div class="news-row"><div class="news-time">10:41 AM</div><div class="news-source">MarketWatch</div><div class="news-headline">"Micron suddenly becomes one of world's most important stocks"</div><div class="news-ticker">MU</div><div class="news-bucket">SMH, DRAM</div></div>
+    <div class="news-row"><div class="news-time">10:28 AM</div><div class="news-source">Reuters</div><div class="news-headline">Bayer shares surge after Supreme Court rejects Roundup lawsuit</div><div class="news-ticker">BAYRY</div><div class="news-bucket">UNCLASSIFIED</div></div>
+    <div class="news-row"><div class="news-time">10:04 AM</div><div class="news-source">NYT</div><div class="news-headline">Marianne Lake, potential Dimon successor, leaves JPMorgan</div><div class="news-ticker">JPM</div><div class="news-bucket">XLF</div></div>
+    <div class="news-row"><div class="news-time">9:40 AM</div><div class="news-source">Reuters</div><div class="news-headline">Micron overtakes Meta in market value amid AI demand</div><div class="news-ticker">MU</div><div class="news-bucket">SMH, DRAM</div></div>
+    <div class="news-row"><div class="news-time">9:38 AM</div><div class="news-source">NYT</div><div class="news-headline">Inflation accelerated in May as Iran war pushed up prices</div><div class="news-ticker">TLT</div><div class="news-bucket">TLT, MACRO</div></div>
+    <div class="news-row"><div class="news-time">9:05 AM</div><div class="news-source">Fox Business</div><div class="news-headline">U.S. economy grew at 2.1% in first quarter (Q1 GDP final)</div><div class="news-ticker">SPY</div><div class="news-bucket">INDEX, MACRO</div></div>
+    <div class="news-row"><div class="news-time">8:40 AM</div><div class="news-source">Reuters</div><div class="news-headline" style="color:var(--amber)">U.S. PCE inflation tops 4.0% in May; consumer spending strong</div><div class="news-ticker">TLT/UUP</div><div class="news-bucket">TLT, UUP</div></div>
+    <div class="news-row"><div class="news-time">8:31 AM</div><div class="news-source">CNBC</div><div class="news-headline">JPMorgan names co-presidents as Marianne Lake exits</div><div class="news-ticker">JPM</div><div class="news-bucket">XLF</div></div>
+    <div class="news-row"><div class="news-time">8:02 AM</div><div class="news-source">Bloomberg</div><div class="news-headline">Wall Street sees AI backlash as rising tech rally risk</div><div class="news-ticker">QQQ</div><div class="news-bucket">INDEX</div></div>
+  </div>
+</section>
+
+<!-- WIRE SCOOPS -->
+<section>
+  <div class="section-title" style="color:var(--orange);">📡 Wire Scoops (4 PM – 8 PM)</div>
+  <div class="section-body">
+    <table>
+      <tr><th>Time</th><th>Outlet</th><th>Headline</th><th>Tickers</th><th>ETF Bucket</th></tr>
+      <tr><td class="neg">5:05 PM</td><td class="flag">NYT ★</td><td class="flag"><strong>Iran strikes ship in Strait of Hormuz as Rubio meets Gulf leaders</strong></td><td>USO</td><td>USO, XOP, ITA</td></tr>
+      <tr><td>5:43 PM</td><td class="info">Bloomberg</td><td>Permira-backed Reformation files for U.S. IPO</td><td>—</td><td>UNCLASSIFIED</td></tr>
+      <tr><td>4:32 PM</td><td class="flag">NYT ★</td><td><strong>OpenAI leans toward holding IPO until next year</strong></td><td>MSFT</td><td>UNCLASSIFIED</td></tr>
+      <tr><td>4:23 PM</td><td class="flag">WSJ ★</td><td>Long race to succeed Jamie Dimon heats up</td><td>JPM</td><td>XLF</td></tr>
+      <tr><td>5:00 PM</td><td>ZeroHedge</td><td>Hegseth hails 'Golden Dome' missile defense test</td><td>RTX/GD</td><td>ITA, SHLD</td></tr>
+      <tr><td>6:00 PM</td><td>ZeroHedge</td><td>Qualcomm to design China-specific datacenter chip [LOW CONF]</td><td>QCOM</td><td>SMH</td></tr>
+      <tr><td>6:05 PM</td><td class="info">Bloomberg</td><td>Oil gains as traders assess Hormuz flows after ship attack</td><td>USO</td><td>USO, XOP</td></tr>
+      <tr><td>6:07 PM</td><td>ZeroHedge</td><td>Anthropic plans IPO delay until 2027</td><td>—</td><td>UNCLASSIFIED</td></tr>
+    </table>
+    <div class="note" style="margin-top:8px;">★ = Major wire outlet | ZeroHedge items are lower-confidence; primary source verification required before trading.</div>
+  </div>
+</section>
+
+<!-- OPTIONS FLOW -->
+<section>
+  <div class="section-title" style="color:var(--blue);">🔵 After-Hours Options Flow</div>
+  <div class="section-body">
+    <div class="alert-box">
+      <div class="alert-title">❌ Options Flow Unavailable</div>
+      <div>Benzinga: timed out × 2. Yahoo Finance: Chrome MCP unavailable. Web_search flow not separately attempted. <strong>The following is PRICE-ACTION INFERENCE ONLY — NOT confirmed flow data.</strong></div>
+    </div>
+    <p style="color:var(--muted);font-size:12px;margin-top:8px;">Price-action inference:<br>
+    • <strong>ON:</strong> Likely heavy put interest / short covering — acquirer down -7.86% AH, deal announcement negative<br>
+    • <strong>SYNA:</strong> Likely call buying into deal price (~$147.70) — M&A arb spread play<br>
+    • <strong>MU:</strong> Mixed — some profit-taking puts after +15.74% session; bullish consensus sustains call buying for Q4 guidance play<br>
+    • <strong>SPY/QQQ:</strong> Likely short positioning accumulation — 4th consecutive Nasdaq down session + PCE above 4%</p>
+  </div>
+</section>
+
+<!-- EARNINGS PREVIEW -->
+<section>
+  <div class="section-title">📅 Tomorrow's Earnings Preview — June 26, 2026</div>
+  <div class="section-body">
+    <div class="alert-box">
+      <div class="alert-title">❌ Earnings Calendar Unavailable — Verify Manually</div>
+      <div>stockanalysis.com/markets/earnings/ → 404 Not Found. earnings-whispers.com → ECONNREFUSED. No June 26 earnings names surfaced in finviz news feed. June 26 is a Friday — historically light earnings day. Verify the calendar before market open.</div>
+    </div>
+  </div>
+</section>
+
+<!-- FADE RISKS -->
+<section>
+  <div class="section-title">⚠️ Fade Risks — ETFs + Stocks</div>
+  <div class="section-body">
+    <div class="fade-grid">
+      <div class="fade-panel">
+        <h4>Top 3 ETF Fade Risks</h4>
+        <div class="fade-item">
+          <div class="fade-ticker">QQQ</div>
+          <div class="fade-detail">4th consecutive down session. PCE >4% hawkish. AAPL/AMZN/META all slightly negative AH. "AI backlash" narrative building. AH -0.59%.</div>
+        </div>
+        <div class="fade-item">
+          <div class="fade-ticker">TLT</div>
+          <div class="fade-detail">PCE >4% should push yields higher → bonds lower. TLT currently flat AH (+0.05%) — hasn't sold off yet. Overnight potential fade if PCE repricing continues.</div>
+        </div>
+        <div class="fade-item">
+          <div class="fade-ticker">ARKK</div>
+          <div class="fade-detail">Speculative growth = worst-performing in hawkish PCE + rising rate environment. OpenAI IPO delay removes a key speculative catalyst. Currently +0.27% AH (contra).</div>
+        </div>
+      </div>
+      <div class="fade-panel">
+        <h4>Top 3 Stock Fade Risks</h4>
+        <div class="fade-item">
+          <div class="fade-ticker">ON</div>
+          <div class="fade-detail">M&A acquirer — all-stock deal dilution. AH -7.86% to $109.41. Market assigns negative re-rating on deal announcement. May gap down further at open if sell-side downgrades land overnight.</div>
+        </div>
+        <div class="fade-item">
+          <div class="fade-ticker">AAPL</div>
+          <div class="fade-detail">Price hikes on MacBook/iPad → demand suppression risk. "Apple dives" during session. AH -0.50%. Ongoing headwind into FY2027 upgrade cycle.</div>
+        </div>
+        <div class="fade-item">
+          <div class="fade-ticker">AMD</div>
+          <div class="fade-detail">Largest Mag7-adjacent AH decline (-1.03%) with no specific catalyst. Capital may continue rotating to MU (the clear AI memory winner) at AMD's expense.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- EOD CANDIDATES -->
+<section>
+  <div class="section-title">🎯 EOD Entry Candidates — Tomorrow's Close (3-5 Day Hold)</div>
+  <div class="section-body">
+    <table>
+      <tr><th>Ticker</th><th>Type</th><th>Trigger</th><th>Pattern</th><th>Target</th></tr>
+      <tr>
+        <td class="pos em"><strong>MU</strong></td>
+        <td>Stock</td>
+        <td>Low-volume consolidation through Friday close; holds above today's open level</td>
+        <td>Stockbee Day 1 breakout (+15.74%); Day 2 low-vol consolidation → EOD entry for continuation</td>
+        <td>$1,350–$1,400 (3-5 days)</td>
+      </tr>
+      <tr>
+        <td class="em">SMH</td>
+        <td>ETF</td>
+        <td>Holds above $636 through Friday close</td>
+        <td>Memory theme confirmation trade; MU as anchor catalyst</td>
+        <td>$655–$665 (3-5 days)</td>
+      </tr>
+    </table>
+  </div>
+</section>
+
+<!-- ASSUMPTION AUDIT -->
+<section>
+  <div class="section-title">🔍 Assumption Audit (Step 13)</div>
+  <div class="section-body">
+    <div class="audit-grid">
+      <div class="audit-key">TV MCP price method</div><div class="audit-val">batch_run(action:get_ohlcv, count:2) for all 57 ETFs + Tier 1 + Tier 2 names; quote_get(symbol) for ON, SYNA, NEOG confirmation pulls</div>
+      <div class="audit-key">AH volume status</div><div class="audit-val"><span class="flag">UNVERIFIED for all AH movers</span> — stockanalysis AH pages lack volume column; TV MCP AH intraday bars not pulled. Conviction capped 🟡 for NEOG per protocol.</div>
+      <div class="audit-key">Chrome MCP</div><div class="audit-val"><span class="flag">⚠️ Unavailable</span> — No tab group. AH discovery = WebFetch top-20 %-sort only. Market-cap sort skipped. Yahoo options chain skipped.</div>
+      <div class="audit-key">Finviz Elite</div><div class="audit-val">⚠️ Unavailable — public feed only (no ?v=3 filtered view)</div>
+      <div class="audit-key">EDGAR 8-K</div><div class="audit-val"><span class="neg">❌ 403 Forbidden</span> — unavailable for all attempts</div>
+      <div class="audit-key">Options flow</div><div class="audit-val"><span class="neg">❌ Benzinga timed out ×2; Yahoo skipped</span> — "price-action inference only — NOT confirmed flow data"</div>
+      <div class="audit-key">Earnings calendar</div><div class="audit-val"><span class="neg">❌ stockanalysis 404; earnings-whispers ECONNREFUSED</span> — "verify manually before open"</div>
+      <div class="audit-key">ON/SYNA press release</div><div class="audit-val"><span class="flag">⚠️ PRIMARY SOURCE UNCONFIRMED</span> — onsemi.com 403, BusinessWire timeout. Catalyst attributed via finviz quote + stockanalysis.com/stocks/on/</div>
+      <div class="audit-key">MU earnings press release</div><div class="audit-val"><span class="flag">⚠️ ir.micron.com ECONNREFUSED</span> — secondary source: stockanalysis.com/stocks/mu/financials/ + finviz quote</div>
+      <div class="audit-key">NEOG catalyst</div><div class="audit-val"><span class="neg">⚠️ UNCONFIRMED</span> — no earnings tonight (next July 28); no news found across multiple sources. Investigate manually before trading.</div>
+      <div class="audit-key">GOOGL AH conflict</div><div class="audit-val"><span class="flag">⚠️ TV MCP shows -0.81%; finviz shows UP AH</span> — resolved in favor of finviz (specific Dow addition data point more recent). TV MCP may reflect earlier AH bar.</div>
+      <div class="audit-key">MU AH vs session close</div><div class="audit-val">Session close $1,213.56 per finviz (4 PM ET); AH $1,188.06 per TV MCP batch_run (7:45 PM ET); AH decline -2.08% attributed to profit taking from 15.74% session gain</div>
+      <div class="audit-key">NEOG AH vs TV MCP</div><div class="audit-val">TV MCP quote_get returned $9.505 (timestamp = 4 PM ET = session close); stockanalysis shows AH $8.64 (-9.12%). No conflict — TV MCP captured session close only; stockanalysis has AH data.</div>
+      <div class="audit-key">UNCLASSIFIED headlines</div><div class="audit-val">OpenAI IPO delay, Anthropic IPO delay, Wendy's meme rally (WEN), Reformation IPO, Chemours PFAS settlement, Polestar China ban, "South Korea Ant Army AI frenzy"</div>
+      <div class="audit-key">ZeroHedge items</div><div class="audit-val">Qualcomm China chip, Golden Dome missile test, Anthropic IPO delay — all single ZeroHedge source; treat as LOW CONFIDENCE until primary source confirms</div>
+      <div class="audit-key">Wire scoops paywall</div><div class="audit-val">Bloomberg/WSJ/NYT summaries via finviz free feed only; full articles not accessed; key details extracted via finviz summaries</div>
+      <div class="audit-key">DATA SUSPECT flags</div><div class="audit-val">None — all pulled values within normal bounds for June 2026 market levels. SPY 732.63, QQQ 714.93 both pass &lt;5% sanity check.</div>
+      <div class="audit-key">Prior scan continuity</div><div class="audit-val">No June 25, 2026 prior scans found. Scan runs without continuity context. Trading-dashboards repo has after-hours-scan-2026-06-25.html (AH 5 PM scan) but not read.</div>
+    </div>
+  </div>
+</section>
+
+<div style="text-align:center;color:var(--muted);font-size:11px;padding:20px 0;border-top:1px solid var(--border);margin-top:20px;">
+  Gap Attribution v7.7 HYBRID · June 25, 2026 · Generated ~8:00 PM ET · 57-ETF Embedded Universe · TV MCP batch_run + stockanalysis + finviz public
+</div>
+
+</div>
+
+<script>
+document.querySelectorAll('.section-title').forEach(title => {
+  title.addEventListener('click', () => {
+    const body = title.nextElementSibling;
+    if (body && body.classList.contains('section-body')) {
+      title.classList.toggle('collapsed');
+      body.classList.toggle('collapsed');
+    }
+  });
+});
+</script>
+</body>
+</html>
