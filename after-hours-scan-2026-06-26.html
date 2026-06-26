@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>After-Hours Gaps — 2026-06-26 (v7.7)</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0e17;
+    --bg2: #0f1520;
+    --bg3: #141c2e;
+    --card: #161e30;
+    --border: #1e2d45;
+    --text: #e2e8f0;
+    --muted: #7a8ba8;
+    --dim: #4a5a72;
+    --green: #22c55e;
+    --red: #ef4444;
+    --yellow: #eab308;
+    --blue: #3b82f6;
+    --purple: #a855f7;
+    --orange: #f97316;
+    --cyan: #06b6d4;
+    --accent: #2563eb;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    line-height: 1.6;
+    padding: 0 0 60px 0;
+  }
+  a { color: var(--blue); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  /* HEADER */
+  .page-header {
+    background: var(--bg2);
+    border-bottom: 2px solid var(--accent);
+    padding: 20px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .page-header h1 { font-size: 17px; font-weight: 700; color: var(--text); letter-spacing: 0.5px; }
+  .page-header .meta { color: var(--muted); font-size: 11px; }
+
+  /* TOOL HEALTH BANNER */
+  .health-banner {
+    background: #0d1a0d;
+    border: 1px solid #1a4d1a;
+    border-left: 4px solid var(--green);
+    padding: 10px 32px;
+    font-size: 12px;
+    color: var(--text);
+  }
+  .health-banner.warn {
+    background: #1a1500;
+    border-color: #4d3d00;
+    border-left-color: var(--yellow);
+  }
+  .health-item { display: inline-block; margin-right: 28px; }
+  .health-ok { color: var(--green); }
+  .health-warn { color: var(--yellow); }
+  .health-err { color: var(--red); }
+
+  /* DEGRADED NOTICE */
+  .degraded-notice {
+    background: #1a1500;
+    border: 1px solid var(--yellow);
+    border-radius: 6px;
+    padding: 10px 16px;
+    color: var(--yellow);
+    font-size: 12px;
+    margin: 16px 32px;
+  }
+
+  /* CONTAINER */
+  .container { max-width: 1400px; margin: 0 auto; padding: 24px 32px; }
+
+  /* SECTION */
+  .section { margin-bottom: 32px; }
+  .section-title {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .section-title .badge {
+    background: var(--accent);
+    color: #fff;
+    border-radius: 3px;
+    padding: 1px 6px;
+    font-size: 10px;
+    letter-spacing: 1px;
+  }
+
+  /* TABLES */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+  }
+  th {
+    text-align: left;
+    padding: 7px 10px;
+    background: var(--bg3);
+    color: var(--muted);
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    font-size: 11px;
+    border-bottom: 1px solid var(--border);
+  }
+  td {
+    padding: 7px 10px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+  tr:hover td { background: var(--bg3); }
+  .ticker { color: var(--cyan); font-weight: 700; }
+  .pos { color: var(--green); }
+  .neg { color: var(--red); }
+  .neutral { color: var(--muted); }
+  .na { color: var(--dim); font-style: italic; }
+
+  /* ZERO RESULT CARD */
+  .zero-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 24px;
+    text-align: center;
+    color: var(--muted);
+  }
+  .zero-card .zero-icon { font-size: 28px; margin-bottom: 8px; }
+  .zero-card .zero-msg { font-size: 14px; color: var(--text); margin-bottom: 6px; }
+  .zero-card .zero-sub { font-size: 12px; color: var(--muted); }
+
+  /* THEME ALERT CARDS */
+  .alerts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+  .alert-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px 16px;
+  }
+  .alert-card.breakout { border-left: 3px solid var(--green); }
+  .alert-card.breakdown { border-left: 3px solid var(--red); }
+  .alert-card .al-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .alert-card .al-title { font-size: 13px; font-weight: 700; margin-bottom: 4px; }
+  .alert-card.breakout .al-title { color: var(--green); }
+  .alert-card.breakdown .al-title { color: var(--red); }
+  .alert-card .al-detail { font-size: 12px; color: var(--muted); }
+
+  /* STAT CARDS (macro) */
+  .stat-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 8px;
+    margin-bottom: 20px;
+  }
+  .stat-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 10px 14px;
+  }
+  .stat-card .sl { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
+  .stat-card .sv { font-size: 18px; font-weight: 700; }
+  .stat-card .sc { font-size: 11px; color: var(--muted); margin-top: 2px; }
+
+  /* ETF GRID (two-col: gainers / losers) */
+  .etf-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media (max-width: 900px) { .etf-cols { grid-template-columns: 1fr; } }
+
+  /* NEWS LIST */
+  .news-list { list-style: none; }
+  .news-list li {
+    padding: 9px 12px;
+    border-bottom: 1px solid var(--border);
+    display: grid;
+    grid-template-columns: 70px 60px 1fr 110px;
+    gap: 8px;
+    align-items: start;
+    font-size: 12px;
+  }
+  .news-list li:hover { background: var(--bg3); }
+  .news-time { color: var(--muted); white-space: nowrap; }
+  .news-ticker { color: var(--cyan); font-weight: 700; }
+  .news-headline { color: var(--text); }
+  .news-source { color: var(--dim); font-size: 11px; text-align: right; }
+
+  /* WATCHLIST */
+  .wl-conviction { font-size: 10px; }
+
+  /* NOTE BOX */
+  .note-box {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 12px 16px;
+    font-size: 12px;
+    color: var(--muted);
+    margin-bottom: 16px;
+  }
+  .note-box strong { color: var(--text); }
+
+  /* AUDIT TABLE */
+  .audit-table td:first-child { color: var(--cyan); width: 220px; white-space: nowrap; }
+  .audit-table td { font-size: 11px; }
+
+  /* FOOTBAR */
+  .footbar {
+    text-align: center;
+    color: var(--dim);
+    font-size: 11px;
+    margin-top: 40px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+  }
+
+  /* highlight rows */
+  .hl-green td { background: #0d1a0d !important; }
+  .hl-red td { background: #1a0d0d !important; }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="page-header">
+  <div>
+    <h1>🌙 AFTER-HOURS GAPS SCAN &nbsp;|&nbsp; v7.7</h1>
+    <div class="meta">2026-06-26 &nbsp;·&nbsp; Run: ~18:00 ET &nbsp;·&nbsp; Embedded 57-ETF Universe</div>
+  </div>
+  <div class="meta">nkuy36.github.io/trading-dashboards</div>
+</div>
+
+<!-- TOOL HEALTH -->
+<div class="health-banner warn">
+  <span class="health-item"><span class="health-ok">✅</span> TV MCP: LIVE (57/57 ETFs)</span>
+  <span class="health-item"><span class="health-ok">✅</span> stockanalysis.com: LIVE</span>
+  <span class="health-item"><span class="health-ok">✅</span> Finviz news: LIVE</span>
+  <span class="health-item"><span class="health-warn">⚠️</span> Chrome MCP: Schema loaded, deep sweep SKIPPED — WebFetch top-20 fallback used</span>
+</div>
+
+<div class="degraded-notice">
+  ⚠️ Chrome MCP unavailable for deep sweep — AH gap discovery limited to top-20 %-sort; $1B+ names beyond page 1 may be missed
+</div>
+
+<div class="container">
+
+  <!-- MACRO SNAPSHOT -->
+  <div class="section">
+    <div class="section-title">Macro Snapshot <span class="badge">CLOSE</span></div>
+    <div class="stat-grid">
+      <div class="stat-card">
+        <div class="sl">SPY</div>
+        <div class="sv neg">$728.99</div>
+        <div class="sc neg">-1.34% ✅</div>
+      </div>
+      <div class="stat-card">
+        <div class="sl">QQQ</div>
+        <div class="sv neg">$706.52</div>
+        <div class="sc neg">-2.67% ✅</div>
+      </div>
+      <div class="stat-card">
+        <div class="sl">VIX</div>
+        <div class="sv" style="color:var(--yellow)">18.40</div>
+        <div class="sc pos">+1.60%</div>
+      </div>
+      <div class="stat-card">
+        <div class="sl">GLD</div>
+        <div class="sv pos">$373.63</div>
+        <div class="sc pos">+1.26%</div>
+      </div>
+      <div class="stat-card">
+        <div class="sl">TLT</div>
+        <div class="sv neg">$87.36</div>
+        <div class="sc neg">-0.25%</div>
+      </div>
+      <div class="stat-card">
+        <div class="sl">HYG</div>
+        <div class="sv neg">$79.83</div>
+        <div class="sc neg">-0.11%</div>
+      </div>
+      <div class="stat-card">
+        <div class="sl">IWM</div>
+        <div class="sv pos">$299.83</div>
+        <div class="sc pos">+0.10%</div>
+      </div>
+      <div class="stat-card">
+        <div class="sl">UUP (USD)</div>
+        <div class="sv neg">$28.46</div>
+        <div class="sc neg">-0.11%</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TRADEABLE AH GAPPERS -->
+  <div class="section">
+    <div class="section-title">Tradeable AH Gappers <span class="badge">&gt;$1B · &gt;3% · &gt;100K vol</span></div>
+    <div class="zero-card">
+      <div class="zero-icon">—</div>
+      <div class="zero-msg">ZERO tradeable AH gappers meet the criteria</div>
+      <div class="zero-sub">All AH movers on stockanalysis are micro-caps (&lt;$100M). Largest: WNW at $88.47M. No $1B+ names gapping AH tonight.<br>
+      AH gap discovery limited to top-20 %-sort (Chrome MCP unavailable).</div>
+    </div>
+    <br>
+    <div class="note-box"><strong>FYI — AH Micro-cap Movers (NOT tradeable, informational only):</strong><br>
+    Gainers: UPC +177% ($1.9M), HCTI +32% ($4.1M), TVRD +23% ($14M), SAGT +17% ($20M), YXT +15% ($21M)<br>
+    Losers: JUNS -26% ($12M), SDOT -23% ($14M), TGHL -16% ($13M), LVWR -13% ($283M*), GDC -13% ($0.7M)<br>
+    *LVWR at $283M is the closest to the filter but still below $1B and no volume data available.</div>
+  </div>
+
+  <!-- THEME-WIDE ALERTS -->
+  <div class="section">
+    <div class="section-title">🚨 Theme-Wide Alerts</div>
+    <div class="alerts-grid">
+      <div class="alert-card breakout">
+        <div class="al-label">🚨 Biotech Theme-Wide Breakout</div>
+        <div class="al-title">XBI + IBB both rallying</div>
+        <div class="al-detail">XBI +3.66% (small-cap equal-weight) + IBB +2.85% (large-cap) moving together = sector-wide biotech bid, not a single squeeze. Catalyst: MRNA +13% on FDA 9-0 unanimous flu vaccine advisory vote.</div>
+      </div>
+      <div class="alert-card breakout">
+        <div class="al-label">🚨 Travel Theme-Wide</div>
+        <div class="al-title">JETS + PEJ in tandem</div>
+        <div class="al-detail">JETS +1.99% (airlines) + PEJ +1.98% (hotels/cruises/casinos) — both travel buckets bid together as capital rotates out of AI/chips into real-economy names. RCL, MAR, LVS all participated.</div>
+      </div>
+      <div class="alert-card breakdown">
+        <div class="al-label">🚨 Nuclear Theme-Wide Breakdown</div>
+        <div class="al-title">URA + NLR both selling</div>
+        <div class="al-detail">URA -3.73% (uranium/fuel) + NLR -3.71% (nuclear utilities/reactors) — both nuclear ETFs selling = theme-wide, not one SMR name. Linked to AI power demand uncertainty as AI buildout spending gets questioned.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- THE BIG STORY -->
+  <div class="section">
+    <div class="section-title">The Story of the Day</div>
+    <div class="note-box" style="border-left:3px solid var(--red); background:#1a0d0d;">
+      <strong style="color:var(--red)">AI/CHIP ROUT — 5-DAY LOSING STREAK CAPPING A WILD WEEK</strong><br><br>
+      <strong>Primary Catalyst:</strong> Apple &amp; Microsoft raised prices on MacBooks, iPads, and other devices, citing higher memory and storage costs. Sparked fears that rising component costs would curb consumer demand for devices → slow the memory chip rally that powered the AI trade.<br><br>
+      <strong>Context:</strong> Micron (MU) reported record Q3 on June 24 (revenue $41.46B, EPS $25.11, Q4 guide $50B) — initially a bullish signal for AI memory demand. But Apple/MSFT pricing news 2 days later reversed the narrative entirely. SK Hynix and Samsung both fell 10%+ in Asia.<br><br>
+      <strong>Additional factor:</strong> Quarter-end / month-end portfolio rebalancing + profit-taking after a massive AI run-up this quarter.<br><br>
+      <strong>$1.3–1.4T in AI semiconductor market cap estimated wiped during the June 2026 selloff week.</strong>
+    </div>
+    <div class="note-box" style="border-left:3px solid var(--green); background:#0d1a0d;">
+      <strong style="color:var(--green)">HEALTHCARE SURGE — MRNA FDA 9-0 UNANIMOUS ADVISORY VOTE</strong><br><br>
+      <strong>Catalyst:</strong> FDA advisory committee voted 9-0 backing Moderna's mRNA-1010/mFLUSIVA flu vaccine for adults 50–64 and 65+. Unanimous votes are rare — strong signal ahead of the Aug 5, 2026 PDUFA decision. Science Day (June 25) also showcased 4 approved products + late-stage pipeline.<br><br>
+      <strong>MRNA session:</strong> Open $59.47 → Close $67.27 (+13.2%). Lifted XLV +4.15%, XBI +3.66%, IBB +2.85%.
+    </div>
+  </div>
+
+  <!-- ETF SWEEP -->
+  <div class="section">
+    <div class="section-title">ETF After-Hours Sweep <span class="badge">57 ETFs · Daily Session % · TV MCP batch_run</span></div>
+    <div class="note-box">Data is <strong>regular session % change</strong> (daily close vs prior close). AH-specific ETF moves not separately measured — ETF AH trading is too thin for reliable signals. Source: TV MCP batch_run, ~17:55 ET. All 57/57 successful.</div>
+    <div class="etf-cols">
+      <div>
+        <div style="color:var(--green);font-size:11px;font-weight:700;margin-bottom:8px;letter-spacing:1px;">GAINERS &gt;1.5%</div>
+        <table>
+          <tr><th>ETF</th><th>Theme</th><th>%</th><th>Key Driver</th></tr>
+          <tr class="hl-green"><td class="ticker">XLV</td><td>Healthcare</td><td class="pos">+4.15%</td><td>MRNA +13% FDA vote lifts sector</td></tr>
+          <tr class="hl-green"><td class="ticker">XBI</td><td>Biotech SM</td><td class="pos">+3.66%</td><td>🚨 THEME-WIDE with IBB</td></tr>
+          <tr class="hl-green"><td class="ticker">IGV</td><td>Software</td><td class="pos">+2.86%</td><td>Software AI decoupled from chips; PLTR, CRM</td></tr>
+          <tr class="hl-green"><td class="ticker">IBB</td><td>Biotech LG</td><td class="pos">+2.85%</td><td>🚨 THEME-WIDE with XBI</td></tr>
+          <tr class="hl-green"><td class="ticker">MOO</td><td>Agriculture</td><td class="pos">+2.80%</td><td>Defensive real-assets rotation</td></tr>
+          <tr class="hl-green"><td class="ticker">GDXJ</td><td>Jr Gold Miners</td><td class="pos">+2.25%</td><td>Juniors leading GDX → real metals run</td></tr>
+          <tr><td class="ticker">JETS</td><td>Airlines</td><td class="pos">+1.99%</td><td>🚨 THEME-WIDE with PEJ</td></tr>
+          <tr><td class="ticker">PEJ</td><td>Travel/Leisure</td><td class="pos">+1.98%</td><td>🚨 THEME-WIDE with JETS</td></tr>
+          <tr><td class="ticker">XOP</td><td>E&amp;P / Oil</td><td class="pos">+1.85%</td><td>Crude resilient; energy rotation</td></tr>
+          <tr><td class="ticker">IYT</td><td>Transports</td><td class="pos">+1.93%</td><td>FDX, UPS, rails bid; real-economy rotation</td></tr>
+          <tr><td class="ticker">CIBR</td><td>Cybersecurity</td><td class="pos">+1.61%</td><td>CRWD, PANW; software decoupled from chips</td></tr>
+          <tr><td class="ticker">KRE</td><td>Regional Banks</td><td class="pos">+1.58%</td><td>Financials holding; loan growth narrative</td></tr>
+          <tr><td class="ticker">XLRE</td><td>REITs</td><td class="pos">+1.21%</td><td>Rate-sensitive names bid; rates steady</td></tr>
+          <tr><td class="ticker">GLD</td><td>Gold</td><td class="pos">+1.26%</td><td>Safe-haven bid as AI trade unwinds</td></tr>
+          <tr><td class="ticker">XLE</td><td>Energy</td><td class="pos">+1.20%</td><td>Real assets rotation</td></tr>
+          <tr><td class="ticker">XLU</td><td>Utilities</td><td class="pos">+1.18%</td><td>Defensive rotation</td></tr>
+          <tr><td class="ticker">SLV</td><td>Silver</td><td class="pos">+1.08%</td><td>Precious metals; GDXJ leading confirms run</td></tr>
+          <tr><td class="ticker">ARKK</td><td>Speculative Growth</td><td class="pos">+1.00%</td><td>Risk appetite mixed; some spec bids returning</td></tr>
+        </table>
+      </div>
+      <div>
+        <div style="color:var(--red);font-size:11px;font-weight:700;margin-bottom:8px;letter-spacing:1px;">LOSERS &gt;1.5%</div>
+        <table>
+          <tr><th>ETF</th><th>Theme</th><th>%</th><th>Key Driver</th></tr>
+          <tr class="hl-red"><td class="ticker">DRAM</td><td>HBM Memory</td><td class="neg">-9.19%</td><td>Apple+MSFT device price hikes → demand fears; SK Hynix -10%+ Asia</td></tr>
+          <tr class="hl-red"><td class="ticker">SMH</td><td>Semiconductors</td><td class="neg">-5.81%</td><td>NVDA -3.77%, AMD -4.11%, SNDK -6.59%</td></tr>
+          <tr class="hl-red"><td class="ticker">AIPO</td><td>AI/Power Infra</td><td class="neg">-5.47%</td><td>AI buildout spend questioned; VRT, VST, GEV sold</td></tr>
+          <tr class="hl-red"><td class="ticker">QTUM</td><td>Quantum</td><td class="neg">-4.62%</td><td>Risk-off hits speculative AI; IONQ, RGTI, QBTS</td></tr>
+          <tr class="hl-red"><td class="ticker">WGMI</td><td>BTC Miners</td><td class="neg">-4.55%</td><td>Risk-off; BTC down, miners leveraged</td></tr>
+          <tr class="hl-red"><td class="ticker">REMX</td><td>Rare Earth</td><td class="neg">-4.16%</td><td>AI supply chain selling; MP, USAR</td></tr>
+          <tr class="hl-red"><td class="ticker">TAN</td><td>Solar</td><td class="neg">-4.08%</td><td>Clean energy broadly sold; AI power demand narrative</td></tr>
+          <tr class="hl-red"><td class="ticker">LIT</td><td>Lithium</td><td class="neg">-3.92%</td><td>Battery materials under pressure</td></tr>
+          <tr class="hl-red"><td class="ticker">DTCR</td><td>Datacenter REITs</td><td class="neg">-3.78%</td><td>EQIX, DLR sold; AI infra spending questioned</td></tr>
+          <tr class="hl-red"><td class="ticker">XLK</td><td>Tech</td><td class="neg">-3.74%</td><td>Broad tech ETF; chip-heavy weighting</td></tr>
+          <tr class="hl-red"><td class="ticker">URA</td><td>Uranium</td><td class="neg">-3.73%</td><td>🚨 NUCLEAR THEME-WIDE with NLR</td></tr>
+          <tr class="hl-red"><td class="ticker">NLR</td><td>Nuclear Utilities</td><td class="neg">-3.71%</td><td>🚨 NUCLEAR THEME-WIDE with URA</td></tr>
+          <tr class="hl-red"><td class="ticker">GRID</td><td>Grid Equipment</td><td class="neg">-2.96%</td><td>ETN, HUBB; AI buildout demand concerns</td></tr>
+          <tr class="hl-red"><td class="ticker">QQQ</td><td>Nasdaq 100</td><td class="neg">-2.67%</td><td>✅ Sanity OK — 5th session loss</td></tr>
+          <tr class="hl-red"><td class="ticker">BOTZ</td><td>Robotics</td><td class="neg">-2.36%</td><td>Physical AI sold with theme</td></tr>
+          <tr class="hl-red"><td class="ticker">IBIT</td><td>Spot Bitcoin</td><td class="neg">-2.17%</td><td>BTC risk-off</td></tr>
+          <tr><td class="ticker">ARKX</td><td>Space</td><td class="neg">-1.33%</td><td>RKLB, ASTS — speculative space</td></tr>
+          <tr><td class="ticker">SPY</td><td>S&amp;P 500</td><td class="neg">-1.34%</td><td>✅ Sanity OK</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- AMC EARNINGS -->
+  <div class="section">
+    <div class="section-title">AMC Earnings Results</div>
+    <div class="note-box"><strong>No major AMC earnings tonight (June 26).</strong></div>
+    <table>
+      <tr><th>Ticker</th><th>Report Date</th><th>Revenue</th><th>EPS (adj)</th><th>Beat/Miss</th><th>Reaction</th><th>Read-Through</th></tr>
+      <tr>
+        <td class="ticker">MU</td>
+        <td>June 24 (2 days ago)</td>
+        <td>$41.46B <span class="pos">(+16% vs $35.69B est)</span></td>
+        <td>$25.11 <span class="pos">(+23% vs $20.49 est)</span></td>
+        <td class="pos">BEAT — Gross margin 84.9%; Q4 guide $50B (est $42.9B)</td>
+        <td class="pos">+14.6% AH June 24</td>
+        <td class="neg">Then reversed -6.7%+ June 26 as Apple/MSFT price hike news hit. DRAM -9.19%. Stellar results couldn't offset demand slowdown fears.</td>
+      </tr>
+    </table>
+  </div>
+
+  <!-- FINVIZ NEWS -->
+  <div class="section">
+    <div class="section-title">Finviz AH News Digest <span class="badge">PUBLIC FEED · POST-4PM ET</span></div>
+    <div class="note-box">Finviz Elite filter unavailable — public feed used. Times are approximate.</div>
+    <ul class="news-list">
+      <li>
+        <span class="news-time">4:57 PM</span>
+        <span class="news-ticker neutral">—</span>
+        <span class="news-headline">Charles Payne highlights the irony in market fear narrative</span>
+        <span class="news-source">Fox Business · UNCLASSIFIED</span>
+      </li>
+      <li>
+        <span class="news-time">4:54 PM</span>
+        <span class="news-ticker">SPCX</span>
+        <span class="news-headline">SpaceX's new bonds flash a warning sign as investors pump the brakes on AI craze</span>
+        <span class="news-source">MarketWatch · SHLD/ARKX</span>
+      </li>
+      <li>
+        <span class="news-time">4:46 PM</span>
+        <span class="news-ticker">SKS</span>
+        <span class="news-headline">Saks Emerges From Bankruptcy With a New Plan and Corporate Name</span>
+        <span class="news-source">NYT · UNCLASSIFIED</span>
+      </li>
+      <li>
+        <span class="news-time">4:35 PM</span>
+        <span class="news-ticker neutral">—</span>
+        <span class="news-headline">Polestar banned from US market under rule targeting China-linked connected vehicles</span>
+        <span class="news-source">Fox Business · UNCLASSIFIED</span>
+      </li>
+      <li>
+        <span class="news-time">4:26 PM</span>
+        <span class="news-ticker">SPY/QQQ</span>
+        <span class="news-headline">S&amp;P 500 ends lower; chips tumble and Moderna rallies</span>
+        <span class="news-source">Reuters · SMH/XLV</span>
+      </li>
+      <li>
+        <span class="news-time">4:20 PM</span>
+        <span class="news-ticker neutral">—</span>
+        <span class="news-headline">AI-Themed Stocks Tank Again, Capping a Wild Week</span>
+        <span class="news-source">WSJ · XLK/AIPO</span>
+      </li>
+      <li>
+        <span class="news-time">4:19 PM</span>
+        <span class="news-ticker neutral">—</span>
+        <span class="news-headline">US Chipmaker Selloff Pushes Key Stock Indexes to Weekly Loss</span>
+        <span class="news-source">Bloomberg · SMH</span>
+      </li>
+      <li>
+        <span class="news-time">4:17 PM</span>
+        <span class="news-ticker neutral">—</span>
+        <span class="news-headline">AI Rout Exposes Wall Street's $270 Billion Speculation Machine</span>
+        <span class="news-source">Bloomberg · XLK/AIPO</span>
+      </li>
+      <li>
+        <span class="news-time">4:12 PM</span>
+        <span class="news-ticker neutral">—</span>
+        <span class="news-headline">U.S. stocks close lower, as S&amp;P 500 and Nasdaq slump to 5-day losing streak</span>
+        <span class="news-source">MarketWatch · SPY/QQQ</span>
+      </li>
+      <li>
+        <span class="news-time">4:07 PM</span>
+        <span class="news-ticker neutral">—</span>
+        <span class="news-headline">Stock Market Today: Nasdaq Edges Lower to Close Tough Week</span>
+        <span class="news-source">WSJ · QQQ</span>
+      </li>
+    </ul>
+  </div>
+
+  <!-- WATCHLIST AH ACTIVITY -->
+  <div class="section">
+    <div class="section-title">Watchlist AH Activity</div>
+    <div class="note-box">Price method: batch_run get_ohlcv (regular session closes). AH prices: NVDA confirmed via 5-min extended session bars. All others: AH price unavailable — not pulled. SPY/QQQ sanity bounds ✅.</div>
+    <table>
+      <tr><th>Ticker</th><th>Close</th><th>Session %</th><th>AH Price</th><th>AH %</th><th>AH Vol</th><th>Notes</th></tr>
+      <tr class="hl-red">
+        <td class="ticker">SNDK</td><td>$2,090.71</td><td class="neg">-6.59%</td>
+        <td class="na">unavailable</td><td class="na">—</td><td class="na">unverified</td>
+        <td>Biggest watchlist loser; memory chip victim of Apple/MSFT pricing fears. Spinoff price, no split.</td>
+      </tr>
+      <tr class="hl-red">
+        <td class="ticker">AMD</td><td>$521.58</td><td class="neg">-4.11%</td>
+        <td class="na">unavailable</td><td class="na">—</td><td class="na">unverified</td>
+        <td>Chip selloff; AI GPU demand questioned with AI spend uncertainty.</td>
+      </tr>
+      <tr class="hl-red">
+        <td class="ticker">NVDA</td><td>$192.53</td><td class="neg">-3.77%</td>
+        <td>~$192.26</td><td class="neutral">~-0.14%</td><td>~130K est.</td>
+        <td>Flat AH via 5-min chart. Rout done in session. 🟡 AH vol estimated.</td>
+      </tr>
+      <tr>
+        <td class="ticker">COIN</td><td>$149.06</td><td class="neg">-1.40%</td>
+        <td class="na">unavailable</td><td class="na">—</td><td class="na">unverified</td>
+        <td>Crypto risk-off; IBIT -2.17%.</td>
+      </tr>
+      <tr>
+        <td class="ticker">META</td><td>$550.25</td><td class="neg">-0.95%</td>
+        <td class="na">unavailable</td><td class="na">—</td><td class="na">unverified</td>
+        <td>Held up well; communications/social not chip-dependent. XLC +0.47%.</td>
+      </tr>
+      <tr>
+        <td class="ticker">AMZN</td><td>$232.69</td><td class="pos">+0.29%</td>
+        <td class="na">unavailable</td><td class="na">—</td><td class="na">unverified</td>
+        <td>AWS + retail resilient; relative strength in mega-cap.</td>
+      </tr>
+      <tr>
+        <td class="ticker">MARA</td><td>$14.54</td><td class="pos">+0.73%</td>
+        <td class="na">unavailable</td><td class="na">—</td><td class="na">unverified</td>
+        <td>BTC miner slightly up despite WGMI ETF -4.55% — idiosyncratic.</td>
+      </tr>
+      <tr>
+        <td class="ticker">TSLA</td><td>$379.71</td><td class="pos">+1.18%</td>
+        <td class="na">unavailable</td><td class="na">—</td><td class="na">unverified</td>
+        <td>Bucked tech selloff; EV/energy narrative. +53K vol above avg.</td>
+      </tr>
+      <tr>
+        <td class="ticker">PLTR</td><td>$112.93</td><td class="pos">+1.39%</td>
+        <td class="na">unavailable</td><td class="na">—</td><td class="na">unverified</td>
+        <td>Software AI decoupled from chips — SHLD ETF -0.36% vs PLTR +1.39%.</td>
+      </tr>
+      <tr class="hl-green">
+        <td class="ticker">SOFI</td><td>$17.88</td><td class="pos">+2.76%</td>
+        <td class="na">unavailable</td><td class="na">—</td><td class="na">unverified</td>
+        <td>Financials rotation beneficiary; KRE +1.58% supporting.</td>
+      </tr>
+      <tr>
+        <td class="ticker">SPY</td><td>$728.99</td><td class="neg">-1.34%</td>
+        <td class="na">—</td><td class="na">—</td><td class="na">—</td>
+        <td>✅ Sanity check passed. 5-day losing streak.</td>
+      </tr>
+      <tr>
+        <td class="ticker">QQQ</td><td>$706.52</td><td class="neg">-2.67%</td>
+        <td class="na">—</td><td class="na">—</td><td class="na">—</td>
+        <td>✅ Sanity check passed. Chip drag amplified Nasdaq.</td>
+      </tr>
+    </table>
+    <br>
+    <div class="note-box" style="border-left:3px solid var(--green);">
+      <strong>MRNA (tracked separately):</strong> Open $59.47 → Close $67.27 (TV MCP quote_get) = <strong class="pos">+13.2% session</strong>. Catalyst: FDA advisory 9-0 vote for mFLUSIVA flu vaccine + Science Day pipeline showcase. PDUFA Aug 5, 2026. Directly drove XLV +4.15%, XBI +3.66%, IBB +2.85%.
+    </div>
+  </div>
+
+  <!-- NEXT WEEK EARNINGS PREVIEW -->
+  <div class="section">
+    <div class="section-title">Next Week Earnings Preview</div>
+    <div class="note-box">Tomorrow June 27 = <strong>Saturday — no market.</strong> Next trading day: Monday June 30. Earnings calendar for June 27-29 unavailable — verify manually. Source: stockanalysis.com/markets/earnings/ returned 404; web search returned no specific BMO names for the weekend.</div>
+    <table>
+      <tr><th>Ticker</th><th>Date</th><th>Time</th><th>EPS Est</th><th>Rev Est</th><th>Theme / ETF</th><th>Watch For</th></tr>
+      <tr>
+        <td class="ticker">NKE</td>
+        <td>June 30</td>
+        <td>AMC</td>
+        <td>$0.11 <span class="neg">(-21.4% YoY)</span></td>
+        <td>$10.9B <span class="neg">(-2% YoY)</span></td>
+        <td>XLY / XRT</td>
+        <td>"Win Now" strategy update; China commentary; tariff margin pressure; digital channel weakness. Implied move: not pulled.</td>
+      </tr>
+    </table>
+  </div>
+
+  <!-- POSITIONS PLAN -->
+  <div class="section">
+    <div class="section-title">Personal Positions Plan</div>
+    <table>
+      <tr><th>Area</th><th>Assessment</th></tr>
+      <tr>
+        <td style="color:var(--red);white-space:nowrap">AI/Chip Overnight Risk</td>
+        <td>NVDA AH flat (~$192.26, TV MCP 5-min confirmed). No new negative catalyst in AH. But Apple/MSFT demand narrative unresolved; Q-end rebalancing pressure may continue Monday. Consider trimming size if AI names near resistance.</td>
+      </tr>
+      <tr>
+        <td style="color:var(--green);white-space:nowrap">Healthcare/Biotech Opportunity</td>
+        <td>MRNA PDUFA Aug 5 is live hard catalyst. XLV +4.15% / XBI / IBB all confirmed biotech theme-wide bid. Bullish backdrop for biotech longs. Watch MRNA for pullback entry.</td>
+      </tr>
+      <tr>
+        <td style="color:var(--yellow);white-space:nowrap">Precious Metals</td>
+        <td>GLD +1.26%, SLV +1.08%, GDXJ juniors +2.25% outpacing GDX +0.67% — juniors leading = real metals run, not just a hedge bid. Safe-haven + dollar neutral (UUP -0.11%). Supportive setup into weekend.</td>
+      </tr>
+      <tr>
+        <td style="color:var(--cyan);white-space:nowrap">Theme Bias Monday</td>
+        <td><strong class="neg">Risk-OFF</strong> for AI/chips until demand clarity. <strong class="pos">Risk-ON</strong> for healthcare (MRNA PDUFA), energy (XOP +1.85%), travel/transports (JETS/IYT), precious metals (GLD/GDXJ). Watch KWEB for weekend China macro news (flat today, +0.25%).</td>
+      </tr>
+      <tr>
+        <td style="color:var(--muted);white-space:nowrap">EOD Setups Still Valid</td>
+        <td>PLTR +1.39% (software AI relative strength despite chip selloff — watch for continuation). SOFI +2.76% (financials rotation; check KRE +1.58% continuation). TSLA +1.18% (bucked tech — EV narrative holds).</td>
+      </tr>
+    </table>
+  </div>
+
+  <!-- ASSUMPTION AUDIT -->
+  <div class="section">
+    <div class="section-title">Assumption Audit</div>
+    <table class="audit-table">
+      <tr><th>Item</th><th>Detail</th></tr>
+      <tr><td>TV MCP price method</td><td>batch_run get_ohlcv for all 57 ETFs + 10-name watchlist (daily bars). quote_get for NVDA + MRNA — returned regular session close. NVDA AH: chart_set_symbol + chart_set_timeframe(5) + data_get_ohlcv(20 bars) = intraday extended bars confirmed.</td></tr>
+      <tr><td>ETF % data type</td><td>Regular session (daily) % change — NOT AH-specific. ETF AH moves not separately pulled.</td></tr>
+      <tr><td>Chrome MCP</td><td>Schema loaded (tabs_context_mcp) but not invoked for deep sweep — WebFetch top-20 fallback used. AH gap universe limited; $1B+ names on pages 2+ may be missed.</td></tr>
+      <tr><td>AH volume</td><td>Stockanalysis has no volume column. NVDA AH vol ~130K estimated from 5-min bars (above 100K threshold; estimate). All other watchlist names: "AH volume unverified" — 🟡 conviction where applied.</td></tr>
+      <tr><td>Unavailable AH prices</td><td>TSLA, SOFI, AMD, PLTR, MARA, COIN, SNDK, META, AMZN — wrote "unavailable — not pulled." Only NVDA received intraday AH treatment.</td></tr>
+      <tr><td>DRAM -9.19%</td><td>Very large move; judged plausible (SK Hynix, Samsung >10% Asia per web search). Not flagged DATA SUSPECT.</td></tr>
+      <tr><td>SNDK $2,090 price</td><td>Very high per-share; consistent with spinoff mechanics. Not flagged.</td></tr>
+      <tr><td>Micron earnings</td><td>Reported June 24, NOT tonight. Retroactive context for today's chip reversal narrative.</td></tr>
+      <tr><td>Earnings calendar</td><td>stockanalysis 404'd. Web search returned no specific June 27-29 BMO reports. June 27 = Saturday. Nike NKE confirmed June 30 AMC.</td></tr>
+      <tr><td>Finviz Elite</td><td>Unavailable — public feed used.</td></tr>
+      <tr><td>UNCLASSIFIED headlines</td><td>SKS (Saks bankruptcy — no ETF bucket). Polestar ban (China-EV rule — KWEB adjacent but not direct). Payne Fox commentary (sentiment only).</td></tr>
+    </table>
+  </div>
+
+  <div class="footbar">
+    After-Hours Gaps Scan v7.7 &nbsp;·&nbsp; 2026-06-26 &nbsp;·&nbsp; Generated ~18:00 ET &nbsp;·&nbsp;
+    <a href="https://nkuy36.github.io/trading-dashboards/">All Scans</a>
+  </div>
+
+</div>
+</body>
+</html>
