@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>After-Hours Gaps Scan — 2026-06-29 (v7.7)</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0e17;
+    --bg2: #111827;
+    --bg3: #1a2235;
+    --border: #1e2d47;
+    --text: #e2e8f0;
+    --muted: #8899aa;
+    --green: #22c55e;
+    --green-dim: #14532d;
+    --red: #ef4444;
+    --red-dim: #450a0a;
+    --yellow: #eab308;
+    --yellow-dim: #422006;
+    --blue: #3b82f6;
+    --purple: #a855f7;
+    --cyan: #06b6d4;
+    --orange: #f97316;
+    --accent: #2563eb;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    line-height: 1.6;
+    padding: 24px 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  h1 { font-size: 20px; font-weight: 700; color: #fff; margin-bottom: 4px; }
+  h2 { font-size: 14px; font-weight: 600; color: var(--cyan); margin: 28px 0 12px; text-transform: uppercase; letter-spacing: 0.08em; border-bottom: 1px solid var(--border); padding-bottom: 6px; }
+  h3 { font-size: 13px; font-weight: 600; color: var(--blue); margin: 18px 0 8px; }
+  p { margin: 6px 0; color: var(--text); }
+  a { color: var(--blue); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  .subtitle { color: var(--muted); font-size: 12px; margin-bottom: 20px; }
+
+  /* TOOL HEALTH BANNER */
+  .tool-health {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px 18px;
+    margin-bottom: 24px;
+  }
+  .tool-health .title-row { font-weight: 700; color: #fff; margin-bottom: 8px; font-size: 13px; }
+  .tool-health .item { display: flex; align-items: flex-start; gap: 8px; margin: 4px 0; font-size: 12px; }
+  .tool-health .ok { color: var(--green); }
+  .tool-health .warn { color: var(--yellow); }
+  .tool-health .miss-box {
+    background: var(--yellow-dim);
+    border: 1px solid var(--yellow);
+    border-radius: 4px;
+    padding: 8px 12px;
+    margin-top: 10px;
+    color: var(--yellow);
+    font-size: 12px;
+  }
+
+  /* TABLES */
+  .tbl-wrap { overflow-x: auto; margin: 10px 0 18px; }
+  table { width: 100%; border-collapse: collapse; }
+  th {
+    background: var(--bg3);
+    color: var(--muted);
+    text-align: left;
+    padding: 8px 10px;
+    font-weight: 600;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+  }
+  td {
+    padding: 8px 10px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+    font-size: 12px;
+  }
+  tr:hover td { background: rgba(255,255,255,0.02); }
+  .num { font-variant-numeric: tabular-nums; }
+  .up { color: var(--green); font-weight: 600; }
+  .dn { color: var(--red); font-weight: 600; }
+  .neutral { color: var(--muted); }
+  .tag-green { background: var(--green-dim); color: var(--green); padding: 2px 6px; border-radius: 3px; font-size: 11px; white-space: nowrap; }
+  .tag-red { background: var(--red-dim); color: var(--red); padding: 2px 6px; border-radius: 3px; font-size: 11px; white-space: nowrap; }
+  .tag-yellow { background: var(--yellow-dim); color: var(--yellow); padding: 2px 6px; border-radius: 3px; font-size: 11px; white-space: nowrap; }
+  .tag-blue { background: #1e3a5f; color: var(--blue); padding: 2px 6px; border-radius: 3px; font-size: 11px; white-space: nowrap; }
+  .tag-grey { background: #1a2235; color: var(--muted); padding: 2px 6px; border-radius: 3px; font-size: 11px; white-space: nowrap; }
+
+  /* CARDS */
+  .card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px 18px;
+    margin: 10px 0;
+  }
+  .card.green-border { border-color: var(--green-dim); border-left: 3px solid var(--green); }
+  .card.red-border { border-color: var(--red-dim); border-left: 3px solid var(--red); }
+  .card.yellow-border { border-color: var(--yellow-dim); border-left: 3px solid var(--yellow); }
+  .card.blue-border { border-left: 3px solid var(--blue); }
+  .card-title { font-weight: 700; font-size: 14px; color: #fff; margin-bottom: 6px; }
+  .card-meta { color: var(--muted); font-size: 11px; margin-bottom: 10px; }
+  .card-row { display: flex; gap: 20px; flex-wrap: wrap; margin: 6px 0; }
+  .card-row .kv { display: flex; flex-direction: column; gap: 2px; }
+  .card-row .kv .k { color: var(--muted); font-size: 11px; }
+  .card-row .kv .v { font-weight: 600; font-size: 13px; }
+  .note { color: var(--muted); font-size: 11px; font-style: italic; margin-top: 8px; }
+
+  /* ALERT / WARNING BOX */
+  .alert-box {
+    border: 1px solid var(--red);
+    background: var(--red-dim);
+    border-radius: 6px;
+    padding: 10px 14px;
+    margin: 10px 0;
+    color: var(--red);
+    font-size: 12px;
+  }
+  .info-box {
+    border: 1px solid var(--border);
+    background: var(--bg3);
+    border-radius: 6px;
+    padding: 10px 14px;
+    margin: 10px 0;
+    color: var(--muted);
+    font-size: 12px;
+  }
+
+  /* SANITY ROW */
+  .sanity-row { display: flex; gap: 24px; flex-wrap: wrap; margin: 8px 0; }
+  .sanity-item { background: var(--bg3); border: 1px solid var(--border); border-radius: 6px; padding: 10px 16px; }
+  .sanity-item .s-label { color: var(--muted); font-size: 11px; }
+  .sanity-item .s-price { font-size: 16px; font-weight: 700; color: #fff; }
+  .sanity-item .s-chg { font-size: 12px; }
+
+  /* GRID */
+  .etf-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 8px; margin: 10px 0; }
+  .etf-cell {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 8px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .etf-cell .ticker { font-weight: 700; font-size: 13px; }
+  .etf-cell .theme { color: var(--muted); font-size: 10px; }
+  .etf-cell .chg { font-weight: 600; font-size: 13px; }
+
+  /* AUDIT */
+  .audit-item { background: var(--bg3); border: 1px solid var(--border); border-radius: 6px; padding: 10px 14px; margin: 6px 0; font-size: 12px; }
+  .audit-item .label { color: var(--muted); font-size: 11px; margin-bottom: 4px; }
+
+  .divider { border: none; border-top: 1px solid var(--border); margin: 20px 0; }
+  .footer { color: var(--muted); font-size: 11px; margin-top: 32px; padding-top: 16px; border-top: 1px solid var(--border); }
+  .breakout-badge { background: #3b1c7e; color: #c084fc; padding: 3px 8px; border-radius: 4px; font-size: 11px; font-weight: 700; }
+
+  @media (max-width: 700px) {
+    body { padding: 14px 10px; }
+    .card-row { flex-direction: column; gap: 10px; }
+    .sanity-row { flex-direction: column; gap: 8px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<h1>🌙 After-Hours Gaps Scan</h1>
+<div class="subtitle">v7.7 &nbsp;·&nbsp; June 29, 2026 &nbsp;·&nbsp; Post-close scan (~5 PM ET)</div>
+
+<!-- TOOL HEALTH BANNER -->
+<div class="tool-health">
+  <div class="title-row">🔧 TOOL HEALTH</div>
+  <div class="item"><span class="ok">✅</span> TV MCP (batch_run): LIVE — 57/57 ETFs returned; SPY/QQQ sanity passed</div>
+  <div class="item"><span class="ok">✅</span> stockanalysis.com AH pages: LIVE — gainers + losers returned (top-20 %-sort)</div>
+  <div class="item"><span class="ok">✅</span> Finviz public news: LIVE — post-4 PM ET headlines returned</div>
+  <div class="item"><span class="warn">⚠️</span> Chrome MCP: Unavailable — AH gap discovery limited to top-20 %-sort; $1B+ names beyond page 1 may be missed</div>
+  <div class="miss-box">
+    ⚠️ CRITICAL MISS (Chrome MCP down): CMCSA (Comcast, ~$100B+) surged ~25% AH on NBCUniversal spinoff announcement. NOT in stockanalysis top-20 %-sort (dominated by micro-caps). Caught via Finviz news cross-reference. Included manually below.
+  </div>
+</div>
+
+<!-- SANITY CHECK -->
+<h2>Index Snapshot</h2>
+<div class="sanity-row">
+  <div class="sanity-item">
+    <div class="s-label">SPY close</div>
+    <div class="s-price">$741.00</div>
+    <div class="s-chg up">+0.61% ✅</div>
+  </div>
+  <div class="sanity-item">
+    <div class="s-label">QQQ close</div>
+    <div class="s-price">$724.08</div>
+    <div class="s-chg up">+1.41% ✅</div>
+  </div>
+  <div class="sanity-item">
+    <div class="s-label">VIX</div>
+    <div class="s-price">17.66</div>
+    <div class="s-chg up">-5.05% (risk-on)</div>
+  </div>
+  <div class="sanity-item">
+    <div class="s-label">Dow Jones</div>
+    <div class="s-price">52,000+</div>
+    <div class="s-chg up">First ever close above 52K</div>
+  </div>
+</div>
+<p class="note">Macro: US/Iran geopolitical tensions easing; tech bounce; Alphabet joins Dow. Market broke losing streak on AI narrative recovery.</p>
+
+<!-- STEP 1: TRADEABLE AH GAPPERS -->
+<h2>Tradeable AH Gappers (&gt;$1B Mkt Cap, &gt;3% Gap)</h2>
+
+<h3>🟢 AH Gainers</h3>
+<div class="tbl-wrap">
+<table>
+  <thead>
+    <tr>
+      <th>Ticker</th><th>Company</th><th>AH Price</th><th>AH %</th><th>Mkt Cap</th><th>Catalyst</th><th>ETF Bucket</th><th>AH Vol</th><th>Conv.</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>CMCSA</strong></td>
+      <td>Comcast Corp</td>
+      <td class="num">~$30+ est</td>
+      <td><span class="up">~+25%</span></td>
+      <td>~$100B+</td>
+      <td>NBCUniversal + Sky spin-off into separate public company (8-K filed); ~1 yr timeline</td>
+      <td><span class="tag-blue">XLC</span></td>
+      <td class="neutral">unverified</td>
+      <td><span class="tag-green">🟢 8-K confirmed</span></td>
+    </tr>
+    <tr>
+      <td><strong>AVAV</strong></td>
+      <td>AeroVironment</td>
+      <td class="num">$164.00</td>
+      <td><span class="up">+17.99%</span></td>
+      <td>$7.00B</td>
+      <td>Q4 earnings — Rev $641.6M vs $556M est (+15.4% beat); SCAR contract fears overblown</td>
+      <td><span class="tag-blue">ITA, SHLD</span></td>
+      <td class="neutral">unverified</td>
+      <td><span class="tag-yellow">🟡</span></td>
+    </tr>
+    <tr>
+      <td><strong>SHAZ</strong></td>
+      <td>SharonAI Holdings</td>
+      <td class="num">$89.00</td>
+      <td><span class="up">+9.88%</span></td>
+      <td>$1.36B</td>
+      <td>$1.6B oversubscribed capital raise closed (NVIDIA GPU AI factory, 40K+ GB300s, Oaktree + Situational Awareness LP)</td>
+      <td><span class="tag-blue">ARKK</span></td>
+      <td class="neutral">unverified</td>
+      <td><span class="tag-yellow">🟡</span></td>
+    </tr>
+    <tr>
+      <td><strong>HSAI</strong></td>
+      <td>Hesai Group</td>
+      <td class="num">$17.21</td>
+      <td><span class="up">+9.20%</span></td>
+      <td>$2.47B</td>
+      <td>Unconfirmed — AGM held June 26; no specific June 29 catalyst found → flag for 8 PM scan</td>
+      <td><span class="tag-blue">BOTZ</span></td>
+      <td class="neutral">unverified</td>
+      <td><span class="tag-yellow">🟡</span></td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+<h3>🔴 AH Losers</h3>
+<div class="tbl-wrap">
+<table>
+  <thead>
+    <tr>
+      <th>Ticker</th><th>Company</th><th>AH Price</th><th>AH %</th><th>Mkt Cap</th><th>Catalyst</th><th>ETF Bucket</th><th>AH Vol</th><th>Conv.</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>CNXC</strong></td>
+      <td>Concentrix Corp</td>
+      <td class="num">$18.95</td>
+      <td><span class="dn">-24.89%</span></td>
+      <td>$1.54B</td>
+      <td>Q2 guidance cut; full-year rev lowered to $9.93-$10.03B; non-GAAP EPS $2.63 vs $2.70 prior yr; AI structural disruption to BPO model</td>
+      <td><span class="tag-grey">UNCLASSIFIED</span></td>
+      <td class="neutral">unverified</td>
+      <td><span class="tag-green">🟢 confirmed</span></td>
+    </tr>
+    <tr style="background: rgba(239,68,68,0.05);">
+      <td><strong>TROW</strong></td>
+      <td>T. Rowe Price Group</td>
+      <td class="num">$88.59</td>
+      <td><span class="dn">-22.55%</span></td>
+      <td>$24.51B</td>
+      <td>❌ CATALYST UNCONFIRMED — 4+ searches found no June 29 announcement. Next earnings: July 23. May AUM positive. Needs manual verification.</td>
+      <td><span class="tag-blue">XLF</span></td>
+      <td class="neutral">unverified</td>
+      <td><span class="tag-red">❌ unconfirmed</span></td>
+    </tr>
+    <tr>
+      <td><strong>VSH</strong></td>
+      <td>Vishay Intertechnology</td>
+      <td class="num">$50.38</td>
+      <td><span class="dn">-10.48%</span></td>
+      <td>$7.66B</td>
+      <td>SK Hynix report: slowing HBM AI memory expansion, pivoting to commodity DRAM; Korean KOSPI -10%, circuit breakers; components supplier contagion</td>
+      <td><span class="tag-blue">SMH</span></td>
+      <td class="neutral">unverified</td>
+      <td><span class="tag-green">🟢 confirmed</span></td>
+    </tr>
+    <tr>
+      <td><strong>PRAX</strong></td>
+      <td>Praxis Precision Medicine</td>
+      <td class="num">$320.00</td>
+      <td><span class="dn">-8.72%</span></td>
+      <td>$9.77B</td>
+      <td>Likely profit-taking after June 22 FDA Breakthrough Status grant; no specific June 29 catalyst confirmed → flag for 8 PM</td>
+      <td><span class="tag-blue">XBI</span></td>
+      <td class="neutral">unverified</td>
+      <td><span class="tag-yellow">🟡</span></td>
+    </tr>
+  </tbody>
+</table>
+</div>
+<div class="info-box">All AH volume UNVERIFIED — AH intraday bars not pulled. TV MCP regular closes confirmed: AVAV $139.00, CMCSA $24.22, CNXC $25.23, TROW $114.38. AH prices sourced from stockanalysis.com. Conviction capped 🟡 on volume-unverified names.</div>
+
+<!-- STEP 2: ETF SWEEP -->
+<h2>ETF AH Sweep — 57-ETF Universe (Regular Session)</h2>
+<p class="note" style="margin-bottom:12px;">All values from TV MCP batch_run get_ohlcv, June 29 regular session. AH ETF prices not separately pulled.</p>
+
+<h3>Bullish ETFs (&gt;+1.5% Regular Session)</h3>
+<div class="etf-grid">
+  <div class="etf-cell">
+    <div class="ticker">SMH</div>
+    <div class="theme">Semiconductors</div>
+    <div class="chg up">+2.76% · $631.98</div>
+    <div class="theme" style="color:#ef4444;margin-top:4px;">⚠️ SK Hynix HBM news AH → headwind tomorrow</div>
+  </div>
+  <div class="etf-cell">
+    <div class="ticker">CIBR</div>
+    <div class="theme">Cybersecurity</div>
+    <div class="chg up">+2.24% · $88.50</div>
+  </div>
+  <div class="etf-cell">
+    <div class="ticker">ARKK</div>
+    <div class="theme">Speculative Growth</div>
+    <div class="chg up">+1.96% · $80.63</div>
+  </div>
+  <div class="etf-cell">
+    <div class="ticker">XBI</div>
+    <div class="theme">Biotech small-cap</div>
+    <div class="chg up">+1.81% · $158.31</div>
+    <div class="theme" style="margin-top:4px;">⚠️ PRAX AH selling may weigh</div>
+  </div>
+  <div class="etf-cell">
+    <div class="ticker">QTUM</div>
+    <div class="theme">Quantum</div>
+    <div class="chg up">+1.78% · $160.81</div>
+  </div>
+  <div class="etf-cell">
+    <div class="ticker">XLY</div>
+    <div class="theme">Consumer Disc.</div>
+    <div class="chg up">+1.66% · $117.12</div>
+    <div class="theme" style="margin-top:4px;">TSLA +7.87% driving</div>
+  </div>
+  <div class="etf-cell">
+    <div class="ticker">DRAM</div>
+    <div class="theme">HBM Memory ETF</div>
+    <div class="chg up">+1.64% · $71.94</div>
+    <div class="theme" style="margin-top:4px;">⚠️ SK Hynix news = bifurcated</div>
+  </div>
+  <div class="etf-cell">
+    <div class="ticker">QQQ</div>
+    <div class="theme">Nasdaq 100</div>
+    <div class="chg up">+1.41% · $724.08</div>
+  </div>
+  <div class="etf-cell">
+    <div class="ticker">ARKX</div>
+    <div class="theme">Space</div>
+    <div class="chg up">+1.44% · $33.13</div>
+  </div>
+  <div class="etf-cell">
+    <div class="ticker">BOTZ</div>
+    <div class="theme">Robotics / AI</div>
+    <div class="chg up">+1.32% · $36.86</div>
+  </div>
+  <div class="etf-cell">
+    <div class="ticker">XLK</div>
+    <div class="theme">Tech SPDR</div>
+    <div class="chg up">+1.25% · $185.41</div>
+  </div>
+</div>
+
+<h3>Bearish / Notable Negative ETFs</h3>
+<div class="etf-grid">
+  <div class="etf-cell">
+    <div class="ticker">WGMI</div>
+    <div class="theme">Bitcoin Miners</div>
+    <div class="chg dn">-5.02% · $63.70</div>
+    <div class="theme" style="margin-top:4px;">MARA -5.04%; IBIT +0.84%</div>
+  </div>
+  <div class="etf-cell">
+    <div class="ticker">XME</div>
+    <div class="theme">Metals & Mining</div>
+    <div class="chg dn">-1.11% · $106.52</div>
+  </div>
+  <div class="etf-cell">
+    <div class="ticker">GLD</div>
+    <div class="theme">Gold</div>
+    <div class="chg dn">-0.54% · $368.58</div>
+    <div class="theme" style="margin-top:4px;">Risk-on = gold retreat</div>
+  </div>
+</div>
+
+<div class="info-box" style="margin-top:12px;">
+  <strong>THEME-WIDE BREAKOUT:</strong> None confirmed today. XBI+1.81% / IBB+0.74% — XBI above threshold but IBB below; not a confirmed biotech theme-wide signal.<br><br>
+  <strong>XLC TOMORROW WATCH:</strong> XLC closed -0.39% today. CMCSA (+~25% AH) is a major XLC holding. XLC likely gaps UP tomorrow on NBCUniversal spinoff news.<br><br>
+  <strong>SMH TOMORROW WATCH:</strong> SMH +2.76% today but SK Hynix HBM slowdown report hit post-close. SMH may open lower. DRAM ETF uncertain: SK Hynix commodity DRAM pivot = more DRAM volumes (bullish DRAM prices) but AI capex fear = negative sentiment. Do NOT assume DRAM and SMH move together tomorrow.
+</div>
+
+<!-- STEP 5: AMC EARNINGS -->
+<h2>AMC Earnings Results</h2>
+
+<div class="card green-border">
+  <div class="card-title">✅ AVAV — AeroVironment (Q4 FY2026)</div>
+  <div class="card-meta">Reported AMC June 29, 2026 · Conference call 4:30 PM ET</div>
+  <div class="card-row">
+    <div class="kv"><div class="k">Revenue (Actual)</div><div class="v up">$641.6M</div></div>
+    <div class="kv"><div class="k">Revenue (Est.)</div><div class="v">$556.0M</div></div>
+    <div class="kv"><div class="k">Beat</div><div class="v up">+$85.6M (+15.4%)</div></div>
+    <div class="kv"><div class="k">Expected EPS</div><div class="v">$1.48</div></div>
+    <div class="kv"><div class="k">Actual EPS</div><div class="v neutral">unconfirmed</div></div>
+    <div class="kv"><div class="k">AH Reaction</div><div class="v up">+17.99%</div></div>
+  </div>
+  <p style="margin-top:10px;font-size:12px;">Context: SCAR Space Force contract ($1.7B) canceled March 2026 + $89M goodwill impairment restatement. Despite headwinds, massive revenue beat confirms strong DoD drone/UAS demand. Relief rally. ETF read: ITA, SHLD positive tomorrow.</p>
+</div>
+
+<div class="card red-border" style="margin-top:10px;">
+  <div class="card-title">⚠️ CNXC — Concentrix (Q2 FY2026)</div>
+  <div class="card-meta">Reported AMC June 29, 2026</div>
+  <div class="card-row">
+    <div class="kv"><div class="k">Revenue</div><div class="v">$2,462.5M (+1.9% YoY)</div></div>
+    <div class="kv"><div class="k">Non-GAAP EPS</div><div class="v dn">$2.63 vs $2.70 prior yr</div></div>
+    <div class="kv"><div class="k">EPS vs Est.</div><div class="v neutral">$2.63 vs $2.57 (slight beat)</div></div>
+    <div class="kv"><div class="k">AH Reaction</div><div class="v dn">-24.89%</div></div>
+  </div>
+  <div class="card-row" style="margin-top:8px;">
+    <div class="kv"><div class="k">FY2026 Guidance (New)</div><div class="v dn">$9.925-$10.025B (lowered)</div></div>
+    <div class="kv"><div class="k">FY2026 Growth</div><div class="v dn">0.25-1.25% cc (lowered)</div></div>
+  </div>
+  <p style="margin-top:10px;font-size:12px;">Why the drop: Guidance cut + EPS declining vs prior year + AI structural disruption thesis (BPO / customer-service replacement by AI). iX Suite AI wins up 400% YoY but haven't offset core revenue decline. Technology and healthcare verticals declining. Continued selling likely tomorrow.</p>
+</div>
+
+<!-- STEP 3: FINVIZ NEWS -->
+<h2>Finviz AH News Digest (Public Feed)</h2>
+<p class="note" style="margin-bottom:10px;">Finviz Elite filter unavailable — public feed only. Focus on post-4 PM ET headlines.</p>
+<div class="tbl-wrap">
+<table>
+  <thead><tr><th>Time ET</th><th>Ticker</th><th>Headline</th><th>Source</th><th>ETF Bucket</th></tr></thead>
+  <tbody>
+    <tr>
+      <td>4:39 PM</td>
+      <td><strong>CMCSA</strong></td>
+      <td>Comcast Splits as Lisa Cook Gets Reprieve (spin-off of NBCUniversal + Sky)</td>
+      <td>WSJ</td>
+      <td><span class="tag-blue">XLC</span></td>
+    </tr>
+    <tr>
+      <td>4:13 PM</td>
+      <td>—</td>
+      <td>Susquehanna Says It Lost Millions to Mystery Insider Traders</td>
+      <td>Bloomberg</td>
+      <td><span class="tag-grey">UNCLASSIFIED</span></td>
+    </tr>
+    <tr>
+      <td>4:09 PM</td>
+      <td>—</td>
+      <td>US Stocks Get Tech Boost After AI-Fueled Selloff: Markets Wrap</td>
+      <td>Bloomberg</td>
+      <td><span class="tag-grey">SPY, QQQ</span></td>
+    </tr>
+    <tr>
+      <td>4:07 PM</td>
+      <td>—</td>
+      <td>Stock Market Today: Nasdaq Jumps 2%, Breaks Losing Streak</td>
+      <td>WSJ</td>
+      <td><span class="tag-blue">QQQ, XLK</span></td>
+    </tr>
+    <tr>
+      <td>4:04 PM</td>
+      <td><strong>GOOGL</strong></td>
+      <td>Dow jumps 300 points for first close above 52,000, powered by new member Alphabet</td>
+      <td>CNBC</td>
+      <td><span class="tag-blue">XLC</span></td>
+    </tr>
+    <tr>
+      <td>4:04 PM</td>
+      <td>—</td>
+      <td>Wall Street ends higher as US, Iran attacks ease; major tech-related shares jump</td>
+      <td>Reuters</td>
+      <td><span class="tag-grey">Macro / geopolitical</span></td>
+    </tr>
+  </tbody>
+</table>
+</div>
+<div class="info-box">Key macro: "US, Iran attacks ease" = geopolitical risk easing → contributed to broad rally. GOOGL Dow inclusion triggers passive rebalancing flows into GOOGL/XLC. Lisa Cook Supreme Court ruling (Fed Governor can't be fired by President) = Fed independence preserved → rate policy stability.</div>
+
+<!-- STEP 4: WATCHLIST -->
+<h2>Watchlist AH Activity</h2>
+<div class="tbl-wrap">
+<table>
+  <thead><tr><th>Ticker</th><th>Close</th><th>Day %</th><th>AH Note</th></tr></thead>
+  <tbody>
+    <tr>
+      <td><strong>TSLA</strong></td>
+      <td class="num">$411.84</td>
+      <td><span class="up">+7.87%</span></td>
+      <td>Morgan Stanley raised Q2 delivery est to 413K; xAI Grok 4.5 AI narrative; regulatory relief. Delivery data release imminent — primary near-term catalyst.</td>
+    </tr>
+    <tr>
+      <td><strong>AMD</strong></td>
+      <td class="num">$539.49</td>
+      <td><span class="up">+3.18%</span></td>
+      <td>Tech rally, AI datacenter demand. No specific AMD catalyst.</td>
+    </tr>
+    <tr>
+      <td><strong>AMZN</strong></td>
+      <td class="num">$240.14</td>
+      <td><span class="up">+2.53%</span></td>
+      <td>XLY anchor; consumer/cloud narrative. No specific AMZN catalyst AH.</td>
+    </tr>
+    <tr>
+      <td><strong>NVDA</strong></td>
+      <td class="num">$194.97</td>
+      <td><span class="up">+0.58%</span></td>
+      <td>⚠️ SK Hynix HBM slowdown news AH = potential headwind for NVDA tomorrow. Watch SMH open.</td>
+    </tr>
+    <tr>
+      <td><strong>META</strong></td>
+      <td class="num">$562.60</td>
+      <td><span class="up">+0.46%</span></td>
+      <td>Slight gain. CMCSA spinoff → XLC rebalancing may favor META as index anchor.</td>
+    </tr>
+    <tr>
+      <td><strong>COIN</strong></td>
+      <td class="num">$151.65</td>
+      <td><span class="up">+0.55%</span></td>
+      <td>Muted. IBIT +0.84% — BTC held despite miner weakness.</td>
+    </tr>
+    <tr>
+      <td><strong>SOFI</strong></td>
+      <td class="num">$18.19</td>
+      <td><span class="neutral">0.00%</span></td>
+      <td>Flat; no catalyst.</td>
+    </tr>
+    <tr>
+      <td><strong>PLTR</strong></td>
+      <td class="num">$115.70</td>
+      <td><span class="dn">-0.46%</span></td>
+      <td>Slight red despite market rally. SHLD flat (0%).</td>
+    </tr>
+    <tr>
+      <td><strong>SNDK</strong></td>
+      <td class="num">$2,050.39</td>
+      <td><span class="dn">-1.93%</span></td>
+      <td>Slight pullback from recent highs.</td>
+    </tr>
+    <tr>
+      <td><strong>MARA</strong></td>
+      <td class="num">$14.03</td>
+      <td><span class="dn">-5.04%</span></td>
+      <td>Bitcoin miner weakness; WGMI -5.02%. BTC itself held per IBIT (+0.84%). Miner-specific issue.</td>
+    </tr>
+    <tr style="background:rgba(34,197,94,0.03);">
+      <td><strong>SPY</strong></td>
+      <td class="num">$741.00</td>
+      <td><span class="up">+0.61%</span></td>
+      <td>✅ Sanity passed — prior close implied ~$736.52, open $736.53 confirmed.</td>
+    </tr>
+    <tr style="background:rgba(34,197,94,0.03);">
+      <td><strong>QQQ</strong></td>
+      <td class="num">$724.08</td>
+      <td><span class="up">+1.41%</span></td>
+      <td>✅ Sanity passed — Finviz confirms "Nasdaq Jumps 2%".</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+<p class="note">All AH volume: unverified. TV MCP batch_run returns regular session data. AH individual pulls not completed for watchlist.</p>
+
+<!-- STEP 7: TOMORROW'S EARNINGS -->
+<h2>Tomorrow's Earnings Preview — June 30, 2026</h2>
+
+<div class="card blue-border">
+  <div class="card-title">🎯 NKE — Nike (Q4 + FY2026) · AMC · 2 PM PT / 5 PM ET</div>
+  <div class="card-meta">Key event: FY end + Q4 results. Guidance will set the tone for FY2027.</div>
+  <div class="card-row">
+    <div class="kv"><div class="k">Consensus EPS</div><div class="v">$0.11–$0.13 (vs $0.14 YoY, ~-21%)</div></div>
+    <div class="kv"><div class="k">Consensus Revenue</div><div class="v">$10.85B (-2% YoY)</div></div>
+    <div class="kv"><div class="k">Beat tendency</div><div class="v up">8 consecutive beats</div></div>
+  </div>
+  <p style="margin-top:10px;font-size:12px;">
+    Key risks: Greater China -20% projected. Operating income expected -21% YoY to ~$253M.<br>
+    Upside wild card: Tariff refunds NOT in analyst estimates → could boost reported EPS above consensus.<br>
+    ETF Impact: <strong>XLY</strong> (major holding) — beat could extend today's XLY +1.66% momentum.<br>
+    Implied move from options: not pulled — verify manually before the open.
+  </p>
+</div>
+
+<div class="info-box" style="margin-top:10px;">
+  Also reporting June 30: <strong>STZ</strong> (Constellation Brands), <strong>PRGS</strong> (Progress Software). Estimates not retrieved — verify on earningswhispers.com.
+</div>
+
+<!-- STEP 8: PERSONAL POSITIONS -->
+<h2>Personal Positions Plan</h2>
+
+<div class="card">
+  <table style="width:100%">
+    <thead><tr><th>Name</th><th>Situation</th><th>Action / Plan</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><strong>TSLA</strong></td>
+        <td>+7.87% today — massive gap. Q2 delivery data due this week.</td>
+        <td>If long: delivery beat (est 413K Morgan Stanley) is next catalyst. AH quiet = gap preserved. Mental stop ~$411. Patience for delivery day volatility.</td>
+      </tr>
+      <tr>
+        <td><strong>NVDA</strong></td>
+        <td>Only +0.58% despite tech rally. SK Hynix HBM news AH = headwind.</td>
+        <td>Watch SMH open. If SMH opens -1.5%+, NVDA likely follows. Consider reducing if carrying significant overnight risk.</td>
+      </tr>
+      <tr>
+        <td><strong>MARA</strong></td>
+        <td>-5.04% on no BTC-specific catalyst (IBIT +0.84%). Miner-specific weakness.</td>
+        <td>Check BTC overnight. If BTC holds ≥$34, MARA may bounce. If BTC fades, more downside. No add until catalyst confirmed.</td>
+      </tr>
+      <tr>
+        <td><strong>AMZN / AMD</strong></td>
+        <td>Strong regular session. No negative AH catalysts.</td>
+        <td>Gaps preserved. AMD watch: if SMH gap-down ≥1.5% tomorrow on SK Hynix, AMD could give back some today's gains.</td>
+      </tr>
+    </tbody>
+  </table>
+  <div class="card-row" style="margin-top:14px;">
+    <div class="kv">
+      <div class="k">Theme Bias Tomorrow</div>
+      <div class="v" style="color:var(--yellow);">MIXED / Cautiously Risk-On</div>
+    </div>
+    <div class="kv">
+      <div class="k">Risk-On Drivers</div>
+      <div class="v">VIX 17.66, Iran ease, Dow record, CMCSA/AVAV gap-ups</div>
+    </div>
+    <div class="kv">
+      <div class="k">Risk-Off Headwinds</div>
+      <div class="v">SK Hynix HBM → SMH gap-down risk; TROW -22.5% mystery; CNXC AI disruption</div>
+    </div>
+  </div>
+</div>
+
+<!-- STEP 9: ASSUMPTION AUDIT -->
+<h2>Assumption Audit</h2>
+
+<div class="audit-item">
+  <div class="label">TV MCP PRICE METHOD</div>
+  batch_run get_ohlcv for all 57 ETFs (three parallel calls) + 10-stock watchlist. quote_get used for individual AH confirmation: TROW ($114.38), AVAV ($139.00), CNXC ($25.23), CMCSA ($24.22). All values = REGULAR SESSION closes. AH prices sourced from stockanalysis.com.
+</div>
+<div class="audit-item">
+  <div class="label">AH VOLUME</div>
+  Unverified for ALL names. AH intraday bars not pulled. Conviction capped 🟡 per protocol across all gappers except CMCSA (confirmed 8-K) and CNXC/VSH (confirmed catalysts).
+</div>
+<div class="audit-item">
+  <div class="label">CHROME MCP</div>
+  Unavailable — no tab group (would require user to open Chrome and create MCP tab group). AH gap discovery limited to top-20 %-sort. CMCSA missed in automated pull — caught via Finviz news cross-reference. 8 PM wide-universe scan will cover remaining large-caps.
+</div>
+<div class="audit-item">
+  <div class="label">FINVIZ</div>
+  Elite filter unavailable — public feed used. Limited to most recent headlines.
+</div>
+<div class="audit-item">
+  <div class="label">NUMBERS NOT PULLED</div>
+  AH ETF prices (only regular session available); CMCSA exact AH price (estimated ~$30+ from press reporting); AVAV actual EPS (expected $1.48, actual unconfirmed); NKE options implied move; AH volume for all gappers.
+</div>
+<div class="alert-box">
+  ⚠️ TROW (-22.55% AH, $24.5B): Catalyst UNCONFIRMED after 4+ targeted searches. No June 29 announcement, earnings not until July 23, May AUM was positive (+$3.3B inflows, $1.89T AUM). This is the night's biggest unresolved question. MANUAL VERIFICATION REQUIRED before trading.
+</div>
+<div class="audit-item">
+  <div class="label">UNCLASSIFIED HEADLINES</div>
+  "Susquehanna Says It Lost Millions to Mystery Insider Traders" (Bloomberg, 4:13 PM) — no ETF bucket match. No direct market impact identified.
+</div>
+<div class="audit-item">
+  <div class="label">DRAM / VSH NUANCE</div>
+  SK Hynix pivot to commodity DRAM = MORE commodity DRAM production (bullish DRAM volumes/pricing → DRAM ETF +1.64% regular session was correct signal). BUT electronic components suppliers (VSH) hurt because overall AI memory capex is slowing. These two effects diverge — do not assume DRAM ETF and SMH/VSH move together tomorrow.
+</div>
+<div class="audit-item">
+  <div class="label">GOOGL DOW INCLUSION</div>
+  Alphabet joining Dow triggers passive Dow-tracking fund rebalancing: buy GOOGL, sell the replaced component. Minor structural tailwind for GOOGL. XLC secondary beneficiary.
+</div>
+
+<div class="footer">
+  Report generated: 2026-06-29 · After-Hours Gaps Scan v7.7 · Automated run via Claude Code<br>
+  Sources: TV MCP (TradingView Desktop), stockanalysis.com, finviz.com/news, web search (Benzinga, MarketScreener, Yahoo Finance, Blockonomi, StockStory, TipRanks, GurufFocus, Benzinga)
+</div>
+
+</body>
+</html>
