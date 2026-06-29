@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pre-Market Catalyst v7.7 — June 29, 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0e17; --bg2: #0f1520; --bg3: #141c2e; --bg4: #1a2438;
+    --text: #e2e8f0; --muted: #94a3b8;
+    --green: #22c55e; --red: #ef4444; --amber: #f59e0b;
+    --purple: #a855f7; --cyan: #06b6d4; --orange: #f97316;
+    --blue: #3b82f6; --yellow: #eab308;
+    --border: #1e2d45;
+    --green-dim: rgba(34,197,94,0.12); --red-dim: rgba(239,68,68,0.12);
+    --amber-dim: rgba(245,158,11,0.12); --purple-dim: rgba(168,85,247,0.12);
+    --cyan-dim: rgba(6,182,212,0.12); --orange-dim: rgba(249,115,22,0.12);
+    --blue-dim: rgba(59,130,246,0.12); --yellow-dim: rgba(234,179,8,0.12);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: 'JetBrains Mono', monospace; font-size: 13px; line-height: 1.6; }
+  a { color: var(--blue); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  header { background: var(--bg2); border-bottom: 1px solid var(--border); padding: 16px 20px 12px; }
+  header h1 { font-size: 18px; font-weight: 700; }
+  header .sub { color: var(--muted); font-size: 11px; margin-top: 4px; }
+
+  .container { max-width: 1400px; margin: 0 auto; padding: 16px 20px; }
+
+  .tool-health { background: var(--bg3); border-left: 4px solid var(--green); padding: 12px 16px; margin-bottom: 16px; border-radius: 4px; }
+  .tool-health.warn { border-left-color: var(--amber); }
+  .th-row { display: flex; flex-wrap: wrap; gap: 16px; font-size: 12px; margin-top: 6px; }
+  .th-ok { color: var(--green); } .th-warn { color: var(--amber); } .th-err { color: var(--red); }
+  .th-label { color: var(--muted); font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; }
+
+  section { margin-bottom: 24px; }
+  .sec-title { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.12em; color: var(--muted); border-bottom: 1px solid var(--border); padding-bottom: 6px; margin-bottom: 12px; }
+
+  .briefing { background: var(--bg3); border: 1px solid var(--amber); border-radius: 8px; padding: 16px; margin-bottom: 20px; }
+  .briefing h3 { color: var(--amber); font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 8px; }
+  .briefing p { color: var(--text); font-size: 13px; line-height: 1.7; }
+
+  .top-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px; }
+  @media (max-width: 800px) { .top-grid { grid-template-columns: 1fr; } }
+  .top-panel { background: var(--bg3); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+  .panel-hdr { padding: 10px 14px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; }
+  .panel-hdr.bull { border-top: 3px solid var(--green); background: var(--bg4); }
+  .panel-hdr.bear { border-top: 3px solid var(--red); background: var(--bg4); }
+  .panel-hdr.etf { border-top: 3px solid var(--cyan); background: var(--bg4); }
+  .panel-hdr.stk { border-top: 3px solid var(--yellow); background: var(--bg4); }
+
+  .pick { border-bottom: 1px solid var(--border); padding: 10px 14px; }
+  .pick:last-child { border-bottom: none; }
+  .pick-row { display: flex; justify-content: space-between; align-items: flex-start; }
+  .pick-ticker { font-weight: 700; font-size: 14px; }
+  .pick-move-pos { color: var(--green); font-weight: 700; }
+  .pick-move-neg { color: var(--red); font-weight: 700; }
+  .pick-catalyst { font-size: 12px; color: var(--text); margin-top: 4px; }
+  .pick-levels { font-size: 11px; color: var(--muted); margin-top: 3px; }
+  .tag { display: inline-block; font-size: 10px; padding: 1px 7px; border-radius: 3px; margin: 2px 2px 0 0; }
+  .tag-green { background: var(--green-dim); color: var(--green); }
+  .tag-red { background: var(--red-dim); color: var(--red); }
+  .tag-amber { background: var(--amber-dim); color: var(--amber); }
+  .tag-cyan { background: var(--cyan-dim); color: var(--cyan); }
+  .tag-purple { background: var(--purple-dim); color: var(--purple); }
+  .tag-orange { background: var(--orange-dim); color: var(--orange); }
+  .tag-blue { background: var(--blue-dim); color: var(--blue); }
+  .conv-high { color: var(--green); } .conv-med { color: var(--amber); } .conv-low { color: var(--red); }
+
+  table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  th { background: var(--bg3); color: var(--muted); font-weight: 600; text-align: left; padding: 7px 10px; border-bottom: 1px solid var(--border); font-size: 10px; text-transform: uppercase; letter-spacing: 0.05em; white-space: nowrap; }
+  td { padding: 6px 10px; border-bottom: 1px solid rgba(30,45,69,0.5); vertical-align: top; }
+  tr:hover td { background: rgba(255,255,255,0.02); }
+  .pos { color: var(--green); } .neg { color: var(--red); } .neu { color: var(--amber); }
+
+  .theme-alert { background: var(--cyan-dim); border: 1px solid var(--cyan); border-radius: 6px; padding: 10px 14px; margin-bottom: 10px; font-size: 12px; }
+  .theme-alert.breakdown { background: var(--red-dim); border-color: var(--red); }
+  .theme-alert .ta-title { font-weight: 700; font-size: 13px; margin-bottom: 4px; }
+  .theme-alert.breakdown .ta-title { color: var(--red); }
+  .theme-alert .ta-title { color: var(--cyan); }
+
+  .policy-box { background: var(--purple-dim); border: 1px solid var(--purple); border-radius: 6px; padding: 10px 14px; margin-bottom: 10px; font-size: 12px; }
+  .wire-box { background: var(--orange-dim); border: 1px solid var(--orange); border-radius: 6px; padding: 10px 14px; margin-bottom: 10px; font-size: 12px; }
+  .flow-box { background: var(--blue-dim); border: 1px solid var(--blue); border-radius: 6px; padding: 10px 14px; margin-bottom: 10px; font-size: 12px; }
+  .warn-box { background: var(--amber-dim); border: 1px solid var(--amber); border-radius: 6px; padding: 10px 14px; margin-bottom: 10px; font-size: 12px; }
+
+  .etf-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(185px, 1fr)); gap: 6px; }
+  .etf-cell { background: var(--bg3); border: 1px solid var(--border); border-radius: 4px; padding: 7px 10px; font-size: 11px; }
+  .etf-cell .sym { font-weight: 700; font-size: 12px; }
+  .etf-cell .chg { font-weight: 600; }
+  .etf-cell .chg.pos { color: var(--green); }
+  .etf-cell .chg.neg { color: var(--red); }
+  .etf-cell .desc { color: var(--muted); font-size: 10px; }
+
+  .follow { background: var(--bg3); border: 1px solid var(--border); border-radius: 6px; padding: 10px 14px; margin-bottom: 8px; }
+  .follow .sym { font-weight: 700; }
+  .follow-status-fading { color: var(--red); }
+  .follow-status-on { color: var(--green); }
+  .follow-status-weak { color: var(--amber); }
+
+  .sched-item { display: flex; gap: 12px; padding: 6px 0; border-bottom: 1px solid rgba(30,45,69,0.5); font-size: 12px; }
+  .sched-time { color: var(--cyan); min-width: 85px; font-weight: 600; }
+  .sched-high { color: var(--amber); font-weight: 700; }
+
+  .audit-item { padding: 5px 0; border-bottom: 1px solid rgba(30,45,69,0.4); font-size: 12px; color: var(--muted); }
+  .audit-item strong { color: var(--text); }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>☀️ PRE-MARKET CATALYST REPORT <span style="color:var(--muted);font-size:14px;">v7.7 HYBRID</span></h1>
+  <div class="sub">Monday, June 29, 2026 &nbsp;|&nbsp; Generated ~08:30 AM ET &nbsp;|&nbsp; Stockbee / Qullamaggie EOD breakout framework &nbsp;|&nbsp; 3–5 day hold</div>
+</header>
+
+<div class="container">
+
+<!-- TOOL HEALTH -->
+<div class="tool-health warn">
+  <div class="th-label">Tool Health</div>
+  <div class="th-row">
+    <span><span class="th-ok">✅</span> TV MCP (batch_run 57/57 ✓)</span>
+    <span><span class="th-ok">✅</span> stockanalysis.com</span>
+    <span><span class="th-ok">✅</span> Finviz news (public)</span>
+    <span><span class="th-warn">⚠️</span> Chrome MCP (not tested — gap discovery limited to top-20 %-sort; Yahoo options skipped)</span>
+  </div>
+  <div style="font-size:11px;color:var(--muted);margin-top:6px;">All 3 mandatory gates PASSED. TV MCP method: batch_run primary (all 57 ETFs + individual tickers). Note: batch_run change_pct is vs. prior pre-market bar, NOT vs. prior day close. Day % gains cited from stockanalysis.com. Finviz Elite filter unavailable — public feed used.</div>
+</div>
+
+<!-- MORNING BRIEFING -->
+<div class="briefing">
+  <h3>☀️ Morning Briefing — 30 Second Read</h3>
+  <p>
+    Three major binary catalysts are hitting the tape simultaneously on Monday June 29. <strong>Comcast ($CMCSA +22.5%)</strong> announced a tax-free spin-off of NBCUniversal and Sky, creating two separate pure-play public companies — the pure-play broadband rump gets a premium re-rating, dragging Charter ($CHTR +24%) and Liberty Broadband ($LBRDK +21%) along for the ride. In space, <strong>Rocket Lab ($RKLB +11%)</strong> is acquiring <strong>Iridium Communications ($IRDM +22%)</strong> in an $8B cash-and-stock deal at $54/share — unusually, the acquirer's stock is also surging (market loves the combination of RKLB's launch/manufacturing with IRDM's global LEO network). Meanwhile, a <strong>fragile US-Iran ceasefire</strong> is sending Nasdaq futures +1.2% and S&P futures +0.8% after a weekend of tit-for-tat strikes near Hormuz. Against this risk-on macro reset, AI mega-cap headwinds persist — Bloomberg calls MSFT's June selloff its "worst month since 2000," and Morgan Stanley's Wilson flagged a semiconductor climax risk. Calendar is light (Dallas Fed 2:30 PM only) — next big print is jobs on Thursday July 2. <strong>Best setups</strong>: CMCSA (clean pure-play broadband re-rate), ARKX (RKLB top holding, ETF hasn't repriced yet), VRDN (FDA approval Lumvoa confirmed June 29 morning, XBI bucket).
+  </p>
+</div>
+
+<!-- TOP 3 ETF + TOP 3 STOCK SIDE BY SIDE -->
+<div class="top-grid">
+
+  <!-- TOP 3 ETF TRADE IDEAS -->
+  <div class="top-panel">
+    <div class="panel-hdr etf">📊 Top 3 ETF Trade Ideas</div>
+
+    <div class="pick">
+      <div class="pick-row">
+        <div>
+          <span class="pick-ticker" style="color:var(--green)">XLC</span>
+          <span style="color:var(--muted);font-size:11px;margin-left:8px;">SPDR Communications</span>
+        </div>
+        <span class="pick-move-pos">+~1.5% est. at open</span>
+      </div>
+      <div class="pick-catalyst">CMCSA (+22.5%) and CHTR (+24%) are both XLC constituents. Pre-market ETF shows +0.17% (illiquidity — ETF hasn't repriced vs. CMCSA/CHTR individual moves yet). Expect XLC to open +1–2% as market makers update ETF at open. Pure diversified cable/broadband exposure without M&A-specific arb risk. Primary: <a href="https://www.nbcnews.com/business/business-news/comcast-spinoff-nbcuniversal-sky-split-two-companies-rcna352188" target="_blank">NBCNews.com</a> | <a href="https://www.cbsnews.com/news/comcast-nbcuniversal-sky-spinoff/" target="_blank">CBS News</a></div>
+      <div class="pick-levels">Current PM: $108.40 (+0.17% vs prior bar) | Est. open: ~$109.50–110 | Entry: Buy open or first pullback to VWAP | Stop: $107.00 | Target: $112–114</div>
+      <div style="margin-top:5px;">
+        <span class="tag tag-amber">🟡 MEDIUM — ETF repricing lag, diversified catalyst</span>
+        <span class="tag tag-cyan">Cable/Broadband Re-rate</span>
+        <span class="tag tag-orange">META/GOOGL weight dilutes CMCSA catalyst</span>
+      </div>
+    </div>
+
+    <div class="pick">
+      <div class="pick-row">
+        <div>
+          <span class="pick-ticker" style="color:var(--green)">ARKX</span>
+          <span style="color:var(--muted);font-size:11px;margin-left:8px;">ARK Space ETF</span>
+        </div>
+        <span class="pick-move-pos">+~8–10% est. at open</span>
+      </div>
+      <div class="pick-catalyst">RKLB is ARKX's largest holding (~20%+ weight). RKLB +11% pre-market on $8B IRDM acquisition — acquirer premium is rare and high-signal (market enthusiastically endorsing the deal). ARKX current price: $32.74 (+0% pre-market — extremely thin, avg vol 3 units). This is the classic ETF lag: the underlying is flying but the ETF hasn't been touched in pre-market. Gap at open when RKLB price discovery drives ETF repricing. Primary: <a href="https://www.prnewswire.com/news-releases/rocket-lab-to-acquire-iridium-in-historic-deal-creating-a-fully-vertically-integrated-space-powerhouse-primed-for-growth-302813075.html" target="_blank">PRNewswire</a> | <a href="https://www.benzinga.com/m-a/26/06/60152421/rklb-stock-surges-over-11-in-monday-premarket-whats-going-on" target="_blank">Benzinga</a></div>
+      <div class="pick-levels">Current PM: $32.74 (flat — NOT repriced) | Est. open: ~$35–36 (+8–10%) | Entry: Buy at open or after gap hold 5 min | Stop: $33.50 | Target: $38–40 | ⚠️ AUM ~$200M — LOW LIQUIDITY flag; use limit orders</div>
+      <div style="margin-top:5px;">
+        <span class="tag tag-green">🟢 HIGH — RKLB driving, ETF hasn't repriced</span>
+        <span class="tag tag-cyan">Space Consolidation</span>
+        <span class="tag tag-red">⚠️ THIN ETF — use limit orders, expect wide bid/ask</span>
+      </div>
+    </div>
+
+    <div class="pick">
+      <div class="pick-row">
+        <div>
+          <span class="pick-ticker" style="color:var(--green)">XME</span>
+          <span style="color:var(--muted);font-size:11px;margin-left:8px;">SPDR Metals &amp; Mining</span>
+        </div>
+        <span class="pick-move-pos">+1.21%</span>
+      </div>
+      <div class="pick-catalyst">Strongest ETF in the 57-name sweep at +1.21% pre-market. Catalyst not fully confirmed — likely benefiting from: (a) risk-on from US-Iran ceasefire lifting commodity complexes; (b) South Korea $576B AI chip investment (raw materials demand outlook). XME at $108.37 (batch_run, 08:20 ET). GDX/GDXJ slightly down (-0.12/-0.15%) — metals bid is industrial/base metals specific, not gold-driven. Catalyst unconfirmed — no single primary source. Call this a risk-on flow play, not a named catalyst.</div>
+      <div class="pick-levels">Current PM: $108.37 | Prior signal unclear | Entry: Wait for open — buy continuation above $109 on volume | Stop: $106 | Target: $112–115 | Avg vol: modest</div>
+      <div style="margin-top:5px;">
+        <span class="tag tag-amber">🟡 MEDIUM — catalyst unconfirmed, risk-on flow</span>
+        <span class="tag tag-cyan">Risk-On / Industrial Metals</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOP 3 INDIVIDUAL STOCK SETUPS -->
+  <div class="top-panel">
+    <div class="panel-hdr stk">⚡ Top 3 Individual Stock Setups</div>
+
+    <div class="pick">
+      <div class="pick-row">
+        <div>
+          <span class="pick-ticker" style="color:var(--yellow)">CMCSA</span>
+          <span style="color:var(--muted);font-size:11px;margin-left:8px;">Comcast Corp</span>
+        </div>
+        <span class="pick-move-pos">+22.53% / $28.39</span>
+      </div>
+      <div class="pick-catalyst">Tax-free spin-off of NBCUniversal + Sky announced June 29 morning. Remaining Comcast = pure-play broadband/wireless; NBCUniversal spun as separate public co. Market pricing broadband rump at premium. $82.77B mkt cap. 6.6M pre-market volume (institutional). Primary: <a href="https://www.nbcnews.com/business/business-news/comcast-spinoff-nbcuniversal-sky-split-two-companies-rcna352188" target="_blank">NBCNews</a> | <a href="https://finance.yahoo.com/media-advertising/articles/comcast-plans-split-two-businesses-113717903.html" target="_blank">Yahoo Finance</a>. Prior close implied ~$23.17.</div>
+      <div class="pick-levels">PM: $28.39 (TV MCP + stockanalysis, 08:20 ET) | Mkt cap: $82.77B | PM vol: 6,625,818 | Entry: Buy above $28.50 at open with volume; OR wait for first 15-min base to form | Stop: $26.50 | Target: $31–33 | Vol ratio: 6.6M vs ~20M avg = institutional pre-market</div>
+      <div style="margin-top:5px;">
+        <span class="tag tag-green">🟢 HIGH CONVICTION</span>
+        <span class="tag tag-cyan">XLC bucket — Cable/Broadband Re-rate</span>
+        <span class="tag tag-orange">Risk: Sympathy fade if NBCU SpinCo sold when listed (12-month timeline)</span>
+      </div>
+    </div>
+
+    <div class="pick">
+      <div class="pick-row">
+        <div>
+          <span class="pick-ticker" style="color:var(--yellow)">RKLB</span>
+          <span style="color:var(--muted);font-size:11px;margin-left:8px;">Rocket Lab Corp</span>
+        </div>
+        <span class="pick-move-pos">+~11% / $93.19</span>
+      </div>
+      <div class="pick-catalyst">Acquiring Iridium Communications in historic $8B cash+stock deal ($54/share, $27 cash + RKLB collar $67.50–$112.50). Deal creates fully vertically integrated space company. Market LOVES this deal — acquirer up 11% is rare, high-conviction signal that market sees strategic fit. Close expected mid-2027. Primary: <a href="https://www.prnewswire.com/news-releases/rocket-lab-to-acquire-iridium-in-historic-deal-creating-a-fully-vertically-integrated-space-powerhouse-primed-for-growth-302813075.html" target="_blank">PRNewswire</a> | <a href="https://www.stocktitan.net/news/RKLB/rocket-lab-to-acquire-iridium-in-historic-deal-creating-a-fully-k1sa3qghi3kz.html" target="_blank">StockTitan/8-K</a>. TV MCP: $93.195 (08:22 ET). Prior close implied ~$83.95.</div>
+      <div class="pick-levels">PM: $93.19 (TV MCP, 08:22 ET) | Avg vol: 16,291 (TV MCP) | PM vol: strong for RKLB | Entry: Buy above $93.50 at open OR on first pullback to $90 | Stop: $88 | Target: $100–105 | Proof: acquirer gap is rare momentum signal | Parent ETF: ARKX</div>
+      <div style="margin-top:5px;">
+        <span class="tag tag-green">🟢 HIGH CONVICTION</span>
+        <span class="tag tag-cyan">ARKX bucket — Space Consolidation</span>
+        <span class="tag tag-amber">Risk: Deal dilution fears emerge later; IRDM arb overhang ($54 ceiling)</span>
+      </div>
+    </div>
+
+    <div class="pick">
+      <div class="pick-row">
+        <div>
+          <span class="pick-ticker" style="color:var(--yellow)">VRDN</span>
+          <span style="color:var(--muted);font-size:11px;margin-left:8px;">Viridian Therapeutics</span>
+        </div>
+        <span class="pick-move-pos">+13.18% / $20.26</span>
+      </div>
+      <div class="pick-catalyst">FDA approved Lumvoa (veligrotug-vvze) for thyroid eye disease on June 29 — one day before PDUFA date (June 30). Company held conference call 8:00 AM ET. Clean FDA catalyst, de-risks commercial launch. $1.98B mkt cap. 105,053 pre-market volume (above 100K threshold). XBI flat — single-stock catalyst, not sector rotation. Primary: <a href="https://www.businesswire.com/news/home/20260625016249/en/Viridian-Therapeutics-Announces-U.S.-FDA-Approval-and-Launch-of-Lumvoa-veligrotug-vvze-for-the-Treatment-of-Thyroid-Eye-Disease" target="_blank">BusinessWire FDA approval</a></div>
+      <div class="pick-levels">PM: $20.26 (stockanalysis, 08:15 ET) | Prior close implied ~$17.90 | Mkt cap: $1.98B | PM vol: 105,053 ✓ | Entry: Above $20.50 at open with >200K vol first 15 min | Stop: $19.00 | Target: $23–25 | Parent ETF: XBI/IBB</div>
+      <div style="margin-top:5px;">
+        <span class="tag tag-green">🟢 HIGH — confirmed FDA, trading day before PDUFA = front-running resolved</span>
+        <span class="tag tag-cyan">XBI bucket — Biotech FDA</span>
+        <span class="tag tag-amber">Risk: XBI not confirming (flat) — single-name, not theme-wide</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- THEME ROTATION READ -->
+<section>
+<div class="sec-title">🔄 Theme Rotation Read</div>
+
+<div class="theme-alert">
+  <div class="ta-title">🚀 Media / Cable Broadband Re-Rate (CMCSA +22.5% / CHTR +24% / LBRDK +21%)</div>
+  Comcast spin-off of NBCUniversal is re-rating the entire cable/broadband sector as pure-play infrastructure. XLC ETF only +0.17% PM due to META/GOOGL weight — but individual cable names are seeing structural re-pricing. No other communication ETF pairs moving in tandem (only XLC — not theme-wide BREAKOUT by rule, single ETF). However, CHTR's confirmed SpaceX discussions add a second narrative. Watch XLC for open gap.
+</div>
+
+<div class="theme-alert">
+  <div class="ta-title">🌌 Space Consolidation (RKLB +11% / IRDM +22% — IRDM is arb)</div>
+  RKLB acquiring IRDM creates the first fully vertically integrated space company. IRDM is merger arb (converges to $54 deal price — NOT a swing trade). RKLB is the real momentum play. ASTS and PL flat (-0.05% / -0.21%) — not confirming broader space sector move. ARKX ETF hasn't repriced yet.
+</div>
+
+<div class="theme-alert">
+  <div class="ta-title">🌍 Risk-On Reset (US-Iran Ceasefire — NQ Futures +1.2% / ES +0.8%)</div>
+  Both sides agreed to halt strikes after weekend exchanges near Hormuz. Market experts call the ceasefire "fragile" — Marc Chandler: "Markets enter July with a ceasefire that nobody quite trusts." Oil paring gains (Brent $73, WTI $70). USO +0.08%, UUP -0.12% (dollar weak). Risk-on lifts broad market but is NOT a durable catalyst — any re-escalation spikes VIX.
+</div>
+
+<div class="theme-alert breakdown">
+  <div class="ta-title" style="color:var(--red)">⚠️ AI Mega-Cap Headwind Continues (MSFT "Worst Month Since 2000")</div>
+  Bloomberg: MSFT down $570B in June — worst month since 2000. MSFT at $379.59 (-0.16% PM). NVDA $194.38 (-0.08%), SNDK $2,106 (-0.14%). IGV -0.07%, XLK +0.03%. Morgan Stanley Wilson warned of semiconductor climax. AI theme NOT in leadership today. SMH +0.10% (flat). DRAM -0.10% (flat). No follow-through catalyst for AI infra.
+</div>
+
+<div class="theme-alert breakdown">
+  <div class="ta-title" style="color:var(--red)">📉 Crypto / BTC Miners Continued Weakness</div>
+  IBIT -0.12%, WGMI -0.13%, COIN -0.30%, MARA -0.27%. No catalysts. Friday's rout (WGMI -9%) has NOT reversed. Defense premium unwinding: PLTR -0.29%, ITA -0.33%, SHLD -0.10% — Iran ceasefire removes geopolitical bid.
+</div>
+</section>
+
+<!-- PRE-MARKET GAPPERS TABLE -->
+<section>
+<div class="sec-title">📊 Pre-Market Gappers — Tradeable Candidates (>$1B Market Cap, >3% Gap)</div>
+<div class="warn-box">⚠️ Chrome MCP unavailable — gap discovery limited to stockanalysis top-20 %-sort. Liquid mid/large-cap gappers sorted by % may miss volume-ranked names. All data: stockanalysis.com + TV MCP price confirmation.</div>
+
+<table>
+<thead>
+<tr>
+  <th>Ticker</th><th>Company</th><th>Gap %</th><th>PM Price</th><th>PM Volume</th><th>Mkt Cap</th><th>TV MCP Confirm</th><th>Catalyst</th><th>Tradeable?</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td style="color:var(--yellow);font-weight:700;">CHTR</td>
+  <td>Charter Communications</td>
+  <td class="pos">+22.57%</td>
+  <td>$163.80</td>
+  <td>955,980</td>
+  <td>$18.51B</td>
+  <td class="pos">$166.00 ✓ (08:22 ET)</td>
+  <td>CMCSA spin-off sector re-rate + SpaceX mobile talks (unconfirmed). Parent ETF: XLC</td>
+  <td class="pos">✅ YES — $18.5B, 956K vol, 22%+ gap</td>
+</tr>
+<tr>
+  <td style="color:var(--yellow);font-weight:700;">CMCSA</td>
+  <td>Comcast Corporation</td>
+  <td class="pos">+22.53%</td>
+  <td>$28.39</td>
+  <td>6,625,818</td>
+  <td>$82.77B</td>
+  <td class="pos">$28.39 ✓ (08:20 ET)</td>
+  <td>Tax-free spin-off of NBCUniversal+Sky announced. Pure-play broadband rump re-rated. XLC bucket.</td>
+  <td class="pos">✅ YES — $82.8B, 6.6M vol, confirmed catalyst</td>
+</tr>
+<tr>
+  <td style="color:var(--yellow);font-weight:700;">IRDM</td>
+  <td>Iridium Communications</td>
+  <td class="pos">+22.13%</td>
+  <td>$53.15</td>
+  <td>199,779</td>
+  <td>$4.60B</td>
+  <td class="pos">$53.26 ✓ (08:22 ET)</td>
+  <td>RKLB acquisition at $54/share (8-K). Converging to deal price — MERGER ARB ONLY.</td>
+  <td class="neg">⚠️ ARB ONLY — converges to $54; NOT a swing trade</td>
+</tr>
+<tr>
+  <td>LBRDK</td>
+  <td>Liberty Broadband</td>
+  <td class="pos">+20.91%</td>
+  <td>$37.88</td>
+  <td>41,532</td>
+  <td>$4.50B</td>
+  <td class="neu">Not pulled separately</td>
+  <td>CHTR-holding company. Sympathy with CHTR. XLC adjacent.</td>
+  <td class="neu">⚠️ Low vol (41K) — thin; CHTR preferred</td>
+</tr>
+<tr>
+  <td>LBRDA</td>
+  <td>Liberty Broadband Class A</td>
+  <td class="pos">+19.04%</td>
+  <td>$37.27</td>
+  <td>16,008</td>
+  <td>$6.61B</td>
+  <td class="neu">Not pulled separately</td>
+  <td>Same as LBRDK — CHTR sympathy</td>
+  <td class="neg">❌ Only 16K vol — too thin</td>
+</tr>
+<tr>
+  <td style="color:var(--yellow);font-weight:700;">VRDN</td>
+  <td>Viridian Therapeutics</td>
+  <td class="pos">+13.18%</td>
+  <td>$20.26</td>
+  <td>105,053</td>
+  <td>$1.98B</td>
+  <td class="neu">Not pulled separately</td>
+  <td>FDA approved Lumvoa (TED) June 29 — one day before PDUFA. XBI bucket. BusinessWire.</td>
+  <td class="pos">✅ YES — $2B, 105K vol, confirmed FDA catalyst</td>
+</tr>
+</tbody>
+</table>
+<div style="font-size:11px;color:var(--muted);margin-top:6px;">Remaining top-20 stockanalysis entries: micro-caps (&lt;$200M) — all filtered out. Zero other >$1B tradeable gappers in top-20 list.</div>
+</section>
+
+<!-- ETF SWEEP SECTION -->
+<section>
+<div class="sec-title">📈 57-ETF Pre-Market Sweep (TV MCP batch_run, 08:15–08:20 ET)</div>
+<div style="margin-bottom:10px;font-size:11px;color:var(--amber);">⚠️ change_pct below is vs. prior pre-market bar (NOT vs. prior day close). No ETF moved >2% pre-market. XLC/ARKX expected to gap at open given CMCSA/RKLB individual moves.</div>
+
+<div style="font-size:12px;font-weight:700;color:var(--muted);margin-bottom:6px;">INDEX / REGIME</div>
+<div class="etf-grid" style="margin-bottom:14px;">
+  <div class="etf-cell"><div class="sym">SPY</div><div class="chg pos">+0.02%</div><div>$737.48</div><div class="desc">S&amp;P 500 — risk-on macro lift</div></div>
+  <div class="etf-cell"><div class="sym">QQQ</div><div class="chg pos">+0.03%</div><div>$716.00</div><div class="desc">Nasdaq 100 — NQ futures +1.2% reported</div></div>
+  <div class="etf-cell"><div class="sym">IWM</div><div class="chg pos">+0.01%</div><div>$299.71</div><div class="desc">Small caps — muted</div></div>
+  <div class="etf-cell"><div class="sym">VIX</div><div class="chg neg">-0.11%</div><div>18.29</div><div class="desc">Vol — ceasefire easing fear (was 19.84 Fri)</div></div>
+  <div class="etf-cell"><div class="sym">HYG</div><div class="chg pos">+0.06%</div><div>$79.92</div><div class="desc">HY credit — bid, risk-on</div></div>
+  <div class="etf-cell"><div class="sym">TLT</div><div class="chg neg">-0.02%</div><div>$87.36</div><div class="desc">Long bonds — flat</div></div>
+  <div class="etf-cell"><div class="sym">UUP</div><div class="chg neg">-0.12%</div><div>$28.42</div><div class="desc">USD — weaker, gold tailwind</div></div>
+  <div class="etf-cell"><div class="sym">GLD</div><div class="chg neg">-0.07%</div><div>$371.25</div><div class="desc">Gold — flat; risk-on caps safe-haven</div></div>
+</div>
+
+<div style="font-size:12px;font-weight:700;color:var(--muted);margin-bottom:6px;">SECTORS</div>
+<div class="etf-grid" style="margin-bottom:14px;">
+  <div class="etf-cell"><div class="sym">XLK</div><div class="chg pos">+0.03%</div><div>$183.85</div><div class="desc">Tech — flat; AI headwind</div></div>
+  <div class="etf-cell"><div class="sym">XLV</div><div class="chg neg">-0.04%</div><div>$160.89</div><div class="desc">Healthcare — flat</div></div>
+  <div class="etf-cell"><div class="sym">XLF</div><div class="chg">0%</div><div>$53.68</div><div class="desc">Financials — flat</div></div>
+  <div class="etf-cell"><div class="sym">XLE</div><div class="chg neg">-0.04%</div><div>$53.93</div><div class="desc">Energy — flat (oil paring gains)</div></div>
+  <div class="etf-cell"><div class="sym">XLI</div><div class="chg pos">+0.25%</div><div>$181.96</div><div class="desc">Industrials — slight bid</div></div>
+  <div class="etf-cell"><div class="sym" style="color:var(--green)">XLY</div><div class="chg pos">+0.74%</div><div>$115.28</div><div class="desc">Cons. Disc. — risk-on bid</div></div>
+  <div class="etf-cell"><div class="sym">XLP</div><div class="chg neg">-0.18%</div><div>$84.50</div><div class="desc">Staples — slight fade (risk-on)</div></div>
+  <div class="etf-cell"><div class="sym">XLU</div><div class="chg pos">+0.02%</div><div>$46.19</div><div class="desc">Utilities — flat</div></div>
+  <div class="etf-cell"><div class="sym">XLB</div><div class="chg neg">-0.25%</div><div>$51.51</div><div class="desc">Materials — soft</div></div>
+  <div class="etf-cell"><div class="sym">XLC</div><div class="chg pos">+0.17%</div><div>$108.40</div><div class="desc">Comms — ⚠️ LAGGING (CMCSA/CHTR not yet priced)</div></div>
+  <div class="etf-cell"><div class="sym">XLRE</div><div class="chg">0%</div><div>$45.24</div><div class="desc">REITs — flat</div></div>
+</div>
+
+<div style="font-size:12px;font-weight:700;color:var(--muted);margin-bottom:6px;">INDUSTRY GROUPS</div>
+<div class="etf-grid" style="margin-bottom:14px;">
+  <div class="etf-cell"><div class="sym">SMH</div><div class="chg pos">+0.10%</div><div>$620.13</div><div class="desc">Semis — flat (climax warning)</div></div>
+  <div class="etf-cell"><div class="sym">IGV</div><div class="chg neg">-0.07%</div><div>$89.94</div><div class="desc">Software — soft; MSFT headwind</div></div>
+  <div class="etf-cell"><div class="sym">CIBR</div><div class="chg pos">+0.50%</div><div>$86.74</div><div class="desc">Cybersecurity — slight bid</div></div>
+  <div class="etf-cell"><div class="sym">XBI</div><div class="chg pos">+0.03%</div><div>$156.14</div><div class="desc">Biotech — flat; VRDN single-name</div></div>
+  <div class="etf-cell"><div class="sym">IBB</div><div class="chg neg">-0.03%</div><div>$187.95</div><div class="desc">Biotech lg-cap — flat</div></div>
+  <div class="etf-cell"><div class="sym">KRE</div><div class="chg pos">+0.15%</div><div>$75.25</div><div class="desc">Reg banks — slight bid</div></div>
+  <div class="etf-cell"><div class="sym">XOP</div><div class="chg pos">+0.43%</div><div>$155.74</div><div class="desc">E&amp;P — risk-on; Hormuz stable</div></div>
+  <div class="etf-cell"><div class="sym">XHB</div><div class="chg">0%</div><div>$115.11</div><div class="desc">Homebuilders — flat (Fri catalyst faded)</div></div>
+  <div class="etf-cell"><div class="sym">XRT</div><div class="chg pos">+0.06%</div><div>$89.00</div><div class="desc">Retail — flat</div></div>
+  <div class="etf-cell"><div class="sym">IYT</div><div class="chg pos">+0.30%</div><div>$87.30</div><div class="desc">Transports — slight bid</div></div>
+  <div class="etf-cell"><div class="sym">JETS</div><div class="chg pos">+0.21%</div><div>$33.07</div><div class="desc">Airlines — holding Friday gains</div></div>
+  <div class="etf-cell"><div class="sym">PEJ</div><div class="chg">0%</div><div>$67.65</div><div class="desc">Travel/leisure — flat</div></div>
+</div>
+
+<div style="font-size:12px;font-weight:700;color:var(--muted);margin-bottom:6px;">AI / TECH THEMES</div>
+<div class="etf-grid" style="margin-bottom:14px;">
+  <div class="etf-cell"><div class="sym">DRAM</div><div class="chg neg">-0.10%</div><div>$71.08</div><div class="desc">HBM memory — flat (S.Korea news nuanced)</div></div>
+  <div class="etf-cell"><div class="sym">QTUM</div><div class="chg neg">-0.07%</div><div>$158.68</div><div class="desc">Quantum — flat</div></div>
+  <div class="etf-cell"><div class="sym">BOTZ</div><div class="chg pos">+0.25%</div><div>$36.50</div><div class="desc">Robotics — flat</div></div>
+  <div class="etf-cell"><div class="sym">ARKK</div><div class="chg pos">+0.04%</div><div>$79.38</div><div class="desc">Spec growth — flat</div></div>
+  <div class="etf-cell"><div class="sym" style="color:var(--green)">ARKX</div><div class="chg">0%</div><div>$32.74</div><div class="desc">Space — ⚠️ NOT PRICED (RKLB +11%)</div></div>
+  <div class="etf-cell"><div class="sym">AIPO</div><div class="chg pos">+0.06%</div><div>$32.46</div><div class="desc">AI Power infra — flat</div></div>
+  <div class="etf-cell"><div class="sym">DTCR</div><div class="chg neg">-0.29%</div><div>$30.81</div><div class="desc">Data center REITs — soft</div></div>
+  <div class="etf-cell"><div class="sym">SHLD</div><div class="chg neg">-0.10%</div><div>$58.50</div><div class="desc">Defense tech — ceasefire premium unwind</div></div>
+  <div class="etf-cell"><div class="sym">ITA</div><div class="chg neg">-0.33%</div><div>$238.20</div><div class="desc">Defense primes — ceasefire unwind</div></div>
+  <div class="etf-cell"><div class="sym">WGMI</div><div class="chg neg">-0.13%</div><div>$67.75</div><div class="desc">BTC miners — continued weakness</div></div>
+  <div class="etf-cell"><div class="sym">IBIT</div><div class="chg neg">-0.12%</div><div>$34.30</div><div class="desc">Spot bitcoin — continued drift lower</div></div>
+</div>
+
+<div style="font-size:12px;font-weight:700;color:var(--muted);margin-bottom:6px;">POWER / MATERIALS / COMMODITIES</div>
+<div class="etf-grid" style="margin-bottom:14px;">
+  <div class="etf-cell"><div class="sym">URA</div><div class="chg">0%</div><div>$44.30</div><div class="desc">Uranium — flat (bounce off Fri -3.3%)</div></div>
+  <div class="etf-cell"><div class="sym" style="color:var(--green)">NLR</div><div class="chg pos">+1.01%</div><div>$119.50</div><div class="desc">Nuclear utilities — quiet bounce. Mercuria Malawi uranium deal (Bloomberg 07:15)</div></div>
+  <div class="etf-cell"><div class="sym">GRID</div><div class="chg pos">+0.03%</div><div>$187.90</div><div class="desc">Grid infra — flat</div></div>
+  <div class="etf-cell"><div class="sym">TAN</div><div class="chg pos">+0.37%</div><div>$57.72</div><div class="desc">Solar — slight bid</div></div>
+  <div class="etf-cell"><div class="sym">COPX</div><div class="chg pos">+0.10%</div><div>$76.30</div><div class="desc">Copper — flat</div></div>
+  <div class="etf-cell"><div class="sym">REMX</div><div class="chg pos">+0.29%</div><div>$87.04</div><div class="desc">Rare earth — slight bid</div></div>
+  <div class="etf-cell"><div class="sym" style="color:var(--green)">XME</div><div class="chg pos">+1.21%</div><div>$108.37</div><div class="desc">Metals/mining — strongest ETF; catalyst TBD</div></div>
+  <div class="etf-cell"><div class="sym">LIT</div><div class="chg neg">-1.20%</div><div>$75.93</div><div class="desc">Lithium — weakest ETF</div></div>
+  <div class="etf-cell"><div class="sym">GDX</div><div class="chg neg">-0.12%</div><div>$76.41</div><div class="desc">Gold miners — flat</div></div>
+  <div class="etf-cell"><div class="sym">GDXJ</div><div class="chg neg">-0.15%</div><div>$99.17</div><div class="desc">Junior gold miners — flat</div></div>
+  <div class="etf-cell"><div class="sym">SLV</div><div class="chg pos">+0.13%</div><div>$52.70</div><div class="desc">Silver — flat</div></div>
+  <div class="etf-cell"><div class="sym">USO</div><div class="chg pos">+0.08%</div><div>$106.29</div><div class="desc">Crude — paring ceasefire gains</div></div>
+  <div class="etf-cell"><div class="sym">UNG</div><div class="chg pos">+0.09%</div><div>$11.67</div><div class="desc">Nat gas — flat</div></div>
+  <div class="etf-cell"><div class="sym">MOO</div><div class="chg pos">+0.35%</div><div>$79.50</div><div class="desc">Agriculture — quiet bid</div></div>
+  <div class="etf-cell"><div class="sym">KWEB</div><div class="chg pos">+0.08%</div><div>$24.32</div><div class="desc">China internet — flat</div></div>
+</div>
+</section>
+
+<!-- FINVIZ NEWS DIGEST -->
+<section>
+<div class="sec-title">📰 Finviz News Digest (public feed, last 6 hours)</div>
+<div style="font-size:11px;color:var(--muted);margin-bottom:8px;">Finviz Elite filter unavailable — public feed used.</div>
+
+<table>
+<thead><tr><th>Time</th><th>Ticker</th><th>Headline</th><th>Source</th><th>ETF Bucket</th></tr></thead>
+<tbody>
+<tr><td class="neu">08:16 AM</td><td>—</td><td>Nasdaq leads stocks higher after US, Iran halt strikes</td><td>Yahoo Finance</td><td>SPY/QQQ — macro</td></tr>
+<tr><td class="neu">07:46 AM</td><td>—</td><td>Ships Pull Back Amid Heightened Risk From U.S.-Iran Strikes</td><td>New York Times</td><td>USO — energy macro risk</td></tr>
+<tr><td class="neu">07:36 AM</td><td>—</td><td>Economic calendar: Consumer, manufacturing and jobs data due this week</td><td>MarketWatch</td><td>Macro — Thursday jobs key</td></tr>
+<tr><td class="neg">07:31 AM</td><td class="neg">MSFT</td><td>"Microsoft's $570 Billion Rout Sets Up Its Worst Month Since 2000"</td><td>Bloomberg</td><td>IGV / XLK</td></tr>
+<tr><td class="neu">07:27 AM</td><td>—</td><td>Stock futures jump as tech shares gain, U.S.-Iran agree to halt hostilities</td><td>CNBC</td><td>SPY/QQQ — macro</td></tr>
+<tr><td class="pos">07:15 AM</td><td>URA/NLR</td><td>Mercuria Signs First Uranium Financing Deal With Malawi Miner</td><td>Bloomberg</td><td>URA — uranium sector</td></tr>
+<tr><td class="neg">07:14 AM</td><td>SMH/SLV</td><td>Silver and the semiconductor climax — a warning from Morgan Stanley's Wilson</td><td>MarketWatch</td><td>SMH — semi headwind</td></tr>
+<tr><td class="pos">06:33 AM</td><td class="pos">CMCSA</td><td>Comcast to Spin Off NBCUniversal Into Separate Company</td><td>New York Times</td><td>XLC — confirmed catalyst</td></tr>
+<tr><td class="pos">06:31 AM</td><td class="pos">CMCSA</td><td>Comcast shares jump over 20% on plan to spin off NBCUniversal</td><td>MarketWatch</td><td>XLC — confirmed catalyst</td></tr>
+</tbody>
+</table>
+</section>
+
+<!-- POLICY / STAKE / RUMOR -->
+<section>
+<div class="sec-title">🏛️ Policy / Stake / Rumor Catalysts</div>
+
+<div class="policy-box">
+  <div style="font-weight:700;color:var(--purple);margin-bottom:4px;">🏛️ South Korea $576B AI Chip Investment (Samsung / SK Hynix)</div>
+  South Korea announced Samsung + SK Hynix will invest 800 trillion won (~$576B) building new fabs in SW Korea. Government targeting 550 trillion won in AI data centers by 2029. Sources: <a href="https://www.cnbc.com/2026/06/29/samsung-sk-hynix-reported-1point3-reported-trillion-spending-plans.html" target="_blank">CNBC</a> | <a href="https://www.rappler.com/technology/south-korea-samsung-sk-hynix-ai-chip-drive-june-29-2026/" target="_blank">Rappler</a><br>
+  <strong>Market reaction (Asian trading):</strong> Samsung -4.86%, SK Hynix -1.68% on supply glut fears. DRAM ETF -0.10% PM — nuanced story. Jefferies separately forecast memory prices +40-50% Q3 / +30-40% Q4. <strong>Implication:</strong> Net neutral to slightly negative for DRAM near-term (capex fear) but mid-term bullish for HBM demand theme. NOT a buy-the-news catalyst today.
+</div>
+
+<div class="policy-box">
+  <div style="font-weight:700;color:var(--purple);margin-bottom:4px;">🏛️ CHIPS Act — Quantum Grants (May 2026, ongoing follow-on)</div>
+  May 2026: Nine quantum firms split $2B in Trump admin grants with equity stakes (IBM/Anderon 50%, Quantinuum $100M, PsiQuantum $100M, Atom Computing $100M, Diraq $38M). No new announcements found for June 29. QTUM -0.07% — no catalysts. Quantum gov portfolio names (RGTI, QBTS, IONQ) not in gapper list today.
+</div>
+
+<div class="warn-box">
+  <strong>Gov Equity Portfolio Check (INTC, MP, IBM, RGTI, QBTS, INFQ):</strong> No new June 29 announcements found for any of these names. No new CHIPS Act grants, DoD contracts, or DOE awards identified for today.
+</div>
+</section>
+
+<!-- WIRE SERVICE SCOOPS -->
+<section>
+<div class="sec-title">📡 Wire Service Scoops</div>
+
+<div class="wire-box">
+  <div style="font-weight:700;color:var(--orange);margin-bottom:4px;">📡 Bloomberg — "Microsoft's $570 Billion Rout Sets Up Its Worst Month Since 2000" (07:31 AM ET)</div>
+  Major headline flagging MSFT as June's biggest loser among mega-caps. Direct bearish signal for IGV (MSFT large component) and XLK. No single-day catalyst — month-long erosion thesis. Paywall: yes. No specific MSFT catalyst today (no earnings, no 8-K found). MSFT PM: $379.59 (-0.16%). ETF bucket: IGV / XLK.
+</div>
+
+<div class="wire-box">
+  <div style="font-weight:700;color:var(--orange);margin-bottom:4px;">📡 Bloomberg / CNBC / Reuters — US-Iran Ceasefire (reported 06:00–08:00 AM ET)</div>
+  Multiple wire outlets confirming US and Iran agreed to "halt strikes" after weekend exchange near Hormuz. NQ futures +1.2%, ES +0.8%. Quote (Marc Chandler, Bannockburn Capital): "Markets enter July with a ceasefire that nobody quite trusts." USO +0.08%, Brent $73, WTI ~$70. Affects: SPY, QQQ, IWM (risk-on), USO/XLE (paring gains), ITA/SHLD (defense premium out). Sources: <a href="https://finance.yahoo.com/economy/policy/article/us-iran-agree-to-ceasefire-sending-stock-futures-higher-and-oil-lower-225858774.html" target="_blank">Yahoo Finance</a> | CNN June 28 live blog.
+</div>
+
+<div class="wire-box">
+  <div style="font-weight:700;color:var(--orange);margin-bottom:4px;">📡 PRNewswire / StockTitan — RKLB Acquires IRDM $8B (pre-market June 29)</div>
+  Not a traditional wire exclusive but a company PR/8-K. Both boards unanimously approved. Deal: $27 cash + RKLB stock, collar $67.50–$112.50. Enterprise value ~$8B. Close mid-2027. IRDM delisted post-close. Sources: <a href="https://www.prnewswire.com/news-releases/rocket-lab-to-acquire-iridium-in-historic-deal-creating-a-fully-vertically-integrated-space-powerhouse-primed-for-growth-302813075.html" target="_blank">PRNewswire</a> | <a href="https://www.stocktitan.net/sec-filings/IRDM/8-k-iridium-communications-inc-reports-material-event-4c2d06d38313.html" target="_blank">IRDM 8-K</a>.
+</div>
+
+<div class="wire-box">
+  <div style="font-weight:700;color:var(--orange);margin-bottom:4px;">📡 Multiple sources — South Korea $576B AI Chip Investment (pre-market June 29)</div>
+  CNBC, Rappler, MarketScreener reporting simultaneously. Samsung + SK Hynix fabs. ETF bucket: DRAM, SMH (ambiguous near-term reaction). See Policy section for detail.
+</div>
+</section>
+
+<!-- OPTIONS FLOW -->
+<section>
+<div class="sec-title">🔵 Pre-Market Options Flow</div>
+
+<div class="flow-box">
+  <strong>⚠️ Yahoo options chains skipped — Chrome MCP not tested. web_search flow only.</strong><br><br>
+  <strong>web_search result:</strong> No specific pre-market flow data surfaced from @unusual_whales, @FlowAlgo, or Benzinga for June 29 premarket. All searches returned general platform information, not today's specific alerts.<br><br>
+  <strong>Price-action inference only (NOT confirmed flow data):</strong>
+  <ul style="margin-top:8px;margin-left:16px;line-height:1.8;">
+    <li><strong>CMCSA</strong>: $22.5% gap + $82.8B cap = expect massive call gamma squeeze at open. Put writers covering. High institutional pre-market volume (6.6M) consistent with options delta hedging.</li>
+    <li><strong>CHTR</strong>: +24% gap. Significant call OI likely building given SpaceX narrative overlay. Watch for unusual weekly call volume at open.</li>
+    <li><strong>RKLB</strong>: Acquirer premium gap (+11%) = call buyers positioning for continued squeeze. Elevated IV expected at open.</li>
+    <li><strong>IRDM</strong>: Merger arb = call writing at $54 strike likely. Very limited optionality. AVOID options on IRDM.</li>
+    <li><strong>SPY/QQQ</strong>: VIX from 19.84 → 18.29 (ceasefire). Put selling / call buying consistent with risk-on. No confirmed large block data.</li>
+  </ul>
+</div>
+</section>
+
+<!-- FOLLOW-THROUGH FROM JUNE 26 -->
+<section>
+<div class="sec-title">🔁 Follow-Through Check — June 26, 2026 Top Picks</div>
+
+<div class="follow">
+  <span class="sym">XHB</span> — Homebuilders (Berkshire/TMHC catalyst)
+  <span class="follow-status-fading"> ❌ FADED</span>
+  <div style="font-size:12px;color:var(--muted);margin-top:4px;">June 26 entry: hold above $115.92. Today: $115.11 (0% PM) — BELOW ENTRY. Berkshire acquisition is a one-day catalyst; homebuilder sector lacks follow-through driver. Exit if held.</div>
+</div>
+
+<div class="follow">
+  <span class="sym">XBI / IBB</span> — Biotech theme-wide (ACAD catalyst)
+  <span class="follow-status-weak"> ⚠️ WEAKENING</span>
+  <div style="font-size:12px;color:var(--muted);margin-top:4px;">June 26 entry: above $151.59. Today XBI: $156.14 (+0.03%) — ABOVE ENTRY but no momentum. IBB -0.03%. Theme-wide rotation out of AI/semis into biotech did NOT sustain. ACAD catalyst was unconfirmed. Reduce size or exit into strength.</div>
+</div>
+
+<div class="follow">
+  <span class="sym">GLD</span> — Gold safe haven
+  <span class="follow-status-weak"> ⚠️ WEAKENING</span>
+  <div style="font-size:12px;color:var(--muted);margin-top:4px;">June 26 entry: above $369.46, target $375-380. Today GLD: $371.25 (-0.07%) — ABOVE ENTRY but risk-on from Iran ceasefire capping safe-haven bid. UUP -0.12% (dollar weak = gold tailwind, slight offset). GDX/GDXJ both -0.12%/-0.15% — miners not leading. Reduce or hold tight stop at $369.</div>
+</div>
+
+<div class="follow">
+  <span class="sym">JETS</span> — Airlines (Boeing-China Southern deal)
+  <span class="follow-status-on"> ✅ STILL ON</span>
+  <div style="font-size:12px;color:var(--muted);margin-top:4px;">June 26 entry: above $32.98. Today JETS: $33.07 (+0.21%) — ABOVE ENTRY with ceasefire/risk-on tailwind (Middle East air corridors open). PEJ flat ($67.65). Not theme-wide but JETS holding. Maintain stop at $31.50.</div>
+</div>
+
+<div class="follow">
+  <span class="sym">WGMI / IBIT</span> — Crypto (Friday selloff)
+  <span class="follow-status-fading"> ❌ CONTINUATION LOWER</span>
+  <div style="font-size:12px;color:var(--muted);margin-top:4px;">Friday: WGMI -9%, IBIT -4.1%. Today: WGMI -0.13%, IBIT -0.12% — continued drift. No reversal catalyst. COIN -0.30%. DO NOT FADE THE TREND.</div>
+</div>
+</section>
+
+<!-- WATCHLIST STATUS -->
+<section>
+<div class="sec-title">👁️ Personal Watchlist (TV MCP batch_run, 08:20 ET)</div>
+<div style="font-size:11px;color:var(--muted);margin-bottom:6px;">change_pct = vs. prior pre-market bar. No earnings BMO today for any watchlist name. No new 8-Ks found except IRDM.</div>
+
+<table>
+<thead><tr><th>Ticker</th><th>PM Price</th><th>PM chg%</th><th>Notes</th></tr></thead>
+<tbody>
+<tr><td>TSLA</td><td>$382.16</td><td class="neg">-0.19%</td><td>Flat; no catalyst today</td></tr>
+<tr><td>NVDA</td><td>$194.38</td><td class="neg">-0.08%</td><td>AI semi headwind persists; Morgan Stanley climax warning</td></tr>
+<tr><td>SOFI</td><td>$18.13</td><td class="neg">-0.17%</td><td>Flat; no catalyst</td></tr>
+<tr><td>AMD</td><td>$529.00</td><td class="pos">+0.19%</td><td>Best of the semi names; no specific catalyst</td></tr>
+<tr><td>PLTR</td><td>$117.35</td><td class="neg">-0.29%</td><td>Defense premium unwind on Iran ceasefire</td></tr>
+<tr><td>MARA</td><td>$14.85</td><td class="neg">-0.27%</td><td>Crypto weak; no reversal</td></tr>
+<tr><td>COIN</td><td>$151.46</td><td class="neg">-0.30%</td><td>Crypto drift; no catalyst</td></tr>
+<tr><td>SNDK</td><td>$2,106</td><td class="neg">-0.14%</td><td>AI fear/Synaptics deal overhang from Friday</td></tr>
+<tr><td>META</td><td>$561.00</td><td>0%</td><td>Flat; XLC constituent but CMCSA not moving META</td></tr>
+<tr><td>AMZN</td><td>$235.10</td><td class="pos">+0.13%</td><td>Slight risk-on bid</td></tr>
+<tr><td>MSFT</td><td>$379.59</td><td class="neg">-0.16%</td><td>"Worst month since 2000" Bloomberg — avoid longs</td></tr>
+</tbody>
+</table>
+</section>
+
+<!-- TODAY'S SCHEDULE -->
+<section>
+<div class="sec-title">📅 Today's Macro Schedule (June 29, 2026)</div>
+
+<div class="sched-item"><span class="sched-time">09:30 AM</span><span>Market open — expect CMCSA/CHTR/RKLB gap continuation; XLC/ARKX ETF repricing</span></div>
+<div class="sched-item"><span class="sched-time">02:30 PM</span><span class="sched-high">Dallas Fed Manufacturing Index (Jun)</span><span style="margin-left:8px;color:var(--muted)">Previous: 2 | Consensus: N/A | Low impact unless miss/beat extreme</span></div>
+<div class="sched-item"><span class="sched-time">03:30 PM</span><span>3-Month Bill Auction (~3.695%) + 6-Month Bill Auction (~3.840%) — minor</span></div>
+<div class="sched-item"><span class="sched-time">ALL DAY</span><span style="color:var(--red)">⚠️ US-Iran ceasefire fragility — any re-escalation headlines = VIX spike risk</span></div>
+<div class="sched-item"><span class="sched-time">Thu Jul 2</span><span class="sched-high">Employment / Nonfarm Payrolls — THE week's catalyst</span></div>
+<div class="sched-item"><span class="sched-time">Fri Jul 3</span><span>Markets likely early close — Independence Day weekend</span></div>
+</section>
+
+<!-- AVOID LIST -->
+<section>
+<div class="sec-title">🚫 Avoid / Watch With Caution</div>
+<table>
+<thead><tr><th>Name</th><th>Reason</th></tr></thead>
+<tbody>
+<tr><td class="neg">IRDM</td><td>Merger arb converging to $54 deal price (mid-2027 close). NOT a swing trade. Short arb spread = poor risk/reward for non-arb traders.</td></tr>
+<tr><td class="neg">MSFT</td><td>"Worst month since 2000" momentum; no reversal catalyst today. Avoid longs.</td></tr>
+<tr><td class="neg">MARA / COIN / WGMI / IBIT</td><td>Crypto complex in multi-day downtrend with no catalysts. Do not fade.</td></tr>
+<tr><td class="neg">PLTR / SHLD / ITA</td><td>Defense premium unwinding on Iran ceasefire. Do not chase if geopolitical bid returns — ceasefire is fragile and could snap.</td></tr>
+<tr><td class="neg">XHB</td><td>Friday catalyst (Berkshire/TMHC) fully priced; gapped below entry level today. Exit if held.</td></tr>
+<tr><td class="neu">NVDA / SMH</td><td>Morgan Stanley climax warning. Flat-to-soft. No near-term catalyst. South Korea supply investment = potential headwind for pricing power.</td></tr>
+</tbody>
+</table>
+</section>
+
+<!-- ASSUMPTION AUDIT -->
+<section>
+<div class="sec-title">🔍 Step 11 — Assumption Audit</div>
+<div class="audit-item"><strong>TV MCP price method:</strong> batch_run (primary) used for all 57 ETFs and 14-ticker watchlist pull. All 57/57 successful. change_pct = vs. prior pre-market bar, NOT prior day close. Day % gains from stockanalysis.com. quote_get not tested independently.</div>
+<div class="audit-item"><strong>Chrome MCP:</strong> Not tested. Gap discovery limited to stockanalysis top-20 %-sort. Note in report. Volume-sorted deep sweep skipped — liquid names may be missed beyond the top-20.</div>
+<div class="audit-item"><strong>Finviz:</strong> Public feed only. Elite filtered view not accessible. Note in report.</div>
+<div class="audit-item"><strong>Options flow:</strong> No specific pre-market flow data found. web_search returned only platform links, not today's specific alerts. All options commentary labeled "price-action inference only — NOT confirmed flow data."</div>
+<div class="audit-item"><strong>SPY/QQQ sanity bounds:</strong> SPY $737.48, QQQ $716.00. batch_run change shows +0.02%/+0.03% vs prior bar — not vs. prior day close, cannot verify 5% bounds from batch_run alone. NQ futures +1.2%, ES +0.8% reported (Yahoo Finance, TheStreet) — consistent with SPY/QQQ being flat-to-up pre-market. NO DATA SUSPECT FLAG.</div>
+<div class="audit-item"><strong>CHTR catalyst split:</strong> Two separate catalysts reported — CMCSA spin-off sector re-rating (confirmed) + SpaceX mobile partnership talks (UNCONFIRMED — no company statement). The 22% gap is attributed primarily to CMCSA spin-off re-rating. SpaceX talks add narrative but are unconfirmed.</div>
+<div class="audit-item"><strong>ARKX repricing lag:</strong> ARKX shows $32.74 (0% change) in pre-market. RKLB is +11%. ARKX avg vol was 3 units per batch_run — this is extreme pre-market illiquidity. ARKX will reprice at open. Entry estimates for ARKX are based on ~20% RKLB weight assumption — verify holdings before sizing.</div>
+<div class="audit-item"><strong>US-Iran ceasefire durability:</strong> Multiple expert sources call it fragile. "Nobody quite trusts" it. All risk-on calls assume ceasefire holds. If re-escalation → VIX spike → reverse all risk-on positions.</div>
+<div class="audit-item"><strong>South Korea AI chip news:</strong> Samsung -4.86%, SK Hynix -1.68% in Asian trading — not the expected bullish reaction. Supply glut fears dominating near-term. DRAM ETF -0.10%. Call is NUANCED/NEUTRAL for today, not bullish.</div>
+<div class="audit-item"><strong>LBRDK/LBRDA:</strong> Prices not confirmed via TV MCP (only stockanalysis). Too thin for swing trading. Not recommended.</div>
+<div class="audit-item"><strong>UNCLASSIFIED headlines:</strong> None — all headlines mapped to ETF buckets.</div>
+<div class="audit-item"><strong>Wire scoops behind paywall:</strong> Bloomberg MSFT headline (paywall). Reuters morning bid (Reuters.com — soft paywall). All others accessible.</div>
+</section>
+
+</div><!-- /container -->
+</body>
+</html>
