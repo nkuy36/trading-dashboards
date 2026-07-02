@@ -1,0 +1,886 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Daily Theme Scanner — 2026-07-02</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0e17;
+    --bg-card: #0f1623;
+    --bg-card2: #131b2e;
+    --border: #1e2d47;
+    --text: #e2e8f0;
+    --text-muted: #64748b;
+    --text-dim: #94a3b8;
+    --high: #10b981;
+    --medium: #f59e0b;
+    --low: #ef4444;
+    --accent: #3b82f6;
+    --accent2: #8b5cf6;
+    --ticker: #38bdf8;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    line-height: 1.7;
+    padding: 0;
+  }
+  .header {
+    background: linear-gradient(135deg, #0a0e17 0%, #0f1a2e 50%, #0a0e17 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 32px 48px 28px;
+    position: relative;
+    overflow: hidden;
+  }
+  .header::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: radial-gradient(ellipse at 20% 50%, rgba(59,130,246,0.06) 0%, transparent 60%),
+                radial-gradient(ellipse at 80% 50%, rgba(16,185,129,0.05) 0%, transparent 60%);
+    pointer-events: none;
+  }
+  .header-label {
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+  }
+  .header h1 {
+    font-size: 28px;
+    font-weight: 700;
+    color: #f1f5f9;
+    letter-spacing: -0.02em;
+    margin-bottom: 8px;
+  }
+  .header h1 span { color: var(--accent); }
+  .header-meta {
+    font-size: 11px;
+    color: var(--text-muted);
+  }
+  .content { padding: 32px 48px; max-width: 1200px; }
+  .disclaimer {
+    background: rgba(59,130,246,0.08);
+    border: 1px solid rgba(59,130,246,0.2);
+    border-radius: 6px;
+    padding: 10px 16px;
+    margin-bottom: 32px;
+    font-size: 11px;
+    color: var(--text-muted);
+  }
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 40px 0 20px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+  }
+  .section-header h2 {
+    font-size: 16px;
+    font-weight: 600;
+    color: #f1f5f9;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+  .section-num {
+    background: var(--accent);
+    color: #fff;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 3px;
+  }
+  .card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 24px;
+    margin-bottom: 16px;
+    position: relative;
+    transition: border-color 0.2s;
+  }
+  .card:hover { border-color: #2a3f60; }
+  .card-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 16px;
+    gap: 12px;
+  }
+  .card-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: #f1f5f9;
+  }
+  .badges {
+    display: flex;
+    gap: 8px;
+    flex-shrink: 0;
+  }
+  .badge {
+    font-size: 10px;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 3px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+  .badge-HIGH { background: rgba(16,185,129,0.15); color: var(--high); border: 1px solid rgba(16,185,129,0.3); }
+  .badge-MEDIUM { background: rgba(245,158,11,0.15); color: var(--medium); border: 1px solid rgba(245,158,11,0.3); }
+  .badge-LOW { background: rgba(239,68,68,0.15); color: var(--low); border: 1px solid rgba(239,68,68,0.3); }
+  .badge-STRONG { background: rgba(16,185,129,0.15); color: var(--high); border: 1px solid rgba(16,185,129,0.3); }
+  .badge-MODERATE { background: rgba(245,158,11,0.15); color: var(--medium); border: 1px solid rgba(245,158,11,0.3); }
+  .badge-WEAK { background: rgba(239,68,68,0.15); color: var(--low); border: 1px solid rgba(239,68,68,0.3); }
+  .badge-stage {
+    background: rgba(139,92,246,0.15);
+    color: #a78bfa;
+    border: 1px solid rgba(139,92,246,0.3);
+    font-size: 10px;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 3px;
+    text-transform: uppercase;
+  }
+  .meta-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin: 16px 0;
+  }
+  .meta-block {
+    background: var(--bg-card2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 12px;
+  }
+  .meta-label {
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--text-muted);
+    margin-bottom: 6px;
+  }
+  .meta-value {
+    font-size: 12px;
+    color: var(--text);
+    line-height: 1.5;
+  }
+  .ticker { color: var(--ticker); font-weight: 600; }
+  .evidence-list { list-style: none; margin: 12px 0; }
+  .evidence-list li {
+    padding: 8px 12px;
+    background: rgba(255,255,255,0.02);
+    border-left: 2px solid var(--accent);
+    margin-bottom: 6px;
+    border-radius: 0 4px 4px 0;
+    font-size: 12px;
+    color: var(--text-dim);
+  }
+  .evidence-list li a { color: var(--accent); text-decoration: none; }
+  .evidence-list li a:hover { text-decoration: underline; }
+  .summary-box {
+    background: rgba(255,255,255,0.02);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 6px;
+    padding: 14px;
+    margin-top: 12px;
+    font-size: 12px;
+    color: var(--text-dim);
+    line-height: 1.7;
+  }
+  .summary-box strong { color: var(--text); }
+  .field-label {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-muted);
+    margin-bottom: 4px;
+    margin-top: 12px;
+  }
+  .field-value {
+    font-size: 12px;
+    color: var(--text-dim);
+  }
+  .action-card {
+    background: linear-gradient(135deg, rgba(16,185,129,0.05) 0%, rgba(59,130,246,0.05) 100%);
+    border: 1px solid rgba(16,185,129,0.2);
+    border-radius: 8px;
+    padding: 24px;
+    margin-bottom: 16px;
+  }
+  .action-card h3 {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--high);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 14px;
+  }
+  .action-item {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 12px;
+    padding: 10px 12px;
+    background: rgba(0,0,0,0.2);
+    border-radius: 6px;
+  }
+  .action-num {
+    color: var(--accent);
+    font-weight: 700;
+    font-size: 14px;
+    flex-shrink: 0;
+  }
+  .action-text { font-size: 12px; color: var(--text-dim); }
+  .action-text .ticker { color: var(--ticker); }
+  .bullet-item {
+    padding: 8px 12px;
+    border-left: 2px solid var(--accent);
+    background: rgba(255,255,255,0.02);
+    border-radius: 0 4px 4px 0;
+    margin-bottom: 8px;
+    font-size: 12px;
+    color: var(--text-dim);
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 16px;
+    font-size: 12px;
+  }
+  th {
+    text-align: left;
+    padding: 8px 12px;
+    background: rgba(255,255,255,0.04);
+    color: var(--text-muted);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    border-bottom: 1px solid var(--border);
+  }
+  td {
+    padding: 10px 12px;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    color: var(--text-dim);
+    vertical-align: top;
+  }
+  td:first-child { color: var(--medium); font-weight: 600; }
+  tr:last-child td { border-bottom: none; }
+  .today-highlight td { background: rgba(16,185,129,0.04); }
+  .today-highlight td:first-child { color: var(--high); }
+  .footer {
+    margin-top: 48px;
+    padding: 24px 48px;
+    border-top: 1px solid var(--border);
+    font-size: 11px;
+    color: var(--text-muted);
+  }
+  .catalyst-alert {
+    border-left-color: var(--medium) !important;
+  }
+  .today-card { border-color: rgba(16,185,129,0.3) !important; }
+  .today-card .card-title { color: var(--high); }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-label">Pre-Market Intelligence Report</div>
+  <h1>Daily Theme Scanner — <span>2026-07-02</span></h1>
+  <div class="header-meta">Generated automatically · All claims sourced · Unsourced claims omitted per standing rules</div>
+</div>
+
+<div class="content">
+
+<div class="disclaimer">
+  ⚠️ Pre-market scan. Not investment advice. Claims without verifiable sources are excluded. If evidence is thin, no trade is suggested.
+</div>
+
+<!-- ============================================================ -->
+<!-- EMERGING NARRATIVES -->
+<!-- ============================================================ -->
+
+<div class="section-header">
+  <span class="section-num">01</span>
+  <h2>Emerging Narratives</h2>
+</div>
+
+<!-- NARRATIVE 1 -->
+<div class="card">
+  <div class="card-header">
+    <div class="card-title">1. Fed Rate Hike Repricing — The Warsh Shock</div>
+    <div class="badges">
+      <span class="badge badge-HIGH">HIGH</span>
+      <span class="badge-stage">DEVELOPING</span>
+    </div>
+  </div>
+
+  <div class="meta-label">Evidence</div>
+  <ul class="evidence-list">
+    <li>Warsh at ECB Forum Jul 1: "prices are too high." 9 FOMC members signaling higher rates; 6 favor two 25bp hikes. Blank reversal from March when consensus called for one cut. — <a href="https://www.cnbc.com/2026/07/01/kevin-warsh-ecb-forum-live-updates.html" target="_blank">CNBC, Jul 1 2026</a></li>
+    <li>September rate hike probability: 49% (up from 27% the prior day) per CME FedWatch. — <a href="https://www.chase.com/personal/investments/learning-and-insights/article/kevin-warsh-june-2026-federal-reserve-meeting-key-takeaways" target="_blank">Chase / FOMC recap</a></li>
+    <li>March FOMC: no hike, one cut. June FOMC: 9 members pro-hike. Most dramatic committee pivot in years. — <a href="https://www.schwab.com/learn/story/are-you-there-inflation-its-me-kevin-warsh" target="_blank">Schwab</a></li>
+  </ul>
+
+  <div class="meta-grid">
+    <div class="meta-block">
+      <div class="meta-label">Primary Beneficiaries</div>
+      <div class="meta-value">
+        <span class="ticker">BRK.B</span> · <span class="ticker">JPM</span> · <span class="ticker">GS</span> · <span class="ticker">BAC</span> (NIM expansion) · USD
+      </div>
+    </div>
+    <div class="meta-block">
+      <div class="meta-label">Secondary Beneficiaries</div>
+      <div class="meta-value">
+        <span class="ticker">VIRT</span> · <span class="ticker">SHY</span> · <span class="ticker">SGOV</span> (short-duration)
+      </div>
+    </div>
+    <div class="meta-block">
+      <div class="meta-label">Losers / Disrupted</div>
+      <div class="meta-value">
+        <span class="ticker">ARKK</span> · <span class="ticker">TLT</span> · <span class="ticker">AVB</span> · <span class="ticker">EQR</span> · <span class="ticker">NEE</span> · <span class="ticker">D</span> · high-multiple growth
+      </div>
+    </div>
+    <div class="meta-block">
+      <div class="meta-label">Timeline</div>
+      <div class="meta-value">Q3 2026 guidance; September FOMC (Sep 16) is the pin event</div>
+    </div>
+  </div>
+
+  <div class="summary-box">
+    The market entered 2026 pricing one rate cut. Warsh's arrival as Fed Chair has inverted that narrative entirely — the committee now leans toward hikes if inflation data doesn't cooperate. <strong>Today's June NFP (8:30 AM ET) is the first key datapoint.</strong> A print above 150K with sticky wages could push September hike probability above 60% and reprice the entire duration curve. This is not yet consensus: the buy-side still widely expects a dovish hold. The asymmetry is to the upside on short rates.
+  </div>
+</div>
+
+<!-- NARRATIVE 2 -->
+<div class="card">
+  <div class="card-header">
+    <div class="card-title">2. AI Capex-to-Free-Cash-Flow Reckoning</div>
+    <div class="badges">
+      <span class="badge badge-HIGH">HIGH</span>
+      <span class="badge-stage">DEVELOPING</span>
+    </div>
+  </div>
+
+  <ul class="evidence-list">
+    <li>Hyperscalers tracking $700B–$900B in 2026 capex (+36% YoY). Microsoft: $37.5B in one quarter (+66% YoY, $3.2B above estimates). Amazon guided $200B full-year → negative FCF. — <a href="https://finance.yahoo.com/markets/article/magnificent-7-earnings-rush-reveals-ai-spending-surge-with-hyperscaler-capex-set-to-reach-725-billion-in-2026-224901707.html" target="_blank">Yahoo Finance / FactSet</a></li>
+    <li>Meta raised 2026 capex to $125B–$145B (+$10B at both ends). Barclays estimates ~90% FCF compression at the high end. — <a href="https://www.cnbc.com/2026/02/06/google-microsoft-meta-amazon-ai-cash.html" target="_blank">CNBC</a></li>
+    <li>"The AI capex-to-revenue gap is widening — and markets are starting to notice." — <a href="https://www.forbes.com/sites/jasonkirsch/2026/06/02/the-ai-capex-to-revenue-gap-is-widening---and-markets-are-starting-to-notice/" target="_blank">Forbes, Jun 2 2026</a></li>
+  </ul>
+
+  <div class="meta-grid">
+    <div class="meta-block">
+      <div class="meta-label">Primary Beneficiaries</div>
+      <div class="meta-value">
+        <span class="ticker">NVDA</span> · <span class="ticker">VRT</span> · <span class="ticker">ETN</span> · <span class="ticker">EQIX</span> · <span class="ticker">DLR</span> · <span class="ticker">AMD</span>
+      </div>
+    </div>
+    <div class="meta-block">
+      <div class="meta-label">Secondary Beneficiaries</div>
+      <div class="meta-value">
+        <span class="ticker">BE</span> · <span class="ticker">CEG</span> · <span class="ticker">NEE</span> · <span class="ticker">AEE</span> (data center power)
+      </div>
+    </div>
+    <div class="meta-block">
+      <div class="meta-label">Losers / Disrupted</div>
+      <div class="meta-value">
+        <span class="ticker">MSFT</span> · <span class="ticker">META</span> · <span class="ticker">AMZN</span> · <span class="ticker">GOOGL</span> (FCF compression) · Cloud software multiples
+      </div>
+    </div>
+    <div class="meta-block">
+      <div class="meta-label">Timeline</div>
+      <div class="meta-value">Q2 2026 earnings (July 9–August) — AI revenue vs. capex is the dominant narrative</div>
+    </div>
+  </div>
+
+  <div class="summary-box">
+    The $700B+ AI spending wave creates a rare divergence: infrastructure suppliers printing record margins while the buyers compress their own free cash flows. <strong>Q2 earnings calls will force the question: when does ROI materialize?</strong> Any hyperscaler guiding toward capex deceleration could trigger a violent rotation. The infrastructure layer (VRT, ETN, CEG) benefits regardless of which platform wins.
+  </div>
+</div>
+
+<!-- NARRATIVE 3 -->
+<div class="card">
+  <div class="card-header">
+    <div class="card-title">3. Mega-IPO Liquidity Drain</div>
+    <div class="badges">
+      <span class="badge badge-MEDIUM">MEDIUM</span>
+      <span class="badge-stage">DEVELOPING</span>
+    </div>
+  </div>
+
+  <ul class="evidence-list">
+    <li>SpaceX completed the largest IPO in history in June 2026 at ~$75B / ~$1.75T valuation; demand reportedly >$250B. — <a href="https://www.investing.com/analysis/the-trilliondollar-ipo-test-spacex-and-openai-face-public-markets-200680688" target="_blank">Investing.com</a></li>
+    <li>OpenAI: public S-1 expected late July/August; September 2026 listing at $1T+ valuation. OpenAI losses: $21.3B in Q1 2026 alone. — <a href="https://www.ig.com/en/news-and-trade-ideas/spacex-openai-anthropic-2026-ipo-deals-260520" target="_blank">IG International</a></li>
+    <li>Combined SpaceX + OpenAI + Anthropic demand could exceed $200B — vs. $45B total US IPO proceeds in all of 2025. Analysts warn of 40% dip as investors harvest existing winners. — <a href="https://moneywise.com/investing/stocks/stocks-spacex-openai-ipo-market-crash" target="_blank">MoneyWise</a></li>
+  </ul>
+
+  <div class="meta-grid">
+    <div class="meta-block">
+      <div class="meta-label">Primary Beneficiaries</div>
+      <div class="meta-value">Pre-IPO holders · <span class="ticker">MSFT</span> (OpenAI investor) · <span class="ticker">GS</span> · <span class="ticker">MS</span> · <span class="ticker">JPM</span></div>
+    </div>
+    <div class="meta-block">
+      <div class="meta-label">Losers / Disrupted</div>
+      <div class="meta-value"><span class="ticker">NVDA</span> · <span class="ticker">AAPL</span> · <span class="ticker">TSLA</span> (harvested to fund allocations) · Crypto</div>
+    </div>
+    <div class="meta-block">
+      <div class="meta-label">Timeline</div>
+      <div class="meta-value" style="grid-column: 1 / -1;">OpenAI S-1 public filing late July is the immediate trigger; listing target September 2026</div>
+    </div>
+  </div>
+
+  <div class="summary-box">
+    The SpaceX IPO absorbed unprecedented secondary capital in June. OpenAI is next — $1T+ at September listing. <strong>The math on where IPO buyers source capital: they sell.</strong> Concentrated positions in AI beneficiaries (NVDA, AAPL) are the most likely funding source. The secondary market drain is under-appreciated relative to the IPO excitement itself.
+  </div>
+</div>
+
+<!-- NARRATIVE 4 -->
+<div class="card">
+  <div class="card-header">
+    <div class="card-title">4. Section 122 Tariff Expiry — Trade Regime Reset</div>
+    <div class="badges">
+      <span class="badge badge-HIGH">HIGH</span>
+      <span class="badge-stage">EARLY</span>
+    </div>
+  </div>
+
+  <ul class="evidence-list">
+    <li>Section 122 tariffs (10% universal import surcharge) expire July 24, 2026 — 150-day statutory limit. Cannot be extended by executive action. Congressional extension "unlikely." — <a href="https://www.kelleydrye.com/viewpoints/blogs/trade-and-manufacturing-monitor/understanding-the-new-section-122-tariffs-and-the-end-of-ieepa-tariff-actions" target="_blank">Kelley Drye</a></li>
+    <li>USTR has 76 pending Section 301 tariff determinations expected to conclude before July 24 as successor authorities. — <a href="https://www.grantthornton.com/insights/alerts/tax/2026/insights/the-trump-administration-new-tariff-road-map" target="_blank">Grant Thornton</a></li>
+    <li>US Court of International Trade struck down Section 122 tariffs on May 7, 2026 — under appeal but legal cloud persists. — <a href="https://www.skadden.com/insights/publications/2026/05/us-trade-court-strikes-down-section-122-tariffs" target="_blank">Skadden</a></li>
+  </ul>
+
+  <div class="meta-grid">
+    <div class="meta-block">
+      <div class="meta-label">Primary Beneficiaries (if tariffs fall)</div>
+      <div class="meta-value"><span class="ticker">WMT</span> · <span class="ticker">TGT</span> · <span class="ticker">COST</span> · diversified supply chains</div>
+    </div>
+    <div class="meta-block">
+      <div class="meta-label">Losers / Disrupted (if protection falls)</div>
+      <div class="meta-value"><span class="ticker">NUE</span> · <span class="ticker">CLF</span> · <span class="ticker">X</span> · domestic steel/metals</div>
+    </div>
+  </div>
+
+  <div class="summary-box">
+    <strong>The most under-watched catalyst on the calendar.</strong> The entire current tariff architecture was built on Section 122 as a bridge — and that bridge ends July 24, regardless of political will. The replacement regime (76 targeted Section 301 tariffs) may be more or less favorable to individual sectors than the blanket 10%, creating significant cross-sector dispersion. The Court of International Trade's May ruling striking these down adds a legal wildcard. Equity markets have essentially zero positioning around this event.
+  </div>
+</div>
+
+<!-- NARRATIVE 5 -->
+<div class="card">
+  <div class="card-header">
+    <div class="card-title">5. Pharma Tariff Go-Live — July 31 Hard Deadline</div>
+    <div class="badges">
+      <span class="badge badge-MEDIUM">MEDIUM</span>
+      <span class="badge-stage">EARLY</span>
+    </div>
+  </div>
+
+  <ul class="evidence-list">
+    <li>100% ad valorem tariffs on patented pharmaceuticals and APIs effective July 31 (large companies) / Sep 29 (smaller). Companies with MFN/onshoring deals get 20% initial rate. — <a href="https://www.biopharmadive.com/news/trump-revives-pharma-tariffs-100-percent-levies/816584/" target="_blank">BioPharma Dive</a></li>
+    <li>"Largest pharmaceutical manufacturing buildout in American history" — $150B+ in pledged domestic investments triggered by the threat. — <a href="https://www.pharmexec.com/view/preparing-july-31-tariff-deadline" target="_blank">PharmExec</a></li>
+    <li>P&G cited tariffs as 5-point EPS headwind. Small/mid biotech with offshore API supply chains most vulnerable. — <a href="https://equitablegrowth.org/u-s-businesses-report-that-tariff-policies-will-likely-lead-to-price-increases-and-labor-market-impacts-in-2026/" target="_blank">Equitable Growth</a></li>
+  </ul>
+
+  <div class="meta-grid">
+    <div class="meta-block">
+      <div class="meta-label">Primary Beneficiaries</div>
+      <div class="meta-value"><span class="ticker">LLY</span> · <span class="ticker">ABBV</span> · <span class="ticker">BMY</span> · <span class="ticker">JNJ</span> (domestic/MFN deals) · <span class="ticker">CTLT</span> (domestic CDMO)</div>
+    </div>
+    <div class="meta-block">
+      <div class="meta-label">Losers / Disrupted</div>
+      <div class="meta-value"><span class="ticker">NVO</span> · <span class="ticker">AZN</span> · <span class="ticker">RHHBY</span> (European pharma) · Small/mid biotech with offshore API</div>
+    </div>
+  </div>
+
+  <div class="summary-box">
+    July 31 is a hard administrative deadline. Every major pharma has been in negotiations since April. The tail risk: a major company fails to reach a deal and announces 100% tariff exposure on its primary product — or announces a price increase that draws political backlash and restarts the drug pricing political cycle right before Q3 earnings season.
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- EARNINGS SIGNALS -->
+<!-- ============================================================ -->
+
+<div class="section-header">
+  <span class="section-num">02</span>
+  <h2>Earnings Signals</h2>
+</div>
+
+<!-- SIGNAL 1 -->
+<div class="card">
+  <div class="card-header">
+    <div class="card-title">Signal 1 — Micron HBM: The AI Memory Tax Is Real</div>
+    <div class="badges">
+      <span class="badge badge-STRONG">STRONG</span>
+    </div>
+  </div>
+
+  <div class="meta-grid">
+    <div class="meta-block">
+      <div class="meta-label">Type</div>
+      <div class="meta-value">Sector read-through / Unusual guidance</div>
+    </div>
+    <div class="meta-block">
+      <div class="meta-label">Companies Involved</div>
+      <div class="meta-value"><span class="ticker">MU</span> → <span class="ticker">NVDA</span> · <span class="ticker">AMD</span> · SK Hynix · Samsung</div>
+    </div>
+  </div>
+
+  <ul class="evidence-list">
+    <li>Micron Q3 FY2026 (Jun 24): Revenue $23.86B, gross margin 74.9%, EPS $25.11 vs. $20.86 consensus — largest positive EPS surprise in early S&P 500 reporting cohort. — <a href="https://finance.yahoo.com/markets/stocks/articles/previewing-2026-q2-earnings-season-224600034.html" target="_blank">Yahoo Finance / FactSet</a></li>
+    <li>Micron's entire 2026 HBM production is sold out — every unit priced and contracted before it came off the line. — <a href="https://www.techtimes.com/articles/318017/20260608/micron-stock-climbs-hbm-sells-out-june-24-earnings-decides-ai-memory-trade.htm" target="_blank">TechTimes</a></li>
+    <li>First time in the memory cycle that AI demand has created a structural supply deficit rather than the usual DRAM oversupply dynamic.</li>
+  </ul>
+
+  <div class="field-label">Broader Implication</div>
+  <div class="field-value">AI GPU demand is consuming the ENTIRE global HBM supply. Direct read-through: NVDA H200/H100 supply is gated by HBM. Micron has pricing power it has never historically had. Bullish for the AI compute supercycle thesis.</div>
+
+  <div class="field-label">Trade Idea</div>
+  <div class="field-value">Long <span class="ticker">MU</span>, long <span class="ticker">EWY</span> (Korean memory exposure). Short consumer DRAM names / handset-exposed Samsung mobile margins as AI HBM crowds out commodity capacity.</div>
+
+  <div class="summary-box">
+    Micron's blowout is the clearest signal that the AI compute supercycle is not slowing at the component level. The company priced its entire 2026 HBM output before reporting. 74.9% gross margin is unprecedented in its history. The read-through to NVDA's GPU availability is bullish: HBM constraint is a demand signal, not a supply warning.
+  </div>
+</div>
+
+<!-- SIGNAL 2 -->
+<div class="card">
+  <div class="card-header">
+    <div class="card-title">Signal 2 — Hyperscaler Capex Beats: Infrastructure Wins Regardless</div>
+    <div class="badges">
+      <span class="badge badge-STRONG">STRONG</span>
+    </div>
+  </div>
+
+  <div class="meta-grid">
+    <div class="meta-block">
+      <div class="meta-label">Type</div>
+      <div class="meta-value">Recurring theme / Unusual guidance</div>
+    </div>
+    <div class="meta-block">
+      <div class="meta-label">Companies Involved</div>
+      <div class="meta-value"><span class="ticker">MSFT</span> · <span class="ticker">META</span> · <span class="ticker">AMZN</span> · <span class="ticker">GOOGL</span> → <span class="ticker">VRT</span> · <span class="ticker">ETN</span> · <span class="ticker">CEG</span></div>
+    </div>
+  </div>
+
+  <ul class="evidence-list">
+    <li>MSFT Q2 capex: $37.5B (+66% YoY, $3.2B above estimates). Full-year tracking above $120B. — <a href="https://samexpert.com/microsoft-q2-fy2026-earnings-licensing-impact/" target="_blank">SAMexpert</a></li>
+    <li>Meta raised 2026 capex to $125B–$145B. Amazon guided $200B, on track for negative FCF — doubling 2025 outlay.</li>
+    <li>Five largest hyperscalers tracking $700B–$900B combined 2026 capex — 36% above 2025. — <a href="https://finance.yahoo.com/markets/article/magnificent-7-earnings-rush-reveals-ai-spending-surge-with-hyperscaler-capex-set-to-reach-725-billion-in-2026-224901707.html" target="_blank">Yahoo Finance</a></li>
+  </ul>
+
+  <div class="field-label">Trade Idea</div>
+  <div class="field-value">Overweight <span class="ticker">VRT</span> · <span class="ticker">ETN</span> · <span class="ticker">CEG</span> · <span class="ticker">BE</span> · <span class="ticker">EQIX</span> · <span class="ticker">DLR</span> into any broader tech sell-offs. These get paid during construction regardless of AI revenue timing.</div>
+
+  <div class="summary-box">
+    All major hyperscalers competing simultaneously on infrastructure. Picks-and-shovels benefit regardless of which platform wins the application layer — they get paid during construction. The risk is a simultaneous capex freeze if one major hyperscaler issues a demand warning, but none have done so. Until that changes, the infrastructure layer remains the lowest-risk AI expression.
+  </div>
+</div>
+
+<!-- SIGNAL 3 -->
+<div class="card">
+  <div class="card-header">
+    <div class="card-title">Signal 3 — S&P 500 Pre-Season: 23% EPS Growth, 84.6% Beat Rate</div>
+    <div class="badges">
+      <span class="badge badge-MODERATE">MODERATE</span>
+    </div>
+  </div>
+
+  <div class="meta-grid">
+    <div class="meta-block">
+      <div class="meta-label">Type</div>
+      <div class="meta-value">Positive revisions / Early earnings trend</div>
+    </div>
+    <div class="meta-block">
+      <div class="meta-label">Companies Involved</div>
+      <div class="meta-value"><span class="ticker">MU</span> (largest EPS surprise) · <span class="ticker">FDX</span> · broad S&P 500</div>
+    </div>
+  </div>
+
+  <ul class="evidence-list">
+    <li>FactSet projects S&P 500 Q2 2026 EPS growth of 23.1% YoY — second consecutive quarter above 20%. — <a href="https://www.factset.com/earningsinsight" target="_blank">FactSet Earnings Insight</a></li>
+    <li>13 early reporters (through Jun 26): earnings up +179.5%, revenue +29.5%, 84.6% beat rate. Revisions trend positive since April. — <a href="https://www.fxstreet.com/news/what-will-q2-earnings-season-show-202606290621" target="_blank">FXStreet</a></li>
+  </ul>
+
+  <div class="summary-box">
+    Strong backdrop but the bar is high. The 84.6% beat rate sets a demanding expectation — any miss or lowered guidance in the July 9–15 wave could have outsized sentiment impact. <strong>Key signal: forward guidance.</strong> Are companies raising H2 2026 outlooks despite tariff uncertainty and potential rate hikes? Cautious guidance despite strong beats could de-rate the market even with headline numbers intact.
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- UPCOMING CATALYSTS -->
+<!-- ============================================================ -->
+
+<div class="section-header">
+  <span class="section-num">03</span>
+  <h2>Upcoming Catalysts</h2>
+</div>
+
+<!-- CATALYST 1 — TODAY -->
+<div class="card today-card">
+  <div class="card-header">
+    <div class="card-title">🔴 LIVE TODAY — June Jobs Report (NFP, 8:30 AM ET)</div>
+    <div class="badges">
+      <span class="badge badge-HIGH">HIGH IMPACT</span>
+    </div>
+  </div>
+
+  <div class="meta-grid">
+    <div class="meta-block">
+      <div class="meta-label">Date</div>
+      <div class="meta-value" style="color:var(--high); font-weight:600;">July 2, 2026 — TODAY 8:30 AM ET</div>
+    </div>
+    <div class="meta-block">
+      <div class="meta-label">Consensus Expectation</div>
+      <div class="meta-value">~100K–105K jobs · 4.3% unemployment · +0.2% avg hourly earnings</div>
+    </div>
+    <div class="meta-block">
+      <div class="meta-label">Surprise Scenario</div>
+      <div class="meta-value">Print above 150K + wages above 0.3% → September hike probability spikes above 60% → sharp duration sell-off</div>
+    </div>
+    <div class="meta-block">
+      <div class="meta-label">Exposed Tickers</div>
+      <div class="meta-value">
+        <span class="ticker">TLT</span> · <span class="ticker">XLU</span> · <span class="ticker">AVB</span> · <span class="ticker">EQR</span> (losers) | <span class="ticker">JPM</span> · <span class="ticker">GS</span> · <span class="ticker">BAC</span> (winners)
+      </div>
+    </div>
+  </div>
+
+  <div class="summary-box">
+    Today's NFP is the single most important intraday event of the week. <strong>The May print (172K vs. 88K consensus) blindsided the market.</strong> A repeat — or even 130K+ — with upward May revision removes any excuse for the Fed to wait past September. Warsh has already signaled inflation is "too high." A strong number converts signal to catalyst. Market is NOT positioned for a hawkish beat. — <a href="https://www.kiplinger.com/investing/economy/jobs-report-june-2026-what-to-expect" target="_blank">Kiplinger preview</a>
+  </div>
+</div>
+
+<!-- CATALYST 2 -->
+<div class="card">
+  <div class="card-header">
+    <div class="card-title">Section 122 Tariff Expiry</div>
+    <div class="badges">
+      <span class="badge badge-HIGH">HIGH</span>
+    </div>
+  </div>
+
+  <div class="meta-grid">
+    <div class="meta-block">
+      <div class="meta-label">Date</div>
+      <div class="meta-value" style="color:var(--medium); font-weight:600;">July 24, 2026</div>
+    </div>
+    <div class="meta-block">
+      <div class="meta-label">Consensus Expectation</div>
+      <div class="meta-value">Quiet handoff to Section 301 successor tariffs — equity market not watching</div>
+    </div>
+    <div class="meta-block">
+      <div class="meta-label">Surprise Scenario</div>
+      <div class="meta-value">301 determinations not finalized → tariff vacuum; OR targeted 301s hit specific sectors harder than blanket 10%</div>
+    </div>
+    <div class="meta-block">
+      <div class="meta-label">Exposed Tickers</div>
+      <div class="meta-value"><span class="ticker">WMT</span> · <span class="ticker">TGT</span> · <span class="ticker">COST</span> (benefit if tariffs fall) | <span class="ticker">NUE</span> · <span class="ticker">CLF</span> · <span class="ticker">X</span> (at risk)</div>
+    </div>
+  </div>
+
+  <div class="summary-box">
+    <strong>Most under-watched catalyst on the calendar.</strong> Section 122 expires July 24 with no executive extension possible. The replacement (76 targeted 301 tariffs) may be more or less favorable to individual sectors. The Court of International Trade's May ruling striking down Section 122 adds a legal wildcard. Equity markets have essentially zero positioning around this event. — <a href="https://www.kelleydrye.com/viewpoints/blogs/trade-and-manufacturing-monitor/understanding-the-new-section-122-tariffs-and-the-end-of-ieepa-tariff-actions" target="_blank">Kelley Drye</a> · <a href="https://www.skadden.com/insights/publications/2026/05/us-trade-court-strikes-down-section-122-tariffs" target="_blank">Skadden</a>
+  </div>
+</div>
+
+<!-- CATALYST 3 -->
+<div class="card">
+  <div class="card-header">
+    <div class="card-title">Pharma Tariff Implementation</div>
+    <div class="badges">
+      <span class="badge badge-MEDIUM">MEDIUM</span>
+    </div>
+  </div>
+
+  <div class="meta-grid">
+    <div class="meta-block">
+      <div class="meta-label">Date</div>
+      <div class="meta-value" style="color:var(--medium); font-weight:600;">July 31, 2026</div>
+    </div>
+    <div class="meta-block">
+      <div class="meta-label">Consensus Expectation</div>
+      <div class="meta-value">Soft implementation — most large pharma assumed to have negotiated deals</div>
+    </div>
+    <div class="meta-block">
+      <div class="meta-label">Surprise Scenario</div>
+      <div class="meta-value">Major pharma fails to reach deal → 100% tariff exposure announced → sector sell-off</div>
+    </div>
+    <div class="meta-block">
+      <div class="meta-label">Exposed Tickers</div>
+      <div class="meta-value"><span class="ticker">NVO</span> · <span class="ticker">AZN</span> · <span class="ticker">RHHBY</span> (at risk) | <span class="ticker">LLY</span> · <span class="ticker">ABBV</span> · <span class="ticker">JNJ</span> (domestic winners)</div>
+    </div>
+  </div>
+
+  <div class="summary-box">
+    July 31 is a hard administrative deadline. The tail risk: a major company fails to reach a deal or announces a price increase that draws political backlash and restarts the drug pricing political cycle right before Q3 earnings. Watch for company pre-announcements over the next 3–4 weeks. — <a href="https://www.biopharmadive.com/news/trump-revives-pharma-tariffs-100-percent-levies/816584/" target="_blank">BioPharma Dive</a> · <a href="https://www.pharmexec.com/view/preparing-july-31-tariff-deadline" target="_blank">PharmExec</a>
+  </div>
+</div>
+
+<!-- CATALYST 4 -->
+<div class="card">
+  <div class="card-header">
+    <div class="card-title">Q2 2026 Earnings Season Kickoff</div>
+    <div class="badges">
+      <span class="badge badge-HIGH">HIGH</span>
+    </div>
+  </div>
+
+  <div class="meta-grid">
+    <div class="meta-block">
+      <div class="meta-label">Dates</div>
+      <div class="meta-value" style="color:var(--medium); font-weight:600;">Jul 9 (PEP) · Jul 10 (DAL) · Jul 14 (GS/MS/WFC/C) · Jul 15 (JPM)</div>
+    </div>
+    <div class="meta-block">
+      <div class="meta-label">Consensus Expectation</div>
+      <div class="meta-value">23%+ EPS growth, high beat rates — market expects momentum to continue</div>
+    </div>
+    <div class="meta-block">
+      <div class="meta-label">Surprise Scenario</div>
+      <div class="meta-value">Banks flag credit losses; PEP guides lower on consumer softness; DAL cites fare pressure → breaks "resilient consumer" narrative</div>
+    </div>
+    <div class="meta-block">
+      <div class="meta-label">Exposed Tickers</div>
+      <div class="meta-value"><span class="ticker">JPM</span> · <span class="ticker">GS</span> · <span class="ticker">BAC</span> · <span class="ticker">C</span> · <span class="ticker">DAL</span> · <span class="ticker">PEP</span> · <span class="ticker">XLF</span></div>
+    </div>
+  </div>
+
+  <div class="summary-box">
+    Opening week of Q2 season is a sentiment test for consumer and financial health. <strong>JPMorgan's consumer charge-off data and loan growth are the most critical signal</strong> for economic health. If credit quality is deteriorating under the tariff + rate-hike macro backdrop, the soft-landing consensus cracks quickly. S&P 500 P/E above 22x forward makes any guidance miss disproportionately painful. — <a href="https://us.plus500.com/en/newsandmarketinsights/q2-2026-earnings-season" target="_blank">Plus500</a> · <a href="https://finance.yahoo.com/markets/stocks/articles/jpmorgan-chase-q2-2026-earnings-105031068.html" target="_blank">Yahoo Finance / JPM preview</a>
+  </div>
+</div>
+
+<!-- CATALYST 5 -->
+<div class="card">
+  <div class="card-header">
+    <div class="card-title">OpenAI Public S-1 Filing</div>
+    <div class="badges">
+      <span class="badge badge-MEDIUM">MEDIUM</span>
+    </div>
+  </div>
+
+  <div class="meta-grid">
+    <div class="meta-block">
+      <div class="meta-label">Date</div>
+      <div class="meta-value" style="color:var(--medium); font-weight:600;">Expected late July or August 2026</div>
+    </div>
+    <div class="meta-block">
+      <div class="meta-label">Consensus Expectation</div>
+      <div class="meta-value">Massive excitement; $1T+ valuation widely expected; demand seen as enormous</div>
+    </div>
+    <div class="meta-block">
+      <div class="meta-label">Surprise Scenario</div>
+      <div class="meta-value">S-1 reveals $85B+ annualized burn rate ($21.3B loss in Q1 2026 alone) → shocks even optimistic analysts; forces "infrastructure company" discount</div>
+    </div>
+    <div class="meta-block">
+      <div class="meta-label">Exposed Tickers</div>
+      <div class="meta-value"><span class="ticker">MSFT</span> (investor) · <span class="ticker">NVDA</span> (primary compute partner) · <span class="ticker">AMZN</span> · <span class="ticker">GOOGL</span></div>
+    </div>
+  </div>
+
+  <div class="summary-box">
+    OpenAI's S-1 will be one of the most widely read documents in Wall Street history. The SpaceX offering absorbed $250B+ in demand and set a template. But OpenAI's $21.3B Q1 2026 loss — annualized ~$85B — is fundamentally different. The secondary market impact (harvesting NVDA, AAPL to fund allocations) is a structural risk that is under-appreciated relative to the IPO excitement. — <a href="https://www.ig.com/en/news-and-trade-ideas/spacex-openai-anthropic-2026-ipo-deals-260520" target="_blank">IG International</a> · <a href="https://moneywise.com/investing/stocks/stocks-spacex-openai-ipo-market-crash" target="_blank">MoneyWise</a>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- ACTION ITEMS -->
+<!-- ============================================================ -->
+
+<div class="section-header">
+  <span class="section-num">04</span>
+  <h2>Action Items</h2>
+</div>
+
+<div class="action-card">
+  <h3>Top 3 Tickers to Research Today</h3>
+  <div class="action-item">
+    <div class="action-num">1</div>
+    <div class="action-text"><span class="ticker">MU</span> — HBM sold out through 2026, 74.9% gross margin record. Focus: Q4 FY2026 guidance credibility and downstream read to NVDA supply chain. The AI memory thesis is the strongest confirmed signal in the market today.</div>
+  </div>
+  <div class="action-item">
+    <div class="action-num">2</div>
+    <div class="action-text"><span class="ticker">JPM</span> — Reporting July 15. Credit quality, NII outlook, trading revenue — the cleanest bellwether for whether higher rates are helping or hurting the real economy. First look at consumer health under tariff + potential-rate-hike backdrop.</div>
+  </div>
+  <div class="action-item">
+    <div class="action-num">3</div>
+    <div class="action-text"><span class="ticker">TLT</span> — Watch today's NFP at 8:30 AM ET. If print exceeds 130K, TLT could fall sharply as September hike probability spikes. Asymmetric downside risk today. Not a long-term hold recommendation — a positioning check for today.</div>
+  </div>
+</div>
+
+<div class="action-card">
+  <h3>Position Adjustments Suggested by Signals</h3>
+  <div class="bullet-item">⚡ <strong>Reduce duration exposure</strong> ahead of today's NFP — Warsh has telegraphed hawkish intent; strong print converts signal to catalyst. Review <span class="ticker">TLT</span>, <span class="ticker">NEE</span>, <span class="ticker">D</span>, <span class="ticker">AVB</span> exposure.</div>
+  <div class="bullet-item">🏗️ <strong>Add picks-and-shovels AI names</strong> (<span class="ticker">VRT</span>, <span class="ticker">ETN</span>, <span class="ticker">CEG</span>, <span class="ticker">BE</span>) into any broader tech weakness — hyperscaler capex commitments are structural demand signals regardless of application-layer volatility.</div>
+  <div class="bullet-item">🧬 <strong>Watch small/mid biotech (<span class="ticker">XBI</span>)</strong> for dislocations ahead of July 31 pharma tariff — companies with offshore API supply that haven't pre-announced deals are binary risk.</div>
+  <div class="bullet-item">📋 <strong>Monitor USTR announcements</strong> over the next 2 weeks for Section 301 tariff details before the July 24 Section 122 expiry. This is the most under-watched event on the calendar — first mover advantage for anyone who positions ahead of clarity.</div>
+</div>
+
+<div class="action-card">
+  <h3>Key Dates This Week & Ahead</h3>
+  <table>
+    <thead>
+      <tr><th>Date</th><th>Event</th><th>Significance</th></tr>
+    </thead>
+    <tbody>
+      <tr class="today-highlight">
+        <td>🟢 TODAY Jul 2</td>
+        <td>June NFP (8:30 AM ET)</td>
+        <td>Fed catalyst; September hike probability resets</td>
+      </tr>
+      <tr>
+        <td>Jul 9</td>
+        <td>PepsiCo Q2 earnings</td>
+        <td>Consumer health barometer</td>
+      </tr>
+      <tr>
+        <td>Jul 10</td>
+        <td>Delta Air Lines Q2 earnings</td>
+        <td>Travel demand / consumer discretionary read</td>
+      </tr>
+      <tr>
+        <td>Jul 14</td>
+        <td>GS · MS · WFC · Citi Q2</td>
+        <td>Bank sector — credit quality, trading, NII</td>
+      </tr>
+      <tr>
+        <td>Jul 15</td>
+        <td>JPMorgan Q2 earnings</td>
+        <td>Primary credit quality and economic health signal</td>
+      </tr>
+      <tr>
+        <td>Jul 24</td>
+        <td>Section 122 tariff statutory expiry</td>
+        <td>Trade regime reset — most under-watched catalyst</td>
+      </tr>
+      <tr>
+        <td>Jul 30</td>
+        <td>GDP Q2 2026 advance estimate + PCE</td>
+        <td>Economic growth + inflation — Fed decision input</td>
+      </tr>
+      <tr>
+        <td>Jul 31</td>
+        <td>Pharma tariff go-live (large companies)</td>
+        <td>Pharma/biotech binary risk event</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+</div>
+
+<div class="footer">
+  Daily Theme Scanner · 2026-07-02 · Generated automatically · Pre-market intelligence only · Not investment advice<br>
+  Sources: CNBC · Yahoo Finance · FactSet · BioPharma Dive · Schwab · Forbes · Skadden · Grant Thornton · Kelley Drye · PharmExec · TechTimes · Investing.com · MoneyWise · SAMexpert · FXStreet · Kiplinger · IG International
+</div>
+
+</body>
+</html>
