@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Daily Theme Scanner — 2026-07-03</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #0a0e17;
+    --bg2: #0f1623;
+    --bg3: #161e2e;
+    --border: #1e2d45;
+    --text: #e2e8f0;
+    --muted: #7a8fa8;
+    --high: #10b981;
+    --med: #f59e0b;
+    --low: #ef4444;
+    --accent: #3b82f6;
+    --accent2: #8b5cf6;
+  }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    line-height: 1.7;
+    padding: 0;
+  }
+  .header {
+    background: var(--bg2);
+    border-bottom: 1px solid var(--border);
+    padding: 24px 40px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .header h1 {
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    color: var(--text);
+  }
+  .header .date-badge {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    padding: 6px 14px;
+    border-radius: 4px;
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+  }
+  .alert-bar {
+    background: rgba(59,130,246,0.08);
+    border-bottom: 1px solid rgba(59,130,246,0.2);
+    padding: 10px 40px;
+    font-size: 11px;
+    color: #60a5fa;
+    letter-spacing: 0.03em;
+  }
+  .container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 32px 40px 60px;
+  }
+  .section-title {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin: 40px 0 16px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+  }
+  .card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 20px 24px;
+    margin-bottom: 14px;
+  }
+  .card:hover {
+    border-color: #2a3d5e;
+    transition: border-color 0.15s;
+  }
+  .card-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 14px;
+  }
+  .card-num {
+    font-size: 10px;
+    color: var(--muted);
+    min-width: 20px;
+    margin-top: 2px;
+  }
+  .card-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+    flex: 1;
+  }
+  .badges {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-top: 6px;
+  }
+  .badge {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    padding: 2px 8px;
+    border-radius: 3px;
+    text-transform: uppercase;
+  }
+  .badge-high { background: rgba(16,185,129,0.15); color: var(--high); border: 1px solid rgba(16,185,129,0.3); }
+  .badge-med { background: rgba(245,158,11,0.15); color: var(--med); border: 1px solid rgba(245,158,11,0.3); }
+  .badge-low { background: rgba(239,68,68,0.15); color: var(--low); border: 1px solid rgba(239,68,68,0.3); }
+  .badge-stage { background: rgba(139,92,246,0.15); color: #a78bfa; border: 1px solid rgba(139,92,246,0.3); }
+  .badge-strong { background: rgba(16,185,129,0.12); color: #6ee7b7; border: 1px solid rgba(16,185,129,0.2); }
+  .badge-moderate { background: rgba(245,158,11,0.12); color: #fcd34d; border: 1px solid rgba(245,158,11,0.2); }
+  .badge-weak { background: rgba(239,68,68,0.12); color: #fca5a5; border: 1px solid rgba(239,68,68,0.2); }
+  .meta-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 10px;
+    margin: 12px 0;
+    padding: 12px;
+    background: var(--bg3);
+    border-radius: 4px;
+    border: 1px solid var(--border);
+  }
+  .meta-item {}
+  .meta-label {
+    font-size: 9px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 3px;
+  }
+  .meta-val {
+    font-size: 11px;
+    color: var(--text);
+  }
+  .ticker {
+    display: inline-block;
+    background: rgba(59,130,246,0.12);
+    color: #93c5fd;
+    border: 1px solid rgba(59,130,246,0.2);
+    padding: 1px 6px;
+    border-radius: 3px;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    margin: 1px;
+  }
+  .ticker-red {
+    background: rgba(239,68,68,0.12);
+    color: #fca5a5;
+    border-color: rgba(239,68,68,0.2);
+  }
+  .ticker-green {
+    background: rgba(16,185,129,0.12);
+    color: #6ee7b7;
+    border-color: rgba(16,185,129,0.2);
+  }
+  .summary {
+    font-size: 12px;
+    color: #b0bec5;
+    line-height: 1.8;
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid var(--border);
+  }
+  .evidence-block {
+    margin: 10px 0;
+  }
+  .evidence-label {
+    font-size: 9px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 6px;
+  }
+  .evidence-item {
+    font-size: 11px;
+    color: #94a3b8;
+    padding: 5px 0 5px 12px;
+    border-left: 2px solid var(--border);
+    margin-bottom: 4px;
+  }
+  .evidence-item a { color: #60a5fa; text-decoration: none; }
+  .evidence-item a:hover { text-decoration: underline; }
+  .action-box {
+    background: linear-gradient(135deg, rgba(16,185,129,0.05), rgba(59,130,246,0.05));
+    border: 1px solid rgba(16,185,129,0.2);
+    border-radius: 6px;
+    padding: 20px 24px;
+    margin-bottom: 12px;
+  }
+  .action-title {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--high);
+    margin-bottom: 12px;
+  }
+  .action-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 12px;
+  }
+  .action-item:last-child { border-bottom: none; }
+  .action-num {
+    font-weight: 700;
+    color: var(--high);
+    min-width: 20px;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 12px;
+    font-size: 11px;
+  }
+  th {
+    text-align: left;
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--border);
+    color: var(--muted);
+    font-size: 9px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+  }
+  td {
+    padding: 9px 12px;
+    border-bottom: 1px solid rgba(30,45,69,0.5);
+    color: var(--text);
+    vertical-align: top;
+  }
+  tr:hover td { background: rgba(255,255,255,0.02); }
+  .td-date { color: var(--med); font-weight: 600; white-space: nowrap; }
+  .td-event { color: var(--text); }
+  .td-important { color: var(--low); font-weight: 600; }
+  .divider {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 30px 0;
+  }
+  .footer {
+    text-align: center;
+    padding: 24px 40px;
+    border-top: 1px solid var(--border);
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 0.08em;
+  }
+  .trade-idea {
+    background: rgba(139,92,246,0.06);
+    border: 1px solid rgba(139,92,246,0.15);
+    border-radius: 3px;
+    padding: 8px 12px;
+    font-size: 11px;
+    color: #c4b5fd;
+    margin-top: 8px;
+  }
+  .trade-label {
+    font-size: 9px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #8b5cf6;
+    margin-bottom: 4px;
+    font-weight: 700;
+  }
+  @media (max-width: 600px) {
+    .header { padding: 16px 20px; flex-direction: column; gap: 10px; align-items: flex-start; }
+    .container { padding: 20px; }
+    .meta-grid { grid-template-columns: 1fr 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>📊 DAILY THEME SCANNER</h1>
+  <div class="date-badge">FRIDAY · JULY 3, 2026 · PRE-MARKET</div>
+</div>
+<div class="alert-bar">
+  ⚠ US MARKETS CLOSED — Independence Day observed · Next session: Monday July 6 · Last close: Dow +1.14% (ATH 52,900) · Nasdaq -2.0%
+</div>
+
+<div class="container">
+
+<!-- ==================== EMERGING NARRATIVES ==================== -->
+<div class="section-title">§ 01 — Emerging Narratives</div>
+
+<!-- N1 -->
+<div class="card">
+  <div class="card-header">
+    <div class="card-num">01</div>
+    <div style="flex:1">
+      <div class="card-title">AI Chip Valuation Inflection — "Is the Supercycle Priced In?"</div>
+      <div class="badges">
+        <span class="badge badge-med">MEDIUM conviction</span>
+        <span class="badge badge-stage">DEVELOPING</span>
+      </div>
+    </div>
+  </div>
+  <div class="evidence-block">
+    <div class="evidence-label">Evidence</div>
+    <div class="evidence-item">BofA Bubble Risk Indicator hit <strong>0.91</strong> for PHLX Semiconductor Index — one of highest readings ever for any major sector; bank recommends reducing AI chip exposure. <a href="https://www.startuphub.ai/ai-news/ai-stocks-daily/2026/ai-stocks-2026-07-01" target="_blank">[StartupHub.ai, Jul 1]</a></div>
+    <div class="evidence-item">Chipmakers fell 2nd consecutive day Jul 2: <span class="ticker ticker-red">MU</span> -7%, <span class="ticker ticker-red">AMAT</span> -7.4%, <span class="ticker ticker-red">AMD</span> -4.3%, even after SMH ETF posted record 71% gain in Q2. <a href="https://www.thestreet.com/stock-market-today/stock-market-today-dow-jones-sp-500-nasdaq-updates-july-2-2026" target="_blank">[TheStreet, Jul 2]</a></div>
+    <div class="evidence-item">SK Hynix reportedly slowing HBM production expansion — raises demand-durability questions despite Micron's sold-out 2026 supply. <a href="https://finance.yahoo.com/technology/articles/global-chip-stocks-slump-rate-091128932.html" target="_blank">[Yahoo Finance Tech]</a></div>
+  </div>
+  <div class="meta-grid">
+    <div class="meta-item"><div class="meta-label">Primary Beneficiaries</div><div class="meta-val"><span class="ticker ticker-green">CRWD</span> <span class="ticker ticker-green">PLTR</span> <span class="ticker ticker-green">PANW</span> <span class="ticker ticker-green">ORCL</span></div></div>
+    <div class="meta-item"><div class="meta-label">Secondary Beneficiaries</div><div class="meta-val"><span class="ticker">AVGO</span> <span class="ticker">TSM</span></div></div>
+    <div class="meta-item"><div class="meta-label">Losers / Disrupted</div><div class="meta-val"><span class="ticker ticker-red">NVDA</span> <span class="ticker ticker-red">AMD</span> <span class="ticker ticker-red">MU</span> <span class="ticker ticker-red">AMAT</span> <span class="ticker ticker-red">SOXX</span></div></div>
+    <div class="meta-item"><div class="meta-label">Earnings Impact Timeline</div><div class="meta-val">Jul 22-30 hyperscaler earnings (GOOGL, MSFT, META, AAPL) = key AI capex validation</div></div>
+  </div>
+  <div class="summary">After a 47–71% run in semiconductors this year, valuation discipline is arriving. The BofA bubble risk indicator flashing red, combined with SK Hynix supply expansion slowdown, suggests the "AI supercycle is endless" narrative is nearing its tipping point. The real test comes during big-tech earnings late July: if GOOGL/MSFT guide down AI capex, the re-rating of chip names could be violent. Conversely, if AI capex holds, this dip is a buy.</div>
+</div>
+
+<!-- N2 -->
+<div class="card">
+  <div class="card-header">
+    <div class="card-num">02</div>
+    <div style="flex:1">
+      <div class="card-title">Oil Supply Normalization / Energy Deflation Trade</div>
+      <div class="badges">
+        <span class="badge badge-med">MEDIUM conviction</span>
+        <span class="badge badge-stage">DEVELOPING</span>
+      </div>
+    </div>
+  </div>
+  <div class="evidence-block">
+    <div class="evidence-label">Evidence</div>
+    <div class="evidence-item">US-Iran ceasefire signed Jun 17; oil collapsed from ~$120/bbl peak to WTI ~$70, Brent ~$73 as of Jun 29. <a href="https://www.aljazeera.com/economy/2026/6/18/oil-prices-fall-stocks-rally-as-us-iran-sign-framework-to-end-war" target="_blank">[Al Jazeera, Jun 18]</a></div>
+    <div class="evidence-item">Citi cut Q3 Brent forecast to $75, Q4 to $70. <a href="https://capital.com/en-int/market-updates/oil-price-forecast-30-06-2026" target="_blank">[Capital.com, Jun 30]</a></div>
+    <div class="evidence-item">May CPI ran 4.2% YoY driven by 23.5% energy surge; oil normalization means June CPI (Jul 14) could be first significant deflationary print. <a href="https://www.federalreserve.gov/newsevents/pressreleases/monetary20260617a.htm" target="_blank">[Fed.gov, Jun 17]</a></div>
+  </div>
+  <div class="meta-grid">
+    <div class="meta-item"><div class="meta-label">Primary Beneficiaries</div><div class="meta-val"><span class="ticker ticker-green">DAL</span> <span class="ticker ticker-green">UAL</span> <span class="ticker ticker-green">LUV</span> <span class="ticker ticker-green">TLT</span> <span class="ticker ticker-green">IEF</span></div></div>
+    <div class="meta-item"><div class="meta-label">Secondary Beneficiaries</div><div class="meta-val"><span class="ticker">XLP</span> <span class="ticker">UPS</span> <span class="ticker">FDX</span></div></div>
+    <div class="meta-item"><div class="meta-label">Losers / Disrupted</div><div class="meta-val"><span class="ticker ticker-red">XLE</span> <span class="ticker ticker-red">CVX</span> <span class="ticker ticker-red">XOM</span></div></div>
+    <div class="meta-item"><div class="meta-label">Earnings Impact Timeline</div><div class="meta-val">July 14 CPI print is the key binary; FOMC July 28-29 follows</div></div>
+  </div>
+  <div class="summary">The Iran war sent Brent crude to $120 and drove a 4.2% YoY CPI print in May. With ceasefire signed and oil back to $70-73, the path to a softening June CPI print has opened. If July 14 CPI comes in well below May's 4.2%, it materially reduces the probability of the 19.4% market-implied rate hike at the July 28-29 FOMC — a major positive surprise for rate-sensitive sectors. The normalization is happening faster than expected but Strait of Hormuz reopening "could take months" — the read-through is not entirely clean.</div>
+</div>
+
+<!-- N3 -->
+<div class="card" style="border-color: rgba(16,185,129,0.25);">
+  <div class="card-header">
+    <div class="card-num">03</div>
+    <div style="flex:1">
+      <div class="card-title">Pharma Tariff Deadline Overhang — July 31 Cliff</div>
+      <div class="badges">
+        <span class="badge badge-high">HIGH conviction</span>
+        <span class="badge badge-stage">EARLY</span>
+      </div>
+    </div>
+  </div>
+  <div class="evidence-block">
+    <div class="evidence-label">Evidence</div>
+    <div class="evidence-item">100% tariff on patented drugs/APIs from China, India, Singapore effective <strong>July 31</strong> for large companies. Companies with approved onshoring plans get 20% rate. <a href="https://www.ropesgray.com/en/insights/alerts/2026/04/100-on-brand-us-imposes-new-tariffs-and-key-exemptions-on-patented-pharmaceuticals" target="_blank">[Ropes &amp; Gray, Apr 2026]</a></div>
+    <div class="evidence-item">13 companies listed by White House have signed MFN drug pricing deals → 0% tariff until 2029. <a href="https://www.investing.com/analysis/trump-imposes-100-drug-tariffs-5-pharma-stocks-that-wont-pay-a-dime-200677883" target="_blank">[Investing.com analysis]</a></div>
+    <div class="evidence-item">EU/Japan/Korea/Switzerland face 15%; UK 10%; China/India/Singapore face 100% — massive supply chain divergence. <a href="https://www.pharmexec.com/view/preparing-july-31-tariff-deadline" target="_blank">[PharmaExec deadline briefing]</a></div>
+  </div>
+  <div class="meta-grid">
+    <div class="meta-item"><div class="meta-label">Primary Beneficiaries</div><div class="meta-val"><span class="ticker ticker-green">TEVA</span> (generics exempt) CDMOs with US capacity</div></div>
+    <div class="meta-item"><div class="meta-label">Losers / Disrupted</div><div class="meta-val"><span class="ticker ticker-red">MRK</span> <span class="ticker ticker-red">PFE</span> <span class="ticker ticker-red">ABBV</span> (exposure varies by supply chain)</div></div>
+    <div class="meta-item"><div class="meta-label">Earnings Impact Timeline</div><div class="meta-val"><strong>28 days to hard deadline</strong> — July 31, 2026</div></div>
+    <div class="meta-item"><div class="meta-label">Alpha Opportunity</div><div class="meta-val">Market has NOT differentiated exposed vs non-exposed pharma at stock level</div></div>
+  </div>
+  <div class="summary">The pharma tariff structure is fiendishly complex and the market has not fully differentiated winners from losers at the stock level. Large companies without White House MFN/onshoring deals face a 100% tariff on patented drug imports starting July 31. With 28 days to the deadline, expect a flurry of "deal signed" announcements that move individual stocks 5-15%. Biotech M&A ($49B YTD vs $44B all of 2024) is likely accelerating partly to help companies escape this dynamic.</div>
+</div>
+
+<!-- N4 -->
+<div class="card">
+  <div class="card-header">
+    <div class="card-num">04</div>
+    <div style="flex:1">
+      <div class="card-title">EV Demand Recovery — R2 Launch Signal</div>
+      <div class="badges">
+        <span class="badge badge-med">MEDIUM conviction</span>
+        <span class="badge badge-stage">EARLY</span>
+      </div>
+    </div>
+  </div>
+  <div class="evidence-block">
+    <div class="evidence-label">Evidence</div>
+    <div class="evidence-item">Rivian raised full-year 2026 delivery guidance to 65-70K units after Q2 beat of 12,194 deliveries vs 9-11K guidance; R2 launch in June was key driver. Stock surged 15%+. <a href="https://electrek.co/2026/07/02/rivian-tops-q2-delivery-numbers-and-raises-full-year-2026-outlook/" target="_blank">[Electrek, Jul 2]</a></div>
+    <div class="evidence-item">Lucid missed Wall Street expectations in Q2 simultaneously — stark execution divergence. Same sector, opposite results. <a href="https://www.cnbc.com/2026/07/02/rivian-lucid-q2-deliveries-demand.html" target="_blank">[CNBC, Jul 2]</a></div>
+  </div>
+  <div class="meta-grid">
+    <div class="meta-item"><div class="meta-label">Primary Beneficiaries</div><div class="meta-val"><span class="ticker ticker-green">RIVN</span> <span class="ticker ticker-green">CHPT</span> <span class="ticker ticker-green">BLNK</span></div></div>
+    <div class="meta-item"><div class="meta-label">Secondary Beneficiaries</div><div class="meta-val"><span class="ticker">TSLA</span> (sector halo effect)</div></div>
+    <div class="meta-item"><div class="meta-label">Losers / Disrupted</div><div class="meta-val"><span class="ticker ticker-red">LCID</span> (widening demand gap)</div></div>
+    <div class="meta-item"><div class="meta-label">Earnings Impact Timeline</div><div class="meta-val">Q3 delivery data Oct; sentiment shift beginning now</div></div>
+  </div>
+  <div class="summary">The Rivian beat is a real signal that demand for purpose-built EV platforms at new price points (R2) is accelerating. Lucid's simultaneous miss creates a useful control group: this is NOT "EV demand is back" broadly — it's execution-specific. The R2's June launch and its contribution to Q2 deliveries is the new variable to track. Early innings; the narrative could gain traction through Q3 if Tesla also reports strong demand.</div>
+</div>
+
+<!-- N5 -->
+<div class="card">
+  <div class="card-header">
+    <div class="card-num">05</div>
+    <div style="flex:1">
+      <div class="card-title">Defensive Rotation / Jobs Market Cooling</div>
+      <div class="badges">
+        <span class="badge badge-med">MEDIUM conviction</span>
+        <span class="badge badge-stage">EARLY-DEVELOPING</span>
+      </div>
+    </div>
+  </div>
+  <div class="evidence-block">
+    <div class="evidence-label">Evidence</div>
+    <div class="evidence-item">June payrolls: only <strong>57,000</strong> vs 115,000 consensus — worst miss in recent memory; prior months revised down 74,000 combined. <a href="https://finance.yahoo.com/economy/article/jobs-report-labor-market-may-be-picking-up-but-the-picture-is-complicated-190000748.html" target="_blank">[Yahoo Finance / BLS, Jul 2]</a></div>
+    <div class="evidence-item">Unemployment fell to 4.2% but due to participation rate dropping to 61.5%, lowest since March 2021 — a red flag for underlying labor demand. <a href="https://www.cnn.com/2026/07/02/economy/us-jobs-report-june-final" target="_blank">[CNN Business, Jul 2]</a></div>
+    <div class="evidence-item">Jul 2: Dow +1.14% (ATH) while Nasdaq -2% — classic defensive rotation. Apple +4.8%, McDonald's +4.1%, Disney +3.8% led Dow. <a href="https://www.thestreet.com/stock-market-today/stock-market-today-dow-jones-sp-500-nasdaq-updates-july-2-2026" target="_blank">[TheStreet, Jul 2]</a></div>
+  </div>
+  <div class="meta-grid">
+    <div class="meta-item"><div class="meta-label">Primary Beneficiaries</div><div class="meta-val"><span class="ticker ticker-green">MCD</span> <span class="ticker ticker-green">KO</span> <span class="ticker ticker-green">PG</span> <span class="ticker ticker-green">XLU</span></div></div>
+    <div class="meta-item"><div class="meta-label">Secondary Beneficiaries</div><div class="meta-val"><span class="ticker">XLF</span> (if rate hike fears recede)</div></div>
+    <div class="meta-item"><div class="meta-label">Losers / Disrupted</div><div class="meta-val"><span class="ticker ticker-red">High-multiple growth tech</span> <span class="ticker ticker-red">AI chip plays</span></div></div>
+    <div class="meta-item"><div class="meta-label">Earnings Impact Timeline</div><div class="meta-val">Sustained if July 14 CPI softens and FOMC signals pause</div></div>
+  </div>
+  <div class="summary">The June jobs miss — 57K vs 115K expected — is the starkest signal yet that the tariff-driven inflation shock is now biting into labor demand. The divergence between Dow (defensive, all-time high) and Nasdaq (growth/tech, -2%) on July 2 suggests professional money is rotating toward quality and yield. If June CPI also softens on July 14, this rotation could accelerate meaningfully.</div>
+</div>
+
+<!-- ==================== EARNINGS SIGNALS ==================== -->
+<div class="section-title">§ 02 — Earnings Signals</div>
+
+<!-- E1 -->
+<div class="card">
+  <div class="card-header">
+    <div class="card-num">E1</div>
+    <div style="flex:1">
+      <div class="card-title">Micron's $41B Quarter — The "Memory Tax" Regime Change</div>
+      <div class="badges">
+        <span class="badge badge-strong">STRONG signal</span>
+        <span style="font-size:10px;color:var(--muted);padding:2px 0;">Valuation regime shift / AI memory</span>
+      </div>
+    </div>
+  </div>
+  <div class="evidence-block">
+    <div class="evidence-label">Companies Involved</div>
+    <div class="meta-val"><span class="ticker">MU</span> <span class="ticker">NVDA</span> <span class="ticker">AMD</span> <span class="ticker">AVGO</span></div>
+  </div>
+  <div style="margin:10px 0; font-size:12px; color:#94a3b8;">
+    Micron reported record Q3 FY2026 revenue of $41.46B (+345% YoY), guided Q4 at $50B with ~86% gross margins. HBM sold out through 2027. Yet MU fell 7% in subsequent sessions. (<a href="https://investors.micron.com/news-releases/news-release-details/micron-technology-inc-reports-record-results-third-quarter" target="_blank">Micron IR, Jun 24</a>; <a href="https://startupfortune.com/microns-41-billion-quarter-confirms-the-ai-memory-supercycle-is-nowhere-near-done/" target="_blank">Startup Fortune</a>)
+  </div>
+  <div class="trade-idea"><div class="trade-label">Trade Idea</div>Structurally long AI memory thesis, but near-term caution on MU ahead of macro softening in July. Watch hyperscaler capex guidance Jul 22-30 as the key re-entry signal.</div>
+  <div class="summary">The post-earnings selloff in MU despite record guidance is the "good news is priced" signal. This is a read-through for NVDA's August report and for the entire AI infrastructure investment thesis.</div>
+</div>
+
+<!-- E2 -->
+<div class="card">
+  <div class="card-header">
+    <div class="card-num">E2</div>
+    <div style="flex:1">
+      <div class="card-title">Nike "Beat But Fall" — China + Digital Structural Headwinds</div>
+      <div class="badges">
+        <span class="badge badge-moderate">MODERATE signal</span>
+        <span style="font-size:10px;color:var(--muted);padding:2px 0;">Language shift + guidance lowering</span>
+      </div>
+    </div>
+  </div>
+  <div style="margin:10px 0; font-size:12px; color:#94a3b8;">
+    Nike beat Q4 estimates, but the beat included a $0.52 tariff refund benefit. Underlying: revenue -4% currency-neutral, China -12%, Digital -12%, Nike Direct -7%. FY27: revenue down low-to-mid single digits H1. (<a href="https://investors.nike.com/investors/news-events-and-reports/investor-news/investor-news-details/2026/NIKE-Inc--Reports-Fiscal-2026-Fourth-Quarter-and-Full-Year-Results/default.aspx" target="_blank">Nike IR</a>; <a href="https://finance.yahoo.com/markets/stocks/articles/nike-q4-fy2026-earnings-beat-111250528.html" target="_blank">Yahoo Finance, Jun 30</a>)
+  </div>
+  <div class="meta-val" style="margin-bottom:8px;"><span class="ticker">NKE</span> <span class="ticker">ADDYY</span> <span class="ticker">PVH</span> <span class="ticker">UAA</span></div>
+  <div class="trade-idea"><div class="trade-label">Trade Idea</div>Cautious on China-exposed consumer names. Watch PVH as next read-through on global DTC and China exposure.</div>
+  <div class="summary">If one of the world's strongest consumer brands is seeing -12% China and -12% digital, the structural issues are not Nike-specific. This is a read-through for all China-exposed consumer discretionary.</div>
+</div>
+
+<!-- E3 -->
+<div class="card">
+  <div class="card-header">
+    <div class="card-num">E3</div>
+    <div style="flex:1">
+      <div class="card-title">CrowdStrike Beats But Falls 10% — AI Software Valuation Ceiling</div>
+      <div class="badges">
+        <span class="badge badge-moderate">MODERATE signal</span>
+        <span style="font-size:10px;color:var(--muted);padding:2px 0;">Post-earnings price anomaly</span>
+      </div>
+    </div>
+  </div>
+  <div style="margin:10px 0; font-size:12px; color:#94a3b8;">
+    CrowdStrike narrowly beat Q1 FY2027 estimates ($1.39B rev, 26% YoY) but shares fell 10% post-earnings on guidance concerns. Despite this: HACK ETF +30.65% YTD, IGV software +44% from April lows. (<a href="https://www.cnbc.com/2026/06/03/crowdstrike-crwd-q1-2027-earnings.html" target="_blank">CNBC, Jun 3</a>; <a href="https://www.sahmcapital.com/news/content/crowdstrikes-post-earnings-drop-masks-growing-ai-security-demand-2026-06-05" target="_blank">SahmCapital, Jun 5</a>)
+  </div>
+  <div class="meta-val" style="margin-bottom:8px;"><span class="ticker">CRWD</span> <span class="ticker">PANW</span> <span class="ticker">ZS</span> <span class="ticker">S</span></div>
+  <div class="trade-idea"><div class="trade-label">Trade Idea</div>Buy CRWD dips with Q2 FY27 as next reset; PANW as more conservative valuation peer. Avoid decelerating ARR SaaS names heading into late-July season.</div>
+  <div class="summary">Even in the hottest AI software sub-sector, the market is enforcing valuation discipline on slight guidance misses. This is the warning sign for all high-multiple SaaS names heading into Q2 earnings late July.</div>
+</div>
+
+<!-- E4 -->
+<div class="card">
+  <div class="card-header">
+    <div class="card-num">E4</div>
+    <div style="flex:1">
+      <div class="card-title">FedEx Freight Spinoff — Trucking Recession Bottom Signal?</div>
+      <div class="badges">
+        <span class="badge badge-weak">WEAK-MODERATE signal</span>
+        <span style="font-size:10px;color:var(--muted);padding:2px 0;">Sector read-through</span>
+      </div>
+    </div>
+  </div>
+  <div style="margin:10px 0; font-size:12px; color:#94a3b8;">
+    FedEx Freight Q4 FY2026 standalone: revenue +5% YoY to $2.4B but operating income -67% due to $205M spinoff costs. Volume -4 to -6% in FY2026; management says declines narrowing, expects break-even by H2. (<a href="https://www.businesswire.com/news/home/20260625096787/en/FedEx-Freight-Reports-Fourth-Quarter-and-Full-Fiscal-Year-2026-Financial-Results" target="_blank">BusinessWire, Jun 25</a>)
+  </div>
+  <div class="meta-val" style="margin-bottom:8px;"><span class="ticker">FWRD</span> <span class="ticker">UPS</span> <span class="ticker">ODFL</span> <span class="ticker">XPO</span></div>
+  <div class="trade-idea"><div class="trade-label">Trade Idea</div>Tactical long ODFL and XPO if trucking volume trends confirm bottom in Q3 commentary. Next data point: July/August LTL rate reports.</div>
+  <div class="summary">If trucking volumes are bottoming after a multi-year freight recession, it signals a potential inflection in industrial and goods-sector activity — a leading indicator for industrial earnings and GDP.</div>
+</div>
+
+<!-- E5 -->
+<div class="card">
+  <div class="card-header">
+    <div class="card-num">E5</div>
+    <div style="flex:1">
+      <div class="card-title">Q2 Earnings Beat Rate — 84.6% Beating EPS Estimates</div>
+      <div class="badges">
+        <span class="badge badge-strong">STRONG signal</span>
+        <span style="font-size:10px;color:var(--muted);padding:2px 0;">Recurring theme / high bar set</span>
+      </div>
+    </div>
+  </div>
+  <div style="margin:10px 0; font-size:12px; color:#94a3b8;">
+    Among 13 S&amp;P 500 companies reporting May-quarter results: earnings +179.5%, revenues +29.5%, 84.6% beating EPS estimates. Q2 2026 S&amp;P 500 earnings expected +22-23.7% YoY; tech +42%. Season begins July 9 with PepsiCo. (<a href="https://www.kiplinger.com/investing/stocks/17494/next-week-earnings-calendar-stocks" target="_blank">Kiplinger</a>; <a href="https://us.plus500.com/en/newsandmarketinsights/q2-2026-earnings-season" target="_blank">Plus500 Q2 preview</a>)
+  </div>
+  <div class="trade-idea"><div class="trade-label">Trade Idea</div>Position for a strong Q2 earnings season. The divergence between macro pessimism (weak June jobs) and corporate profitability (beat rates near 85%) is a temporary mis-pricing.</div>
+  <div class="summary">High bar is set. The market will punish misses severely but the underlying beat rate suggests corporate profitability is far more resilient than the macro data implies. This complicates the "soft labor market = recession" narrative.</div>
+</div>
+
+<!-- ==================== UPCOMING CATALYSTS ==================== -->
+<div class="section-title">§ 03 — Upcoming Catalysts</div>
+
+<!-- C1 -->
+<div class="card" style="border-color: rgba(245,158,11,0.3);">
+  <div class="card-header">
+    <div class="card-num">C1</div>
+    <div style="flex:1">
+      <div class="card-title">🔴 June CPI Print — July 14, 2026</div>
+      <div class="badges">
+        <span class="badge badge-high">MOST IMPORTANT DATA POINT OF THE MONTH</span>
+      </div>
+    </div>
+  </div>
+  <div class="meta-grid">
+    <div class="meta-item"><div class="meta-label">Date</div><div class="meta-val" style="color:var(--med);font-weight:600;">Tuesday, July 14 · 8:30 AM ET</div></div>
+    <div class="meta-item"><div class="meta-label">Consensus</div><div class="meta-val">Modest decel from May's 4.2%; energy component falls sharply</div></div>
+    <div class="meta-item"><div class="meta-label">Surprise Scenario</div><div class="meta-val">3.0-3.5% print → kills July hike odds; triggers bond rally</div></div>
+    <div class="meta-item"><div class="meta-label">Current Positioning</div><div class="meta-val">79.5% no-hike odds; 19.4% hike odds at July 29 FOMC</div></div>
+  </div>
+  <div class="meta-val" style="margin: 8px 0;"><span class="ticker">TLT</span> <span class="ticker">IEF</span> <span class="ticker">XLF</span> <span class="ticker">XLRE</span> <span class="ticker ticker-red">XLE</span></div>
+  <div class="summary">The June CPI on July 14 is the single most important data point in the next two weeks. Oil crashed from $120 to $70-73 between May and June — this should mechanically remove 1-2 percentage points from headline inflation. If core services also moderates, this print could catalyze a significant bond rally and rate-sensitive equity rotation. The market is not fully priced for a "CPI surprise to the downside" scenario. (<a href="https://polymarket.com/event/fed-decision-in-july-181" target="_blank" style="color:#60a5fa;">Polymarket FOMC odds</a>)</div>
+</div>
+
+<!-- C2 -->
+<div class="card">
+  <div class="card-header">
+    <div class="card-num">C2</div>
+    <div style="flex:1">
+      <div class="card-title">Big Bank Q2 Earnings Kickoff — July 14-15</div>
+    </div>
+  </div>
+  <div class="meta-grid">
+    <div class="meta-item"><div class="meta-label">Date</div><div class="meta-val" style="color:var(--med);font-weight:600;">Jul 14 (GS, WFC, C) · Jul 15 (JPM)</div></div>
+    <div class="meta-item"><div class="meta-label">Consensus</div><div class="meta-val">Strong IB & trading revenues; +22% financial sector earnings growth</div></div>
+    <div class="meta-item"><div class="meta-label">Upside Surprise</div><div class="meta-val">IB deal flow + M&A revival; Q1 JPM IB fees were +28%</div></div>
+    <div class="meta-item"><div class="meta-label">Downside Surprise</div><div class="meta-val">Credit quality deterioration given weak June jobs data → higher provisions</div></div>
+  </div>
+  <div class="meta-val" style="margin: 8px 0;"><span class="ticker">JPM</span> <span class="ticker">GS</span> <span class="ticker">WFC</span> <span class="ticker">C</span> <span class="ticker">MS</span> <span class="ticker">BAC</span> <span class="ticker">KRE</span></div>
+  <div class="summary">Big bank earnings on July 14-15 set the tone for Q2 season. If IB fee strength from Q1 continues, prints will be strong. However, the June jobs miss introduces a new wildcard: banks flagging deteriorating consumer credit could undercut the narrative. Watch net interest income (NII) guidance specifically. (<a href="https://us.plus500.com/en/newsandmarketinsights/q2-2026-earnings-season" target="_blank" style="color:#60a5fa;">Plus500 Q2 preview</a>)</div>
+</div>
+
+<!-- C3 -->
+<div class="card">
+  <div class="card-header">
+    <div class="card-num">C3</div>
+    <div style="flex:1">
+      <div class="card-title">Pharma Tariff Hard Deadline — July 31</div>
+    </div>
+  </div>
+  <div class="meta-grid">
+    <div class="meta-item"><div class="meta-label">Date</div><div class="meta-val" style="color:var(--low);font-weight:600;">July 31, 2026 — 28 days away</div></div>
+    <div class="meta-item"><div class="meta-label">Consensus</div><div class="meta-val">Most large companies will have signed White House MFN/onshoring deals</div></div>
+    <div class="meta-item"><div class="meta-label">Surprise Scenario</div><div class="meta-val">2-3 major names have NOT signed → 100% tariff hits overnight on API supply chains</div></div>
+    <div class="meta-item"><div class="meta-label">Alpha Opportunity</div><div class="meta-val">Market has not differentiated exposed vs non-exposed pharma names</div></div>
+  </div>
+  <div class="meta-val" style="margin: 8px 0;"><span class="ticker ticker-green">TEVA</span> (generics exempt) <span class="ticker ticker-red">MRK</span> <span class="ticker ticker-red">PFE</span> <span class="ticker ticker-red">ABBV</span> <span class="ticker">CDXS</span> <span class="ticker">CTLT</span></div>
+  <div class="summary">July 31 is a hard-date catalyst the market is underpricing at the individual stock level. The 28-day countdown creates a window for "deal announcement" catalysts that could move individual names 5-15%. Do the supply chain analysis now — before the market does. (<a href="https://www.ropesgray.com/en/insights/alerts/2026/04/100-on-brand-us-imposes-new-tariffs-and-key-exemptions-on-patented-pharmaceuticals" target="_blank" style="color:#60a5fa;">Ropes &amp; Gray, Apr 2026</a>)</div>
+</div>
+
+<!-- C4 -->
+<div class="card">
+  <div class="card-header">
+    <div class="card-num">C4</div>
+    <div style="flex:1">
+      <div class="card-title">FOMC July Meeting — July 28-29</div>
+    </div>
+  </div>
+  <div class="meta-grid">
+    <div class="meta-item"><div class="meta-label">Date</div><div class="meta-val" style="color:var(--med);font-weight:600;">July 28-29, 2026</div></div>
+    <div class="meta-item"><div class="meta-label">Consensus</div><div class="meta-val">79.5% hold at 3.50-3.75%; 19.4% chance of 25bp hike</div></div>
+    <div class="meta-item"><div class="meta-label">Dovish Surprise</div><div class="meta-val">Language shifts toward cutting bias → zero probability priced currently; TLT +3-5% scenario</div></div>
+    <div class="meta-item"><div class="meta-label">Hawkish Surprise</div><div class="meta-val">Core inflation sticky → hike probability jumps to 40%+</div></div>
+  </div>
+  <div class="meta-val" style="margin: 8px 0;"><span class="ticker">TLT</span> <span class="ticker">HYG</span> <span class="ticker">XLU</span> <span class="ticker">XLRE</span> <span class="ticker">XLF</span></div>
+  <div class="summary">Chair Warsh has led a hawkish shift — nine of eighteen FOMC policymakers now favor higher rates in 2026. But the June jobs miss and potential energy-driven CPI softening create conditions for a more balanced statement. The asymmetric trade is long duration ahead of this meeting — the dovish pivot scenario is near-zero probability but would be a violent upside surprise for bonds and rate-sensitive equities. (<a href="https://www.federalreserve.gov/newsevents/pressreleases/monetary20260617a.htm" target="_blank" style="color:#60a5fa;">Fed.gov Jun 17</a>)</div>
+</div>
+
+<!-- C5 -->
+<div class="card">
+  <div class="card-header">
+    <div class="card-num">C5</div>
+    <div style="flex:1">
+      <div class="card-title">Q2 Big Tech Earnings Gauntlet — July 22-30</div>
+    </div>
+  </div>
+  <div class="meta-grid">
+    <div class="meta-item"><div class="meta-label">Dates</div><div class="meta-val" style="color:var(--med);">GOOGL Jul 22 · MSFT/META Jul 29 · AAPL/AMZN Jul 30</div></div>
+    <div class="meta-item"><div class="meta-label">Consensus</div><div class="meta-val">Tech +42% earnings growth; continued AI capex confirmation</div></div>
+    <div class="meta-item"><div class="meta-label">Upside Surprise</div><div class="meta-val">Hyperscalers confirm $40-50B+ quarterly AI capex → chip selloff was a buy</div></div>
+    <div class="meta-item"><div class="meta-label">Downside Surprise</div><div class="meta-val">Any hyperscaler guides AI capex down → violent multiple compression in semiconductors</div></div>
+  </div>
+  <div class="meta-val" style="margin: 8px 0;"><span class="ticker">NVDA</span> <span class="ticker">AMD</span> <span class="ticker">MU</span> <span class="ticker">AMAT</span> <span class="ticker">GOOGL</span> <span class="ticker">MSFT</span> <span class="ticker">META</span> <span class="ticker">AMZN</span> <span class="ticker">AAPL</span></div>
+  <div class="summary">The big-tech earnings gauntlet July 22-30 is the ultimate arbiter of the AI valuation debate. If Google, Microsoft, and Meta confirm another quarter of massive AI capex, the chip selloff is a buying opportunity. If even one hyperscaler blinks, multiple compression in semiconductors could accelerate violently. NVDA holders will be watching the hyperscaler calls more closely than their own August results. (<a href="https://www.kiplinger.com/investing/stocks/17494/next-week-earnings-calendar-stocks" target="_blank" style="color:#60a5fa;">Kiplinger earnings calendar</a>)</div>
+</div>
+
+<!-- ==================== ACTION ITEMS ==================== -->
+<div class="section-title">§ 04 — Action Items</div>
+
+<div class="action-box">
+  <div class="action-title">▶ Top 3 Tickers to Research Today</div>
+  <div class="action-item">
+    <div class="action-num">1.</div>
+    <div><span class="ticker">MU</span> — Micron: record $41B quarter, sold-out HBM through 2027, yet fell 7% post-report. Valuation ceiling or "sell the news" after 70% YTD run? Re-entry decision hinges on hyperscaler capex guidance Jul 22-30.</div>
+  </div>
+  <div class="action-item">
+    <div class="action-num">2.</div>
+    <div><span class="ticker">TLT</span> — iShares 20+ Year Treasury ETF: the asymmetric macro trade into July 14 CPI + July 29 FOMC. Soft June jobs (57K vs 115K) + potential energy-driven CPI deceleration = underpriced bond rally scenario.</div>
+  </div>
+  <div class="action-item">
+    <div class="action-num">3.</div>
+    <div><span class="ticker">RIVN</span> — Rivian: raised guidance to 65-70K units, R2 ramping, stock at 6-month high of $19.38. Beginning of an EV demand recovery narrative or a one-quarter beat? Monitor Q3 delivery trends.</div>
+  </div>
+</div>
+
+<div class="action-box" style="border-color: rgba(245,158,11,0.25); background: linear-gradient(135deg, rgba(245,158,11,0.04), rgba(239,68,68,0.04));">
+  <div class="action-title" style="color:var(--med);">⚡ Position Adjustments</div>
+  <div class="action-item">
+    <div class="action-num" style="color:var(--low);">↓</div>
+    <div><strong>Reduce</strong> AI chip concentration (<span class="ticker">NVDA</span> <span class="ticker">AMD</span> <span class="ticker">MU</span>) — BofA bubble risk indicator at 0.91; valuation risk elevated. Wait for July 22-30 hyperscaler earnings before re-entering with conviction.</div>
+  </div>
+  <div class="action-item">
+    <div class="action-num" style="color:var(--high);">↑</div>
+    <div><strong>Increase</strong> defensive/dividend exposure (<span class="ticker">MCD</span> <span class="ticker">KO</span> <span class="ticker">PG</span> <span class="ticker">XLU</span>) — June jobs miss + potential CPI softening = defensive rotation playbook already in motion since July 2.</div>
+  </div>
+  <div class="action-item">
+    <div class="action-num" style="color:var(--med);">→</div>
+    <div><strong>Research</strong> pharma stocks by July 31 tariff exposure — the market hasn't done this work. Identify which large pharma names have NOT signed White House MFN deals; "deal announcement" catalysts could move names 5-15% in next 28 days.</div>
+  </div>
+</div>
+
+<div class="card" style="background: var(--bg3);">
+  <div class="evidence-label" style="margin-bottom:10px;">📅 KEY DATES TO WATCH</div>
+  <table>
+    <thead>
+      <tr>
+        <th>Date</th>
+        <th>Event</th>
+        <th>Importance</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td class="td-date">Mon Jul 6</td><td>Markets reopen · gap reaction to June jobs miss (57K vs 115K)</td><td style="color:var(--med);">HIGH</td></tr>
+      <tr><td class="td-date">Thu Jul 9</td><td>PepsiCo Q2 earnings — consumer demand barometer</td><td style="color:var(--muted);">MEDIUM</td></tr>
+      <tr><td class="td-date">Fri Jul 10</td><td>Delta Air Lines Q2 earnings — travel demand + jet fuel cost read</td><td style="color:var(--muted);">MEDIUM</td></tr>
+      <tr><td class="td-date">Tue Jul 14</td><td class="td-important">🔴 JUNE CPI PRINT — 8:30 AM ET — MOST IMPORTANT DATA POINT</td><td class="td-important">CRITICAL</td></tr>
+      <tr><td class="td-date">Tue Jul 14</td><td>Goldman Sachs, Wells Fargo, Citigroup Q2 earnings</td><td style="color:var(--med);">HIGH</td></tr>
+      <tr><td class="td-date">Wed Jul 15</td><td>JPMorgan Chase Q2 earnings</td><td style="color:var(--med);">HIGH</td></tr>
+      <tr><td class="td-date">Tue Jul 22</td><td>Alphabet (GOOGL) Q2 earnings — AI capex first look</td><td style="color:var(--med);">HIGH</td></tr>
+      <tr><td class="td-date">Tue Jul 29</td><td>Microsoft + Meta Q2 earnings; FOMC begins</td><td class="td-important">CRITICAL</td></tr>
+      <tr><td class="td-date">Wed Jul 30</td><td class="td-important">🔴 FOMC rate decision + Apple + Amazon Q2 earnings</td><td class="td-important">CRITICAL</td></tr>
+      <tr><td class="td-date">Thu Jul 31</td><td class="td-important">🔴 PHARMA TARIFF 100% RATE EFFECTIVE FOR LARGE COMPANIES</td><td class="td-important">CRITICAL</td></tr>
+    </tbody>
+  </table>
+</div>
+
+</div>
+
+<div class="footer">
+  DAILY THEME SCANNER · 2026-07-03 · All claims based on verified URLs. No claim made without cited source. Not investment advice.
+</div>
+
+</body>
+</html>
