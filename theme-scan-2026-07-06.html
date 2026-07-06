@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Daily Theme Scanner — July 6, 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg-primary: #0a0e17;
+    --bg-secondary: #0f1521;
+    --bg-card: #111827;
+    --bg-card-hover: #1a2235;
+    --border: #1e2d45;
+    --border-light: #253555;
+    --text-primary: #e2e8f0;
+    --text-secondary: #94a3b8;
+    --text-muted: #64748b;
+    --green: #10b981;
+    --amber: #f59e0b;
+    --red: #ef4444;
+    --blue: #3b82f6;
+    --purple: #8b5cf6;
+    --cyan: #06b6d4;
+    --green-dim: rgba(16,185,129,0.12);
+    --amber-dim: rgba(245,158,11,0.12);
+    --red-dim: rgba(239,68,68,0.12);
+    --blue-dim: rgba(59,130,246,0.1);
+  }
+
+  body {
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    font-family: 'JetBrains Mono', 'Courier New', monospace;
+    font-size: 13px;
+    line-height: 1.7;
+    min-height: 100vh;
+  }
+
+  /* Header */
+  .site-header {
+    background: var(--bg-secondary);
+    border-bottom: 1px solid var(--border);
+    padding: 24px 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    backdrop-filter: blur(8px);
+  }
+
+  .header-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text-primary);
+    letter-spacing: 0.05em;
+  }
+  .header-title span { color: var(--cyan); }
+
+  .header-meta {
+    display: flex;
+    gap: 24px;
+    align-items: center;
+  }
+  .header-date {
+    color: var(--text-secondary);
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  .status-dot {
+    width: 8px; height: 8px;
+    background: var(--green);
+    border-radius: 50%;
+    animation: pulse 2s infinite;
+    display: inline-block;
+    margin-right: 6px;
+  }
+  @keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:0.4;} }
+
+  /* Layout */
+  .container { max-width: 1200px; margin: 0 auto; padding: 40px; }
+
+  /* Section headers */
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 48px 0 24px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+  }
+  .section-number {
+    width: 28px; height: 28px;
+    background: var(--blue-dim);
+    border: 1px solid var(--blue);
+    border-radius: 4px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 700; color: var(--blue);
+  }
+  .section-title {
+    font-size: 16px; font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-primary);
+  }
+  .section-count {
+    margin-left: auto;
+    font-size: 11px;
+    color: var(--text-muted);
+    letter-spacing: 0.05em;
+  }
+
+  /* Cards */
+  .card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 24px;
+    margin-bottom: 16px;
+    transition: border-color 0.2s, background 0.2s;
+  }
+  .card:hover { border-color: var(--border-light); background: var(--bg-card-hover); }
+
+  .card-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 16px;
+  }
+  .card-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text-primary);
+    line-height: 1.4;
+  }
+  .card-index {
+    font-size: 11px;
+    color: var(--text-muted);
+    white-space: nowrap;
+    padding-top: 3px;
+  }
+
+  /* Badges */
+  .badges { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
+  .badge {
+    padding: 3px 10px;
+    border-radius: 4px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    border: 1px solid;
+  }
+  .badge-high { background: var(--green-dim); border-color: var(--green); color: var(--green); }
+  .badge-medium { background: var(--amber-dim); border-color: var(--amber); color: var(--amber); }
+  .badge-low { background: var(--red-dim); border-color: var(--red); color: var(--red); }
+  .badge-strong { background: var(--green-dim); border-color: var(--green); color: var(--green); }
+  .badge-moderate { background: var(--amber-dim); border-color: var(--amber); color: var(--amber); }
+  .badge-stage {
+    background: rgba(139,92,246,0.12);
+    border-color: var(--purple);
+    color: var(--purple);
+  }
+  .badge-type {
+    background: rgba(6,182,212,0.1);
+    border-color: var(--cyan);
+    color: var(--cyan);
+  }
+
+  /* Meta grid */
+  .meta-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+  .meta-item {}
+  .meta-label {
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 4px;
+  }
+  .meta-value {
+    font-size: 12px;
+    color: var(--text-secondary);
+  }
+  .ticker {
+    display: inline-block;
+    background: rgba(59,130,246,0.1);
+    border: 1px solid rgba(59,130,246,0.3);
+    color: var(--blue);
+    padding: 1px 6px;
+    border-radius: 3px;
+    font-size: 11px;
+    font-weight: 600;
+    margin: 1px 2px;
+  }
+
+  /* Summary */
+  .summary-block {
+    border-left: 3px solid var(--border-light);
+    padding-left: 16px;
+    margin: 12px 0;
+    color: var(--text-secondary);
+    font-size: 12px;
+    line-height: 1.8;
+  }
+
+  /* Evidence list */
+  .evidence-list { list-style: none; padding: 0; margin: 12px 0; }
+  .evidence-list li {
+    display: flex;
+    gap: 10px;
+    padding: 6px 0;
+    border-bottom: 1px solid rgba(30,45,69,0.5);
+    font-size: 12px;
+    color: var(--text-secondary);
+    line-height: 1.6;
+  }
+  .evidence-list li:last-child { border-bottom: none; }
+  .evidence-bullet {
+    color: var(--cyan);
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+  .evidence-list a {
+    color: var(--cyan);
+    text-decoration: none;
+    opacity: 0.8;
+    font-size: 10px;
+    white-space: nowrap;
+  }
+  .evidence-list a:hover { opacity: 1; text-decoration: underline; }
+
+  /* Trade idea */
+  .trade-box {
+    background: rgba(16,185,129,0.06);
+    border: 1px solid rgba(16,185,129,0.2);
+    border-radius: 6px;
+    padding: 12px 16px;
+    margin-top: 12px;
+    font-size: 12px;
+    color: var(--text-secondary);
+  }
+  .trade-label {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--green);
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+
+  /* Action items */
+  .action-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; }
+  .action-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 20px;
+  }
+  .action-card-title {
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--cyan);
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  /* Dates table */
+  .dates-table { width: 100%; border-collapse: collapse; margin-top: 8px; }
+  .dates-table th {
+    text-align: left;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-muted);
+    padding: 6px 8px;
+    border-bottom: 1px solid var(--border);
+  }
+  .dates-table td {
+    padding: 8px 8px;
+    border-bottom: 1px solid rgba(30,45,69,0.4);
+    font-size: 12px;
+    color: var(--text-secondary);
+    vertical-align: top;
+  }
+  .dates-table tr:last-child td { border-bottom: none; }
+  .date-cell { color: var(--amber); white-space: nowrap; font-weight: 600; }
+  .event-cell { color: var(--text-primary); }
+  .why-cell { color: var(--text-muted); font-size: 11px; }
+
+  /* Ticker list items */
+  .action-item {
+    display: flex;
+    gap: 10px;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(30,45,69,0.5);
+    font-size: 12px;
+    color: var(--text-secondary);
+  }
+  .action-item:last-child { border-bottom: none; }
+  .action-num { color: var(--amber); font-weight: 700; flex-shrink: 0; }
+
+  /* Divider */
+  hr { border: none; border-top: 1px solid var(--border); margin: 40px 0; }
+
+  /* Footer */
+  .footer {
+    text-align: center;
+    padding: 32px;
+    color: var(--text-muted);
+    font-size: 11px;
+    border-top: 1px solid var(--border);
+    margin-top: 48px;
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .container { padding: 20px; }
+    .site-header { padding: 16px 20px; }
+    .meta-grid { grid-template-columns: 1fr 1fr; }
+    .action-grid { grid-template-columns: 1fr; }
+  }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg-primary); }
+  ::-webkit-scrollbar-thumb { background: var(--border-light); border-radius: 3px; }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="header-title">📊 <span>DAILY THEME SCANNER</span></div>
+  <div class="header-meta">
+    <span><span class="status-dot"></span></span>
+    <span class="header-date">July 6, 2026 &nbsp;|&nbsp; Pre-Market</span>
+  </div>
+</header>
+
+<div class="container">
+
+<!-- ═══════════════════════════════════════════
+     SECTION 1: EMERGING NARRATIVES
+═══════════════════════════════════════════ -->
+<div class="section-header">
+  <div class="section-number">1</div>
+  <div class="section-title">Emerging Narratives</div>
+  <div class="section-count">5 themes identified</div>
+</div>
+
+<!-- Narrative 1 -->
+<div class="card">
+  <div class="card-header">
+    <div class="card-title">Market Broadening / Small Cap Renaissance</div>
+    <div class="card-index">N-01</div>
+  </div>
+  <div class="badges">
+    <span class="badge badge-high">HIGH Conviction</span>
+    <span class="badge badge-stage">DEVELOPING</span>
+  </div>
+  <ul class="evidence-list">
+    <li><span class="evidence-bullet">▸</span><span>June nonfarm payrolls: 57,000 — missed 115,000 consensus by 50%, removed rate hike risk. Unemployment 4.2%. <a href="https://www.cnbc.com/amp/2026/07/02/jobs-report-june-2026-.html" target="_blank">[CNBC]</a></span></li>
+    <li><span class="evidence-bullet">▸</span><span>Russell 2000 best first half since 1991 (+22% YTD). Earnings growth consensus revised from 23% → 38% YoY mid-year — 15pt upward revision. <a href="https://www.cnbc.com/2026/06/30/small-cap-stocks-enjoy-best-first-half-since-1991-as-ai-trade-expands.html" target="_blank">[CNBC]</a></span></li>
+    <li><span class="evidence-bullet">▸</span><span>Goldman Sachs AM published "A Big Case for Broadening Equity Exposure" on US small caps. <a href="https://am.gs.com/en-us/advisors/insights/article/2026/us-small-caps-big-case-broadening-equity-exposure" target="_blank">[GS AM]</a></span></li>
+  </ul>
+  <div class="meta-grid">
+    <div class="meta-item"><div class="meta-label">Primary Beneficiaries</div><div class="meta-value"><span class="ticker">IWM</span><span class="ticker">IJR</span><span class="ticker">SLYG</span><span class="ticker">KRE</span></div></div>
+    <div class="meta-item"><div class="meta-label">Losers / Disrupted</div><div class="meta-value"><span class="ticker">QQQ</span> mega-cap AI constituents</div></div>
+    <div class="meta-item"><div class="meta-label">Timeline</div><div class="meta-value">Q2 earnings season (late July) validates or refutes 38% consensus</div></div>
+  </div>
+  <div class="summary-block">The June jobs miss is the cleanest catalyst this narrative has had in months. Goldilocks scenario: AI-driven revenue percolating to small caps without wage inflation forcing a Fed hike. With RUT earnings re-rated to 38% growth, this is no longer just a flows story — it has fundamental support. Key risk: June CPI on July 14 prints hot again on energy, resurrecting hike fears overnight.</div>
+</div>
+
+<!-- Narrative 2 -->
+<div class="card">
+  <div class="card-header">
+    <div class="card-title">AI Valuation Snapback Risk</div>
+    <div class="card-index">N-02</div>
+  </div>
+  <div class="badges">
+    <span class="badge badge-medium">MEDIUM Conviction</span>
+    <span class="badge badge-stage">DEVELOPING</span>
+  </div>
+  <ul class="evidence-list">
+    <li><span class="evidence-bullet">▸</span><span>BofA: "speculation hitting extreme levels" as high-multiple AI stocks gap up. Reiterated S&P 500 year-end target 7,100 (~5% downside from current levels). <a href="https://fortune.com/2026/07/05/stock-market-outlook-sp500-target-7100-ai-boom-speculation-extreme-levels/" target="_blank">[Fortune]</a></span></li>
+    <li><span class="evidence-bullet">▸</span><span>AI stocks at 45% of S&amp;P 500 market cap (up from 25%). CAPE ratio at 40.54 — not seen since dot-com bubble. MU up 242% YTD / 700% YoY. <a href="https://www.indiaipo.in/news/detail/us-stock-market-concentration-risk-hits-extreme-levels-ai-stocks-surge-to-45-of-sp-500-market-cap-in-2026" target="_blank">[Source]</a></span></li>
+    <li><span class="evidence-bullet">▸</span><span>Goldman Sachs warned the AI rally is becoming "one big trade" with insufficient diversification. <a href="https://seekingalpha.com/news/4594206-goldman-sachs-warns-ai-fueled-market-rally-is-becoming-one-big-trade" target="_blank">[Seeking Alpha]</a></span></li>
+  </ul>
+  <div class="meta-grid">
+    <div class="meta-item"><div class="meta-label">Beneficiaries (snapback)</div><div class="meta-value"><span class="ticker">SQQQ</span><span class="ticker">UVXY</span><span class="ticker">GLD</span><span class="ticker">XLU</span></div></div>
+    <div class="meta-item"><div class="meta-label">Losers / Disrupted</div><div class="meta-value"><span class="ticker">NVDA</span><span class="ticker">AVGO</span><span class="ticker">AMD</span><span class="ticker">TSM</span><span class="ticker">MSFT</span></div></div>
+    <div class="meta-item"><div class="meta-label">Timeline</div><div class="meta-value">Big Tech Q2 earnings (late July) — capex ROI question answered</div></div>
+  </div>
+  <div class="summary-block">Classic late-cycle speculation: parabolic moves, concentration in one narrative, CAPE at dot-com levels, half the S&amp;P 500 in a single theme. Trigger unclear — could be disappointing Q2, hot CPI, or simple exhaustion. This is a tail risk hedge, not a core short. But the asymmetry is improving rapidly.</div>
+</div>
+
+<!-- Narrative 3 -->
+<div class="card">
+  <div class="card-header">
+    <div class="card-title">SpaceX / SPCX Index Dislocation Play</div>
+    <div class="card-index">N-03</div>
+  </div>
+  <div class="badges">
+    <span class="badge badge-medium">MEDIUM Conviction</span>
+    <span class="badge badge-stage">EARLY — Event-Driven</span>
+  </div>
+  <ul class="evidence-list">
+    <li><span class="evidence-bullet">▸</span><span>SPCX joins Nasdaq-100 effective July 7 (15 trading days post-IPO — the largest IPO in stock market history). Forced buying: $4.3B–$27B into a 3–5% public float. <a href="https://seekingalpha.com/news/4607865-spacex-to-join-nasdaq-100-effective-july-7-2026" target="_blank">[Seeking Alpha]</a></span></li>
+    <li><span class="evidence-bullet">▸</span><span>Forced buying requires selling existing QQQ constituents — concentrated selling pressure on AAPL, NVDA, MSFT. <a href="https://spotgamma.com/spacex-ipo-index-changes-spotgamma/" target="_blank">[SpotGamma]</a></span></li>
+    <li><span class="evidence-bullet">▸</span><span>Historical precedent: average -3.41% for NDX additions over first 5 days. Only 12 of 35 tracked additions rose on day 1. <a href="https://www.fool.com/investing/2026/07/06/could-spacex-surge-when-it-joins-the-nasdaq-100-ma/" target="_blank">[Motley Fool]</a></span></li>
+  </ul>
+  <div class="meta-grid">
+    <div class="meta-item"><div class="meta-label">Primary Beneficiaries</div><div class="meta-value"><span class="ticker">SPCX</span><span class="ticker">RKLB</span><span class="ticker">LMT</span></div></div>
+    <div class="meta-item"><div class="meta-label">Forced Selling Targets</div><div class="meta-value"><span class="ticker">AAPL</span><span class="ticker">MSFT</span><span class="ticker">NVDA</span><span class="ticker">AMZN</span></div></div>
+    <div class="meta-item"><div class="meta-label">Timeline</div><div class="meta-value">July 7 rebalance; 5-day post-inclusion window for mean reversion</div></div>
+  </div>
+  <div class="summary-block">Pure mechanical flow event with a narrow window. The mismatch between $4–27B in forced buying and a 3–5% float could create violent SPCX volatility. More interesting: forced selling of QQQ constituents may create tactical entry points in mega-caps — or be the momentum break that accelerates the broadening rotation.</div>
+</div>
+
+<!-- Narrative 4 -->
+<div class="card">
+  <div class="card-header">
+    <div class="card-title">Samsung / HBM4 Semiconductor Super-Cycle Confirmation</div>
+    <div class="card-index">N-04</div>
+  </div>
+  <div class="badges">
+    <span class="badge badge-high">HIGH Conviction</span>
+    <span class="badge badge-stage">DEVELOPING</span>
+  </div>
+  <ul class="evidence-list">
+    <li><span class="evidence-bullet">▸</span><span>Samsung Q2 2026 preliminary earnings July 7. Operating profit expected ~86T KRW (~$63B) — potentially surpassing Nvidia's record quarterly profit globally. <a href="https://en.sedaily.com/finance/2026/07/06/samsung-q2-operating-profit-seen-near-85-trillion-won" target="_blank">[Seoul Economic Daily]</a></span></li>
+    <li><span class="evidence-bullet">▸</span><span>Samsung began HBM4 mass production — industry first. HBM sales guided >3x YoY in 2026, HBM4 to account for >50% of HBM sales from Q3. <a href="https://news.samsung.com/global/samsung-electronics-announces-first-quarter-2026-results" target="_blank">[Samsung]</a></span></li>
+    <li><span class="evidence-bullet">▸</span><span>Samsung up 165% YTD ahead of print. <a href="https://www.thestreet.com/stock-market-today/stock-market-today-dow-jones-sp-500-nasdaq-updates-july-6-2026" target="_blank">[TheStreet]</a></span></li>
+  </ul>
+  <div class="meta-grid">
+    <div class="meta-item"><div class="meta-label">Primary Beneficiaries</div><div class="meta-value"><span class="ticker">MU</span><span class="ticker">SMCI</span><span class="ticker">MRVL</span><span class="ticker">ANET</span></div></div>
+    <div class="meta-item"><div class="meta-label">Secondary Beneficiaries</div><div class="meta-value"><span class="ticker">ASML</span><span class="ticker">KLAC</span><span class="ticker">LRCX</span></div></div>
+    <div class="meta-item"><div class="meta-label">Timeline</div><div class="meta-value">July 7 prelim print; Micron next (~late Sept) is US read-through</div></div>
+  </div>
+  <div class="summary-block">Samsung's Q2 is potentially the most important non-US earnings release of 2026. A print above 90T KRW would be the highest quarterly profit ever recorded by any technology company globally. HBM4 production commencement extends the AI hardware cycle through 2028. Primary US read-through: bullish Micron, which trades at a significant discount to Samsung despite comparable HBM exposure.</div>
+</div>
+
+<!-- Narrative 5 -->
+<div class="card">
+  <div class="card-header">
+    <div class="card-title">Middle East Energy Risk — Inflation Persistence Tail</div>
+    <div class="card-index">N-05</div>
+  </div>
+  <div class="badges">
+    <span class="badge badge-medium">MEDIUM Conviction</span>
+    <span class="badge badge-stage">DEVELOPING</span>
+  </div>
+  <ul class="evidence-list">
+    <li><span class="evidence-bullet">▸</span><span>May 2026 CPI: 4.2% YoY (up from 3.8% in April), driven by 23.5% surge in energy costs. Strait of Hormuz supply disruptions from Feb conflict. World Bank: "biggest energy price surge in four years." <a href="https://www.worldbank.org/en/news/press-release/2026/04/28/commodity-markets-outlook-april-2026-press-release" target="_blank">[World Bank]</a></span></li>
+    <li><span class="evidence-bullet">▸</span><span>Brent crude forecast: $86/barrel avg 2026; upside scenario $115 if export infrastructure damage worsens. <a href="https://www.imf.org/en/blogs/articles/2026/03/30/how-the-war-in-the-middle-east-is-affecting-energy-trade-and-finance" target="_blank">[IMF]</a></span></li>
+    <li><span class="evidence-bullet">▸</span><span>New Fed Chair Warsh abandoned forward guidance — every hot CPI print is an immediate binary shock with no Fed buffer. <a href="https://intellectia.ai/blog/fed-interest-rate-decision-july-2026" target="_blank">[Intellectia AI]</a></span></li>
+  </ul>
+  <div class="meta-grid">
+    <div class="meta-item"><div class="meta-label">Primary Beneficiaries</div><div class="meta-value"><span class="ticker">XLE</span><span class="ticker">CVX</span><span class="ticker">XOM</span><span class="ticker">COP</span><span class="ticker">SLB</span></div></div>
+    <div class="meta-item"><div class="meta-label">Losers / Disrupted</div><div class="meta-value"><span class="ticker">UAL</span><span class="ticker">DAL</span><span class="ticker">ZIM</span><span class="ticker">XLU</span></div></div>
+    <div class="meta-item"><div class="meta-label">Timeline</div><div class="meta-value">June CPI (July 14) next inflection; Q2 energy earnings show margin expansion</div></div>
+  </div>
+  <div class="summary-block">The Middle East conflict has created a structural energy price floor running into Warsh's no-forward-guidance regime. Unlike prior cycles, a hot CPI can immediately trigger hike speculation without warning. Integrated oil majors remain under-owned relative to the ongoing earnings revision cycle. The energy inflation tail is not consensus — its persistence into Q3 is still underappreciated.</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     SECTION 2: EARNINGS SIGNALS
+═══════════════════════════════════════════ -->
+<div class="section-header">
+  <div class="section-number">2</div>
+  <div class="section-title">Earnings Signals</div>
+  <div class="section-count">5 signals identified</div>
+</div>
+
+<!-- Signal 1 -->
+<div class="card">
+  <div class="card-header">
+    <div class="card-title">Hyperscaler Capex at "Funding Test" Scale — ROI Question Unanswered</div>
+    <div class="card-index">S-01</div>
+  </div>
+  <div class="badges">
+    <span class="badge badge-strong">STRONG</span>
+    <span class="badge badge-type">Language Shift + Guidance Raise</span>
+  </div>
+  <div class="meta-grid">
+    <div class="meta-item"><div class="meta-label">Companies</div><div class="meta-value"><span class="ticker">MSFT</span><span class="ticker">GOOGL</span><span class="ticker">META</span><span class="ticker">AMZN</span><span class="ticker">ORCL</span></div></div>
+    <div class="meta-item"><div class="meta-label">Capex Commitments (2026)</div><div class="meta-value">Alphabet $180–190B | Meta $125–145B | Microsoft ~$190B</div></div>
+  </div>
+  <div class="summary-block">Oracle's Q4 FY2026 introduced the phrase "funding test" for the first time in hyperscaler-adjacent earnings — as its RPO surged 363% to $638B. Revenue is growing (Oracle +21%, Azure +123% YoY run rate) but capex/revenue ratio is deteriorating. Depreciation will increasingly pressure operating margins in H2 2026 and into 2027. If Q2 earnings shows cloud growth decelerating below capex growth rates, multiple compression could be severe.</div>
+  <div class="trade-box">
+    <div class="trade-label">Trade Idea</div>
+    Long QQQ puts (September expiry) as hedge into Big Tech earnings. Long ORCL calls if $638B backlog-to-revenue conversion accelerates in Q1 FY2027 guidance.
+  </div>
+</div>
+
+<!-- Signal 2 -->
+<div class="card">
+  <div class="card-header">
+    <div class="card-title">Broadcom Q3 Guide: +200% YoY AI Revenue — Unprecedented</div>
+    <div class="card-index">S-02</div>
+  </div>
+  <div class="badges">
+    <span class="badge badge-strong">STRONG</span>
+    <span class="badge badge-type">Unusual Guidance Raise</span>
+  </div>
+  <div class="meta-grid">
+    <div class="meta-item"><div class="meta-label">Companies</div><div class="meta-value"><span class="ticker">AVGO</span><span class="ticker">MRVL</span><span class="ticker">ANET</span><span class="ticker">AMD</span></div></div>
+    <div class="meta-item"><div class="meta-label">Q2 AI Revenue</div><div class="meta-value">$10.8B (+143% YoY)</div></div>
+    <div class="meta-item"><div class="meta-label">Q3 Guidance</div><div class="meta-value">$16B AI semiconductor revenue (+200%+ YoY)</div></div>
+  </div>
+  <div class="summary-block">Custom ASIC business (Google TPUs, Meta MTIA chips) is the primary driver. The +200% Q3 guide validates AI training/inference spending is not plateauing — it is accelerating into H2 2026. Custom silicon is winning. MRVL is the direct read-through as the other major custom ASIC beneficiary. Negative implication: AMD faces growing custom silicon competition in hyperscaler GPU allocations.</div>
+  <div class="trade-box">
+    <div class="trade-label">Trade Idea</div>
+    Long MRVL ahead of next earnings. Monitor AMD for hyperscaler GPU share loss signals. Full-year AVGO AI semiconductor guide "in excess of $100B."
+  </div>
+</div>
+
+<!-- Signal 3 -->
+<div class="card">
+  <div class="card-header">
+    <div class="card-title">Palantir US Commercial +120% YoY Guidance — Enterprise AI Inflection</div>
+    <div class="card-index">S-03</div>
+  </div>
+  <div class="badges">
+    <span class="badge badge-moderate">MODERATE</span>
+    <span class="badge badge-type">Language Shift + Guidance Raise</span>
+  </div>
+  <div class="meta-grid">
+    <div class="meta-item"><div class="meta-label">Companies</div><div class="meta-value"><span class="ticker">PLTR</span><span class="ticker">AI</span><span class="ticker">BBAI</span><span class="ticker">MSFT</span></div></div>
+    <div class="meta-item"><div class="meta-label">FY2026 Revenue Guide</div><div class="meta-value">+71% YoY (raised)</div></div>
+    <div class="meta-item"><div class="meta-label">US Commercial Guide</div><div class="meta-value">+120% YoY</div></div>
+  </div>
+  <div class="summary-block">Q1 FY2026 revenue grew 85% YoY — Palantir's highest-ever quarterly growth rate. Company cited "an accelerating U.S. market" from enterprise AI adoption. This signals the AI value chain is successfully monetizing beyond training infrastructure into enterprise software — a layer that was purely speculative 12 months ago. Potential negative read-through for legacy enterprise software (SAP, CRM) facing AI-native displacement.</div>
+  <div class="trade-box">
+    <div class="trade-label">Trade Idea</div>
+    Long PLTR. Watch C3.ai (AI) for corroboration or divergence. Consider short CRM if AI-native displacement of legacy enterprise software accelerates.
+  </div>
+</div>
+
+<!-- Signal 4 -->
+<div class="card">
+  <div class="card-header">
+    <div class="card-title">Russell 2000 Earnings Growth Re-Rated to 38% — Not Just a Rate Story</div>
+    <div class="card-index">S-04</div>
+  </div>
+  <div class="badges">
+    <span class="badge badge-moderate">MODERATE</span>
+    <span class="badge badge-type">Recurring Theme</span>
+  </div>
+  <div class="meta-grid">
+    <div class="meta-item"><div class="meta-label">Companies</div><div class="meta-value"><span class="ticker">IWM</span> broader Russell 2000</div></div>
+    <div class="meta-item"><div class="meta-label">Consensus Growth Revision</div><div class="meta-value">23% → 38% YoY in 6 months (+15pt)</div></div>
+  </div>
+  <div class="summary-block">The largest mid-year upward earnings revision in recent memory for small caps reflects AI infrastructure spending percolating to second- and third-order beneficiaries: electrical infrastructure, cooling systems, mid-tier data center REITs, regional banks (lower credit losses), and industrials. Small caps are no longer pure rate optionality — they have fundamental earnings support. A benign CPI + September cut signal could be the catalyst for massive rotation.</div>
+  <div class="trade-box">
+    <div class="trade-label">Trade Idea</div>
+    Long IWM calls (October 2026 expiry). Relative value: Long IWM / Short QQQ pairs trade.
+  </div>
+</div>
+
+<!-- Signal 5 -->
+<div class="card">
+  <div class="card-header">
+    <div class="card-title">Dow to Record High While Nasdaq Fell — Classic Broadening Divergence</div>
+    <div class="card-index">S-05</div>
+  </div>
+  <div class="badges">
+    <span class="badge badge-moderate">MODERATE</span>
+    <span class="badge badge-type">Post-Earnings Price Anomaly</span>
+  </div>
+  <div class="meta-grid">
+    <div class="meta-item"><div class="meta-label">Date</div><div class="meta-value">July 5, 2026</div></div>
+    <div class="meta-item"><div class="meta-label">DJIA</div><div class="meta-value">+594.83 pts (+1.1%) → Record 52,900</div></div>
+    <div class="meta-item"><div class="meta-label">Nasdaq</div><div class="meta-value">Sharp decline on AI profit-booking</div></div>
+  </div>
+  <div class="summary-block">Two major indices moving in opposite directions on the same session is a textbook broadening signal, historically preceding sustained rotation phases lasting 2–6 months. Smart money appears to be rotating out of AI momentum into value/cyclical names. This is the most actionable near-term positioning signal in today's scan — and it happened the day before a SPCX rebalance event that adds additional selling pressure to QQQ constituents.</div>
+  <div class="trade-box">
+    <div class="trade-label">Trade Idea</div>
+    Long DIA / Short QQQ pairs trade into Big Tech Q2 earnings season. The Dow's record close while Nasdaq fell is a high-quality signal for sustained rotation.
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     SECTION 3: CATALYST MAP
+═══════════════════════════════════════════ -->
+<div class="section-header">
+  <div class="section-number">3</div>
+  <div class="section-title">Catalyst Map</div>
+  <div class="section-count">5 catalysts identified</div>
+</div>
+
+<!-- Catalyst 1 -->
+<div class="card">
+  <div class="card-header">
+    <div class="card-title">June CPI Release</div>
+    <div class="card-index">C-01</div>
+  </div>
+  <div class="meta-grid">
+    <div class="meta-item"><div class="meta-label">Date</div><div class="meta-value" style="color:var(--amber);font-weight:600;">July 14, 2026 — 8:30 AM ET</div></div>
+    <div class="meta-item"><div class="meta-label">Consensus Expectation</div><div class="meta-value">Headline CPI ~4.0% YoY; slight moderation from May's 4.2%</div></div>
+    <div class="meta-item"><div class="meta-label">Cleveland Fed Nowcast</div><div class="meta-value">~4.0% — effectively flat vs. May</div></div>
+    <div class="meta-item"><div class="meta-label">Exposed Tickers</div><div class="meta-value"><span class="ticker">TLT</span><span class="ticker">IWM</span><span class="ticker">XLE</span><span class="ticker">GLD</span><span class="ticker">KRE</span></div></div>
+  </div>
+  <div class="summary-block"><strong style="color:var(--red)">Surprise scenario:</strong> Prints at or above 4.2% → reignites July 29 hike probability to 40%+, repricing all rate-sensitive assets immediately with no Fed guidance buffer. <strong style="color:var(--green)">Bull scenario:</strong> Prints 3.7% or below → confirms disinflation resumed, removes hike risk entirely, rockets IWM and small caps. The base case (modest moderation) is already priced in; tail risks are asymmetric and underpriced.</div>
+</div>
+
+<!-- Catalyst 2 -->
+<div class="card">
+  <div class="card-header">
+    <div class="card-title">FOMC Rate Decision</div>
+    <div class="card-index">C-02</div>
+  </div>
+  <div class="meta-grid">
+    <div class="meta-item"><div class="meta-label">Date</div><div class="meta-value" style="color:var(--amber);font-weight:600;">July 28–29, 2026</div></div>
+    <div class="meta-item"><div class="meta-label">Current Rate</div><div class="meta-value">3.50–3.75%</div></div>
+    <div class="meta-item"><div class="meta-label">Market-Implied Odds</div><div class="meta-value">Hold: 79.5% | Hike 25bp: 19.4%</div></div>
+    <div class="meta-item"><div class="meta-label">Exposed Tickers</div><div class="meta-value"><span class="ticker">SPY</span><span class="ticker">QQQ</span><span class="ticker">TLT</span><span class="ticker">XLF</span><span class="ticker">IWM</span></div></div>
+  </div>
+  <div class="summary-block"><strong style="color:var(--red)">Surprise scenario (hike):</strong> June CPI hot + labor stabilizes → 25bp hike craters risk assets with no warning (Warsh's no-guidance regime). <strong style="color:var(--green)">Surprise scenario (dovish):</strong> Labor deterioration accelerates → dovish shift rockets small caps. Both tail scenarios are underpriced relative to a market positioned for a calm hold meeting.</div>
+</div>
+
+<!-- Catalyst 3 -->
+<div class="card">
+  <div class="card-header">
+    <div class="card-title">SpaceX Nasdaq-100 Rebalance</div>
+    <div class="card-index">C-03</div>
+  </div>
+  <div class="meta-grid">
+    <div class="meta-item"><div class="meta-label">Date</div><div class="meta-value" style="color:var(--amber);font-weight:600;">July 7, 2026 (at open)</div></div>
+    <div class="meta-item"><div class="meta-label">Forced Buying Estimate</div><div class="meta-value">$4.3B–$27B in SPCX</div></div>
+    <div class="meta-item"><div class="meta-label">SPCX Public Float</div><div class="meta-value">3–5% only</div></div>
+    <div class="meta-item"><div class="meta-label">Exposed Tickers</div><div class="meta-value"><span class="ticker">SPCX</span><span class="ticker">QQQ</span><span class="ticker">AAPL</span><span class="ticker">NVDA</span><span class="ticker">MSFT</span></div></div>
+  </div>
+  <div class="summary-block"><strong style="color:var(--amber)">Surprise scenario:</strong> Float mismatch triggers SPCX short squeeze + aggressive QQQ constituent selling creates momentum break in mega-cap AI names. Historical base: average -3.41% for Nasdaq-100 additions over first 5 days. The tactical opportunity may be in the forced selling of existing QQQ holdings creating dip-buying entries — or confirming the rotation narrative.</div>
+</div>
+
+<!-- Catalyst 4 -->
+<div class="card">
+  <div class="card-header">
+    <div class="card-title">Samsung Q2 2026 Preliminary Earnings</div>
+    <div class="card-index">C-04</div>
+  </div>
+  <div class="meta-grid">
+    <div class="meta-item"><div class="meta-label">Date</div><div class="meta-value" style="color:var(--amber);font-weight:600;">July 7, 2026</div></div>
+    <div class="meta-item"><div class="meta-label">Consensus Operating Profit</div><div class="meta-value">~86T KRW (~$63B)</div></div>
+    <div class="meta-item"><div class="meta-label">Stock YTD</div><div class="meta-value">+165%</div></div>
+    <div class="meta-item"><div class="meta-label">Exposed Tickers</div><div class="meta-value"><span class="ticker">MU</span><span class="ticker">SMCI</span><span class="ticker">ASML</span><span class="ticker">KLAC</span></div></div>
+  </div>
+  <div class="summary-block"><strong style="color:var(--green)">Surprise beat (>90T KRW):</strong> HBM4 ramp faster than expected — bullish MU and SMCI read-through; confirms AI memory super-cycle. <strong style="color:var(--red)">Surprise miss (<80T KRW):</strong> HBM supply/demand looser than feared — negative for MU, SMCI. Samsung up 165% YTD creates "sell the news" risk even on a beat; Micron is the cleaner US-listed trade on the read-through.</div>
+</div>
+
+<!-- Catalyst 5 -->
+<div class="card">
+  <div class="card-header">
+    <div class="card-title">Big Tech Q2 2026 Earnings Season</div>
+    <div class="card-index">C-05</div>
+  </div>
+  <div class="meta-grid">
+    <div class="meta-item"><div class="meta-label">Date</div><div class="meta-value" style="color:var(--amber);font-weight:600;">~July 22 – August 1, 2026</div></div>
+    <div class="meta-item"><div class="meta-label">Companies</div><div class="meta-value"><span class="ticker">MSFT</span><span class="ticker">GOOGL</span><span class="ticker">META</span><span class="ticker">AMZN</span></div></div>
+    <div class="meta-item"><div class="meta-label">Azure Consensus</div><div class="meta-value">~50% YoY growth</div></div>
+    <div class="meta-item"><div class="meta-label">Central Question</div><div class="meta-value">Is AI revenue growth outpacing capex growth?</div></div>
+  </div>
+  <div class="summary-block"><strong style="color:var(--red)">Bearish surprise:</strong> Azure decelerates to 40–45%; Meta raises capex again without revenue offset → AI capex ROI narrative collapses, violent multiple compression. <strong style="color:var(--green)">Bullish surprise:</strong> Azure 55%+, Google AI monetization surprises, Meta shows ROIC → CAPE 40 finds justification for AI bulls. With AI stocks at 45% of S&amp;P 500, there is almost no cushion for disappointment. This is the most important earnings week for markets since Q1 2026.</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     SECTION 4: ACTION ITEMS
+═══════════════════════════════════════════ -->
+<div class="section-header">
+  <div class="section-number">4</div>
+  <div class="section-title">Action Items</div>
+</div>
+
+<div class="action-grid">
+  <div class="action-card">
+    <div class="action-card-title">Top 3 Tickers to Research Today</div>
+    <div class="action-item"><span class="action-num">01</span><span><span class="ticker">MU</span> — Samsung Q2 prelim July 7. If HBM4 beats, MU is cleanest US-listed read-through. HBM exposure at discount to Samsung's valuation.</span></div>
+    <div class="action-item"><span class="action-num">02</span><span><span class="ticker">IWM</span> — Broadening trade has strongest fundamental support of 2026. 38% earnings consensus, weak jobs, AI trickle-down. Entry ahead of July 14 CPI carries binary risk — size accordingly.</span></div>
+    <div class="action-item"><span class="action-num">03</span><span><span class="ticker">SPCX</span> — Event-driven: Nasdaq-100 forced buy July 7 into 3–5% float. High intraday volatility expected. Fade the 5-day post-inclusion pattern; real opportunity may be in QQQ constituents sold to fund rebalance.</span></div>
+  </div>
+
+  <div class="action-card">
+    <div class="action-card-title">Position Adjustments</div>
+    <div class="action-item"><span class="action-num" style="color:var(--red)">▼</span><span><strong>Reduce</strong> high-multiple QQQ-concentrated AI positions ahead of July 7 SPCX forced-sell pressure and late July Big Tech earnings binary. BofA 7,100 target = ~5% downside.</span></div>
+    <div class="action-item"><span class="action-num" style="color:var(--green)">▲</span><span><strong>Initiate</strong> <span class="ticker">DIA</span> vs. <span class="ticker">QQQ</span> pairs trade — Dow at record while Nasdaq fell on July 5 is textbook broadening divergence signal.</span></div>
+    <div class="action-item"><span class="action-num" style="color:var(--amber)">◆</span><span><strong>Hedge</strong> TLT puts or rate-hike hedge into July 14 CPI. Cleveland Fed nowcast ~4% + Warsh no-guidance = binary hike shock risk underpriced.</span></div>
+  </div>
+
+  <div class="action-card" style="grid-column: 1 / -1;">
+    <div class="action-card-title">Key Dates This Week & Next</div>
+    <table class="dates-table">
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Event</th>
+          <th>Why It Matters</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="date-cell">July 7</td>
+          <td class="event-cell">SPCX joins Nasdaq-100 (open)</td>
+          <td class="why-cell">$4.3–27B forced buy into 3–5% float; QQQ constituent forced selling</td>
+        </tr>
+        <tr>
+          <td class="date-cell">July 7</td>
+          <td class="event-cell">Samsung Q2 preliminary earnings</td>
+          <td class="why-cell">HBM4 cycle confirmation; MU read-through; potential record global quarterly tech profit</td>
+        </tr>
+        <tr>
+          <td class="date-cell">July 14</td>
+          <td class="event-cell">June CPI (8:30 AM ET)</td>
+          <td class="why-cell">Pivotal for FOMC July 29 decision; hike vs hold binary with no Fed guidance buffer</td>
+        </tr>
+        <tr>
+          <td class="date-cell">July 28–29</td>
+          <td class="event-cell">FOMC Meeting</td>
+          <td class="why-cell">Rate decision; Warsh's data-dependent regime = maximum uncertainty</td>
+        </tr>
+        <tr>
+          <td class="date-cell">~July 22–Aug 1</td>
+          <td class="event-cell">Big Tech Q2 Earnings Season</td>
+          <td class="why-cell">AI ROI proof-of-concept; make-or-break for H2 2026 AI narrative</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="footer">
+  Daily Theme Scanner — July 6, 2026 &nbsp;|&nbsp; All claims verified with source URLs &nbsp;|&nbsp; Automated Pre-Market Report
+</div>
+
+</div>
+</body>
+</html>
