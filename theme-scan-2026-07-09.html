@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Daily Theme Scanner — 2026-07-09</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #0a0e17;
+    --bg2: #0f1520;
+    --bg3: #141c2e;
+    --border: #1e2d45;
+    --text: #e2e8f0;
+    --muted: #8a9bb5;
+    --high: #10b981;
+    --medium: #f59e0b;
+    --low: #ef4444;
+    --accent: #3b82f6;
+    --accent2: #818cf8;
+  }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    line-height: 1.7;
+    min-height: 100vh;
+    padding: 0;
+  }
+  .header {
+    background: var(--bg2);
+    border-bottom: 2px solid var(--accent);
+    padding: 28px 40px 22px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .header-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .header h1 {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+  .header h1 span { color: var(--accent); }
+  .header-meta {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  .badge {
+    padding: 3px 10px;
+    border-radius: 3px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .badge-date { background: #1e2d45; color: var(--muted); }
+  .badge-live { background: rgba(16,185,129,0.15); color: var(--high); border: 1px solid rgba(16,185,129,0.3); }
+  nav {
+    display: flex;
+    gap: 6px;
+    margin-top: 14px;
+    flex-wrap: wrap;
+  }
+  nav a {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 11px;
+    padding: 4px 12px;
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    transition: all 0.2s;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  nav a:hover { color: var(--accent); border-color: var(--accent); background: rgba(59,130,246,0.08); }
+  .container { max-width: 1200px; margin: 0 auto; padding: 36px 40px 60px; }
+  .section { margin-bottom: 50px; }
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 24px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border);
+  }
+  .section-header h2 {
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--accent2);
+  }
+  .section-num {
+    background: var(--accent);
+    color: #fff;
+    font-size: 10px;
+    font-weight: 700;
+    width: 22px;
+    height: 22px;
+    border-radius: 3px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 24px 28px;
+    margin-bottom: 18px;
+    position: relative;
+    transition: border-color 0.2s;
+  }
+  .card:hover { border-color: #2a3d5e; }
+  .card-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+  }
+  .card h3 {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text);
+    flex: 1;
+  }
+  .tags { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+  .tag {
+    padding: 2px 8px;
+    border-radius: 3px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+  .tag-high { background: rgba(16,185,129,0.15); color: var(--high); border: 1px solid rgba(16,185,129,0.35); }
+  .tag-medium { background: rgba(245,158,11,0.15); color: var(--medium); border: 1px solid rgba(245,158,11,0.35); }
+  .tag-low { background: rgba(239,68,68,0.15); color: var(--low); border: 1px solid rgba(239,68,68,0.35); }
+  .tag-stage { background: #1a2236; color: var(--muted); border: 1px solid var(--border); }
+  .tag-strong { background: rgba(16,185,129,0.12); color: var(--high); border: 1px solid rgba(16,185,129,0.25); }
+  .tag-moderate { background: rgba(245,158,11,0.12); color: var(--medium); border: 1px solid rgba(245,158,11,0.25); }
+  .meta-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+  .meta-item { }
+  .meta-label {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+    margin-bottom: 4px;
+  }
+  .meta-value { font-size: 12px; color: var(--text); }
+  .ticker {
+    display: inline-block;
+    background: #192033;
+    border: 1px solid #2a3d5e;
+    color: var(--accent2);
+    padding: 1px 6px;
+    border-radius: 3px;
+    font-size: 11px;
+    font-weight: 600;
+    margin: 1px 2px;
+  }
+  .ticker-red { color: var(--low); border-color: rgba(239,68,68,0.3); background: rgba(239,68,68,0.06); }
+  .ticker-green { color: var(--high); border-color: rgba(16,185,129,0.3); background: rgba(16,185,129,0.06); }
+  .evidence-list { margin: 12px 0; }
+  .evidence-item {
+    padding: 8px 12px;
+    background: var(--bg3);
+    border-left: 2px solid var(--accent);
+    margin-bottom: 6px;
+    border-radius: 0 3px 3px 0;
+    font-size: 12px;
+    color: #c4d0e0;
+  }
+  .summary {
+    font-size: 12px;
+    color: #b0bfd4;
+    line-height: 1.75;
+    margin-top: 14px;
+    padding-top: 14px;
+    border-top: 1px solid var(--border);
+  }
+  .trade-idea {
+    margin-top: 12px;
+    padding: 10px 14px;
+    background: rgba(59,130,246,0.07);
+    border: 1px solid rgba(59,130,246,0.2);
+    border-radius: 4px;
+    font-size: 12px;
+    color: #a5c0e8;
+  }
+  .trade-idea::before {
+    content: '⚡ TRADE IDEA: ';
+    color: var(--accent);
+    font-weight: 700;
+    font-size: 10px;
+    letter-spacing: 0.08em;
+  }
+  .action-box {
+    background: var(--bg2);
+    border: 1px solid var(--accent);
+    border-radius: 6px;
+    padding: 28px 32px;
+  }
+  .action-box h3 { color: var(--accent2); font-size: 12px; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 14px; }
+  .action-box ul { list-style: none; }
+  .action-box li {
+    padding: 7px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 12px;
+    color: var(--text);
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+  }
+  .action-box li:last-child { border-bottom: none; }
+  .action-box li::before { content: '▸'; color: var(--accent); flex-shrink: 0; margin-top: 1px; }
+  .dates-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; margin-top: 6px; }
+  .date-card {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 10px 14px;
+  }
+  .date-label { font-size: 11px; font-weight: 700; color: var(--accent); margin-bottom: 3px; }
+  .date-event { font-size: 11px; color: var(--text); }
+  .footer {
+    text-align: center;
+    color: var(--muted);
+    font-size: 10px;
+    padding: 24px 40px;
+    border-top: 1px solid var(--border);
+    letter-spacing: 0.05em;
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-top">
+    <h1>📊 Daily Theme <span>Scanner</span></h1>
+    <div class="header-meta">
+      <span class="badge badge-date">2026-07-09</span>
+      <span class="badge badge-live">Pre-Market</span>
+    </div>
+  </div>
+  <nav>
+    <a href="#narratives">Narratives</a>
+    <a href="#signals">Earnings Signals</a>
+    <a href="#catalysts">Catalysts</a>
+    <a href="#actions">Action Items</a>
+  </nav>
+</div>
+
+<div class="container">
+
+  <!-- SECTION 1: NARRATIVES -->
+  <div class="section" id="narratives">
+    <div class="section-header">
+      <div class="section-num">1</div>
+      <h2>Emerging Narratives</h2>
+    </div>
+
+    <!-- Narrative 1 -->
+    <div class="card">
+      <div class="card-header">
+        <h3>1. US-Iran Escalation Re-Ignites Energy Premium</h3>
+        <div class="tags">
+          <span class="tag tag-high">HIGH Conviction</span>
+          <span class="tag tag-stage">DEVELOPING</span>
+        </div>
+      </div>
+      <div class="evidence-list">
+        <div class="evidence-item">US resumed "powerful strikes" on Iran July 8–9 after 3 ships attacked in Strait of Hormuz. S&P 500 -0.28%, Dow -1.09% Wednesday. <em>(TheStreet)</em></div>
+        <div class="evidence-item">WTI +2.1% to $71.87, Brent +1.9% to $75.53 on renewed strike news. Oil up ~50% from pre-war levels overall. <em>(Morgan Stanley)</em></div>
+        <div class="evidence-item">Energy sector surged 37% in Q1 2026. Strait of Hormuz closure disrupted ~20% of global oil supply since Feb 28. <em>(Wikipedia / CNBC)</em></div>
+      </div>
+      <div class="meta-grid">
+        <div class="meta-item">
+          <div class="meta-label">Primary Beneficiaries</div>
+          <div class="meta-value">
+            <span class="ticker ticker-green">XOM</span><span class="ticker ticker-green">CVX</span><span class="ticker ticker-green">XLE</span><span class="ticker ticker-green">COP</span>
+          </div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Secondary Beneficiaries</div>
+          <div class="meta-value">
+            <span class="ticker ticker-green">LMT</span><span class="ticker ticker-green">RTX</span><span class="ticker ticker-green">NOC</span><span class="ticker ticker-green">KMI</span>
+          </div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Losers / Disrupted</div>
+          <div class="meta-value">
+            <span class="ticker ticker-red">DAL</span><span class="ticker ticker-red">UAL</span><span class="ticker ticker-red">AAL</span><span class="ticker ticker-red">ZIM</span>
+          </div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Earnings Timeline</div>
+          <div class="meta-value">Immediate → 6 months (ceasefire-dependent)</div>
+        </div>
+      </div>
+      <div class="summary">The US re-escalated strikes against Iran following attacks on three ships in the Strait of Hormuz, collapsing a brief ceasefire. This re-opens the geopolitical premium trade: oil elevated, defense contractors benefiting from munitions demand. The key asymmetric risk: any durable ceasefire announcement would compress oil immediately while defense stocks give back recent gains. The market appears priced for partial escalation risk only — a full Strait closure would spike Brent toward $90+. Watch for Iranian response language from government spokespeople this week.</div>
+    </div>
+
+    <!-- Narrative 2 -->
+    <div class="card">
+      <div class="card-header">
+        <h3>2. AI Capex ROI Inflection — Show Me the Revenue</h3>
+        <div class="tags">
+          <span class="tag tag-high">HIGH Conviction</span>
+          <span class="tag tag-stage">DEVELOPING</span>
+        </div>
+      </div>
+      <div class="evidence-list">
+        <div class="evidence-item">Hyperscalers (MSFT, GOOGL, META, AMZN) targeting $700–$725B AI capex in 2026, up 77% YoY. Q2 earnings will scrutinize AI revenue/capex ratio as the primary metric. <em>(Forbes, CNBC)</em></div>
+        <div class="evidence-item">Google Cloud backlog surged to $460B+; MSFT AI at $37B annual run rate (+123% YoY); AWS growing 28% at ~$150B annualized. <em>(Q2 2026 Earnings Preview)</em></div>
+        <div class="evidence-item">EV/EBITDA multiples for US tech/AI equities near 25x per Allianz Research — close to historical extremes, leaving no room for capex overspend without revenue proof. <em>(Forbes)</em></div>
+      </div>
+      <div class="meta-grid">
+        <div class="meta-item">
+          <div class="meta-label">Primary Beneficiaries</div>
+          <div class="meta-value">
+            <span class="ticker ticker-green">NVDA</span><span class="ticker ticker-green">AVGO</span><span class="ticker ticker-green">MSFT</span><span class="ticker ticker-green">GOOGL</span>
+          </div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Secondary Beneficiaries</div>
+          <div class="meta-value">
+            <span class="ticker ticker-green">EQIX</span><span class="ticker ticker-green">DLR</span><span class="ticker ticker-green">VST</span><span class="ticker ticker-green">CEG</span>
+          </div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Losers / Disrupted</div>
+          <div class="meta-value">
+            <span class="ticker ticker-red">MSFT</span> (4,800 job cuts)<span class="ticker ticker-red">EPAM</span><span class="ticker ticker-red">WIT</span>
+          </div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Earnings Timeline</div>
+          <div class="meta-value">Q2 earnings July–August 2026 is the prove-it moment</div>
+        </div>
+      </div>
+      <div class="summary">With $700B+ in combined AI capex commitments, Q2 2026 earnings season marks the first true "show me the revenue" test for the AI trade. Investors are shifting from narrative to math: does spending convert to earnings? Microsoft's 4,800-job cut while maintaining AI capex signals internal resource reallocation — a real shift in how labor is valued inside big tech. Any hyperscaler that materially raises capex guidance without proportional revenue guidance upside on the Q2 call could trigger a sharp de-rating of the group.</div>
+      <div class="trade-idea">Long MSFT into earnings if Azure/AI revenue growth reaccelerates. Short any hyperscaler guiding capex up with flat revenue on Q2 call.</div>
+    </div>
+
+    <!-- Narrative 3 -->
+    <div class="card">
+      <div class="card-header">
+        <h3>3. HBM Memory Squeeze — SK Hynix IPO as Conviction Test</h3>
+        <div class="tags">
+          <span class="tag tag-medium">MEDIUM Conviction</span>
+          <span class="tag tag-stage">EARLY</span>
+        </div>
+      </div>
+      <div class="evidence-list">
+        <div class="evidence-item">SK Hynix priced $28B Nasdaq ADR (SKHY) at ~$165.26/receipt — 7x oversubscribed, listing July 10. Second-largest share sale in history after SpaceX. <em>(CNBC, TechTimes)</em></div>
+        <div class="evidence-item">SK Hynix holds 50–70% share of global HBM market; primary HBM4 supplier for NVDA's Vera Rubin platform. <em>(Motley Fool)</em></div>
+        <div class="evidence-item">MU, Samsung, and Korean SK Hynix shares all down 20%+ from highs — memory bear market despite AI demand surge. <em>(Yahoo Finance)</em></div>
+      </div>
+      <div class="meta-grid">
+        <div class="meta-item">
+          <div class="meta-label">Primary Beneficiaries</div>
+          <div class="meta-value">
+            <span class="ticker ticker-green">SKHY</span><span class="ticker ticker-green">MU</span>
+          </div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Secondary Beneficiaries</div>
+          <div class="meta-value">
+            <span class="ticker ticker-green">NVDA</span><span class="ticker ticker-green">AMAT</span><span class="ticker ticker-green">LRCX</span>
+          </div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Losers / Disrupted</div>
+          <div class="meta-value">
+            Samsung (Korean listed); memory bear trade
+          </div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Earnings Timeline</div>
+          <div class="meta-value">July 10 IPO immediate catalyst; backdrop 2026–2027</div>
+        </div>
+      </div>
+      <div class="summary">The SK Hynix Nasdaq debut on July 10 is the single most important one-day read on the AI memory trade. A 7x oversubscription on a $28B deal signals massive pent-up institutional demand for US-listed AI memory exposure that MU alone cannot fill. However, MU, Samsung, and Korean SK Hynix shares are already in a bear market (down 20%+), suggesting IPO enthusiasm may not translate to a sustained pop. The tension: IPO pricing implies premium AI narrative value, while secondary market memory stocks signal supply glut fears. How SKHY trades in its first two sessions will reveal which narrative the market actually believes.</div>
+      <div class="trade-idea">If SKHY opens up 5%+, MU becomes an immediate long as the US-listed pure-play alternative.</div>
+    </div>
+
+    <!-- Narrative 4 -->
+    <div class="card">
+      <div class="card-header">
+        <h3>4. Section 122 Tariff Cliff — Transition Uncertainty Mispriced</h3>
+        <div class="tags">
+          <span class="tag tag-medium">MEDIUM Conviction</span>
+          <span class="tag tag-stage">EARLY</span>
+        </div>
+      </div>
+      <div class="evidence-list">
+        <div class="evidence-item">Section 122 universal 10% tariff expires July 24, 2026 — President cannot extend unilaterally. USTR Section 301 replacement hearings starting early July. <em>(TariffsTool, Skadden)</em></div>
+        <div class="evidence-item">If expired without replacement, many importers face near-zero tariff-driven cost increases vs. 2024 — large margin tailwind for retailers and apparel. <em>(USTariffCalc)</em></div>
+        <div class="evidence-item">Planned successor Section 301 tariffs carry no rate ceilings (vs. 15% cap under 122) and no expiration — potentially more severe. <em>(Movargo)</em></div>
+      </div>
+      <div class="meta-grid">
+        <div class="meta-item">
+          <div class="meta-label">Primary Beneficiaries (lapse scenario)</div>
+          <div class="meta-value">
+            <span class="ticker ticker-green">WMT</span><span class="ticker ticker-green">TGT</span><span class="ticker ticker-green">AMZN</span><span class="ticker ticker-green">AAPL</span><span class="ticker ticker-green">LULU</span>
+          </div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Losers (lapse scenario)</div>
+          <div class="meta-value">
+            <span class="ticker ticker-red">NUE</span><span class="ticker ticker-red">X</span><span class="ticker ticker-red">STLD</span> (domestic manufacturers)
+          </div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Key Date</div>
+          <div class="meta-value">July 24, 2026 — statutory hard deadline</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Earnings Timeline</div>
+          <div class="meta-value">August earnings season margin guidance</div>
+        </div>
+      </div>
+      <div class="summary">The July 24 expiration of Section 122 is an under-discussed binary event mid-earnings season. A lapse without replacement would meaningfully reduce input cost pressure on retailers and consumer goods companies — potentially triggering margin guidance upgrades in August earnings. However, the planned Section 301 replacement could be more punitive (no rate ceiling, no expiration), creating a trap for companies that pre-emptively price-in tariff relief. Market positioning appears to be ignoring this event entirely, creating asymmetric opportunity in tariff-sensitive names heading into the two-week window.</div>
+    </div>
+
+    <!-- Narrative 5 -->
+    <div class="card">
+      <div class="card-header">
+        <h3>5. Consumer Deterioration — Soft Landing Narrative Under Stress</h3>
+        <div class="tags">
+          <span class="tag tag-medium">MEDIUM Conviction</span>
+          <span class="tag tag-stage">DEVELOPING</span>
+        </div>
+      </div>
+      <div class="evidence-list">
+        <div class="evidence-item">June 2026 payrolls: +57,000 (vs. ~100K+ expected). Leisure/hospitality -61,000; retail trade -7,500. Material miss. <em>(Kiplinger)</em></div>
+        <div class="evidence-item">Conference Board Expectations Index below 80 (historical recession signal) since February 2025. Consumer confidence remains depressed. <em>(Advisor Perspectives)</em></div>
+        <div class="evidence-item">CPI at 4.2% YoY (May); Fed under Chair Warsh now projecting potential rate hikes — not cuts — in 2026. 9 of 19 FOMC members see hike by year-end. <em>(BLS, FOMC)</em></div>
+      </div>
+      <div class="meta-grid">
+        <div class="meta-item">
+          <div class="meta-label">Primary Beneficiaries</div>
+          <div class="meta-value">
+            <span class="ticker ticker-green">DG</span><span class="ticker ticker-green">DLTR</span><span class="ticker ticker-green">XLU</span><span class="ticker ticker-green">XLP</span>
+          </div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Losers / Disrupted</div>
+          <div class="meta-value">
+            <span class="ticker ticker-red">CMG</span><span class="ticker ticker-red">DRI</span><span class="ticker ticker-red">ABNB</span><span class="ticker ticker-red">BKNG</span><span class="ticker ticker-red">DHI</span>
+          </div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Imminent Reads</div>
+          <div class="meta-value"><span class="ticker">PEP</span> today, <span class="ticker">DAL</span> July 10</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Earnings Timeline</div>
+          <div class="meta-value">WMT, HD, MCD in August will confirm or deny</div>
+        </div>
+      </div>
+      <div class="summary">The June jobs report (57K vs. 100K+ expected) challenges the soft-landing consensus. Weak hiring in consumer-facing sectors + high inflation (4.2% CPI) + potential Fed rate hikes under Warsh creates conditions where the consumer cracks before the Fed can ease — a classic stagflation setup. PepsiCo reporting today (July 9) and Delta Air Lines tomorrow (July 10) are the first real-time reads on consumer resilience. Any management commentary signaling volume weakness or downside revenue guidance would accelerate the defensive rotation trade into staples and utilities.</div>
+    </div>
+  </div>
+
+  <!-- SECTION 2: EARNINGS SIGNALS -->
+  <div class="section" id="signals">
+    <div class="section-header">
+      <div class="section-num">2</div>
+      <h2>Earnings Signals</h2>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <h3>1. AI Revenue/Capex Divergence — Prove-It Quarter</h3>
+        <div class="tags">
+          <span class="tag tag-strong">STRONG</span>
+          <span class="tag tag-stage">Recurring Theme / Language Shift</span>
+        </div>
+      </div>
+      <div class="meta-grid">
+        <div class="meta-item">
+          <div class="meta-label">Companies</div>
+          <div class="meta-value"><span class="ticker">MSFT</span><span class="ticker">GOOGL</span><span class="ticker">META</span><span class="ticker">AMZN</span></div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Broader Implication</div>
+          <div class="meta-value">Multiple compression for any hyperscaler guiding capex up without proportional revenue upside</div>
+        </div>
+      </div>
+      <div class="summary">Q2 2026 is when hyperscaler earnings calls will face systematic questioning on AI revenue / AI capex ratio for the first time at current spending levels ($700B+ combined). Watch for new language around "AI monetization," "agent adoption rates," and "per-seat AI revenue." Microsoft's 4,800-job cut while maintaining AI capex is the preview: resource reallocation toward AI, away from traditional headcount.</div>
+      <div class="trade-idea">Long MSFT into earnings if Azure/AI revenue growth reaccelerates. Short any hyperscaler guiding capex up with flat revenue on Q2 call.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <h3>2. Bank Earnings — NII vs. Consumer Credit Quality Tension</h3>
+        <div class="tags">
+          <span class="tag tag-strong">STRONG</span>
+          <span class="tag tag-stage">Sector Read-Through</span>
+        </div>
+      </div>
+      <div class="meta-grid">
+        <div class="meta-item">
+          <div class="meta-label">Companies (July 14)</div>
+          <div class="meta-value"><span class="ticker">JPM</span><span class="ticker">BAC</span><span class="ticker">GS</span><span class="ticker">WFC</span><span class="ticker">C</span></div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Broader Implication</div>
+          <div class="meta-value">Rising credit provisions = consumer deterioration confirmed; strong trading = higher-for-longer benefits banks</div>
+        </div>
+      </div>
+      <div class="summary">JPM expected at $5.49 EPS on $48.7B revenue; options pricing 4.7% move vs. 2.4% historical average — elevated uncertainty. Trading revenues tracking +10–15% in Q2. Key tension: strong trading vs. potential consumer credit deterioration as 4.2% inflation and weak jobs data erode household balance sheets. Dimon's macro commentary is the dominant signal of the week.</div>
+      <div class="trade-idea">Long GS, MS (trading-heavy) on volatility revenue. Underweight COF, SYF (consumer credit) if Dimon sounds cautious.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <h3>3. PepsiCo — GLP-1 / Snack Demand First Real Data Point</h3>
+        <div class="tags">
+          <span class="tag tag-moderate">MODERATE</span>
+          <span class="tag tag-stage">Language Shift / Volume Signal</span>
+        </div>
+      </div>
+      <div class="meta-grid">
+        <div class="meta-item">
+          <div class="meta-label">Company (Today Pre-Market)</div>
+          <div class="meta-value"><span class="ticker">PEP</span></div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Read-Through</div>
+          <div class="meta-value"><span class="ticker ticker-red">MDLZ</span><span class="ticker ticker-red">KHC</span> and all packaged food "defensives"</div>
+        </div>
+      </div>
+      <div class="summary">Pepsi's Q2 is the first hard data on whether GLP-1 drugs are materially impacting snack consumption at scale. If PEP reports North American snack volume misses, the read-through to MDLZ, KHC, and packaged food broadly would be significant — these are widely held as safe harbor but have not been tested under simultaneous inflation + GLP-1 volume pressure.</div>
+      <div class="trade-idea">If PEP volumes miss but pricing holds — bearish on snack peers (MDLZ, KHC). If volumes hold — staples defensive thesis intact.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <h3>4. Delta Air Lines — Margin Scissors Test</h3>
+        <div class="tags">
+          <span class="tag tag-moderate">MODERATE</span>
+          <span class="tag tag-stage">Unusual Guidance / Anomaly Risk</span>
+        </div>
+      </div>
+      <div class="meta-grid">
+        <div class="meta-item">
+          <div class="meta-label">Company (July 10 Pre-Market)</div>
+          <div class="meta-value"><span class="ticker">DAL</span></div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Consensus</div>
+          <div class="meta-value">$1.48 EPS (-29.5% YoY) on $18.78B revenue (+12.8% YoY)</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Read-Through</div>
+          <div class="meta-value"><span class="ticker ticker-red">UAL</span><span class="ticker ticker-red">AAL</span></div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Full Year Guide</div>
+          <div class="meta-value">$6.50–$7.50 EPS implies significant H2 recovery</div>
+        </div>
+      </div>
+      <div class="summary">DAL's scissors effect (revenue up sharply, earnings down 29.5% YoY) reflects jet fuel cost inflation from elevated oil prices. If DAL misses AND cuts full-year guidance, it simultaneously validates both consumer deterioration AND energy cost inflation narratives. Post-earnings gap down in DAL would likely take UAL and AAL with it.</div>
+      <div class="trade-idea">Risk/reward favors caution ahead of DAL's print. Airlines exposed to elevated fuel costs AND softening consumer demand simultaneously.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <h3>5. Microsoft Layoffs — AI Labor Reallocation Turns Consensus</h3>
+        <div class="tags">
+          <span class="tag tag-moderate">MODERATE</span>
+          <span class="tag tag-stage">Language Shift / Sector Read-Through</span>
+        </div>
+      </div>
+      <div class="meta-grid">
+        <div class="meta-item">
+          <div class="meta-label">Company</div>
+          <div class="meta-value"><span class="ticker">MSFT</span> (4,800 jobs cut, 2% of workforce)</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Structural Losers</div>
+          <div class="meta-value"><span class="ticker ticker-red">ACN</span><span class="ticker ticker-red">EPAM</span><span class="ticker ticker-red">WIT</span> (IT staffing)</div>
+        </div>
+      </div>
+      <div class="summary">Microsoft's second large restructuring in two years (15,000+ in 2025, 4,800 now) — framed as AI-driven, not downturn. Signal: even as MSFT spends aggressively on AI capex, it reduces headcount in roles AI can replace. If this pattern repeats across GOOGL, META, AMZN during Q2 earnings, it validates the "AI replaces white-collar work" narrative and compresses employment expectations in software/services broadly.</div>
+    </div>
+  </div>
+
+  <!-- SECTION 3: CATALYSTS -->
+  <div class="section" id="catalysts">
+    <div class="section-header">
+      <div class="section-num">3</div>
+      <h2>Upcoming Catalysts</h2>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <h3>1. June CPI Report — July 14, 8:30 AM ET</h3>
+        <div class="tags">
+          <span class="tag tag-high">HIGH IMPACT</span>
+        </div>
+      </div>
+      <div class="meta-grid">
+        <div class="meta-item">
+          <div class="meta-label">Consensus Expectation</div>
+          <div class="meta-value">~3.8–4.0% YoY (Cleveland Fed nowcast: 3.96%)</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Surprise Scenario</div>
+          <div class="meta-value">Print above 4.2% → Sept rate hike odds jump to 70%+</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Exposed Tickers</div>
+          <div class="meta-value"><span class="ticker ticker-red">TLT</span><span class="ticker ticker-red">XLRE</span><span class="ticker ticker-red">XLU</span><span class="ticker">JPM</span><span class="ticker">BAC</span></div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Current Market Positioning</div>
+          <div class="meta-value">~50–55% Sept rate hike probability (CME FedWatch)</div>
+        </div>
+      </div>
+      <div class="summary">June CPI releasing the same morning as bank earnings creates compound event risk — the most information-dense morning of the year. A hot print (above 4.0%) simultaneously validates stagflation narrative, shifts rate hike odds sharply higher, reinforces consumer deterioration concerns, and pressures long-duration assets. Under Chair Warsh — who abstained from the June dot plot — a hot CPI is the most hawkish signal possible ahead of September FOMC. Market is underpricing this tail scenario.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <h3>2. SK Hynix (SKHY) Nasdaq Debut — July 10</h3>
+        <div class="tags">
+          <span class="tag tag-medium">MEDIUM IMPACT</span>
+        </div>
+      </div>
+      <div class="meta-grid">
+        <div class="meta-item">
+          <div class="meta-label">Consensus Expectation</div>
+          <div class="meta-value">Opens at/above $165.26 issue; sustained premium (7x oversubscribed)</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Surprise Scenario</div>
+          <div class="meta-value">Opens flat or below issue price → AI memory demand concerns confirmed</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Exposed Tickers</div>
+          <div class="meta-value"><span class="ticker">SKHY</span><span class="ticker">MU</span><span class="ticker">NVDA</span><span class="ticker">AMAT</span></div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Current Positioning</div>
+          <div class="meta-value">Korean SK Hynix shares up 8%+ in Asian trading July 9</div>
+        </div>
+      </div>
+      <div class="summary">The $28B SK Hynix ADR listing is the second-largest share sale in history. A strong open validates the AI HBM supply squeeze thesis and re-rates MU as the US-listed pure-play alternative. A weak open confirms the market is differentiating between AI narrative hype and memory fundamentals. This is a one-day litmus test for the AI memory investment thesis.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <h3>3. Section 122 Tariff Expiration — July 24</h3>
+        <div class="tags">
+          <span class="tag tag-medium">MEDIUM IMPACT</span>
+        </div>
+      </div>
+      <div class="meta-grid">
+        <div class="meta-item">
+          <div class="meta-label">Consensus Expectation</div>
+          <div class="meta-value">Section 301 replacement passed; smooth transition with similar/higher rates</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Surprise Scenario</div>
+          <div class="meta-value">Congressional gridlock → temporary lapse → retailers see immediate margin relief</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Exposed Tickers</div>
+          <div class="meta-value"><span class="ticker ticker-green">WMT</span><span class="ticker ticker-green">TGT</span><span class="ticker ticker-green">AAPL</span><span class="ticker ticker-red">NUE</span><span class="ticker ticker-red">X</span></div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Current Positioning</div>
+          <div class="meta-value">Market largely ignoring this event</div>
+        </div>
+      </div>
+      <div class="summary">The Section 122 universal 10% tariff expires July 24 — no presidential extension possible. If Congress cannot pass Section 301 replacement by that date, there will be a gap period where the effective tariff rate on many goods drops sharply. Retailers, consumer electronics, and apparel brands could see immediate gross margin relief. However, Section 301 — when enacted — carries no rate ceiling and no expiration, making the long-term environment potentially more severe.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <h3>4. Q2 Bank Earnings — July 14 (JPM, BAC, GS, WFC, C)</h3>
+        <div class="tags">
+          <span class="tag tag-high">HIGH IMPACT</span>
+        </div>
+      </div>
+      <div class="meta-grid">
+        <div class="meta-item">
+          <div class="meta-label">Consensus Expectation</div>
+          <div class="meta-value">JPM beats; trading +10–15%; benign credit; modest NII growth</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Surprise Scenario</div>
+          <div class="meta-value">Rising credit provisions + cautious Dimon macro commentary on recession risk</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Exposed Tickers</div>
+          <div class="meta-value"><span class="ticker">JPM</span><span class="ticker">BAC</span><span class="ticker">GS</span><span class="ticker">WFC</span><span class="ticker">C</span><span class="ticker ticker-red">COF</span><span class="ticker ticker-red">SYF</span></div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Current Positioning</div>
+          <div class="meta-value">JPM options pricing 4.7% move vs. 2.4% historical — elevated uncertainty</div>
+        </div>
+      </div>
+      <div class="summary">July 14 is the most information-dense single day of earnings season: June CPI at 8:30 AM + 5 major bank reports. JPM has beaten in 14 of 16 quarters, but options pricing nearly 2x historical move signals elevated uncertainty. If Dimon's macro commentary turns cautious and credit provisions rise, defensive rotation from cyclicals to staples/utilities would accelerate sharply. If trading revenues shine and NII holds, banks remain a core long in higher-for-longer rates.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <h3>5. US-Iran Ceasefire / Escalation Binary — Ongoing, Next 2–4 Weeks</h3>
+        <div class="tags">
+          <span class="tag tag-high">HIGH IMPACT</span>
+        </div>
+      </div>
+      <div class="meta-grid">
+        <div class="meta-item">
+          <div class="meta-label">Consensus Expectation</div>
+          <div class="meta-value">Low-level exchanges continue; no full Strait closure; Brent $72–78 range</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Surprise Scenarios</div>
+          <div class="meta-value">Full Strait closure (Brent→$90+) OR ceasefire (Brent -10–15%)</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Long Energy</div>
+          <div class="meta-value"><span class="ticker ticker-green">XOM</span><span class="ticker ticker-green">CVX</span><span class="ticker ticker-green">COP</span><span class="ticker ticker-green">XLE</span></div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Short Energy / Beneficiaries of Ceasefire</div>
+          <div class="meta-value"><span class="ticker ticker-red">DAL</span><span class="ticker ticker-red">UAL</span><span class="ticker ticker-red">AAL</span></div>
+        </div>
+      </div>
+      <div class="summary">The US-Iran conflict has been ongoing since March 2026 and the market has largely absorbed it. However, the resumption of strikes on July 8–9 creates a fresh escalation moment. The binary is wide: a ceasefire could happen with little warning, collapsing the geopolitical risk premium in oil; a full Strait closure would be the largest oil shock since 1973. Current positioning appears comfortable in a middle scenario that may not survive either extreme.</div>
+    </div>
+  </div>
+
+  <!-- SECTION 4: ACTION ITEMS -->
+  <div class="section" id="actions">
+    <div class="section-header">
+      <div class="section-num">4</div>
+      <h2>Action Items</h2>
+    </div>
+    <div class="action-box">
+      <h3>🔍 Top 3 Tickers to Research Today</h3>
+      <ul>
+        <li><span class="ticker">SKHY</span> Watch July 10 Nasdaq debut. Opening price vs. $165.26 issue price signals HBM demand conviction. If opens up 5%+, MU becomes an immediate long as the US-listed pure-play alternative.</li>
+        <li><span class="ticker">JPM</span> July 14 print is the most important earnings event of the week. Dimon macro commentary + credit provisions are the key signals. Watch for language shifts on consumer health and recession probability.</li>
+        <li><span class="ticker">DAL</span> July 10 print is real-time read on consumer spending durability AND oil cost pass-through. A guide-down on full-year EPS would accelerate the consumer deterioration thesis and cascade into UAL/AAL.</li>
+      </ul>
+      <br>
+      <h3>📋 Position Adjustments Suggested</h3>
+      <ul>
+        <li><strong>Energy (XOM, CVX):</strong> Maintain long exposure; consider trimming if Brent prints above $78 without new Strait closure. NOC most insulated from ceasefire risk given multi-decade programs (Sentinel ICBM, B-21).</li>
+        <li><strong>Consumer discretionary:</strong> Reduce exposure ahead of DAL and PEP prints. Wait for confirmation before adding to airlines or full-service restaurants.</li>
+        <li><strong>Tech/AI:</strong> Neutral into Q2 hyperscaler earnings — capex/revenue ratio is the critical unknown. Do not add until July 14–31 calls provide clarity on AI monetization.</li>
+        <li><strong>Banks:</strong> Monitor July 14. If Dimon sounds cautious, rotate into GS/MS (trading-heavy) vs. consumer credit banks (COF, SYF).</li>
+      </ul>
+      <br>
+      <h3>📅 Key Dates This Week</h3>
+      <div class="dates-grid">
+        <div class="date-card">
+          <div class="date-label">July 9 — TODAY</div>
+          <div class="date-event">PEP Q2 earnings pre-market; FOMC minutes released (hawkish: 9/19 dots for hike)</div>
+        </div>
+        <div class="date-card">
+          <div class="date-label">July 10</div>
+          <div class="date-event">DAL Q2 earnings pre-market; SKHY Nasdaq debut — litmus test for AI memory thesis</div>
+        </div>
+        <div class="date-card">
+          <div class="date-label">July 14 ⚡ CRITICAL</div>
+          <div class="date-event">June CPI (8:30 AM ET) + JPM, BAC, GS, WFC, C earnings — most important single day of Q2</div>
+        </div>
+        <div class="date-card">
+          <div class="date-label">July 24</div>
+          <div class="date-event">Section 122 tariff expiration deadline — binary event for importers</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="footer">
+  DAILY THEME SCANNER — 2026-07-09 &nbsp;|&nbsp; Generated pre-market &nbsp;|&nbsp; For research purposes only — not investment advice &nbsp;|&nbsp; Sources: TheStreet · CNBC · Morgan Stanley · J.P. Morgan · Forbes · BLS · CME FedWatch · Motley Fool · AlphaStreet · Kiplinger · TechTimes · TariffsTool
+</div>
+
+</body>
+</html>
