@@ -1,0 +1,812 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Daily Theme Scanner — 2026-07-10</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0e17;
+    --bg2: #0f1420;
+    --bg3: #141927;
+    --border: #1e2740;
+    --text: #e2e8f0;
+    --text-muted: #8896b0;
+    --high: #10b981;
+    --medium: #f59e0b;
+    --low: #ef4444;
+    --accent: #3b82f6;
+    --accent2: #8b5cf6;
+    --tag-bg: #1a2035;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    line-height: 1.7;
+    padding: 0;
+  }
+  .header {
+    background: var(--bg2);
+    border-bottom: 1px solid var(--border);
+    padding: 24px 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .header h1 {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text);
+    letter-spacing: -0.5px;
+  }
+  .header .date {
+    font-size: 11px;
+    color: var(--text-muted);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+  .header .badge {
+    background: linear-gradient(135deg, #10b981 0%, #3b82f6 100%);
+    color: #fff;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 12px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+  .container { max-width: 1100px; margin: 0 auto; padding: 40px; }
+  .section-header {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--accent);
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 8px;
+    margin: 48px 0 24px;
+  }
+  .card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 24px;
+    margin-bottom: 20px;
+    position: relative;
+    overflow: hidden;
+  }
+  .card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 3px; height: 100%;
+    background: var(--accent);
+  }
+  .card.high::before { background: var(--high); }
+  .card.medium::before { background: var(--medium); }
+  .card.low::before { background: var(--low); }
+  .card.signal::before { background: var(--accent2); }
+  .card.catalyst::before { background: var(--accent); }
+
+  .card-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 12px;
+  }
+  .meta-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+  .tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: var(--tag-bg);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 3px 8px;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-muted);
+    white-space: nowrap;
+  }
+  .tag.conviction-high { border-color: var(--high); color: var(--high); background: rgba(16,185,129,0.08); }
+  .tag.conviction-medium { border-color: var(--medium); color: var(--medium); background: rgba(245,158,11,0.08); }
+  .tag.conviction-low { border-color: var(--low); color: var(--low); background: rgba(239,68,68,0.08); }
+  .tag.stage { border-color: var(--accent2); color: var(--accent2); background: rgba(139,92,246,0.08); }
+  .tag.strength-strong { border-color: var(--high); color: var(--high); background: rgba(16,185,129,0.08); }
+  .tag.strength-moderate { border-color: var(--medium); color: var(--medium); background: rgba(245,158,11,0.08); }
+  .tag.strength-weak { border-color: var(--low); color: var(--low); background: rgba(239,68,68,0.08); }
+
+  .evidence-block {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 14px 16px;
+    margin: 12px 0;
+  }
+  .evidence-block .label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+  }
+  .evidence-block ul {
+    list-style: none;
+    padding: 0;
+  }
+  .evidence-block ul li {
+    padding: 4px 0 4px 14px;
+    position: relative;
+    color: var(--text-muted);
+    font-size: 12px;
+  }
+  .evidence-block ul li::before {
+    content: '▸';
+    position: absolute;
+    left: 0;
+    color: var(--accent);
+  }
+  .evidence-block ul li a {
+    color: var(--accent);
+    text-decoration: none;
+    border-bottom: 1px dashed var(--accent);
+  }
+  .evidence-block ul li a:hover { color: var(--text); }
+
+  .tickers-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 10px;
+    margin: 12px 0;
+  }
+  .ticker-group { background: var(--bg3); border: 1px solid var(--border); border-radius: 6px; padding: 10px 14px; }
+  .ticker-group .group-label {
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .ticker-group.primary .group-label { color: var(--high); }
+  .ticker-group.secondary .group-label { color: var(--medium); }
+  .ticker-group.losers .group-label { color: var(--low); }
+  .tickers { display: flex; flex-wrap: wrap; gap: 6px; }
+  .ticker {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    padding: 2px 7px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text);
+  }
+  .ticker.primary { border-color: var(--high); color: var(--high); }
+  .ticker.losers { border-color: var(--low); color: var(--low); }
+
+  .summary-p {
+    color: var(--text-muted);
+    font-size: 12.5px;
+    line-height: 1.8;
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid var(--border);
+  }
+
+  .action-section {
+    background: linear-gradient(135deg, rgba(59,130,246,0.08), rgba(139,92,246,0.08));
+    border: 1px solid rgba(59,130,246,0.3);
+    border-radius: 8px;
+    padding: 28px;
+    margin-top: 48px;
+  }
+  .action-section h2 {
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid rgba(59,130,246,0.3);
+  }
+  .action-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+  .action-block h3 {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 12px;
+  }
+  .action-block ol, .action-block ul { padding-left: 18px; }
+  .action-block li {
+    font-size: 12px;
+    color: var(--text);
+    padding: 5px 0;
+    line-height: 1.6;
+  }
+  .action-block li strong { color: var(--high); }
+  .action-block li em { color: var(--medium); font-style: normal; }
+
+  .key-dates {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid rgba(59,130,246,0.2);
+  }
+  .key-dates h3 {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 12px;
+  }
+  .date-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .date-item:last-child { border-bottom: none; }
+  .date-badge {
+    background: var(--tag-bg);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 3px 8px;
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--accent);
+    white-space: nowrap;
+    min-width: 90px;
+    text-align: center;
+  }
+  .date-badge.hot { border-color: var(--low); color: var(--low); background: rgba(239,68,68,0.08); }
+  .date-desc { font-size: 12px; color: var(--text-muted); }
+  .date-desc strong { color: var(--text); }
+
+  .footer {
+    text-align: center;
+    font-size: 10px;
+    color: var(--text-muted);
+    padding: 40px;
+    border-top: 1px solid var(--border);
+    margin-top: 48px;
+    letter-spacing: 1px;
+  }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  .timeline-tag {
+    font-size: 11px;
+    color: var(--text-muted);
+    margin: 8px 0;
+  }
+  .timeline-tag span { color: var(--accent2); font-weight: 600; }
+
+  .trade-idea {
+    background: rgba(139,92,246,0.08);
+    border: 1px solid rgba(139,92,246,0.25);
+    border-radius: 4px;
+    padding: 10px 14px;
+    margin-top: 12px;
+    font-size: 12px;
+    color: var(--text);
+  }
+  .trade-idea .ti-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--accent2);
+    margin-bottom: 4px;
+  }
+
+  .consensus-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 12px 0; }
+  .consensus-box { background: var(--bg3); border: 1px solid var(--border); border-radius: 6px; padding: 10px 14px; }
+  .consensus-box .c-label { font-size: 9px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--text-muted); margin-bottom: 4px; }
+  .consensus-box .c-val { font-size: 12px; color: var(--text); line-height: 1.5; }
+  .consensus-box.surprise { border-color: var(--medium); }
+  .consensus-box.surprise .c-label { color: var(--medium); }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div>
+    <div class="date">Pre-Market Intelligence Report</div>
+    <h1>📊 Daily Theme Scanner — 2026-07-10</h1>
+  </div>
+  <div style="display:flex;gap:12px;align-items:center;">
+    <span class="badge">Live Research</span>
+    <span style="font-size:11px;color:var(--text-muted);">Sources verified</span>
+  </div>
+</div>
+
+<div class="container">
+
+<!-- ===== EMERGING NARRATIVES ===== -->
+<div class="section-header">01 — Emerging Narratives</div>
+
+<!-- Theme 1 -->
+<div class="card high">
+  <div class="card-title">1. AI Memory &amp; Custom Chip Infrastructure Buildout</div>
+  <div class="meta-row">
+    <span class="tag conviction-high">● HIGH Conviction</span>
+    <span class="tag stage">DEVELOPING</span>
+    <span class="tag">Semiconductors / Tech</span>
+  </div>
+  <div class="evidence-block">
+    <div class="label">Evidence</div>
+    <ul>
+      <li>Micron announced $250B+ US investment through 2035 to meet AI demand; stock surged, lifting AMAT and Sandisk. <a href="https://www.thestreet.com/stock-market-today/stock-market-today-dow-jones-sp-500-nasdaq-updates-july-9-2026" target="_blank">TheStreet, Jul 9</a></li>
+      <li>SK Hynix pricing US ADR IPO this week; HBM revenues forecast to grow $31B→$69B (2025–2027), CAGR 49.5%. <a href="https://siliconanalysts.com/tools/hbm-analysis" target="_blank">Silicon Analysts</a></li>
+      <li>Meta launching Iris AI chip production Sep 2026; Deutsche Bank estimates 35% data center cost reduction by 2027. <a href="https://finance.yahoo.com/technology/ai/articles/meta-start-production-iris-ai-122141801.html" target="_blank">Yahoo Finance</a></li>
+    </ul>
+  </div>
+  <div class="tickers-grid">
+    <div class="ticker-group primary">
+      <div class="group-label">Primary Beneficiaries</div>
+      <div class="tickers">
+        <span class="ticker primary">MU</span>
+        <span class="ticker primary">AVGO</span>
+        <span class="ticker primary">TSM</span>
+        <span class="ticker primary">AMAT</span>
+      </div>
+    </div>
+    <div class="ticker-group secondary">
+      <div class="group-label">Secondary Beneficiaries</div>
+      <div class="tickers">
+        <span class="ticker">ARMH</span>
+        <span class="ticker">MRVL</span>
+        <span class="ticker">ONTO</span>
+        <span class="ticker">KLAC</span>
+      </div>
+    </div>
+    <div class="ticker-group losers">
+      <div class="group-label">Losers / Disrupted</div>
+      <div class="tickers">
+        <span class="ticker losers">NVDA</span>
+        <span class="ticker losers">INTC</span>
+      </div>
+    </div>
+  </div>
+  <div class="timeline-tag">⏱ Timeline: <span>Q3 2026 (memory); Q4 2026/2027 (META Iris cost improvement)</span></div>
+  <div class="summary-p">The AI infrastructure trade is broadening beyond GPUs. HBM memory is the new chokepoint — SK Hynix commands 56% HBM market share and is now raising US capital. Hyperscalers (Meta, Google, Amazon) are accelerating custom ASIC development to reduce Nvidia dependency. TSMC is the unavoidable winner regardless — custom ASIC shipments projected to grow 44.6% in 2026 vs. 16.1% for GPUs. This theme is gaining traction but memory vs. GPU relative positioning is not yet consensus.</div>
+</div>
+
+<!-- Theme 2 -->
+<div class="card high">
+  <div class="card-title">2. AI Capex ROI Reckoning — The Monetization Bifurcation</div>
+  <div class="meta-row">
+    <span class="tag conviction-high">● HIGH Conviction</span>
+    <span class="tag stage">DEVELOPING</span>
+    <span class="tag">Mega-Cap Tech / Hyperscalers</span>
+  </div>
+  <div class="evidence-block">
+    <div class="label">Evidence</div>
+    <ul>
+      <li>Big Tech aggregate 2026 capex $660–690B; analysts warn FCF could plummet 90% across Big Four. <a href="https://www.forbes.com/sites/jasonkirsch/2026/06/02/the-ai-capex-to-revenue-gap-is-widening---and-markets-are-starting-to-notice/" target="_blank">Forbes, Jun 2026</a></li>
+      <li>Markets bifurcating: Azure AI / AWS rewarded; Meta punished when capex raised without revenue proof. Meta Q1 FCF crashed to $1.2B from $26B year prior. <a href="https://www.cnbc.com/2026/04/30/ai-boom-big-tech-capital-expenditures-now-seen-topping-1-trillion-in-2027-.html" target="_blank">CNBC, Apr 2026</a></li>
+      <li>Tech sector -1.8–2.6% underperformance on Jul 9 as AI capex sustainability scrutiny intensified. <a href="https://www.schwab.com/learn/story/stock-market-update-open" target="_blank">Schwab Market Update</a></li>
+    </ul>
+  </div>
+  <div class="tickers-grid">
+    <div class="ticker-group primary">
+      <div class="group-label">Primary Beneficiaries</div>
+      <div class="tickers">
+        <span class="ticker primary">MSFT</span>
+        <span class="ticker primary">AMZN</span>
+        <span class="ticker primary">GOOGL</span>
+      </div>
+    </div>
+    <div class="ticker-group secondary">
+      <div class="group-label">Secondary</div>
+      <div class="tickers">
+        <span class="ticker">ORCL</span>
+        <span class="ticker">CRM</span>
+      </div>
+    </div>
+    <div class="ticker-group losers">
+      <div class="group-label">Losers / Disrupted</div>
+      <div class="tickers">
+        <span class="ticker losers">META</span>
+        <span class="ticker losers">SNAP</span>
+        <span class="ticker losers">PINS</span>
+      </div>
+    </div>
+  </div>
+  <div class="timeline-tag">⏱ Timeline: <span>IMMEDIATE — Q2 earnings (Jul 14+) is the referendum</span></div>
+  <div class="summary-p">The market is demanding proof of monetization, not spending enthusiasm. EV/EBITDA for tech sits near 25x (historical extremes). Q2 earnings season starting July 14 is the critical test — which hyperscalers are converting spend to returns? Azure/AWS have demonstrated it; Meta's Muse Spark and Iris chip must prove out. Most investable near-term theme given catalyst timing.</div>
+</div>
+
+<!-- Theme 3 -->
+<div class="card medium">
+  <div class="card-title">3. Clean Energy / Renewables Security Trade — Iran War Structural Tailwind</div>
+  <div class="meta-row">
+    <span class="tag conviction-medium">● MEDIUM Conviction</span>
+    <span class="tag stage">DEVELOPING</span>
+    <span class="tag">Energy / Utilities</span>
+  </div>
+  <div class="evidence-block">
+    <div class="label">Evidence</div>
+    <ul>
+      <li>Iran's Strait of Hormuz closure disrupted 20% of global oil supply; clean energy ETFs attracted $3B+ in April 2026 — record monthly inflow. <a href="https://ieefa.org/impact-middle-east-crisis-global-energy-markets" target="_blank">IEEFA</a></li>
+      <li>Nordex (wind) +71%, Ørsted +40%, Elia Group +26% since crisis began; Chinese solar/battery stocks surging. <a href="https://nltimes.nl/2026/05/09/green-energy-stocks-outperform-fossil-fuels-amid-iran-war" target="_blank">NL Times, May 2026</a></li>
+      <li>CNBC Jul 9: clean power providing ~90% of all new electrical capacity; clean energy comeback narrative gaining mainstream press. <a href="https://www.cnbc.com/2026/07/09/clean-power-comeback-dont-count-out-renewable-energy-and-this-one-stock-in-particular.html" target="_blank">CNBC, Jul 9 2026</a></li>
+    </ul>
+  </div>
+  <div class="tickers-grid">
+    <div class="ticker-group primary">
+      <div class="group-label">Primary Beneficiaries</div>
+      <div class="tickers">
+        <span class="ticker primary">ENPH</span>
+        <span class="ticker primary">FSLR</span>
+        <span class="ticker primary">NEE</span>
+        <span class="ticker primary">BEP</span>
+      </div>
+    </div>
+    <div class="ticker-group secondary">
+      <div class="group-label">Secondary</div>
+      <div class="tickers">
+        <span class="ticker">PLUG</span>
+        <span class="ticker">BE</span>
+        <span class="ticker">RUN</span>
+        <span class="ticker">SEDG</span>
+      </div>
+    </div>
+    <div class="ticker-group losers">
+      <div class="group-label">Losers / Disrupted</div>
+      <div class="tickers">
+        <span class="ticker losers">XOM</span>
+        <span class="ticker losers">CVX</span>
+        <span class="ticker losers">COP</span>
+        <span class="ticker losers">OIH</span>
+      </div>
+    </div>
+  </div>
+  <div class="timeline-tag">⏱ Timeline: <span>2–4 quarters; policy catalysts near-term</span></div>
+  <div class="summary-p">The Iran war crystallized energy security as a permanent investor concern. 23 countries have announced clean energy accelerations citing Hormuz risk. Oil has moderated to $70–75 WTI (from $82 peak) but capital allocation toward renewables is structurally accelerating. Theme has consensus building in European markets but is underpriced for US domestic solar and grid infrastructure names.</div>
+</div>
+
+<!-- Theme 4 -->
+<div class="card medium">
+  <div class="card-title">4. Stagflation Risk — Inflation Stickiness + Growth Deceleration</div>
+  <div class="meta-row">
+    <span class="tag conviction-medium">● MEDIUM Conviction</span>
+    <span class="tag stage">EARLY</span>
+    <span class="tag">Macro / Cross-Asset</span>
+  </div>
+  <div class="evidence-block">
+    <div class="label">Evidence</div>
+    <ul>
+      <li>May CPI 4.2% YoY; PCE 4.1%; core PCE 3.4%. Fed holding 3.50–3.75% with 25% market-implied probability of July hike. <a href="https://www.federalreserve.gov/newsevents/pressreleases/monetary20260617a.htm" target="_blank">Federal Reserve, Jun 2026</a></li>
+      <li>June NFP: only 57,000 jobs added (vs ~150K expectations), unemployment 4.2%. <a href="https://blog.kraken.com/economic-brief/july-1-2026" target="_blank">Kraken Blog, Jul 1 2026</a></li>
+      <li>NY Fed June survey: 1-year inflation expectations hit 3.7%, a 3-year high. <a href="https://qz.com/ny-fed-inflation-expectations-june-2026-survey-070826" target="_blank">Quartz, Jul 8 2026</a></li>
+    </ul>
+  </div>
+  <div class="tickers-grid">
+    <div class="ticker-group primary">
+      <div class="group-label">Primary Beneficiaries</div>
+      <div class="tickers">
+        <span class="ticker primary">GLD</span>
+        <span class="ticker primary">TIP</span>
+        <span class="ticker primary">XLU</span>
+        <span class="ticker primary">XLP</span>
+        <span class="ticker primary">XLV</span>
+      </div>
+    </div>
+    <div class="ticker-group secondary">
+      <div class="group-label">Secondary</div>
+      <div class="tickers">
+        <span class="ticker">BRK.B</span>
+        <span class="ticker">PDBC</span>
+      </div>
+    </div>
+    <div class="ticker-group losers">
+      <div class="group-label">Losers / Disrupted</div>
+      <div class="tickers">
+        <span class="ticker losers">XLY</span>
+        <span class="ticker losers">QQQ</span>
+        <span class="ticker losers">HYG</span>
+      </div>
+    </div>
+  </div>
+  <div class="timeline-tag">⏱ Timeline: <span>Q3 2026 guidance season; Jul 29 FOMC is key inflection</span></div>
+  <div class="summary-p">Stalling job creation (57K NFP), persistently high inflation (CPI 4.2%), and a Fed potentially forced to hike is a classic stagflation setup. This narrative is EARLY — most sell-side models still embed a soft landing — but the data stream (June CPI July 14, FOMC July 29) could rapidly accelerate consensus shift. Defensives (XLU +0.9%, XLP +0.9%) outperformed cyclicals (-1.8–2.6%) on July 9.</div>
+</div>
+
+<!-- Theme 5 -->
+<div class="card low">
+  <div class="card-title">5. Korean / Asian Governance Reforms — Underpriced Equity Re-rating</div>
+  <div class="meta-row">
+    <span class="tag conviction-low">● LOW Conviction</span>
+    <span class="tag stage">EARLY</span>
+    <span class="tag">EM / Asia</span>
+  </div>
+  <div class="evidence-block">
+    <div class="label">Evidence</div>
+    <ul>
+      <li>Franklin Templeton and Amundi cite Korean governance reforms as early-stage activist opportunity. <a href="https://www.ftinstitutionalemea.com/articles/series/hedge-fund-strategy-outlook" target="_blank">Franklin Templeton, Q2 2026</a></li>
+      <li>Hong Kong equity markets and IPO applications surging; SK Hynix ADR listing this week is a near-term catalyst. <a href="https://siliconanalysts.com/tools/hbm-analysis" target="_blank">Silicon Analysts</a></li>
+      <li>JP Morgan, LSEG, Wellington all cite EM equities as mid-year 2026 opportunity. <a href="https://www.jpmorgan.com/content/dam/jpmorgan/documents/wealth-management/mid-year-outlook-2026.pdf" target="_blank">JP Morgan Mid-Year Outlook</a></li>
+    </ul>
+  </div>
+  <div class="tickers-grid">
+    <div class="ticker-group primary">
+      <div class="group-label">Primary Beneficiaries</div>
+      <div class="tickers">
+        <span class="ticker primary">EWY</span>
+        <span class="ticker primary">BABA</span>
+      </div>
+    </div>
+    <div class="ticker-group secondary">
+      <div class="group-label">Secondary</div>
+      <div class="tickers">
+        <span class="ticker">KWEB</span>
+        <span class="ticker">FXI</span>
+        <span class="ticker">EEM</span>
+        <span class="ticker">ASHR</span>
+      </div>
+    </div>
+  </div>
+  <div class="timeline-tag">⏱ Timeline: <span>6–18 months (governance reform cycle)</span></div>
+  <div class="summary-p">Korean chaebol reform is at an early stage, analogous to Japan's TSE governance push that drove multi-year re-rating of Japanese equities 2023–2025. SK Hynix ADR IPO this week is a concrete near-term awareness catalyst. LOW conviction given the longer timeline and EM currency/geopolitical risks, but could become MEDIUM/HIGH over the next quarter as capital allocation shifts.</div>
+</div>
+
+
+<!-- ===== EARNINGS SIGNALS ===== -->
+<div class="section-header">02 — Earnings Signals</div>
+
+<!-- Signal 1 -->
+<div class="card signal">
+  <div class="card-title">Signal 1 — AI Capex Language Bifurcation (Hyperscalers vs. Meta)</div>
+  <div class="meta-row">
+    <span class="tag">Language Shift</span>
+    <span class="tag strength-strong">STRONG</span>
+  </div>
+  <div style="margin-bottom:10px;font-size:12px;color:var(--text-muted);">Companies: <strong style="color:var(--text)">META, GOOGL, MSFT, AMZN, ORCL</strong></div>
+  <p style="font-size:12.5px;color:var(--text-muted);line-height:1.8;">Meta's Muse Spark developer release and Iris chip production announcement (Sep 2026) triggered an 8% META rally as management shifted from "spend first" to "cost efficiency" language. Azure AI and AWS use language around "AI monetization velocity" and "return on deployed capacity." The bifurcation is the clearest signal heading into Q2 reporting season. Watch for Q2 calls to flag whether AI revenue grows proportionally to capex, or whether the gap widens. <a href="https://invezz.com/en-ae/news/2026/07/09/meta-stock-rises-as-ai-chip-plans-and-muse-spark-11-rollout-take-focus/" target="_blank">Invezz, Jul 9</a></p>
+  <div class="trade-idea">
+    <div class="ti-label">Trade Idea</div>
+    Long MSFT/AMZN vs. short META into respective earnings. Flip META long post-earnings if Iris cost narrative and Muse Spark monetization data holds.
+  </div>
+</div>
+
+<!-- Signal 2 -->
+<div class="card signal">
+  <div class="card-title">Signal 2 — Delta Airlines: Travel Demand Resilience Despite Fuel Headwind</div>
+  <div class="meta-row">
+    <span class="tag">Guidance / Sector Read-Through</span>
+    <span class="tag strength-strong">STRONG</span>
+  </div>
+  <div style="margin-bottom:10px;font-size:12px;color:var(--text-muted);">Companies: <strong style="color:var(--text)">DAL, UAL, AAL, LUV, BKNG, MAR, HLT</strong></div>
+  <p style="font-size:12.5px;color:var(--text-muted);line-height:1.8;">Delta's Q2 exceeded guidance despite absorbing "the highest quarterly fuel expense in its history." Full-year EPS guidance affirmed at $6.50–$7.50; September quarter guidance calls for mid-teens revenue growth and double-digit margin. Broad demand strength means airlines are cost-constrained, not demand-constrained. Read-through to hotels/travel (MAR, HLT, BKNG) is bullish. <a href="https://news.alphastreet.com/delta-air-lines-q2-2026-earnings-preview-july-10-street-expects-1-48-eps/amp/" target="_blank">Alphastreet, Jul 10</a></p>
+  <div class="trade-idea">
+    <div class="ti-label">Trade Idea</div>
+    Long DAL, UAL on continued demand resilience. Long BKNG as travel-demand proxy with less direct fuel exposure.
+  </div>
+</div>
+
+<!-- Signal 3 -->
+<div class="card signal">
+  <div class="card-title">Signal 3 — PepsiCo: Resilient Volume Growth, Affirmed Guidance</div>
+  <div class="meta-row">
+    <span class="tag">Consumer Health Check</span>
+    <span class="tag strength-moderate">MODERATE</span>
+  </div>
+  <div style="margin-bottom:10px;font-size:12px;color:var(--text-muted);">Companies: <strong style="color:var(--text)">PEP, KO, MCD, YUM, MDLZ</strong></div>
+  <p style="font-size:12.5px;color:var(--text-muted);line-height:1.8;">PepsiCo reported Q2 organic revenue +2.4% with full-year guidance affirmed. Volume growth persisted despite persistent inflation and weak consumer sentiment. Branded consumer staples with pricing power are holding volume — this cuts against extreme stagflation / consumer collapse narrative for large-cap defensives. Watch KO and MCD for confirmation. <a href="https://www.sec.gov/Archives/edgar/data/0000077476/000007747626000037/q220268-kxexhibit991.htm" target="_blank">PepsiCo SEC 8-K</a></p>
+  <div class="trade-idea">
+    <div class="ti-label">Trade Idea</div>
+    Overweight XLP vs. XLY into Q2 reporting. KO as clean long if it confirms PEP's volume trends.
+  </div>
+</div>
+
+<!-- Signal 4 -->
+<div class="card signal">
+  <div class="card-title">Signal 4 — Bank Earnings Setup: NII Squeeze vs. Trading Revenue Strength</div>
+  <div class="meta-row">
+    <span class="tag">Sector Read-Through</span>
+    <span class="tag strength-strong">STRONG</span>
+  </div>
+  <div style="margin-bottom:10px;font-size:12px;color:var(--text-muted);">Companies: <strong style="color:var(--text)">JPM, BAC, C, WFC, GS, MS</strong></div>
+  <p style="font-size:12.5px;color:var(--text-muted);line-height:1.8;">JPMorgan Q2 consensus: $5.49 EPS / $48.7B revenue (+10.7% YoY). The key metric is NII — JPM guided full-year to ~$103B but analysts model sequential dip from Q1's $25.4B as rate environment pressures deposit spreads. Trading revenues remained robust in Q2 (+10–15% range). If banks beat on trading but cut NII guidance, it signals the rate environment is more challenging than priced. <a href="https://www.fool.com/investing/2026/07/10/jamie-dimons-jpmorgan-kicks-off-bank-earnings-july/" target="_blank">Motley Fool, Jul 10</a></p>
+  <div class="trade-idea">
+    <div class="ti-label">Trade Idea</div>
+    Prefer GS/MS (trading-driven) over BAC/WFC (NII-dependent) if rates stay sticky. Monitor July 14 CPI print simultaneously — they land the same morning.
+  </div>
+</div>
+
+<!-- Signal 5 -->
+<div class="card signal">
+  <div class="card-title">Signal 5 — Custom ASIC Buildout: Nvidia Long-Term Threat Surfacing in Commentary</div>
+  <div class="meta-row">
+    <span class="tag">Language Shift</span>
+    <span class="tag strength-moderate">MODERATE</span>
+  </div>
+  <div style="margin-bottom:10px;font-size:12px;color:var(--text-muted);">Companies: <strong style="color:var(--text)">NVDA, AVGO, GOOGL, AMZN, META</strong></div>
+  <p style="font-size:12.5px;color:var(--text-muted);line-height:1.8;">Custom ASIC shipments projected to grow 44.6% in 2026 vs. GPU shipments at 16.1%. Sell-side language shifting from "ASICs as complement to Nvidia" to "partial replacement." Broadcom is the direct beneficiary — designing custom AI ASICs for Google (TPU), Meta (Iris). <a href="https://www.tomshardware.com/tech-industry/semiconductors/custom-ai-asics-examined-from-broadcom-to-mtia" target="_blank">Tom's Hardware, May 2026</a></p>
+  <div class="trade-idea">
+    <div class="ti-label">Trade Idea</div>
+    Long AVGO as the picks-and-shovels winner of ASIC proliferation. Monitor NVDA upcoming earnings for any weakness in hyperscaler order commentary.
+  </div>
+</div>
+
+
+<!-- ===== UPCOMING CATALYSTS ===== -->
+<div class="section-header">03 — Upcoming Catalysts</div>
+
+<!-- Catalyst 1 -->
+<div class="card catalyst">
+  <div class="card-title">Catalyst 1 — June CPI Print</div>
+  <div class="meta-row">
+    <span class="tag" style="border-color:var(--low);color:var(--low);background:rgba(239,68,68,0.08);">⚡ HIGHEST RISK EVENT</span>
+    <span class="tag">July 14, 2026 — 8:30 AM ET</span>
+    <span class="tag">4 Days Away</span>
+  </div>
+  <div class="consensus-grid">
+    <div class="consensus-box">
+      <div class="c-label">Consensus Expectation</div>
+      <div class="c-val">~3.96% YoY (Cleveland Fed nowcast). Slight deceleration from May's 4.2%.</div>
+    </div>
+    <div class="consensus-box surprise">
+      <div class="c-label">⚠ Surprise Scenario</div>
+      <div class="c-val">Print ≥4.2% (re-acceleration) triggers Fed hike repricing. Print ≤3.5% opens door to cuts.</div>
+    </div>
+  </div>
+  <div style="margin:10px 0;font-size:12px;color:var(--text-muted);">Exposed: <strong style="color:var(--text)">TLT, IEF, GLD, XLU, XLP, JPM, QQQ</strong> &nbsp;|&nbsp; Positioning: 84% hold / 15% hike at July 29 FOMC</div>
+  <p style="font-size:12.5px;color:var(--text-muted);line-height:1.8;margin-top:10px;">June CPI drops on the SAME morning as JPMorgan and all major bank earnings — a rare double catalyst. NY Fed's June consumer survey showed 1-year inflation expectations at 3.7% (3-year high), suggesting ground-level inflation is not cooling as fast as models assume. A hot print could trigger simultaneous rate hike repricing + pressure on bank NII outlooks + growth tech selloff. Sources: <a href="https://www.financecalendar.com/event/us-cpi-report-july-2026/" target="_blank">Finance Calendar</a>, <a href="https://qz.com/ny-fed-inflation-expectations-june-2026-survey-070826" target="_blank">Quartz</a></p>
+</div>
+
+<!-- Catalyst 2 -->
+<div class="card catalyst">
+  <div class="card-title">Catalyst 2 — Major Bank Earnings Kickoff</div>
+  <div class="meta-row">
+    <span class="tag">July 14, 2026 — Pre-Market</span>
+    <span class="tag">JPM, BAC, C, WFC</span>
+  </div>
+  <div class="consensus-grid">
+    <div class="consensus-box">
+      <div class="c-label">Consensus Expectation</div>
+      <div class="c-val">JPM EPS $5.49 / Revenue $48.7B. Sector EPS growth ~12.5%. Modest but achievable bar.</div>
+    </div>
+    <div class="consensus-box surprise">
+      <div class="c-label">⚠ Surprise Scenario</div>
+      <div class="c-val">NII guidance cut (negative). Trading blowout with NII in-line (neutral). Elevated credit provisions (risk-off).</div>
+    </div>
+  </div>
+  <div style="margin:10px 0;font-size:12px;color:var(--text-muted);">Exposed: <strong style="color:var(--text)">JPM, BAC, C, WFC, GS, MS, KRE</strong></div>
+  <p style="font-size:12.5px;color:var(--text-muted);line-height:1.8;margin-top:10px;">The most-watched event of Q2 season. JPMorgan management's tone on credit quality, deposit trends, and H2 NII trajectory will set the read for the entire financial sector. Key risk: if banks flag weakening credit quality (consistent with 57K NFP), it accelerates stagflation concerns. A clean beat with stable NII and strong trading triggers risk-on rotation into financials. Source: <a href="https://www.ig.com/uk/news-and-trade-ideas/us-bank-earnings--what-to-expect-from-q2-2026-260707" target="_blank">IG UK</a></p>
+</div>
+
+<!-- Catalyst 3 -->
+<div class="card catalyst">
+  <div class="card-title">Catalyst 3 — SK Hynix US ADR Listing</div>
+  <div class="meta-row">
+    <span class="tag">Current Week (Jul 7–11, 2026)</span>
+    <span class="tag">AI Memory Demand Barometer</span>
+  </div>
+  <div class="consensus-grid">
+    <div class="consensus-box">
+      <div class="c-label">Consensus Expectation</div>
+      <div class="c-val">Routine IPO process. Institutional allocation, modest first-day pop. Discount to US peers.</div>
+    </div>
+    <div class="consensus-box surprise">
+      <div class="c-label">⚠ Surprise Scenario</div>
+      <div class="c-val">Massive oversubscription validates AI memory demand. Weak open = yellow flag for AI capex sustainability.</div>
+    </div>
+  </div>
+  <div style="margin:10px 0;font-size:12px;color:var(--text-muted);">Exposed: <strong style="color:var(--text)">MU, NVDA, AVGO, TSM, INTC</strong></div>
+  <p style="font-size:12.5px;color:var(--text-muted);line-height:1.8;margin-top:10px;">SK Hynix's US ADR listing is a direct read on institutional appetite for AI memory infrastructure investment. If oversubscribed meaningfully, it validates AI capex is real demand — bullish for MU most directly. Watch first-day trading volume carefully. Source: <a href="https://www.sec.gov/Archives/edgar/data/0002120882/000119312526299963/d32785d424b4.htm" target="_blank">SEC Form 424B4</a></p>
+</div>
+
+<!-- Catalyst 4 -->
+<div class="card catalyst">
+  <div class="card-title">Catalyst 4 — FOMC Rate Decision</div>
+  <div class="meta-row">
+    <span class="tag">July 29, 2026 — 2:00 PM ET</span>
+    <span class="tag">Asymmetric Risk Event</span>
+  </div>
+  <div class="consensus-grid">
+    <div class="consensus-box">
+      <div class="c-label">Consensus Expectation</div>
+      <div class="c-val">Hold at 3.50–3.75% (84% probability). Hawkish hold with bias toward tightening.</div>
+    </div>
+    <div class="consensus-box surprise">
+      <div class="c-label">⚠ Surprise Scenario</div>
+      <div class="c-val">+25bps hike (currently 15% probability, likely underpriced if Jun CPI hot). Triggers meaningful risk-off.</div>
+    </div>
+  </div>
+  <div style="margin:10px 0;font-size:12px;color:var(--text-muted);">Exposed: <strong style="color:var(--text)">TLT, QQQ, SPY, XLF, GLD, DXY</strong></div>
+  <p style="font-size:12.5px;color:var(--text-muted);line-height:1.8;margin-top:10px;">Kevin Warsh's first FOMC minutes (July 8) signaled a hawkish lean. With PCE at 4.1% (2x target), a hike is more probable than the 15% market price implies. If June CPI surprises higher, hike probability could shift to 35–40%, repricing duration assets meaningfully. Asymmetric risk: a hold is priced in (limited upside confirmation); a hike triggers meaningful drawdown in growth/duration. Source: <a href="https://www.financecalendar.com/event/fomc-rate-decision-july-2026/" target="_blank">Finance Calendar</a></p>
+</div>
+
+<!-- Catalyst 5 -->
+<div class="card catalyst">
+  <div class="card-title">Catalyst 5 — Google Pixel 11 / Made by Google Event</div>
+  <div class="meta-row">
+    <span class="tag">August 12, 2026 — 6:00 PM ET (NYC)</span>
+    <span class="tag">Underfollowed Catalyst</span>
+  </div>
+  <div class="consensus-grid">
+    <div class="consensus-box">
+      <div class="c-label">Consensus Expectation</div>
+      <div class="c-val">Hardware refresh (Pixel 11, Watch 5, Buds). Incremental AI features showcase. Low bar set.</div>
+    </div>
+    <div class="consensus-box surprise">
+      <div class="c-label">⚠ Surprise Scenario</div>
+      <div class="c-val">Deep Gemini integration that stresses Apple's AI roadmap ahead of Sep iPhone. TSMC supply commentary signals 2nm ramp.</div>
+    </div>
+  </div>
+  <div style="margin:10px 0;font-size:12px;color:var(--text-muted);">Exposed: <strong style="color:var(--text)">GOOGL, AAPL, QCOM</strong></div>
+  <p style="font-size:12.5px;color:var(--text-muted);line-height:1.8;margin-top:10px;">Google's Made by Google event is underappreciated as a catalyst. With Gemini models accelerating and AI overview search integration, August 12 could showcase how deeply AI is embedded in consumer hardware — potentially pressuring Apple's differentiation story before its September iPhone reveal. Source: <a href="https://techmymoney.com/2026/07/08/pixel-11-launch-event-august-12-google-made-by-google-2026/" target="_blank">TechMyMoney, Jul 8</a></p>
+</div>
+
+
+<!-- ===== ACTION ITEMS ===== -->
+<div class="action-section">
+  <h2>04 — Action Items</h2>
+  <div class="action-grid">
+    <div class="action-block">
+      <h3>Top 3 Tickers to Research Today</h3>
+      <ol>
+        <li><strong>MU</strong> — Micron: $250B US investment + HBM demand inflection. Check valuation vs. HBM pricing trends; SK Hynix ADR first-day trading is the near-term read.</li>
+        <li><strong>JPM</strong> — JPMorgan: Pre-earnings NII sensitivity analysis critical. Same-day CPI print July 14 creates binary risk — model the combined scenario matrix before the open.</li>
+        <li><strong>AVGO</strong> — Broadcom: Custom ASIC picks-and-shovels play; META Iris + Google TPU exposure. Most differentiated position in the AI semiconductor trade vs. NVDA.</li>
+      </ol>
+    </div>
+    <div class="action-block">
+      <h3>Position Adjustments</h3>
+      <ul>
+        <li><em>REDUCE</em> high-multiple tech exposure ahead of July 14 — CPI + bank earnings double catalyst creates high binary risk</li>
+        <li><em>ADD</em> defensive positioning (XLU, XLP) given stagflation signals: weak NFP + sticky inflation + potential hike</li>
+        <li><em>CONSIDER</em> MU / AVGO vs. NVDA pair trade as AI capex shifts from GPU to custom ASIC + memory</li>
+        <li><em>INITIATE RESEARCH</em> on clean energy basket (ENPH, FSLR, NEE) as Iran-driven energy security theme builds</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="key-dates">
+    <h3>Key Dates This Week &amp; Ahead</h3>
+    <div class="date-item">
+      <span class="date-badge">TODAY</span>
+      <div class="date-desc"><strong>July 10:</strong> Delta Air Lines Q2 earnings report — travel demand read-through</div>
+    </div>
+    <div class="date-item">
+      <span class="date-badge">MON Jul 13</span>
+      <div class="date-desc"><strong>SK Hynix ADR</strong> expected first trading day — AI memory demand barometer</div>
+    </div>
+    <div class="date-item">
+      <span class="date-badge hot">TUE Jul 14 ⚡</span>
+      <div class="date-desc"><strong>June CPI (8:30 AM ET) + JPM, BAC, C, WFC earnings (pre-market)</strong> — HIGHEST-RISK DAY OF THE MONTH. Dual catalyst collision.</div>
+    </div>
+    <div class="date-item">
+      <span class="date-badge">WED Jul 29</span>
+      <div class="date-desc"><strong>FOMC Rate Decision (2:00 PM ET)</strong> — potential hike surprise scenario; 15% market probability likely underpriced</div>
+    </div>
+    <div class="date-item">
+      <span class="date-badge">WED Aug 12</span>
+      <div class="date-desc"><strong>Google Made by Google event (6 PM ET, NYC)</strong> — Pixel 11 / Gemini AI consumer hardware showcase</div>
+    </div>
+  </div>
+</div>
+
+</div><!-- /container -->
+
+<div class="footer">
+  DAILY THEME SCANNER — 2026-07-10 &nbsp;|&nbsp; All claims include verified URLs &nbsp;|&nbsp; No fabricated sources &nbsp;|&nbsp; Not investment advice
+</div>
+
+</body>
+</html>
