@@ -1,0 +1,827 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Daily Theme Scanner — 2026-07-14</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0e17;
+    --bg2: #111827;
+    --bg3: #1a2234;
+    --border: #1e2d4a;
+    --text: #e2e8f0;
+    --muted: #94a3b8;
+    --high: #10b981;
+    --medium: #f59e0b;
+    --low: #ef4444;
+    --blue: #3b82f6;
+    --purple: #8b5cf6;
+    --cyan: #06b6d4;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    line-height: 1.7;
+    padding: 32px 24px;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+  a { color: var(--blue); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  /* Header */
+  .header {
+    border-bottom: 2px solid var(--border);
+    padding-bottom: 20px;
+    margin-bottom: 32px;
+  }
+  .header h1 {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--text);
+    letter-spacing: -0.5px;
+  }
+  .header h1 span { color: var(--cyan); }
+  .header .meta {
+    color: var(--muted);
+    font-size: 11px;
+    margin-top: 6px;
+  }
+
+  /* Section headers */
+  h2 {
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--cyan);
+    margin: 40px 0 20px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  /* Cards */
+  .card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 20px 22px;
+    margin-bottom: 16px;
+  }
+  .card:hover { border-color: #2a3f6a; }
+
+  .card-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 14px;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .card-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text);
+  }
+  .badges {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+  .badge {
+    font-size: 10px;
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: 3px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  .badge-high { background: rgba(16,185,129,0.15); color: var(--high); border: 1px solid rgba(16,185,129,0.3); }
+  .badge-medium { background: rgba(245,158,11,0.15); color: var(--medium); border: 1px solid rgba(245,158,11,0.3); }
+  .badge-low { background: rgba(239,68,68,0.15); color: var(--low); border: 1px solid rgba(239,68,68,0.3); }
+  .badge-developing { background: rgba(59,130,246,0.15); color: var(--blue); border: 1px solid rgba(59,130,246,0.3); }
+  .badge-early { background: rgba(139,92,246,0.15); color: var(--purple); border: 1px solid rgba(139,92,246,0.3); }
+  .badge-maturing { background: rgba(6,182,212,0.15); color: var(--cyan); border: 1px solid rgba(6,182,212,0.3); }
+  .badge-strong { background: rgba(16,185,129,0.15); color: var(--high); border: 1px solid rgba(16,185,129,0.3); }
+  .badge-moderate { background: rgba(245,158,11,0.15); color: var(--medium); border: 1px solid rgba(245,158,11,0.3); }
+  .badge-weak { background: rgba(239,68,68,0.15); color: var(--low); border: 1px solid rgba(239,68,68,0.3); }
+
+  /* Fields grid */
+  .fields {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+  @media (max-width: 700px) { .fields { grid-template-columns: 1fr; } }
+  .field-label {
+    color: var(--muted);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 2px;
+  }
+  .field-value {
+    color: var(--text);
+    font-size: 12px;
+  }
+  .field-value .ticker {
+    display: inline-block;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    padding: 1px 5px;
+    border-radius: 3px;
+    margin: 1px 2px;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--cyan);
+  }
+  .field-value .ticker-red {
+    display: inline-block;
+    background: rgba(239,68,68,0.08);
+    border: 1px solid rgba(239,68,68,0.2);
+    padding: 1px 5px;
+    border-radius: 3px;
+    margin: 1px 2px;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--low);
+  }
+
+  /* Evidence list */
+  .evidence-list {
+    margin: 10px 0;
+    padding-left: 0;
+    list-style: none;
+  }
+  .evidence-list li {
+    padding: 6px 0 6px 14px;
+    border-left: 2px solid var(--border);
+    margin-bottom: 6px;
+    color: var(--text);
+    font-size: 12px;
+  }
+  .evidence-list li .src { color: var(--muted); font-size: 11px; }
+
+  /* Summary */
+  .summary {
+    background: var(--bg3);
+    border-left: 3px solid var(--cyan);
+    padding: 12px 16px;
+    margin-top: 14px;
+    font-size: 12px;
+    color: var(--text);
+    border-radius: 0 4px 4px 0;
+  }
+
+  /* Trade idea */
+  .trade-idea {
+    background: rgba(16,185,129,0.06);
+    border: 1px solid rgba(16,185,129,0.2);
+    padding: 10px 14px;
+    margin-top: 10px;
+    border-radius: 4px;
+    font-size: 12px;
+  }
+  .trade-idea .label { color: var(--high); font-weight: 700; margin-right: 6px; }
+
+  /* Action items */
+  .action-box {
+    background: var(--bg2);
+    border: 1px solid var(--cyan);
+    border-radius: 6px;
+    padding: 22px;
+    margin-top: 32px;
+  }
+  .action-box h3 {
+    color: var(--cyan);
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 16px;
+  }
+  .action-section { margin-bottom: 18px; }
+  .action-section h4 {
+    color: var(--medium);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+  }
+  .action-section ul { padding-left: 16px; }
+  .action-section ul li { margin-bottom: 6px; font-size: 12px; }
+
+  /* Divider */
+  hr { border: none; border-top: 1px solid var(--border); margin: 28px 0; }
+
+  /* Footer */
+  .footer {
+    margin-top: 40px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+    color: var(--muted);
+    font-size: 11px;
+    text-align: center;
+  }
+
+  /* Dates highlight */
+  .date-tag {
+    background: rgba(245,158,11,0.12);
+    color: var(--medium);
+    border: 1px solid rgba(245,158,11,0.25);
+    padding: 2px 7px;
+    border-radius: 3px;
+    font-size: 10px;
+    font-weight: 700;
+    margin-left: 6px;
+  }
+  .today-tag {
+    background: rgba(239,68,68,0.12);
+    color: var(--low);
+    border: 1px solid rgba(239,68,68,0.3);
+    padding: 2px 7px;
+    border-radius: 3px;
+    font-size: 10px;
+    font-weight: 700;
+    margin-left: 6px;
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.6} }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>📊 Daily Theme Scanner — <span>2026-07-14</span></h1>
+  <div class="meta">Pre-market scan &nbsp;|&nbsp; Hedge fund thematic research &nbsp;|&nbsp; Generated: 2026-07-14 pre-market</div>
+</div>
+
+<!-- ========== EMERGING NARRATIVES ========== -->
+<h2>Emerging Narratives</h2>
+
+<!-- Narrative 1 -->
+<div class="card">
+  <div class="card-header">
+    <div class="card-title">1. Hormuz Blockade 2.0 — Oil Shock Redux</div>
+    <div class="badges">
+      <span class="badge badge-high">HIGH</span>
+      <span class="badge badge-developing">DEVELOPING</span>
+    </div>
+  </div>
+  <div class="fields">
+    <div>
+      <div class="field-label">Primary Beneficiaries</div>
+      <div class="field-value">
+        <span class="ticker">XOM</span><span class="ticker">CVX</span><span class="ticker">COP</span><span class="ticker">OXY</span><span class="ticker">PSX</span><span class="ticker">XLE</span><span class="ticker">OIH</span>
+      </div>
+    </div>
+    <div>
+      <div class="field-label">Secondary Beneficiaries</div>
+      <div class="field-value">
+        <span class="ticker">LMT</span><span class="ticker">NOC</span><span class="ticker">RTX</span><span class="ticker">GD</span><span class="ticker">HII</span><span class="ticker">FRO</span><span class="ticker">DHT</span>
+      </div>
+    </div>
+    <div>
+      <div class="field-label">Losers / Disrupted</div>
+      <div class="field-value">
+        <span class="ticker-red">UAL</span><span class="ticker-red">DAL</span><span class="ticker-red">AAL</span><span class="ticker-red">LUV</span><span class="ticker-red">TSLA</span><span class="ticker-red">F</span><span class="ticker-red">GM</span>
+      </div>
+    </div>
+    <div>
+      <div class="field-label">Timeline for Earnings Impact</div>
+      <div class="field-value">Q3 2026 results Oct; oil services guidance raise 2-4 weeks</div>
+    </div>
+  </div>
+  <div class="field-label" style="margin-bottom:6px;">Evidence</div>
+  <ul class="evidence-list">
+    <li>US launched strikes on 80+ Iranian targets July 12-13, ending June 17 ceasefire; Trump reinstated naval blockade + 20% toll on Strait cargo. <span class="src">— <a href="https://www.bloomberg.com/news/articles/2026-07-12/oil-climbs-us-futures-dip-on-fresh-iran-strikes-markets-wrap">Bloomberg</a></span></li>
+    <li>Brent surged 8-10% to $82-85/bbl; just 6 vessels transited the Strait in 12 hours vs. 18-22/day normal. <span class="src">— <a href="https://www.thestreet.com/investing/us-blocks-strait-of-hormuz-what-next-for-oil-prices">TheStreet</a></span></li>
+    <li>IEA calls this the "largest supply disruption in the history of the global oil market." Iran had exported 57M bbls during the ceasefire pause. <span class="src">— <a href="https://www.bloomberg.com/news/articles/2026-07-13/iran-shipped-57-million-barrels-of-crude-between-us-blockades">Bloomberg</a></span></li>
+  </ul>
+  <div class="summary">The re-escalation of the US-Iran conflict after a brief ceasefire is the dominant macro narrative today. The market had largely priced in diplomatic drift toward resolution — Brent had retreated from its $114 May peak to ~$70 pre-weekend. The sudden reversal erases weeks of de-escalation premium and creates a new base case of prolonged disruption. At $82-85 Brent, US energy majors with Gulf-agnostic production are direct beneficiaries. Key tail risk: if the Strait closure becomes entrenched, oil revisits $100+ with global recession implications. Trump's 20% transit toll is a novel instrument that keeps oil elevated even under partial de-escalation — not yet in consensus models.</div>
+</div>
+
+<!-- Narrative 2 -->
+<div class="card">
+  <div class="card-header">
+    <div class="card-title">2. AI Capex Broadening Beyond the Big-4</div>
+    <div class="badges">
+      <span class="badge badge-high">HIGH</span>
+      <span class="badge badge-developing">DEVELOPING</span>
+    </div>
+  </div>
+  <div class="fields">
+    <div>
+      <div class="field-label">Primary Beneficiaries</div>
+      <div class="field-value">
+        <span class="ticker">NVDA</span><span class="ticker">AVGO</span><span class="ticker">MU</span><span class="ticker">SKHY</span><span class="ticker">ANET</span><span class="ticker">DELL</span><span class="ticker">VRT</span>
+      </div>
+    </div>
+    <div>
+      <div class="field-label">Secondary Beneficiaries</div>
+      <div class="field-value">
+        <span class="ticker">ETN</span><span class="ticker">NVT</span><span class="ticker">VST</span><span class="ticker">CEG</span><span class="ticker">NRG</span><span class="ticker">DLR</span><span class="ticker">EQIX</span>
+      </div>
+    </div>
+    <div>
+      <div class="field-label">Losers / Disrupted</div>
+      <div class="field-value">
+        <span class="ticker-red">IBM</span><span class="ticker-red">HPE</span> Legacy enterprise IT
+      </div>
+    </div>
+    <div>
+      <div class="field-label">Timeline for Earnings Impact</div>
+      <div class="field-value">Ongoing — NVDA ~Aug; hyperscalers late July/early Aug</div>
+    </div>
+  </div>
+  <div class="field-label" style="margin-bottom:6px;">Evidence</div>
+  <ul class="evidence-list">
+    <li>2026 hyperscaler AI infrastructure spend now $690-725B (from $500B consensus); MSFT alone guiding $190B capex (+61% YoY). <span class="src">— <a href="https://fortune.com/2026/06/29/ai-spending-boom-accelerates-big-tech-trillion-infrastructure-qualcomm-cfo/">Fortune</a></span></li>
+    <li>NVIDIA Q1 showed near-equal Hyperscale ($38B) vs. ACIE enterprise/sovereign ($37B) split — demand broadening beyond Big-4 confirmed. <span class="src">— <a href="https://futurumgroup.com/insights/ai-capex-2026-the-690b-infrastructure-sprint/">Futurum</a></span></li>
+    <li>SK Hynix raised $26.5B in largest-ever foreign US IPO (7x oversubscribed), citing HBM fab expansion for AI demand. <span class="src">— <a href="https://techcrunch.com/2026/07/10/sk-hynix-raises-26-5b-in-the-biggest-foreign-ipo-in-us-history-is-urged-to-build-new-us-fabs/">TechCrunch</a></span></li>
+  </ul>
+  <div class="summary">The AI capex cycle is entering a second leg defined not by hyperscaler concentration but by broadening demand. Enterprise, cloud builders (Tier-2/3), and sovereign AI programs now absorb nearly as much compute as the Big-4. Two implications underappreciated by the market: (1) the upcycle duration extends because demand is structurally diversified, reducing single-customer risk; (2) the enabler stack (power, cooling, networking, memory) becomes more attractive as a sustained build-out. SK Hynix's $26.5B IPO — 7x oversubscribed — validates the thesis with real capital allocation. Watch hyperscaler capex guidance in late-July earnings for confirmation or contradiction.</div>
+</div>
+
+<!-- Narrative 3 -->
+<div class="card">
+  <div class="card-header">
+    <div class="card-title">3. Fed Hawkish Pivot Under New Chair Warsh</div>
+    <div class="badges">
+      <span class="badge badge-medium">MEDIUM</span>
+      <span class="badge badge-developing">DEVELOPING</span>
+    </div>
+  </div>
+  <div class="fields">
+    <div>
+      <div class="field-label">Primary Beneficiaries</div>
+      <div class="field-value">
+        <span class="ticker">JPM</span><span class="ticker">GS</span><span class="ticker">MS</span><span class="ticker">BAC</span> (NIM expansion); money market funds
+      </div>
+    </div>
+    <div>
+      <div class="field-label">Secondary Beneficiaries</div>
+      <div class="field-value">
+        <span class="ticker">BX</span><span class="ticker">KKR</span> floating-rate credit
+      </div>
+    </div>
+    <div>
+      <div class="field-label">Losers / Disrupted</div>
+      <div class="field-value">
+        <span class="ticker-red">TLT</span><span class="ticker-red">XLRE</span><span class="ticker-red">XLU</span><span class="ticker-red">AAPL</span> long-duration, high-multiple growth
+      </div>
+    </div>
+    <div>
+      <div class="field-label">Timeline for Earnings Impact</div>
+      <div class="field-value">Warsh testimony TODAY; FOMC July 28-29 is decision point</div>
+    </div>
+  </div>
+  <div class="field-label" style="margin-bottom:6px;">Evidence</div>
+  <ul class="evidence-list">
+    <li>Market-implied hike probability at July 28-29 FOMC surged to ~50% (from &lt;10% weeks ago); September implied ~70%. <span class="src">— <a href="https://athens-times.com/fed-rate-hike-expected-in-july-amid-inflation-data-and-wors-speech/">Athens Times</a></span></li>
+    <li>Warsh testifies before Congress TODAY (House, 10am ET) and July 15 (Senate) — his inaugural semiannual testimony. <span class="src">— <a href="https://www.bloomberg.com/news/articles/2026-07-11/warsh-and-us-inflation-will-set-tone-for-july-fed-decision">Bloomberg</a></span></li>
+    <li>9 of 18 FOMC officials have penciled in ≥1 hike for 2026; funds rate 3.50-3.75%, core CPI 3.1%, headline 3.8%. <span class="src">— <a href="https://www.federalreserve.gov/monetarypolicy/fomcprojtabl20260617.htm">Federal Reserve</a></span></li>
+  </ul>
+  <div class="summary">Kevin Warsh enters his first Congressional testimony under enormous pressure: inflation at ~2x the 2% target, oil just re-spiked, and bond markets pricing meaningful hike probability. Unlike Powell who had established dovish credibility, Warsh has publicly flagged fighting inflation as his "defining priority." His tone today will set the trading narrative for the next two weeks. A hawkish signal would pressure gold and equities while benefiting financials. Critically: markets are exactly 50/50 — either direction is a genuine surprise. Options pricing ~1.5% S&P move on the combined Warsh + CPI catalyst today.</div>
+</div>
+
+<!-- Narrative 4 -->
+<div class="card">
+  <div class="card-header">
+    <div class="card-title">4. Consumer Spending Fragility — The Quiet Crack</div>
+    <div class="badges">
+      <span class="badge badge-medium">MEDIUM</span>
+      <span class="badge badge-early">EARLY</span>
+    </div>
+  </div>
+  <div class="fields">
+    <div>
+      <div class="field-label">Primary Beneficiaries</div>
+      <div class="field-value">
+        <span class="ticker">WMT</span><span class="ticker">COST</span><span class="ticker">DG</span><span class="ticker">DLTR</span><span class="ticker">AMZN</span> (value channel)
+      </div>
+    </div>
+    <div>
+      <div class="field-label">Secondary Beneficiaries</div>
+      <div class="field-value">Consumer staples, utilities (defensive rotation)
+      </div>
+    </div>
+    <div>
+      <div class="field-label">Losers / Disrupted</div>
+      <div class="field-value">
+        <span class="ticker-red">AAPL</span><span class="ticker-red">TPR</span><span class="ticker-red">RL</span><span class="ticker-red">F</span><span class="ticker-red">GM</span><span class="ticker-red">HD</span><span class="ticker-red">LOW</span>
+      </div>
+    </div>
+    <div>
+      <div class="field-label">Timeline for Earnings Impact</div>
+      <div class="field-value">AAPL ~July 30; broader retail Q2 August</div>
+    </div>
+  </div>
+  <div class="field-label" style="margin-bottom:6px;">Evidence</div>
+  <ul class="evidence-list">
+    <li>KeyBanc proprietary spend data: indexed consumer spending -2% MoM in Q2 2026 vs. the 3-year average of +9% MoM — a 1100bps negative divergence. <span class="src">— <a href="https://www.cnbc.com/2026/07/14/apple-just-hit-an-all-time-high-keybanc-says-investors-please-sell-the-tech-giant.html">CNBC</a></span></li>
+    <li>Apple downgraded to Underweight, $250 PT (vs. $313 current) by KeyBanc — 20% implied downside; Services growth forecast cut to 7% FY27 vs. 12% consensus. <span class="src">— <a href="https://finance.yahoo.com/markets/stocks/articles/keybanc-turns-cautious-apple-stock-185901675.html">Yahoo Finance</a></span></li>
+    <li>IBM Q2 infrastructure -7%; management cited clients reallocating budgets from legacy IT to AI hardware — consumer-facing IT budgets are contracting. <span class="src">— <a href="https://www.streetinsider.com/Corporate+News/IBM+misses+Q2+targets+as+mainframe+and+software+sales+disappoint/26764642.html">StreetInsider</a></span></li>
+  </ul>
+  <div class="summary">While AI dominates financial media, a quieter signal is emerging in consumer data: the US consumer is showing stress. KeyBanc's proprietary spending survey is a reliable leading indicator and a -2% reading when the 3-year average is +9% is not noise. This occurs simultaneously with persistent inflation (energy spike adds to fuel/food costs), ~50% hike probability, and ongoing tariff pressure on imported goods. The AAPL downgrade is the most visible expression, but the risk is broader: any consumer-facing business with elevated inventory or premium pricing assumptions is vulnerable heading into Q3 guidance season.</div>
+</div>
+
+<!-- Narrative 5 -->
+<div class="card">
+  <div class="card-header">
+    <div class="card-title">5. Mega-IPO Era Passive Flow Dislocations</div>
+    <div class="badges">
+      <span class="badge badge-low">LOW</span>
+      <span class="badge badge-early">EARLY</span>
+    </div>
+  </div>
+  <div class="fields">
+    <div>
+      <div class="field-label">Primary Beneficiaries (Forced Buys)</div>
+      <div class="field-value">
+        <span class="ticker">SPCX</span><span class="ticker">SKHY</span> (mechanical index inclusion buying)
+      </div>
+    </div>
+    <div>
+      <div class="field-label">Losers / Disrupted</div>
+      <div class="field-value">Existing Nasdaq-100 members sold to fund rebalancing</div>
+    </div>
+    <div>
+      <div class="field-label">Timeline</div>
+      <div class="field-value">Mechanical flows ongoing through July; S&P 500 inclusion Q3</div>
+    </div>
+    <div></div>
+  </div>
+  <div class="field-label" style="margin-bottom:6px;">Evidence</div>
+  <ul class="evidence-list">
+    <li>SpaceX (SPCX) added to Nasdaq-100 July 7; Goldman Sachs estimates $60B+ of forced mechanical buying required from passive funds. <span class="src">— <a href="https://spotgamma.com/spacex-ipo-index-changes-spotgamma/">SpotGamma</a></span></li>
+    <li>SK Hynix (SKHY) raised $26.5B July 10; additional index inclusion events will generate further mechanical flows in coming weeks. <span class="src">— <a href="https://techcrunch.com/2026/07/10/sk-hynix-raises-26-5b-in-the-biggest-foreign-ipo-in-us-history-is-urged-to-build-new-us-fabs/">TechCrunch</a></span></li>
+    <li>Both IPOs together represent $100B+ of new equity supply in a 4-week window, requiring existing index members to be sold to fund rebalancing. <span class="src">— <a href="https://fortune.com/2026/06/07/spacex-ipo-selling-price-dislocations-spcx-stock-passive-index-flows-retail-investors/">Fortune</a></span></li>
+  </ul>
+  <div class="summary">The largest IPO wave in US history (SpaceX + SK Hynix) is creating structural passive flow dynamics exploitable by technical and quant traders. When $60B+ of forced buying must occur for SpaceX alone, $60B+ of existing holdings are being sold regardless of fundamentals, creating temporary price dislocations in existing index members. Key trade: identify Nasdaq-100 members showing price underperformance inconsistent with their fundamentals since July 7 (SpaceX addition date) — these may represent buying opportunities as mechanical selling pressure dissipates.</div>
+</div>
+
+<hr>
+
+<!-- ========== EARNINGS SIGNALS ========== -->
+<h2>Earnings Signals</h2>
+
+<!-- Signal 1 -->
+<div class="card">
+  <div class="card-header">
+    <div class="card-title">Signal 1: Big Bank Q2 Mega-Beat — Muted Stock Reaction</div>
+    <div class="badges">
+      <span class="badge badge-strong">STRONG</span>
+    </div>
+  </div>
+  <div class="fields">
+    <div>
+      <div class="field-label">Type</div>
+      <div class="field-value">Post-earnings price action anomaly</div>
+    </div>
+    <div>
+      <div class="field-label">Companies Involved</div>
+      <div class="field-value">
+        <span class="ticker">JPM</span><span class="ticker">BAC</span><span class="ticker">GS</span><span class="ticker">WFC</span><span class="ticker">C</span>
+      </div>
+    </div>
+    <div>
+      <div class="field-label">Broader Implication</div>
+      <div class="field-value">Capital markets roaring (+14% trading rev YoY est.) but "buy the rumor" setup exhausted buyers</div>
+    </div>
+    <div></div>
+  </div>
+  <div class="trade-idea"><span class="label">TRADE IDEA:</span> Sell near-term bank upside optionality; look for undervalued capital-markets adjacencies (<span class="ticker" style="font-size:11px;">ICE</span> <span class="ticker" style="font-size:11px;">CME</span> <span class="ticker" style="font-size:11px;">CBOE</span>) that didn't pre-run and benefit from same elevated volatility/volume.</div>
+  <div class="summary">JPMorgan reported one of its largest quarterly beats in recent history — EPS $6.14 vs. $5.74 est, revenue $58.02B vs. $50.19B est (+16% revenue beat). Bank of America also beat on both top and bottom lines. Yet both stocks trade flat to slightly negative pre-market. This is a classic "buy the rumor, sell the news" setup driven by geopolitically-driven trading volumes, SpaceX IPO fee income, and wider NIMs. The market had largely anticipated this. The read-through: investment banking is in a cyclical upswing, M&A is recovering, volatility-driven desks are printing. Beneficiary trade shifts to exchanges and prime brokerage enablers. <a href="https://www.quiverquant.com/news/JPMORGAN+($JPM)+Releases+Q2+2026+Earnings">Source: Quiver Quantitative</a></div>
+</div>
+
+<!-- Signal 2 -->
+<div class="card">
+  <div class="card-header">
+    <div class="card-title">Signal 2: IBM Infrastructure Miss — Enterprise IT Budget Shift Confirmed</div>
+    <div class="badges">
+      <span class="badge badge-moderate">MODERATE</span>
+    </div>
+  </div>
+  <div class="fields">
+    <div>
+      <div class="field-label">Type</div>
+      <div class="field-value">Language shift + sector read-through</div>
+    </div>
+    <div>
+      <div class="field-label">Companies Involved</div>
+      <div class="field-value">
+        <span class="ticker">IBM</span><span class="ticker">HPE</span><span class="ticker">DELL</span><span class="ticker">ANET</span>
+      </div>
+    </div>
+    <div>
+      <div class="field-label">Broader Implication</div>
+      <div class="field-value">Enterprise IT budgets shifting FROM legacy mainframe TO AI-adjacent infrastructure — sector rotation, not demand destruction</div>
+    </div>
+    <div></div>
+  </div>
+  <div class="trade-idea"><span class="label">TRADE IDEA:</span> Short legacy IT incumbents (<span class="ticker-red" style="font-size:11px;">IBM</span> <span class="ticker-red" style="font-size:11px;">HPE</span>); long AI server/storage plays (<span class="ticker" style="font-size:11px;">DELL</span> Pure Storage NetApp) and AI networking (<span class="ticker" style="font-size:11px;">ANET</span>).</div>
+  <div class="summary">IBM's preliminary Q2 showed infrastructure revenue down 7% YoY, with mainframe and Transaction Processing software disappointing. Management specifically cited enterprise clients pulling forward purchases of servers, storage, and memory in anticipation of supply constraints. This is demand redirection, not destruction — the same budgets that used to refresh mainframe Z systems are being diverted to GPU server clusters and AI storage. This is a multi-year secular shift. The read-through: any large-enterprise IT vendor with material legacy infrastructure exposure is at risk of guidance cuts through H2 2026. <a href="https://www.streetinsider.com/Corporate+News/IBM+misses+Q2+targets+as+mainframe+and+software+sales+disappoint/26764642.html">Source: StreetInsider</a></div>
+</div>
+
+<!-- Signal 3 -->
+<div class="card">
+  <div class="card-header">
+    <div class="card-title">Signal 3: KeyBanc Apple Underweight — Consumer Tech Canary</div>
+    <div class="badges">
+      <span class="badge badge-moderate">MODERATE</span>
+    </div>
+  </div>
+  <div class="fields">
+    <div>
+      <div class="field-label">Type</div>
+      <div class="field-value">Unusual analyst downgrade with proprietary data backing</div>
+    </div>
+    <div>
+      <div class="field-label">Companies Involved</div>
+      <div class="field-value">
+        <span class="ticker">AAPL</span><span class="ticker">QCOM</span><span class="ticker">TSM</span> + component makers
+      </div>
+    </div>
+    <div>
+      <div class="field-label">Broader Implication</div>
+      <div class="field-value">Not Apple-specific — a broad consumer electronics demand shock heading into fall launch cycle</div>
+    </div>
+    <div></div>
+  </div>
+  <div class="trade-idea"><span class="label">TRADE IDEA:</span> Put spreads on <span class="ticker" style="font-size:11px;">AAPL</span> into July 30 earnings; check supply chain exposure in <span class="ticker" style="font-size:11px;">QCOM</span> and component makers for secondary read-through.</div>
+  <div class="summary">KeyBanc downgraded Apple to Underweight with a $250 PT at a moment when Apple just touched all-time highs at $313 — a 20% implied downside call. The basis is proprietary spending data showing consumer electronics purchases collapsed relative to historical norms (+9% 3yr avg → -2% actual), plus projected Services growth deceleration to 7% FY27 vs. 12% consensus — a gap that would be catastrophic for Apple's premium multiple if realized. The timing matters: AAPL reports Q2 on ~July 30, and Q3 is when iPhone build schedules are set ahead of the September launch. <a href="https://www.cnbc.com/2026/07/14/apple-just-hit-an-all-time-high-keybanc-says-investors-please-sell-the-tech-giant.html">Source: CNBC</a></div>
+</div>
+
+<!-- Signal 4 -->
+<div class="card">
+  <div class="card-header">
+    <div class="card-title">Signal 4: SK Hynix Debut Pullback — AI Memory Entry Point or Warning?</div>
+    <div class="badges">
+      <span class="badge badge-moderate">MODERATE</span>
+    </div>
+  </div>
+  <div class="fields">
+    <div>
+      <div class="field-label">Type</div>
+      <div class="field-value">Post-IPO price action anomaly</div>
+    </div>
+    <div>
+      <div class="field-label">Companies Involved</div>
+      <div class="field-value">
+        <span class="ticker">SKHY</span><span class="ticker">MU</span><span class="ticker">NVDA</span><span class="ticker">AMD</span>
+      </div>
+    </div>
+    <div>
+      <div class="field-label">Broader Implication</div>
+      <div class="field-value">Validates AI memory demand (7x oversubscribed) but macro headwinds weighing on growth multiples even for defensible AI names</div>
+    </div>
+    <div></div>
+  </div>
+  <div class="trade-idea"><span class="label">TRADE IDEA:</span> Monitor <span class="ticker" style="font-size:11px;">SKHY</span> for stabilization above IPO price ($149) — hold above = institutional conviction; break below = risk-off signal for broader AI memory trade. <span class="ticker" style="font-size:11px;">MU</span> is the direct US-listed comparable.</div>
+  <div class="summary">SK Hynix raised $26.5B at $149/share, opened +14% to $170, then pulled back sharply amid rate-hike fears and profit-taking. The 7x oversubscription confirms AI memory demand is unambiguously real — SK Hynix controls 58% of HBM revenue globally and is NVIDIA's primary HBM supplier. Yet the post-debut weakness reflects macro headwinds (potential Fed hike, oil shock) weighing on growth/valuation multiples. Today's Warsh + CPI combination will resolve this tension between fundamentals and macro. Watch $149 as the critical support level. <a href="https://techcrunch.com/2026/07/10/sk-hynix-raises-26-5b-in-the-biggest-foreign-ipo-in-us-history-is-urged-to-build-new-us-fabs/">Source: TechCrunch</a></div>
+</div>
+
+<!-- Signal 5 -->
+<div class="card">
+  <div class="card-header">
+    <div class="card-title">Signal 5: Bank Fee Income Surge — Investment Banking Cycle Confirmed</div>
+    <div class="badges">
+      <span class="badge badge-strong">STRONG</span>
+    </div>
+  </div>
+  <div class="fields">
+    <div>
+      <div class="field-label">Type</div>
+      <div class="field-value">Recurring theme + sector read-through</div>
+    </div>
+    <div>
+      <div class="field-label">Companies Involved</div>
+      <div class="field-value">
+        <span class="ticker">JPM</span><span class="ticker">GS</span><span class="ticker">MS</span><span class="ticker">C</span><span class="ticker">BX</span><span class="ticker">KKR</span><span class="ticker">APO</span>
+      </div>
+    </div>
+    <div>
+      <div class="field-label">Broader Implication</div>
+      <div class="field-value">SpaceX + SK Hynix IPO fee windfall + M&A recovery = richest IB fee environment since 2021</div>
+    </div>
+    <div></div>
+  </div>
+  <div class="trade-idea"><span class="label">TRADE IDEA:</span> Long alternative asset managers (<span class="ticker" style="font-size:11px;">BX</span> <span class="ticker" style="font-size:11px;">KKR</span> <span class="ticker" style="font-size:11px;">APO</span>) — benefit from deal fees and higher exit valuations; haven't pre-run as much as the banks.</div>
+  <div class="summary">Major US banks are seeing a surge in fee income from an unusually active capital markets environment. The SpaceX IPO alone distributed fee income across virtually every major bank. Combined with M&A recovery, higher volatility-driven trading volumes (geopolitical risk premium), and debt issuance to fund defense spending, investment banks are operating in one of the richest fee environments since 2021. This is not yet fully priced into alternative asset managers which rely on successful exits and new fund closings — both benefiting from the same environment. <a href="https://www.cnbc.com/2026/07/14/jpm-bank-of-america-citi-bank-earnings-live-updates.html">Source: CNBC Live Updates</a></div>
+</div>
+
+<hr>
+
+<!-- ========== CATALYST MAP ========== -->
+<h2>Upcoming Catalysts</h2>
+
+<!-- Catalyst 1 -->
+<div class="card">
+  <div class="card-header">
+    <div class="card-title">1. Fed Chair Warsh Congressional Testimony <span class="today-tag">TODAY</span></div>
+    <div class="badges">
+      <span class="badge badge-high">HIGH IMPACT</span>
+    </div>
+  </div>
+  <div class="fields">
+    <div>
+      <div class="field-label">Date</div>
+      <div class="field-value">July 14 (House, 10am ET) &amp; July 15 (Senate Banking)</div>
+    </div>
+    <div>
+      <div class="field-label">Expected Outcome (Consensus)</div>
+      <div class="field-value">Cautious, data-dependent stance; maintains optionality. ~50% hike probability.</div>
+    </div>
+    <div>
+      <div class="field-label">Surprise Scenario</div>
+      <div class="field-value">Explicit July hike signal (hawkish) OR dismissal of hike need (dovish rally)</div>
+    </div>
+    <div>
+      <div class="field-label">Exposed Tickers</div>
+      <div class="field-value">
+        <span class="ticker-red">TLT</span><span class="ticker-red">XLRE</span><span class="ticker-red">XLU</span><span class="ticker-red">AAPL</span><span class="ticker">XLF</span><span class="ticker">GLD</span>
+      </div>
+    </div>
+  </div>
+  <div class="summary">This is the single highest-impact scheduled event of the next 2 weeks. Warsh is the unknown variable — markets know Powell's playbook but have never seen Warsh in the hot seat. His academic record suggests he leans hawkish, prioritizing price stability over growth support. The CPI print dropping simultaneously will either amplify or dampen his credibility. If CPI misses expectations to the upside (energy-driven) and Warsh sounds hawkish, expect a 2%+ equity selloff and bond market repricing toward 4.00%+ on the 2Y. Options are pricing ~1.5% S&P move on the combined catalyst. <a href="https://www.bloomberg.com/news/articles/2026-07-11/warsh-and-us-inflation-will-set-tone-for-july-fed-decision">Source: Bloomberg</a></div>
+</div>
+
+<!-- Catalyst 2 -->
+<div class="card">
+  <div class="card-header">
+    <div class="card-title">2. June CPI Release <span class="today-tag">TODAY 8:30am ET</span></div>
+    <div class="badges">
+      <span class="badge badge-high">HIGH IMPACT</span>
+    </div>
+  </div>
+  <div class="fields">
+    <div>
+      <div class="field-label">Date</div>
+      <div class="field-value">July 14, 2026 — 8:30am ET</div>
+    </div>
+    <div>
+      <div class="field-label">Expected Outcome</div>
+      <div class="field-value">Headline ~3.8% YoY (from 4.2%); core ~2.9%; first monthly declines since January</div>
+    </div>
+    <div>
+      <div class="field-label">Surprise Scenario</div>
+      <div class="field-value">Energy component pushes headline back toward 4%+; core sticky at 3%+</div>
+    </div>
+    <div>
+      <div class="field-label">Exposed Tickers</div>
+      <div class="field-value">Everything — most directly: <span class="ticker-red">TLT</span><span class="ticker">XLE</span><span class="ticker">GLD</span> DXY proxies</div>
+    </div>
+  </div>
+  <div class="summary">The June CPI is paradoxical: consensus expects disinflation progress, but the July 12-13 oil spike hadn't yet occurred during the June measurement period, so today's print may actually show improvement. The risk is false security: even if June CPI is tame, July CPI (reported mid-August) will fully embed the current oil spike, potentially snapping the disinflation trend. A hot print today combined with hawkish Warsh testimony would be doubly painful — the worst-case scenario for equities and bonds simultaneously. <a href="https://www.federalreserve.gov/newsevents/pressreleases/monetary20260617a.htm">Source: Federal Reserve</a></div>
+</div>
+
+<!-- Catalyst 3 -->
+<div class="card">
+  <div class="card-header">
+    <div class="card-title">3. FOMC Rate Decision <span class="date-tag">July 28-29</span></div>
+    <div class="badges">
+      <span class="badge badge-high">HIGH IMPACT</span>
+    </div>
+  </div>
+  <div class="fields">
+    <div>
+      <div class="field-label">Date</div>
+      <div class="field-value">July 28-29, 2026</div>
+    </div>
+    <div>
+      <div class="field-label">Expected Outcome</div>
+      <div class="field-value">Hold at 3.50-3.75% with hawkish statement. ~50% probability of 25bps hike.</div>
+    </div>
+    <div>
+      <div class="field-label">Surprise Scenario</div>
+      <div class="field-value">First 25bps hike since this cycle began; OR surprise hold with dovish pivot</div>
+    </div>
+    <div>
+      <div class="field-label">Exposed Tickers</div>
+      <div class="field-value">
+        <span class="ticker-red">XLRE</span><span class="ticker-red">XLU</span><span class="ticker-red">TLT</span><span class="ticker">XLF</span><span class="ticker">BX</span><span class="ticker">KKR</span>
+      </div>
+    </div>
+  </div>
+  <div class="summary">The July 28-29 FOMC is the biggest scheduled market event of the month. Nine of 18 members have signaled willingness to hike; the incoming Chair is hawkish; oil supply shock adds upward inflation pressure. The market's 50% hike probability is rare — genuine uncertainty, not a "priced in" event. Opportunities: calendar spreads in interest rate futures, long vol on TLT or SPY via options, and sector rotation trades (long financials, short long-duration) as a hedge regardless of direction. <a href="https://www.forbes.com/sites/investor-hub/article/fed-meeting-tracker-interest-rate-strategy/">Source: Forbes Fed Meeting Tracker</a></div>
+</div>
+
+<!-- Catalyst 4 -->
+<div class="card">
+  <div class="card-header">
+    <div class="card-title">4. Big Tech Q2 Earnings Reports <span class="date-tag">Late July</span></div>
+    <div class="badges">
+      <span class="badge badge-high">HIGH IMPACT</span>
+    </div>
+  </div>
+  <div class="fields">
+    <div>
+      <div class="field-label">Date</div>
+      <div class="field-value">AAPL ~July 30; MSFT, GOOGL, META, AMZN — final 2 weeks of July</div>
+    </div>
+    <div>
+      <div class="field-label">Expected Outcome</div>
+      <div class="field-value">AI-driven revenue beats; cloud reaccelerating; AAPL iPhone-6 cycle driving upgrades</div>
+    </div>
+    <div>
+      <div class="field-label">Surprise Scenario</div>
+      <div class="field-value">AAPL Services miss; hyperscaler guides capex LOWER; consumer weakness in advertising</div>
+    </div>
+    <div>
+      <div class="field-label">Exposed Tickers</div>
+      <div class="field-value">
+        <span class="ticker">AAPL</span><span class="ticker">MSFT</span><span class="ticker">GOOGL</span><span class="ticker">META</span><span class="ticker">AMZN</span><span class="ticker">NVDA</span><span class="ticker">ANET</span>
+      </div>
+    </div>
+  </div>
+  <div class="summary">This is where the narrative rubber meets the road. The bull case — AI capex broadening, cloud acceleration, consumer resilience — will be tested by actual numbers. These 5 names represent ~25% of S&P 500 weight; the market is positioned bullishly, meaning any negative guidance surprise ripples broadly. Highest-risk name: AAPL (KeyBanc Underweight, consumer data weak). Most critical number to watch: hyperscaler capex guidance. If any of the Big-3 (MSFT, GOOGL, AMZN) reduce or even maintain rather than raise capex guidance, the AI infrastructure trade faces a significant correction. <a href="https://www.ig.com/en/news-and-trade-ideas/us-bank-earnings--what-to-expect-from-q2-2026-260710">Source: IG</a></div>
+</div>
+
+<!-- Catalyst 5 -->
+<div class="card">
+  <div class="card-header">
+    <div class="card-title">5. Iran Conflict Resolution vs. Escalation <span class="date-tag">Ongoing 1-3 weeks</span></div>
+    <div class="badges">
+      <span class="badge badge-high">HIGH IMPACT</span>
+    </div>
+  </div>
+  <div class="fields">
+    <div>
+      <div class="field-label">Date</div>
+      <div class="field-value">Ongoing; next diplomatic checkpoint within 1-2 weeks</div>
+    </div>
+    <div>
+      <div class="field-label">Expected Outcome (Consensus)</div>
+      <div class="field-value">Return to ceasefire negotiations within 2-3 weeks, similar to May-June pattern</div>
+    </div>
+    <div>
+      <div class="field-label">Surprise Scenario (Bullish Energy)</div>
+      <div class="field-value">Further escalation; Brent surges to $95-100+</div>
+    </div>
+    <div>
+      <div class="field-label">Surprise Scenario (Bearish Energy)</div>
+      <div class="field-value">Rapid resolution; Brent collapses to $68-72</div>
+    </div>
+    <div>
+      <div class="field-label">Exposed Tickers (Long Energy)</div>
+      <div class="field-value"><span class="ticker">XOM</span><span class="ticker">CVX</span><span class="ticker">XLE</span><span class="ticker">COP</span></div>
+    </div>
+    <div>
+      <div class="field-label">Exposed Tickers (Short Airlines)</div>
+      <div class="field-value"><span class="ticker-red">UAL</span><span class="ticker-red">DAL</span><span class="ticker-red">AAL</span></div>
+    </div>
+  </div>
+  <div class="summary">The Hormuz situation is the most binary catalyst in the market today. The pattern has been: escalation → Brent spikes → ceasefire → Brent retreats. But Trump's 20% transit toll is a novel instrument — even if Iran re-opens the Strait nominally, the economic impact on global shipping costs and oil flows persists. A prolonged toll regime (not just a blockade) keeps oil elevated without requiring an active shooting war. This asymmetric outcome — oil stays elevated even under partial de-escalation — is not currently in consensus models. Energy stocks partially re-rated from May highs but well below peak; a sustained blockade is not fully priced. <a href="https://en.wikipedia.org/wiki/2026_Strait_of_Hormuz_crisis">Source: Wikipedia — 2026 Strait of Hormuz Crisis</a></div>
+</div>
+
+<hr>
+
+<!-- ========== ACTION ITEMS ========== -->
+<div class="action-box">
+  <h3>⚡ Action Items</h3>
+
+  <div class="action-section">
+    <h4>Top 3 Tickers to Research Further Today</h4>
+    <ul>
+      <li><span class="ticker">XOM</span> / <span class="ticker">CVX</span> — Re-escalation of Hormuz with oil at $82-85 and no ceasefire in sight. Energy majors with diversified non-Gulf production are direct beneficiaries. Check H2 guidance and buyback capacity.</li>
+      <li><span class="ticker">GS</span> — Purest play on trading + IB fee income among banks reporting today. If the beat-and-flat pattern holds for peers but Goldman's trading desk outperforms, it's the best position in the group.</li>
+      <li><span class="ticker">SKHY</span> — Post-IPO dip in the world's largest AI memory supplier is a potential entry point if Warsh testimony + CPI print are benign today. Watch $149 (IPO price) as key support. Institutional hold above = conviction signal.</li>
+    </ul>
+  </div>
+
+  <div class="action-section">
+    <h4>Position Adjustment Signals</h4>
+    <ul>
+      <li>Reduce long-duration bond exposure (<span class="ticker-red">TLT</span>) ahead of Warsh testimony + CPI — upside limited, downside risk asymmetric if hawkish surprise</li>
+      <li>Trim consumer discretionary exposure, particularly premium hardware/electronics (<span class="ticker-red">AAPL</span>), ahead of July 30 earnings given KeyBanc proprietary data signal</li>
+      <li>Consider adding energy exposure on any Hormuz-related dip (<span class="ticker">XLE</span> <span class="ticker">XOM</span> <span class="ticker">CVX</span>) — the re-escalation pattern suggests oil doesn't return to $70 quickly this time; toll regime adds asymmetric floor</li>
+      <li>Long financials / short utilities as rate-uncertainty hedge (long/short <span class="ticker">XLF</span> vs. <span class="ticker-red">XLU</span>) regardless of Warsh outcome direction</li>
+    </ul>
+  </div>
+
+  <div class="action-section">
+    <h4>Key Dates to Watch This Week</h4>
+    <ul>
+      <li><strong style="color:var(--low)">TODAY 8:30am ET</strong> — June CPI Release: single most important data point. Hot print = double pain with Warsh testimony.</li>
+      <li><strong style="color:var(--low)">TODAY 10:00am ET</strong> — Warsh House testimony begins. First time markets will hear him in depth on inflation and rate path.</li>
+      <li><strong style="color:var(--low)">TODAY all day</strong> — JPM, BAC, GS, WFC, C Q2 results: watch guidance language on NII and loan growth for H2 outlook.</li>
+      <li><strong style="color:var(--medium)">July 15</strong> — Warsh Senate Banking testimony (second opportunity for market-moving signals).</li>
+      <li><strong style="color:var(--medium)">July 28-29</strong> — FOMC rate decision. Binary outcome; genuine 50/50 uncertainty.</li>
+      <li><strong style="color:var(--medium)">~July 30</strong> — AAPL Q2 earnings. Tests KeyBanc consumer spending thesis with $20+ implied downside.</li>
+    </ul>
+  </div>
+</div>
+
+<div class="footer">
+  Daily Theme Scanner — 2026-07-14 &nbsp;|&nbsp; Pre-market scan &nbsp;|&nbsp; 
+  Sources: Bloomberg, TheStreet, TechCrunch, Fortune, CNBC, Federal Reserve, StreetInsider, Yahoo Finance, SpotGamma, Wikipedia
+</div>
+
+</body>
+</html>
