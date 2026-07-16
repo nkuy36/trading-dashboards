@@ -1,0 +1,803 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Daily Theme Scanner — 2026-07-16</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0e17;
+    --bg2: #0f1623;
+    --bg3: #141d2e;
+    --border: #1e2d45;
+    --text: #e2e8f0;
+    --muted: #7a8ba3;
+    --high: #10b981;
+    --medium: #f59e0b;
+    --low: #ef4444;
+    --accent: #3b82f6;
+    --accent2: #818cf8;
+    --ticker: #38bdf8;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    line-height: 1.7;
+    padding: 32px 20px;
+  }
+
+  .container { max-width: 1100px; margin: 0 auto; }
+
+  /* Header */
+  .header {
+    border-bottom: 2px solid var(--border);
+    padding-bottom: 20px;
+    margin-bottom: 32px;
+  }
+  .header-top {
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-bottom: 8px;
+  }
+  .header h1 {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--text);
+    letter-spacing: -0.5px;
+  }
+  .header-date {
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .header-sub {
+    font-size: 11px;
+    color: var(--muted);
+    font-weight: 300;
+  }
+  .pulse {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    background: var(--high);
+    border-radius: 50%;
+    margin-right: 8px;
+    animation: pulse 2s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+
+  /* Section headers */
+  .section-title {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--accent);
+    border-left: 3px solid var(--accent);
+    padding-left: 12px;
+    margin: 36px 0 20px;
+  }
+
+  /* Cards */
+  .card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 20px 24px;
+    margin-bottom: 16px;
+    position: relative;
+  }
+  .card:hover {
+    border-color: #2a3f60;
+  }
+
+  .card-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 14px;
+    flex-wrap: wrap;
+  }
+
+  .card-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1.3;
+  }
+
+  .badge-row {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 14px;
+  }
+
+  .badge {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 3px 8px;
+    border-radius: 3px;
+  }
+  .badge-high { background: rgba(16, 185, 129, 0.15); color: var(--high); border: 1px solid rgba(16, 185, 129, 0.3); }
+  .badge-medium { background: rgba(245, 158, 11, 0.15); color: var(--medium); border: 1px solid rgba(245, 158, 11, 0.3); }
+  .badge-low { background: rgba(239, 68, 68, 0.15); color: var(--low); border: 1px solid rgba(239, 68, 68, 0.3); }
+  .badge-strong { background: rgba(16, 185, 129, 0.15); color: var(--high); border: 1px solid rgba(16, 185, 129, 0.3); }
+  .badge-moderate { background: rgba(245, 158, 11, 0.15); color: var(--medium); border: 1px solid rgba(245, 158, 11, 0.3); }
+  .badge-weak { background: rgba(239, 68, 68, 0.15); color: var(--low); border: 1px solid rgba(239, 68, 68, 0.3); }
+  .badge-stage { background: rgba(99, 102, 241, 0.15); color: var(--accent2); border: 1px solid rgba(99, 102, 241, 0.3); }
+  .badge-type { background: rgba(59, 130, 246, 0.12); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.25); }
+
+  /* Metadata grid */
+  .meta-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 10px;
+    margin: 14px 0;
+  }
+  .meta-item {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 8px 12px;
+  }
+  .meta-label {
+    font-size: 10px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 4px;
+  }
+  .meta-value {
+    font-size: 12px;
+    color: var(--text);
+    font-weight: 500;
+  }
+  .ticker-tag {
+    display: inline-block;
+    background: rgba(56, 189, 248, 0.1);
+    color: var(--ticker);
+    border: 1px solid rgba(56, 189, 248, 0.2);
+    border-radius: 3px;
+    padding: 1px 5px;
+    font-size: 11px;
+    font-weight: 600;
+    margin: 1px;
+  }
+
+  /* Evidence list */
+  .evidence-list {
+    margin: 10px 0;
+    padding: 0;
+  }
+  .evidence-list li {
+    list-style: none;
+    padding: 5px 0 5px 16px;
+    position: relative;
+    font-size: 12px;
+    color: #b8c9dc;
+    border-bottom: 1px solid rgba(30, 45, 69, 0.5);
+  }
+  .evidence-list li:last-child { border-bottom: none; }
+  .evidence-list li::before {
+    content: '›';
+    position: absolute;
+    left: 0;
+    color: var(--accent);
+  }
+
+  /* Summary box */
+  .summary-box {
+    background: var(--bg3);
+    border-left: 3px solid var(--border);
+    border-radius: 0 4px 4px 0;
+    padding: 12px 16px;
+    margin-top: 12px;
+    font-size: 12px;
+    color: #b8c9dc;
+    line-height: 1.8;
+  }
+
+  /* Trade idea */
+  .trade-idea {
+    background: rgba(16, 185, 129, 0.06);
+    border: 1px solid rgba(16, 185, 129, 0.2);
+    border-radius: 4px;
+    padding: 8px 12px;
+    margin-top: 10px;
+    font-size: 11px;
+    color: var(--high);
+  }
+  .trade-idea::before { content: '⟶ TRADE: '; font-weight: 700; }
+
+  /* Action items */
+  .action-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 16px;
+    margin-bottom: 16px;
+  }
+  .action-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 16px 20px;
+  }
+  .action-card h4 {
+    font-size: 11px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--accent2);
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+  }
+  .action-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 6px 0;
+    font-size: 12px;
+    color: var(--text);
+    border-bottom: 1px solid rgba(30,45,69,0.4);
+  }
+  .action-item:last-child { border-bottom: none; }
+  .action-num {
+    background: var(--accent);
+    color: #fff;
+    border-radius: 2px;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 1px 5px;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  /* Dates */
+  .dates-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 16px 20px;
+  }
+  .dates-card h4 {
+    font-size: 11px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--accent2);
+    margin-bottom: 12px;
+  }
+  .date-row {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    padding: 7px 0;
+    border-bottom: 1px solid rgba(30,45,69,0.4);
+    font-size: 12px;
+  }
+  .date-row:last-child { border-bottom: none; }
+  .date-tag {
+    background: rgba(245,158,11,0.1);
+    color: var(--medium);
+    border: 1px solid rgba(245,158,11,0.25);
+    border-radius: 3px;
+    padding: 2px 7px;
+    font-size: 10px;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  .date-row.today .date-tag {
+    background: rgba(239,68,68,0.12);
+    color: var(--low);
+    border-color: rgba(239,68,68,0.3);
+  }
+
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  .sources {
+    font-size: 10px;
+    color: var(--muted);
+    margin-top: 32px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+    line-height: 2;
+  }
+
+  .divider {
+    height: 1px;
+    background: var(--border);
+    margin: 8px 0 20px;
+  }
+
+  .sub-label {
+    font-size: 10px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 3px;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="header-top">
+      <h1><span class="pulse"></span>Daily Theme Scanner — 2026-07-16</h1>
+    </div>
+    <div class="header-sub">Pre-market thematic research scan | Generated automatically | July 16, 2026</div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <!-- SECTION 1: EMERGING NARRATIVES                             -->
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <div class="section-title">Emerging Narratives</div>
+
+  <!-- Narrative 1 -->
+  <div class="card">
+    <div class="card-title">1. AI Infrastructure Supercycle — Power & Compute Divergence</div>
+    <div class="badge-row">
+      <span class="badge badge-high">Conviction: HIGH</span>
+      <span class="badge badge-stage">DEVELOPING</span>
+    </div>
+    <div class="meta-grid">
+      <div class="meta-item">
+        <div class="meta-label">Primary Beneficiaries</div>
+        <div class="meta-value">
+          <span class="ticker-tag">VRT</span><span class="ticker-tag">GEV</span><span class="ticker-tag">CAT</span><span class="ticker-tag">NVDA</span><span class="ticker-tag">AVGO</span><span class="ticker-tag">MU</span>
+        </div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">Secondary Beneficiaries</div>
+        <div class="meta-value">
+          <span class="ticker-tag">SMCI</span><span class="ticker-tag">ANET</span><span class="ticker-tag">VST</span><span class="ticker-tag">CEG</span><span class="ticker-tag">PWR</span>
+        </div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">Losers / Disrupted</div>
+        <div class="meta-value">Traditional utilities without AI offtake, legacy DC REITs</div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">Earnings Impact Timeline</div>
+        <div class="meta-value">Now visible Q2; Q3 guidance revisions July–August</div>
+      </div>
+    </div>
+    <div class="sub-label">Evidence</div>
+    <ul class="evidence-list">
+      <li>Hyperscaler AI capex tracking $750B in 2026, crossing $1T in 2027. MSFT: $80B, AWS: ~$200B, Meta raised guidance to $125–145B. <a href="https://intellectia.ai/blog/ai-infrastructure-investment-july-2026" target="_blank">[Intellectia AI]</a> <a href="https://fortune.com/2026/06/29/ai-spending-boom-accelerates-big-tech-trillion-infrastructure-qualcomm-cfo/" target="_blank">[Fortune]</a></li>
+      <li>GE Vernova Q1 data-center orders: $2.4B — surpassed full-year 2025. Caterpillar Power Generation +41% YoY. Vertiv revenue backlog $15B. <a href="https://www.forbes.com/sites/investor-hub/article/data-center-stocks-how-to-invest-wisely/" target="_blank">[Forbes]</a></li>
+      <li>TSMC Q2 2026: net income NT$706.6B vs est. NT$623.73B; gross margin 67.7% vs 67.1% — confirming sustained AI chip demand. <a href="https://x.com/financialjuice/status/2077627485772984575" target="_blank">[FinancialJuice/X]</a></li>
+    </ul>
+    <div class="summary-box">The AI build-out has durably shifted investment from chips alone to the full infrastructure stack — power, cooling, networking, and physical construction. The debate has moved from "is AI real?" to "who captures the margin?" GE Vernova, Vertiv, Caterpillar, and grid-scale infrastructure names are receiving institutional rotation as AI capex becomes a multi-year visibility story. Key risk: spending concentration among 3–4 hyperscalers creates binary event risk if any player throttles capex guidance.</div>
+  </div>
+
+  <!-- Narrative 2 -->
+  <div class="card">
+    <div class="card-title">2. Fed Hawkish Pivot Risk Under Warsh</div>
+    <div class="badge-row">
+      <span class="badge badge-high">Conviction: HIGH</span>
+      <span class="badge badge-stage">DEVELOPING</span>
+    </div>
+    <div class="meta-grid">
+      <div class="meta-item">
+        <div class="meta-label">Primary Beneficiaries</div>
+        <div class="meta-value">Short-duration bonds, <span class="ticker-tag">GS</span><span class="ticker-tag">JPM</span><span class="ticker-tag">BAC</span>, T-bills</div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">Losers / Disrupted</div>
+        <div class="meta-value"><span class="ticker-tag">TLT</span><span class="ticker-tag">XLRE</span><span class="ticker-tag">XLU</span> rate-sensitive growth, EM bonds</div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">Earnings Impact Timeline</div>
+        <div class="meta-value">July 29 FOMC; September meeting next inflection</div>
+      </div>
+    </div>
+    <div class="sub-label">Evidence</div>
+    <ul class="evidence-list">
+      <li>Warsh's June FOMC dot plot: median rate forecast 3.8% by year-end (up from 3.4% in March), implying a hike. Fed dropped forward guidance — stunning departure from Powell era. <a href="https://www.cnn.com/2026/06/17/economy/fed-rate-decision-june-kevin-warsh" target="_blank">[CNN Business]</a></li>
+      <li>June CPI -0.4% MoM (3.5% annual vs. 3.8% expected); June PPI -0.3% — largest monthly PPI drop since April 2025. Market now prices 84.5% hold probability for July 29. <a href="https://cryptobriefing.com/fed-rate-hike-odds-plummet-as-us-ppi-inflation-sees-largest-drop-since-april/" target="_blank">[Crypto Briefing]</a></li>
+      <li>Rate cut expectations by September at just 3.9% — market pricing prolonged hold with hike optionality, not a pivot. <a href="https://federalnewsnetwork.com/prediction-markets/2026/07/cpi-falls-june-trade-prediction-markets-fed-decision-in-july-2026/" target="_blank">[Federal News Network]</a></li>
+    </ul>
+    <div class="summary-box">The Warsh Fed operates without transparency guardrails — no dot plot at the July meeting, no forward guidance. Markets have priced a benign "hold forever" outcome, but the June dot plot's shift toward a hike by year-end remains underpriced. Cooling CPI/PPI buys time for the July hold, but if retail sales (released today) or jobless claims show surprising resilience, rate hike risk for September would reprice rapidly. The asymmetry favors positioning against rate-sensitive equities.</div>
+  </div>
+
+  <!-- Narrative 3 -->
+  <div class="card">
+    <div class="card-title">3. Managed Care Medical Cost Normalization</div>
+    <div class="badge-row">
+      <span class="badge badge-medium">Conviction: MEDIUM</span>
+      <span class="badge badge-stage">DEVELOPING</span>
+    </div>
+    <div class="meta-grid">
+      <div class="meta-item">
+        <div class="meta-label">Primary Beneficiaries</div>
+        <div class="meta-value"><span class="ticker-tag">UNH</span><span class="ticker-tag">HUM</span><span class="ticker-tag">CI</span><span class="ticker-tag">CVS</span></div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">Losers / Disrupted</div>
+        <div class="meta-value">Healthcare providers facing renewed insurer pricing discipline</div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">Earnings Impact Timeline</div>
+        <div class="meta-value">HUM/CI report later this month; CVS early August</div>
+      </div>
+    </div>
+    <div class="sub-label">Evidence</div>
+    <ul class="evidence-list">
+      <li>UNH Q2 2026: revenues $112B, EPS $6.38 adj (beat), MCR fell to 86.7% from 89.4% YoY. FY2026 EPS guidance raised to $19.50–$20.00. <a href="https://www.forbes.com/sites/brucejapsen/2026/07/16/unitedhealth-group-profits-hit-54-billion-as-costs-continue-to-ease/" target="_blank">[Forbes]</a></li>
+      <li>Humana +6%, UNH +5%, Cigna +4% in June on margin-recovery narrative. CVS Aetna MLR 84.6%, CVS jumped 9%+ on the day. <a href="https://finance.yahoo.com/sectors/healthcare/articles/humana-jumps-6-unitedhealth-173255187.html" target="_blank">[Yahoo Finance]</a></li>
+      <li>BofA upgraded UNH to Buy, citing MCR improvement as potential start of sector-wide inflection if utilization trends continue moderating.</li>
+    </ul>
+    <div class="summary-box">Managed care spent 2025 in crisis — elevated post-COVID utilization, CMS Medicare Advantage rate cuts, margin collapse. UNH's Q2 is the first convincing data point the cycle has turned. The MCR improvement of 270 bps YoY is not trivial. Key risk: one-quarter flush and utilization re-accelerates in H2. Watch Humana's Q2 — highest beta, highest leverage to a recovery. Most beaten down, most upside if the trend holds.</div>
+  </div>
+
+  <!-- Narrative 4 -->
+  <div class="card">
+    <div class="card-title">4. Investment Banking Supercycle — Peak or New Floor?</div>
+    <div class="badge-row">
+      <span class="badge badge-medium">Conviction: MEDIUM</span>
+      <span class="badge badge-stage">MATURING</span>
+    </div>
+    <div class="meta-grid">
+      <div class="meta-item">
+        <div class="meta-label">Primary Beneficiaries</div>
+        <div class="meta-value"><span class="ticker-tag">GS</span><span class="ticker-tag">JPM</span><span class="ticker-tag">MS</span><span class="ticker-tag">BAC</span><span class="ticker-tag">C</span></div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">Secondary Beneficiaries</div>
+        <div class="meta-value"><span class="ticker-tag">EVR</span><span class="ticker-tag">LAZ</span><span class="ticker-tag">PJT</span> (M&A boutiques)</div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">Losers / Disrupted</div>
+        <div class="meta-value"><span class="ticker-tag">SPCX</span> below IPO price, retail investors in SpaceX hype</div>
+      </div>
+    </div>
+    <div class="sub-label">Evidence</div>
+    <ul class="evidence-list">
+      <li>Goldman Sachs Q2 EPS $20.98 vs. estimate $14.47 (45% beat) — best quarter in 157-year history. Equities +72% YoY to $7.42B; IB fees +55% to $3.40B. <a href="https://finance.yahoo.com/markets/stocks/articles/goldman-q2-earnings-beat-solid-133500401.html" target="_blank">[Yahoo Finance]</a></li>
+      <li>Big 5 banks earned $11.1B combined IB fees in Q2 2026, +27% YoY, highest since 2021. SpaceX paid just 0.7% in fees; Goldman and MS each netted ~$100M. <a href="https://www.cnbc.com/2026/07/14/jpm-bank-of-america-citi-bank-earnings-live-updates.html" target="_blank">[CNBC]</a></li>
+      <li>Management explicitly flagged Q2 results "may not be repeatable." SpaceX shares (SPCX) fell below $135 IPO price within weeks of listing. <a href="https://www.cnbc.com/2026/07/15/spacex-spcx-stock-ipo-price.html" target="_blank">[CNBC]</a></li>
+    </ul>
+    <div class="summary-box">Q2 2026 will be the best quarter for Wall Street IB since 2021 — and arguably ever for Goldman. But the bull narrative needs scrutiny: one-time SpaceX fees, Iran war volatility in equities, and management walking back expectations. More interesting angle: deal backlog at 5-year high signals a multi-quarter pipeline. SPCX falling below IPO price the same week as Goldman's blowout is the clearest divergence between fee-gatherers and risk-takers.</div>
+  </div>
+
+  <!-- Narrative 5 -->
+  <div class="card">
+    <div class="card-title">5. Nuclear-AI Energy Nexus</div>
+    <div class="badge-row">
+      <span class="badge badge-medium">Conviction: MEDIUM</span>
+      <span class="badge badge-stage">EARLY</span>
+    </div>
+    <div class="meta-grid">
+      <div class="meta-item">
+        <div class="meta-label">Primary Beneficiaries</div>
+        <div class="meta-value"><span class="ticker-tag">CEG</span><span class="ticker-tag">VST</span><span class="ticker-tag">CCJ</span><span class="ticker-tag">NLR</span></div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">Secondary Beneficiaries</div>
+        <div class="meta-value"><span class="ticker-tag">BWXT</span><span class="ticker-tag">OKLO</span> Centrus Energy (enrichment)</div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">Losers / Disrupted</div>
+        <div class="meta-value">Natural gas peaker plants, LNG spot market</div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">Earnings Impact Timeline</div>
+        <div class="meta-value">Long-dated 2027–2030; near-term: next DOE SMR permit</div>
+      </div>
+    </div>
+    <div class="sub-label">Evidence</div>
+    <ul class="evidence-list">
+      <li>Nuclear ETFs: triple-digit YTD returns in 2026; uranium near $86/lb. World Nuclear Association projects 28% uranium demand growth by 2030; 2025 production deficit was 31M lbs. <a href="https://kalkine.ca/news/premium/global-nuclear-energy-supercycle-explodes-in-2026-as-ai-power-demand-uranium-shortages-and-energy-security-drive-nuclear-stocks-higher/" target="_blank">[Kalkine]</a></li>
+      <li>Microsoft, Amazon, Google signed direct nuclear purchase agreements with utilities and SMR developers. Constellation received $1B DOE loan to restart Three Mile Island, backstopped by MSFT. <a href="https://247wallst.com/investing/2026/06/30/nuclear-power-is-the-only-real-answer-to-ai-data-center-demand-and-these-3-etfs-cover-the-trade-at-three-risk-levels/" target="_blank">[24/7 Wall St.]</a></li>
+      <li>AI capex at $750B+ creates insatiable 24/7 baseload demand that renewables cannot satisfy without storage — nuclear is the only current answer. <a href="https://www.wealthdaily.com/nuclear-energy-stocks-ai-data-centers-2026/" target="_blank">[Wealth Daily]</a></li>
+    </ul>
+    <div class="summary-box">Nuclear-AI trade is moving from thesis to institutional positioning. Supply/demand math is stark: uranium production cannot keep up with demand growth, and new reactor timelines are years away. Triple-digit ETF returns suggest early movers already captured the easy gain, but the thesis has years to run. The more near-term play is grid-scale power operators (CEG, VST) rather than uranium miners. Risk: nuclear permitting is slow and a single incident resets the entire narrative.</div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <!-- SECTION 2: EARNINGS SIGNALS                                -->
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <div class="section-title">Earnings Signals</div>
+
+  <!-- Signal 1 -->
+  <div class="card">
+    <div class="card-title">1. TSMC Q2 Beat + ASML Pricing Standoff</div>
+    <div class="badge-row">
+      <span class="badge badge-strong">Strength: STRONG</span>
+      <span class="badge badge-type">Sector Read-Through + Language Shift</span>
+    </div>
+    <div class="meta-item" style="margin-bottom:12px;">
+      <div class="meta-label">Companies Involved</div>
+      <div class="meta-value"><span class="ticker-tag">TSM</span><span class="ticker-tag">ASML</span></div>
+    </div>
+    <p style="font-size:12px;color:#b8c9dc;">TSMC Q2 net income NT$706.6B crushed estimate NT$623.73B; gross margin 67.7% vs. 67.1%. ASML raised 2026 guidance to €43–45B. New signal: ASML pushing 10% DUV price hikes — TSMC resisting, will not deploy High-NA EUV through 2029 due to cost. <a href="https://www.digitimes.com/news/a20260716VL201/asml-tsmc-duv-price-chipmakers-earnings.html" target="_blank">[Digitimes]</a></p>
+    <div class="summary-box"><strong>Broader Implication:</strong> AI chip demand is strong enough that ASML can flex pricing power for the first time — classic sign of a maturing equipment supercycle. The chipmaker-equipment maker dynamic is shifting in favor of tool suppliers.</div>
+    <div class="trade-idea">Long ASML (pricing power confirmed). Cautious on TSMC margin expansion in 2027–2028.</div>
+  </div>
+
+  <!-- Signal 2 -->
+  <div class="card">
+    <div class="card-title">2. JPMorgan AI Job Cuts — Structural, Not Cyclical</div>
+    <div class="badge-row">
+      <span class="badge badge-strong">Strength: STRONG</span>
+      <span class="badge badge-type">Language Shift — New Scale of AI Disclosure</span>
+    </div>
+    <div class="meta-item" style="margin-bottom:12px;">
+      <div class="meta-label">Companies Involved</div>
+      <div class="meta-value"><span class="ticker-tag">JPM</span><span class="ticker-tag">BAC</span><span class="ticker-tag">GS</span><span class="ticker-tag">HSBC</span></div>
+    </div>
+    <p style="font-size:12px;color:#b8c9dc;">Jamie Dimon disclosed on Q2 call that AI has cut staffing 30–40% in certain divisions — most explicit and quantified acknowledgment by any major bank CEO. Bloomberg Intelligence projects 200,000 global bank job cuts over 5 years. JPM: AI token costs remain "trivial" today but will "accelerate meaningfully" in H2 2026. <a href="https://thenextweb.com/news/jpmorgan-dimon-ai-jobs-cuts-margins-q2-earnings" target="_blank">[The Next Web]</a></p>
+    <div class="summary-box"><strong>Broader Implication:</strong> Banks are treating AI as structural headcount reduction, not experimentation. If every bank achieves the same AI efficiency, competitive differentiation collapses and margin gains get competed away. Signals headwinds for IT services/consulting firms serving financial institutions.</div>
+    <div class="trade-idea">Long banks (margin expansion phase). Short IT staffing firms serving financials (CTSH, EPAM).</div>
+  </div>
+
+  <!-- Signal 3 -->
+  <div class="card">
+    <div class="card-title">3. Goldman Sachs Q2 — Historic Beat, Management Caution</div>
+    <div class="badge-row">
+      <span class="badge badge-moderate">Strength: MODERATE</span>
+      <span class="badge badge-type">Unusual Guidance Tone + Earnings Anomaly</span>
+    </div>
+    <div class="meta-item" style="margin-bottom:12px;">
+      <div class="meta-label">Companies Involved</div>
+      <div class="meta-value"><span class="ticker-tag">GS</span><span class="ticker-tag">MS</span><span class="ticker-tag">JPM</span></div>
+    </div>
+    <p style="font-size:12px;color:#b8c9dc;">Goldman EPS $20.98 vs. estimate $14.47 (45% beat) — widest beat in firm history. SpaceX IPO fees, record equities trading, 5-year deal backlog high. But management explicitly flagged Q2 as exceptional. SPCX now below $135 IPO price within weeks. <a href="https://www.techtimes.com/articles/320489/20260714/goldman-sachs-posts-best-quarter-ever-spacex-ipo-fuels-45-eps-beat.htm" target="_blank">[TechTimes]</a></p>
+    <div class="summary-box"><strong>Broader Implication:</strong> Q3 IB comparables will be nearly impossible to beat. Watch for analyst upgrade reversals as sell-side models struggle to normalize for SpaceX windfall. Deal backlog is real and supports a floor — but equity has likely priced the peak.</div>
+    <div class="trade-idea">Trim GS on strength. Maintain JPM (more diversified revenue, lower premium to book).</div>
+  </div>
+
+  <!-- Signal 4 -->
+  <div class="card">
+    <div class="card-title">4. UnitedHealth MCR Inflection — Managed Care Recovery Signal</div>
+    <div class="badge-row">
+      <span class="badge badge-strong">Strength: STRONG</span>
+      <span class="badge badge-type">Recurring Theme Across Multiple Companies</span>
+    </div>
+    <div class="meta-item" style="margin-bottom:12px;">
+      <div class="meta-label">Companies Involved</div>
+      <div class="meta-value"><span class="ticker-tag">UNH</span><span class="ticker-tag">HUM</span><span class="ticker-tag">CI</span><span class="ticker-tag">CVS</span></div>
+    </div>
+    <p style="font-size:12px;color:#b8c9dc;">UNH MCR improved 270 bps YoY to 86.7%. CVS Aetna MLR 84.6% (beat). Both raised guidance. Language shifted from "headwinds" in 2025 to "cost and pricing discipline." BofA upgraded UNH. <a href="https://www.forbes.com/sites/brucejapsen/2026/07/16/unitedhealth-group-profits-hit-54-billion-as-costs-continue-to-ease/" target="_blank">[Forbes]</a></p>
+    <div class="summary-box"><strong>Broader Implication:</strong> Managed care was the worst-performing major sector in 2025. If MCR improvement is durable, mean-reversion potential is significant. Humana is the highest-beta play — most beaten down, most leverage to a recovery.</div>
+    <div class="trade-idea">Long HUM and CI. HUM offers highest optionality given compressed valuation vs. pre-2025 norms.</div>
+  </div>
+
+  <!-- Signal 5 -->
+  <div class="card">
+    <div class="card-title">5. Consumer Spending vs. Credit Quality Divergence in Banks</div>
+    <div class="badge-row">
+      <span class="badge badge-moderate">Strength: MODERATE</span>
+      <span class="badge badge-type">Recurring Theme + Sector Read-Through</span>
+    </div>
+    <div class="meta-item" style="margin-bottom:12px;">
+      <div class="meta-label">Companies Involved</div>
+      <div class="meta-value"><span class="ticker-tag">JPM</span><span class="ticker-tag">BAC</span><span class="ticker-tag">WFC</span><span class="ticker-tag">C</span></div>
+    </div>
+    <p style="font-size:12px;color:#b8c9dc;">Wells Fargo's beat driven by wealth mgmt and IB (noninterest income +13% to $10.3B) — not consumer lending. June retail sales rose for the ninth consecutive month (+9.4% YoY NRF). But consumer credit net charge-off rates remain elevated from 2025 peaks. <a href="https://www.bloomberg.com/news/articles/2026-07-14/wells-fargo-profit-beats-estimates-on-wealth-investment-banking" target="_blank">[Bloomberg]</a></p>
+    <div class="summary-box"><strong>Broader Implication:</strong> The bank rally is an IB/trading story, not consumer credit quality. If retail spending softens, consumer lending businesses face rising delinquencies. The equity markets have not priced this bifurcation yet.</div>
+    <div class="trade-idea">Long GS/MS (pure IB/trading). Underweight WFC/regional banks with higher consumer credit exposure.</div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <!-- SECTION 3: UPCOMING CATALYSTS                              -->
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <div class="section-title">Upcoming Catalysts</div>
+
+  <!-- Catalyst 1 -->
+  <div class="card">
+    <div class="card-title">1. FOMC Meeting — July 28–29, 2026</div>
+    <div class="meta-grid" style="margin-bottom:14px;">
+      <div class="meta-item">
+        <div class="meta-label">Date</div>
+        <div class="meta-value">July 29, 2:00 PM ET (decision) | 2:30 PM ET (Warsh presser)</div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">Consensus Outcome</div>
+        <div class="meta-value">Hold at 3.50–3.75% (84.5% market probability). No dot plot.</div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">Surprise Scenario</div>
+        <div class="meta-value">Hawkish statement; Warsh explicitly mentions September hike "on the table"</div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">Exposed Tickers</div>
+        <div class="meta-value"><span class="ticker-tag">TLT</span><span class="ticker-tag">XLRE</span><span class="ticker-tag">XLU</span><span class="ticker-tag">IEF</span> rate-sensitive growth</div>
+      </div>
+    </div>
+    <div class="summary-box">July meeting is a low-information event — no projections, no forward guidance, and a chair who embraces uncertainty. The risk is Warsh uses the press conference to signal September action. Base case is a hold, but trim long-duration exposure into the meeting. Today's retail sales and next month's CPI print are the real tells.</div>
+  </div>
+
+  <!-- Catalyst 2 -->
+  <div class="card">
+    <div class="card-title">2. Netflix Q2 Earnings — TODAY, July 16 After Close ⚡</div>
+    <div class="meta-grid" style="margin-bottom:14px;">
+      <div class="meta-item">
+        <div class="meta-label">Date</div>
+        <div class="meta-value" style="color:var(--low);">TODAY — ~4:00 PM ET</div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">Consensus Expectations</div>
+        <div class="meta-value">Revenue $12.57B (+13.5% YoY), EPS $0.79, op. margin 32.6%, ad revenue ~$3B</div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">Surprise Scenario</div>
+        <div class="meta-value">Ad revenue meaningfully exceeds $3B; ad-tier subscriber adds accelerate</div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">Exposed Tickers</div>
+        <div class="meta-value"><span class="ticker-tag">NFLX</span><span class="ticker-tag">PARA</span><span class="ticker-tag">DIS</span><span class="ticker-tag">SNAP</span><span class="ticker-tag">GOOGL</span></div>
+      </div>
+    </div>
+    <div class="summary-box">Netflix is the first major non-bank Q2 reporter. Advertising monetization per subscriber is the key metric — this validates the strategic pivot and could re-rate streaming platforms broadly. An advertising revenue beat is bullish for the entire digital media sector. NFLX is a consensus long; expectations are elevated. Decision point before 4 PM ET.</div>
+  </div>
+
+  <!-- Catalyst 3 -->
+  <div class="card">
+    <div class="card-title">3. Tesla + Alphabet Dual Earnings — July 22, 2026 After Close</div>
+    <div class="meta-grid" style="margin-bottom:14px;">
+      <div class="meta-item">
+        <div class="meta-label">Date</div>
+        <div class="meta-value">July 22, 2026 — both report same evening</div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">TSLA Surprise Scenario</div>
+        <div class="meta-value">Energy storage (Megapack/Powerwall) outperforms due to AI grid demand</div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">GOOG Surprise Scenario</div>
+        <div class="meta-value">AI search shows advertising revenue per query uplift — monetization question resolved</div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">Exposed Tickers</div>
+        <div class="meta-value"><span class="ticker-tag">TSLA</span><span class="ticker-tag">GOOG</span><span class="ticker-tag">META</span><span class="ticker-tag">SNAP</span><span class="ticker-tag">MSFT</span></div>
+      </div>
+    </div>
+    <div class="summary-box">July 22 is the single most crowded evening in Q2 2026 earnings season — two mega-cap companies ($2T+ combined market cap) reporting simultaneously. Tesla's energy storage angle is a direct read-through to the AI power grid theme. Alphabet's print is the definitive test of whether generative AI is a tailwind or cannibalization risk for search-based advertising.</div>
+  </div>
+
+  <!-- Catalyst 4 -->
+  <div class="card">
+    <div class="card-title">4. Iran/Hormuz Geopolitical — Resolution or Escalation</div>
+    <div class="meta-grid" style="margin-bottom:14px;">
+      <div class="meta-item">
+        <div class="meta-label">Date</div>
+        <div class="meta-value">Ongoing — next 2–4 weeks critical</div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">Consensus Outcome</div>
+        <div class="meta-value">Brent stabilizes $70–$80/barrel; Qatar diplomatic talks continue</div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">Surprise Scenario</div>
+        <div class="meta-value">Escalation: Brent >$100 (Goldman Q4 target $80, BlackRock extreme: $150). Peace: $40–$50 collapse.</div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">Exposed Tickers</div>
+        <div class="meta-value"><span class="ticker-tag">XOM</span><span class="ticker-tag">CVX</span><span class="ticker-tag">OXY</span><span class="ticker-tag">USO</span> vs <span class="ticker-tag">DAL</span><span class="ticker-tag">UAL</span><span class="ticker-tag">LUV</span></div>
+      </div>
+    </div>
+    <div class="summary-box">The Iran conflict caused the IEA to label the Hormuz disruption "the largest supply disruption in history." Prices have retreated from highs as markets repriced on diplomatic signals. The asymmetry has shifted: the downside scenario (peace/oil collapse) devastates energy stocks but is a tailwind for airlines and consumer spending. This is a tail-risk position rather than directional — market priced for the middle scenario.</div>
+  </div>
+
+  <!-- Catalyst 5 -->
+  <div class="card">
+    <div class="card-title">5. Meta Earnings + FOMC — July 29, 2026 (Double Catalyst Day)</div>
+    <div class="meta-grid" style="margin-bottom:14px;">
+      <div class="meta-item">
+        <div class="meta-label">Date</div>
+        <div class="meta-value">July 29 — FOMC 2 PM ET; META after close</div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">Consensus Outcome</div>
+        <div class="meta-value">META: advertising growth, capex guidance update ($125–145B range)</div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">Surprise Scenario</div>
+        <div class="meta-value">Meta raises capex above $145B (3rd consecutive revision) — AI supercycle confirmed or sell-the-news on margin dilution</div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">Exposed Tickers</div>
+        <div class="meta-value"><span class="ticker-tag">META</span><span class="ticker-tag">SNAP</span><span class="ticker-tag">PINS</span><span class="ticker-tag">NVDA</span><span class="ticker-tag">VRT</span><span class="ticker-tag">GEV</span></div>
+      </div>
+    </div>
+    <div class="summary-box">July 29 is the most compressed information day of the month — FOMC decision at 2 PM and META earnings after close. A capex raise is net positive for the entire AI supply chain; a capex cut would be the first real challenge to the AI supercycle thesis. Given that Meta has raised capex guidance three times in a row, the base case is another raise — but the market may already be pricing this.</div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <!-- SECTION 4: ACTION ITEMS                                    -->
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <div class="section-title">Action Items</div>
+
+  <div class="action-grid">
+    <div class="action-card">
+      <h4>Top 3 Tickers to Research Today</h4>
+      <div class="action-item">
+        <span class="action-num">1</span>
+        <div><span class="ticker-tag">NFLX</span> — Earnings after close today. Advertising revenue is the key metric. Decision point before 4 PM ET.</div>
+      </div>
+      <div class="action-item">
+        <span class="action-num">2</span>
+        <div><span class="ticker-tag">HUM</span> — Highest-beta managed care play. UNH's MCR improvement is the most bullish possible read-through. Valuation compressed vs. pre-2025 norms.</div>
+      </div>
+      <div class="action-item">
+        <span class="action-num">3</span>
+        <div><span class="ticker-tag">ASML</span> — Pricing power confirmed, 2026 guidance raised. Evaluate position sizing ahead of AI capex cycle maturation.</div>
+      </div>
+    </div>
+
+    <div class="action-card">
+      <h4>Position Adjustments</h4>
+      <div class="action-item">
+        <span class="action-num">→</span>
+        <div>Trim <span class="ticker-tag">GS</span> on strength — management guided Q2 results "not repeatable." Equity likely priced the peak.</div>
+      </div>
+      <div class="action-item">
+        <span class="action-num">→</span>
+        <div>Build/maintain managed care (<span class="ticker-tag">UNH</span><span class="ticker-tag">HUM</span><span class="ticker-tag">CI</span><span class="ticker-tag">CVS</span>) — MCR inflection real, sector massively underowned.</div>
+      </div>
+      <div class="action-item">
+        <span class="action-num">→</span>
+        <div>Reduce long-duration (<span class="ticker-tag">TLT</span><span class="ticker-tag">XLRE</span><span class="ticker-tag">XLU</span>) ahead of July 29 FOMC. Warsh removing forward guidance makes statement language unusually high-stakes.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="dates-card">
+    <h4>Key Dates This Week</h4>
+    <div class="date-row today">
+      <span class="date-tag">TODAY Jul 16</span>
+      <span>June retail sales 8:30 AM ET · weekly jobless claims · <strong>NFLX</strong> earnings after close</span>
+    </div>
+    <div class="date-row">
+      <span class="date-tag">Jul 22</span>
+      <span><strong>TSLA</strong> + <strong>GOOG</strong> earnings after close — dual mega-cap event</span>
+    </div>
+    <div class="date-row">
+      <span class="date-tag">Jul 28–29</span>
+      <span>FOMC meeting (July 29 decision 2 PM ET) + <strong>META</strong> earnings (July 29 after close)</span>
+    </div>
+  </div>
+
+  <div class="sources">
+    <strong>Sources:</strong>
+    <a href="https://intellectia.ai/blog/ai-infrastructure-investment-july-2026">Intellectia AI — AI Infrastructure</a> ·
+    <a href="https://fortune.com/2026/06/29/ai-spending-boom-accelerates-big-tech-trillion-infrastructure-qualcomm-cfo/">Fortune — AI Spending Boom</a> ·
+    <a href="https://www.forbes.com/sites/investor-hub/article/data-center-stocks-how-to-invest-wisely/">Forbes — Data Center Stocks</a> ·
+    <a href="https://www.cnn.com/2026/06/17/economy/fed-rate-decision-june-kevin-warsh">CNN — Warsh Fed</a> ·
+    <a href="https://cryptobriefing.com/fed-rate-hike-odds-plummet-as-us-ppi-inflation-sees-largest-drop-since-april/">Crypto Briefing — PPI/Fed Odds</a> ·
+    <a href="https://federalnewsnetwork.com/prediction-markets/2026/07/cpi-falls-june-trade-prediction-markets-fed-decision-in-july-2026/">Federal News Network — CPI/Rate Markets</a> ·
+    <a href="https://www.forbes.com/sites/brucejapsen/2026/07/16/unitedhealth-group-profits-hit-54-billion-as-costs-continue-to-ease/">Forbes — UNH Q2</a> ·
+    <a href="https://finance.yahoo.com/sectors/healthcare/articles/humana-jumps-6-unitedhealth-173255187.html">Yahoo Finance — Managed Care</a> ·
+    <a href="https://www.cnbc.com/2026/07/14/jpm-bank-of-america-citi-bank-earnings-live-updates.html">CNBC — Bank Earnings Takeaways</a> ·
+    <a href="https://www.bloomberg.com/news/articles/2026-07-14/wells-fargo-profit-beats-estimates-on-wealth-investment-banking">Bloomberg — WFC Earnings</a> ·
+    <a href="https://finance.yahoo.com/markets/stocks/articles/goldman-q2-earnings-beat-solid-133500401.html">Yahoo Finance — Goldman Q2</a> ·
+    <a href="https://www.digitimes.com/news/a20260716VL201/asml-tsmc-duv-price-chipmakers-earnings.html">Digitimes — ASML/TSMC Pricing</a> ·
+    <a href="https://www.cnbc.com/2026/07/15/spacex-spcx-stock-ipo-price.html">CNBC — SpaceX Below IPO</a> ·
+    <a href="https://thenextweb.com/news/jpmorgan-dimon-ai-jobs-cuts-margins-q2-earnings">The Next Web — JPM AI Jobs</a> ·
+    <a href="https://247wallst.com/investing/2026/06/30/nuclear-power-is-the-only-real-answer-to-ai-data-center-demand-and-these-3-etfs-cover-the-trade-at-three-risk-levels/">24/7 Wall St. — Nuclear</a> ·
+    <a href="https://kalkine.ca/news/premium/global-nuclear-energy-supercycle-explodes-in-2026-as-ai-power-demand-uranium-shortages-and-energy-security-drive-nuclear-stocks-higher/">Kalkine — Uranium</a> ·
+    <a href="https://www.fool.com/investing/2026/07/13/prediction-this-is-how-tesla-stock-will-do-after-j/">Motley Fool — TSLA July 22</a> ·
+    <a href="https://en.wikipedia.org/wiki/Economic_impact_of_the_2026_Iran_war">Wikipedia — Iran War Economic Impact</a> ·
+    <a href="https://www.techtimes.com/articles/320489/20260714/goldman-sachs-posts-best-quarter-ever-spacex-ipo-fuels-45-eps-beat.htm">TechTimes — Goldman Historic Quarter</a>
+  </div>
+
+</div>
+</body>
+</html>
