@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Daily Theme Scanner — July 23, 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0e17;
+    --bg2: #0f1623;
+    --bg3: #161d2e;
+    --border: #1e2a42;
+    --text: #e2e8f0;
+    --text-muted: #8a9dc0;
+    --text-dim: #4a5f82;
+    --high: #10b981;
+    --medium: #f59e0b;
+    --low: #ef4444;
+    --accent: #3b82f6;
+    --accent2: #8b5cf6;
+    --link: #60a5fa;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    line-height: 1.7;
+    padding: 0;
+  }
+  .header {
+    background: var(--bg2);
+    border-bottom: 1px solid var(--border);
+    padding: 24px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .header-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text);
+    letter-spacing: 0.05em;
+  }
+  .header-title span { color: var(--accent); }
+  .header-date {
+    color: var(--text-muted);
+    font-size: 12px;
+  }
+  .nav-bar {
+    background: var(--bg3);
+    border-bottom: 1px solid var(--border);
+    padding: 10px 40px;
+    display: flex;
+    gap: 24px;
+    overflow-x: auto;
+  }
+  .nav-bar a {
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    padding: 4px 0;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s;
+  }
+  .nav-bar a:hover { color: var(--text); border-bottom-color: var(--accent); }
+  .container { max-width: 1100px; margin: 0 auto; padding: 40px 40px; }
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 24px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+  }
+  .section-header h2 {
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text);
+  }
+  .section-num {
+    background: var(--accent);
+    color: white;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 2px;
+    letter-spacing: 0.05em;
+  }
+  .card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 24px;
+    margin-bottom: 16px;
+  }
+  .card:hover { border-color: var(--accent); transition: border-color 0.2s; }
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .card-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text);
+  }
+  .badges { display: flex; gap: 8px; flex-wrap: wrap; }
+  .badge {
+    font-size: 10px;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 2px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .badge-high { background: rgba(16,185,129,0.15); color: var(--high); border: 1px solid rgba(16,185,129,0.3); }
+  .badge-medium { background: rgba(245,158,11,0.15); color: var(--medium); border: 1px solid rgba(245,158,11,0.3); }
+  .badge-low { background: rgba(239,68,68,0.15); color: var(--low); border: 1px solid rgba(239,68,68,0.3); }
+  .badge-stage { background: rgba(59,130,246,0.15); color: var(--accent); border: 1px solid rgba(59,130,246,0.3); }
+  .badge-strong { background: rgba(16,185,129,0.15); color: var(--high); border: 1px solid rgba(16,185,129,0.3); }
+  .badge-moderate { background: rgba(245,158,11,0.15); color: var(--medium); border: 1px solid rgba(245,158,11,0.3); }
+  .badge-today { background: rgba(239,68,68,0.2); color: var(--low); border: 1px solid rgba(239,68,68,0.5); animation: pulse 2s infinite; }
+  @keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:0.6; } }
+  .meta-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+  .meta-item { }
+  .meta-label {
+    color: var(--text-dim);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 4px;
+  }
+  .meta-value {
+    color: var(--text-muted);
+    font-size: 12px;
+  }
+  .tickers { display: flex; flex-wrap: wrap; gap: 6px; }
+  .ticker {
+    background: var(--bg3);
+    color: var(--accent);
+    font-size: 11px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border: 1px solid var(--border);
+    border-radius: 2px;
+  }
+  .ticker-neg { color: var(--low); }
+  .summary-label {
+    color: var(--text-dim);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 8px;
+    margin-top: 16px;
+  }
+  .summary-text {
+    color: var(--text-muted);
+    font-size: 12px;
+    line-height: 1.8;
+    border-left: 2px solid var(--border);
+    padding-left: 16px;
+  }
+  .divider { border: none; border-top: 1px solid var(--border); margin: 32px 0; }
+  .action-box {
+    background: var(--bg2);
+    border: 1px solid var(--accent);
+    border-radius: 4px;
+    padding: 24px;
+    margin-bottom: 16px;
+  }
+  .action-box h3 {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--accent);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+  .top-tickers { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 12px; margin-bottom: 20px; }
+  .top-ticker-card {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 16px;
+  }
+  .top-ticker-sym { font-size: 16px; font-weight: 700; color: var(--high); margin-bottom: 4px; }
+  .top-ticker-why { font-size: 11px; color: var(--text-muted); line-height: 1.6; }
+  .dates-table { width: 100%; border-collapse: collapse; margin-top: 12px; }
+  .dates-table th {
+    text-align: left;
+    padding: 8px 12px;
+    font-size: 10px;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    border-bottom: 1px solid var(--border);
+  }
+  .dates-table td {
+    padding: 10px 12px;
+    font-size: 12px;
+    border-bottom: 1px solid rgba(30,42,66,0.5);
+  }
+  .dates-table td:first-child { color: var(--accent); font-weight: 600; }
+  .dates-table td:last-child { color: var(--text-muted); }
+  .dates-table tr:last-child td { border-bottom: none; }
+  .bullet-list { list-style: none; }
+  .bullet-list li {
+    color: var(--text-muted);
+    font-size: 12px;
+    padding: 6px 0;
+    padding-left: 16px;
+    position: relative;
+    border-bottom: 1px solid rgba(30,42,66,0.4);
+  }
+  .bullet-list li:last-child { border-bottom: none; }
+  .bullet-list li::before { content: '▸'; position: absolute; left: 0; color: var(--accent); }
+  .trade-idea {
+    background: rgba(139,92,246,0.08);
+    border: 1px solid rgba(139,92,246,0.25);
+    border-radius: 3px;
+    padding: 10px 14px;
+    margin-top: 12px;
+    font-size: 11px;
+    color: #a78bfa;
+  }
+  .trade-idea::before { content: '💡 TRADE: '; font-weight: 700; }
+  .footer {
+    background: var(--bg2);
+    border-top: 1px solid var(--border);
+    padding: 20px 40px;
+    color: var(--text-dim);
+    font-size: 11px;
+    margin-top: 60px;
+  }
+  a { color: var(--link); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  .section-gap { margin-bottom: 48px; }
+  .meta-evidence ul { list-style: none; }
+  .meta-evidence ul li { 
+    font-size: 12px; color: var(--text-muted); padding: 4px 0 4px 14px; position: relative; 
+  }
+  .meta-evidence ul li::before { content: '•'; position: absolute; left: 0; color: var(--text-dim); }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-title">📊 <span>DAILY THEME SCANNER</span></div>
+  <div class="header-date">July 23, 2026 · Pre-Market Edition</div>
+</div>
+<div class="nav-bar">
+  <a href="#narratives">Emerging Narratives</a>
+  <a href="#earnings">Earnings Signals</a>
+  <a href="#catalysts">Upcoming Catalysts</a>
+  <a href="#action">Action Items</a>
+</div>
+
+<div class="container">
+
+<!-- ===== EMERGING NARRATIVES ===== -->
+<div class="section-gap" id="narratives">
+  <div class="section-header">
+    <span class="section-num">01</span>
+    <h2>Emerging Narratives</h2>
+  </div>
+
+  <!-- THEME 1 -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">AI Capex Contradiction: Beat-and-Sell Regime</div>
+      <div class="badges">
+        <span class="badge badge-high">HIGH Conviction</span>
+        <span class="badge badge-stage">DEVELOPING</span>
+        <span class="badge badge-stage">1–3 Quarters</span>
+      </div>
+    </div>
+    <div class="meta-grid">
+      <div class="meta-item">
+        <div class="meta-label">Evidence</div>
+        <div class="meta-evidence">
+          <ul>
+            <li>GOOGL Q2: Cloud +82%, EPS $9.11 beat → stock sinks on $195–205B capex raise (2× YoY) · <a href="https://www.cnbc.com/2026/07/22/google-earnings-q2-goog-live-updates.html">CNBC</a></li>
+            <li>Hyperscaler capex (GOOGL+AMZN+MSFT+META) tracking $725B in 2026, up 77% YoY · <a href="https://futurumgroup.com/insights/ai-capex-2026-the-690b-infrastructure-sprint/">Futurum</a></li>
+            <li>Google Cloud backlog $514B (vs. $106B Q2 '25); Barclays projects near-negative FCF for META 2027–28 · <a href="https://www.forbes.com/sites/jasonkirsch/2026/06/02/the-ai-capex-to-revenue-gap-is-widening---and-markets-are-starting-to-notice/">Forbes</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">Primary Beneficiaries</div>
+        <div class="tickers">
+          <span class="ticker">NVDA</span><span class="ticker">SMCI</span><span class="ticker">VST</span><span class="ticker">CEG</span><span class="ticker">EQIX</span>
+        </div>
+        <div class="meta-label" style="margin-top:10px">Secondary</div>
+        <div class="tickers">
+          <span class="ticker">AMAT</span><span class="ticker">LRCX</span><span class="ticker">AVGO</span><span class="ticker">MRVL</span>
+        </div>
+        <div class="meta-label" style="margin-top:10px">Losers / Disrupted</div>
+        <div class="tickers">
+          <span class="ticker ticker-neg">GOOGL</span><span class="ticker ticker-neg">MSFT</span><span class="ticker ticker-neg">META</span><span class="ticker ticker-neg">AMZN</span>
+        </div>
+      </div>
+    </div>
+    <div class="summary-label">Summary</div>
+    <div class="summary-text">The market is entering a new regime where exceptional AI revenue beats are insufficient cover for soaring capital expenditure. Alphabet's Q2 was a textbook beat-and-sell: 82% cloud growth and a record EPS print couldn't offset $44.9B in Q2 capex (100% YoY increase). With Microsoft, Meta, and Amazon reporting next week, the key question is whether the capex-to-revenue gap is widening or narrowing. Picks-and-shovels infrastructure plays (NVDA, SMCI, power/cooling) continue to benefit unconditionally, while the hyperscalers themselves face a growing credibility test on ROI.</div>
+  </div>
+
+  <!-- THEME 2 -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">Oil Spike / Middle East Inflation Re-Ignition</div>
+      <div class="badges">
+        <span class="badge badge-high">HIGH Conviction</span>
+        <span class="badge badge-stage">DEVELOPING</span>
+        <span class="badge badge-stage">Immediate–4 Weeks</span>
+      </div>
+    </div>
+    <div class="meta-grid">
+      <div class="meta-item">
+        <div class="meta-label">Evidence</div>
+        <div class="meta-evidence">
+          <ul>
+            <li>Brent crude at $96.27 (6-week high), WTI $88.48 — US strikes on Iran + Houthi Red Sea tanker attacks · <a href="https://www.cnbc.com/2026/07/16/oil-rise-as-us-strikes-on-iran-raise-fears-of-wider-conflict.html">CNBC</a></li>
+            <li>Strait of Hormuz southern route threatened to be mined — up to 5M bbl/day supply at risk · <a href="https://finance.yahoo.com/news/energy-demand-optimism-houthi-rebel-155338194.html">Yahoo Finance</a></li>
+            <li>Nasdaq futures -0.6%, S&P -0.2% pre-market July 22 on inflation re-ignition fears ahead of FOMC · <a href="https://x.com/marketsday/status/2079905861393395865">X/Markets Today</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">Primary Beneficiaries</div>
+        <div class="tickers">
+          <span class="ticker">XOM</span><span class="ticker">CVX</span><span class="ticker">OXY</span><span class="ticker">COP</span><span class="ticker">SLB</span><span class="ticker">LMT</span><span class="ticker">RTX</span>
+        </div>
+        <div class="meta-label" style="margin-top:10px">Secondary</div>
+        <div class="tickers">
+          <span class="ticker">TDG</span><span class="ticker">FLR</span><span class="ticker">FRO</span><span class="ticker">STNG</span>
+        </div>
+        <div class="meta-label" style="margin-top:10px">Losers / Disrupted</div>
+        <div class="tickers">
+          <span class="ticker ticker-neg">UAL</span><span class="ticker ticker-neg">DAL</span><span class="ticker ticker-neg">AAL</span><span class="ticker ticker-neg">XLY</span>
+        </div>
+      </div>
+    </div>
+    <div class="summary-label">Summary</div>
+    <div class="summary-text">The Middle East escalation is creating a dual headwind: direct energy cost inflation and a complication for Fed policy. With Brent above $95 at the precise moment the FOMC meets July 28–29, the risk of a hawkish surprise has increased. Fed Chair Kevin Warsh (appointed May 2026) has been explicitly hawkish, stating "prices are too high" as recently as July 1. A sustained oil spike could force the Fed's hand or delay any rate cuts, repricing rates-sensitive sectors. Energy longs and defense remain the cleaner play; the airline sector is acutely exposed.</div>
+  </div>
+
+  <!-- THEME 3 -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">AI Picks-and-Shovels Divergence: Infrastructure Over Application</div>
+      <div class="badges">
+        <span class="badge badge-high">HIGH Conviction</span>
+        <span class="badge badge-stage">DEVELOPING</span>
+        <span class="badge badge-stage">2–4 Quarters</span>
+      </div>
+    </div>
+    <div class="meta-grid">
+      <div class="meta-item">
+        <div class="meta-label">Evidence</div>
+        <div class="meta-evidence">
+          <ul>
+            <li>SMCI: $60B+ new quarterly orders; gross margin guide 8.2-8.4% → 15-17%; stock +20% overnight · <a href="https://finance.yahoo.com/markets/stocks/articles/smci-stock-soars-super-micro-174827003.html">Yahoo Finance</a></li>
+            <li>Kospi +71% YTD, TWSE +49% YTD on SK Hynix HBM + TSMC AI demand; Kospi +2.8% pre-mkt July 23 · <a href="https://invezz.com/news/2026/07/08/tsmc-sk-hynix-tencent-asian-stocks-analysts-say-could-lead-the-july-2026-rally/">Invezz</a></li>
+            <li>Google Cloud backlog $514B (vs $106B a year ago); Gemini at 22B API tokens/min — demand is real · <a href="https://seekingalpha.com/news/4617114-alphabet-signals-195b-205b-2026-capex-while-expanding-third-party-capacity-as-a-bridge">Seeking Alpha</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">Primary Beneficiaries</div>
+        <div class="tickers">
+          <span class="ticker">SMCI</span><span class="ticker">NVDA</span><span class="ticker">TSM</span><span class="ticker">AMD</span>
+        </div>
+        <div class="meta-label" style="margin-top:10px">Secondary</div>
+        <div class="tickers">
+          <span class="ticker">DELL</span><span class="ticker">HPE</span><span class="ticker">KEYS</span><span class="ticker">AEHR</span>
+        </div>
+        <div class="meta-label" style="margin-top:10px">Losers / Disrupted</div>
+        <div class="tickers">
+          <span class="ticker ticker-neg">Application SaaS</span>
+        </div>
+      </div>
+    </div>
+    <div class="summary-label">Summary</div>
+    <div class="summary-text">The clearest bifurcation in this earnings cycle is between infrastructure providers and end-application players. SMCI's margin expansion from ~8% to 15–17% signals pricing power in AI servers as hyperscaler demand overwhelms supply. TSMC and SK Hynix's massive YTD gains reinforce that the constraint remains semiconductor capacity, not demand. Meanwhile, Alphabet's cloud grew 82% yet the stock sold off on capex fears. The trade is long the supply chain (SMCI, NVDA, TSM) rather than the hyperscalers themselves until ROI clarity emerges.</div>
+  </div>
+
+  <!-- THEME 4 -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">Netflix Ad-Tier Monetization Inflection</div>
+      <div class="badges">
+        <span class="badge badge-medium">MEDIUM Conviction</span>
+        <span class="badge badge-stage">DEVELOPING</span>
+        <span class="badge badge-stage">2–4 Quarters</span>
+      </div>
+    </div>
+    <div class="meta-grid">
+      <div class="meta-item">
+        <div class="meta-label">Evidence</div>
+        <div class="meta-evidence">
+          <ul>
+            <li>Ad-supported tier at 250M global MAUs (from 190M); >50% of new sign-ups; $3B ad revenue guide (2×) · <a href="https://www.forbes.com/sites/maureenkerr/2026/07/16/netflix-q2-2-viewing-growth-now-carries-the-3-billion-ad-bet/">Forbes</a></li>
+            <li>Q2 revenue $12.56B (+13% YoY); Q3 guide $12.86B missed $13B consensus → stock drop · <a href="https://variety.com/2026/tv/news/netflix-q2-2026-earnings-1236812558/">Variety</a></li>
+            <li>Netflix exploring free ad-supported tier + Letterboxd acquisition talks circulating · <a href="https://finance.yahoo.com/media-advertising/articles/netflix-q2-results-letterboxd-talks-111132565.html">Yahoo Finance</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">Primary Beneficiaries</div>
+        <div class="tickers">
+          <span class="ticker">NFLX</span><span class="ticker">TTD</span><span class="ticker">MGNI</span>
+        </div>
+        <div class="meta-label" style="margin-top:10px">Secondary</div>
+        <div class="tickers">
+          <span class="ticker">ROKU</span><span class="ticker">PUBM</span>
+        </div>
+        <div class="meta-label" style="margin-top:10px">Losers / Disrupted</div>
+        <div class="tickers">
+          <span class="ticker ticker-neg">WBD</span><span class="ticker ticker-neg">PARA</span><span class="ticker ticker-neg">DIS</span>
+        </div>
+      </div>
+    </div>
+    <div class="summary-label">Summary</div>
+    <div class="summary-text">Netflix is executing the most significant pivot in streaming since password-sharing crackdowns: transitioning to a dual-revenue model with advertising. The ad tier's 250M MAU penetration and $3B revenue target for 2026 suggest this is now a real business, not an experiment. The Q3 guide miss ($12.86B vs. $13B expected) is obscuring a bullish longer-duration story. If a free tier launches, Netflix repositions as a platform rather than a channel — deserving a higher multiple. Risk: ad infrastructure is still maturing.</div>
+  </div>
+
+  <!-- THEME 5 -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">Tesla Volume-Profitability Decoupling</div>
+      <div class="badges">
+        <span class="badge badge-medium">MEDIUM Conviction</span>
+        <span class="badge badge-stage">EARLY</span>
+        <span class="badge badge-stage">2–3 Quarters</span>
+      </div>
+    </div>
+    <div class="meta-grid">
+      <div class="meta-item">
+        <div class="meta-label">Evidence</div>
+        <div class="meta-evidence">
+          <ul>
+            <li>480,126 Q2 deliveries (+25% YoY), first positive growth in 2 years; Revenue $28.24B (+26%) · <a href="https://easternherald.com/2026/07/02/tesla-q2-2026-deliveries-beat-stock-drops-margin/">Eastern Herald</a></li>
+            <li>Operating income -57% YoY to $398M — margin severely compressed despite record revenue · <a href="https://www.electrive.com/2026/07/23/q2-financial-results-tesla-posts-record-deliveries-as-profits-come-under-pressure/">Electrive</a></li>
+            <li>Energy storage: 13.5 GWh deployments (+40% YoY) — increasingly standalone business</li>
+          </ul>
+        </div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">Primary Beneficiaries</div>
+        <div class="tickers">
+          <span class="ticker">ALB</span><span class="ticker">LTHM</span><span class="ticker">SQM</span><span class="ticker">FLNC</span>
+        </div>
+        <div class="meta-label" style="margin-top:10px">Secondary</div>
+        <div class="tickers">
+          <span class="ticker">CHPT</span><span class="ticker">BLNK</span>
+        </div>
+        <div class="meta-label" style="margin-top:10px">Losers / Disrupted</div>
+        <div class="tickers">
+          <span class="ticker ticker-neg">TSLA</span><span class="ticker ticker-neg">F</span>
+        </div>
+      </div>
+    </div>
+    <div class="summary-label">Summary</div>
+    <div class="summary-text">Tesla's Q2 tells two contradictory stories. The volume story is definitively positive — 480K deliveries represents a full demand recovery. But a 57% YoY collapse in operating income on record revenue implies aggressive price cuts are still weighing on margins. The energy storage segment (13.5 GWh, +40%) is the margin-preservation lifeline. The real question: can Tesla rebuild margin while defending market share against aggressive Chinese competitors and an awakening Detroit?</div>
+  </div>
+</div>
+
+<!-- ===== EARNINGS SIGNALS ===== -->
+<div class="section-gap" id="earnings">
+  <div class="section-header">
+    <span class="section-num">02</span>
+    <h2>Earnings Signals</h2>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">1. Beat-and-Sell: AI Revenue Insufficient to Offset Capex Scrutiny</div>
+      <div class="badges">
+        <span class="badge badge-strong">STRONG</span>
+        <span class="badge badge-stage">Price Action Anomaly</span>
+      </div>
+    </div>
+    <div class="meta-grid">
+      <div class="meta-item">
+        <div class="meta-label">Companies</div>
+        <div class="tickers"><span class="ticker">GOOGL</span></div>
+        <div class="meta-label" style="margin-top:10px">Broader Implication</div>
+        <div class="meta-value">All hyperscalers (MSFT, META, AMZN reporting July 29–30) face the same dynamic</div>
+      </div>
+    </div>
+    <div class="trade-idea">Long infrastructure supply chain (NVDA, SMCI, VST) into Microsoft/Meta/Amazon earnings; consider puts on MSFT/META if capex guides run hotter than expected.</div>
+    <div class="summary-label">Summary</div>
+    <div class="summary-text">Alphabet's post-earnings selloff despite a $9.11 EPS print establishes a new pattern: the market is no longer rewarding AI revenue beats alone. The punishment is for capex outrunning revenue growth. Q2 capex of $44.9B (100% YoY) and full-year guide of $195–205B drove the selloff. This sets a grim template for Microsoft, Meta, and Amazon next week. The sector read-through: until hyperscalers demonstrate credible ROI timelines, the market will punish them for spending and reward their infrastructure suppliers.</div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">2. SMCI Margin Reset: AI Server Pricing Power Is Real</div>
+      <div class="badges">
+        <span class="badge badge-strong">STRONG</span>
+        <span class="badge badge-stage">Guidance Upside</span>
+      </div>
+    </div>
+    <div class="meta-grid">
+      <div class="meta-item">
+        <div class="meta-label">Companies</div>
+        <div class="tickers"><span class="ticker">SMCI</span></div>
+        <div class="meta-label" style="margin-top:10px">Broader Implication</div>
+        <div class="meta-value">DELL, HPE may see similar dynamics; AI server commoditization fears premature</div>
+      </div>
+    </div>
+    <div class="trade-idea">Long SMCI, DELL, HPE heading into their next earnings cycles on AI server margin expansion thesis.</div>
+    <div class="summary-label">Summary</div>
+    <div class="summary-text">Super Micro Computer's preliminary Q4 results revealed margin improvement from 8.2–8.4% to 15–17%, with $60B+ in new quarterly orders. The stock's 20%+ surge reflects markets repricing the business from a low-margin assembler to a genuine infrastructure beneficiary. The $60B backlog confirms AI server demand is accelerating. This is one of the cleanest real-money signals that AI infrastructure suppliers now have pricing power.</div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">3. Tesla Operating Leverage in Reverse: Structural Warning</div>
+      <div class="badges">
+        <span class="badge badge-moderate">MODERATE</span>
+        <span class="badge badge-stage">Price Action Anomaly</span>
+      </div>
+    </div>
+    <div class="meta-grid">
+      <div class="meta-item">
+        <div class="meta-label">Companies</div>
+        <div class="tickers"><span class="ticker ticker-neg">TSLA</span></div>
+        <div class="meta-label" style="margin-top:10px">Broader Implication</div>
+        <div class="meta-value">EV price war more durable than expected; read-through on NIO, LI, XPEV competitive dynamics</div>
+      </div>
+    </div>
+    <div class="trade-idea">Cautious on TSLA until margin recovery evidence; alternatively long ALB/LTHM on volume growth thesis.</div>
+    <div class="summary-label">Summary</div>
+    <div class="summary-text">Tesla's 57% YoY collapse in operating income despite 25% delivery growth is a major structural warning. The company is growing the top line but hemorrhaging margin — indicating aggressive pricing or rising cost structures. The EV price war (driven by BYD, NIO, Li Auto) is still forcing incumbents to sacrifice margin for volume. GM's strong Q2 beat (+5%) suggests traditional automakers are adapting faster than expected.</div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">4. Netflix Q3 Revenue Guide Miss: "Ad Business Building" Defense</div>
+      <div class="badges">
+        <span class="badge badge-moderate">MODERATE</span>
+        <span class="badge badge-stage">Language Shift</span>
+      </div>
+    </div>
+    <div class="meta-grid">
+      <div class="meta-item">
+        <div class="meta-label">Companies</div>
+        <div class="tickers"><span class="ticker">NFLX</span></div>
+        <div class="meta-label" style="margin-top:10px">Broader Implication</div>
+        <div class="meta-value">Ad-supported streaming is the growth engine; traditional subscription growth has plateaued</div>
+      </div>
+    </div>
+    <div class="trade-idea">Use NFLX weakness on the Q3 guide miss to accumulate — ad-tier monetization is a multi-year compounder if execution holds.</div>
+    <div class="summary-label">Summary</div>
+    <div class="summary-text">Netflix beat Q2 but guided Q3 revenue at $12.86B vs. $13B consensus. Management is now treating advertising as a core business, not an experiment. The read-through for the streaming ecosystem: engagement-based monetization (ads) is winning over subscription price increases, with implications for WBD, PARA, and DIS as they compete.</div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">5. Industrial Earnings Wave: Economy More Resilient Than Feared</div>
+      <div class="badges">
+        <span class="badge badge-moderate">MODERATE</span>
+        <span class="badge badge-stage">Recurring Theme</span>
+      </div>
+    </div>
+    <div class="meta-grid">
+      <div class="meta-item">
+        <div class="meta-label">Companies</div>
+        <div class="tickers"><span class="ticker">MMM</span><span class="ticker">GM</span><span class="ticker">SPX 88%</span></div>
+        <div class="meta-label" style="margin-top:10px">Broader Implication</div>
+        <div class="meta-value">Soft landing thesis validated; consumer and industrial demand holding despite elevated rates</div>
+      </div>
+    </div>
+    <div class="trade-idea">Rotate selectively into high-quality industrials (MMM, HON, ETN) benefiting from reshoring and AI-driven infrastructure buildout.</div>
+    <div class="summary-label">Summary</div>
+    <div class="summary-text">3M surged 7%+ after Q2 beat, GM rose 5% on a top-and-bottom-line beat, and approximately 88% of S&P 500 reporters topped consensus this cycle. Despite 3.50–3.75% Fed funds rate and oil spiking above $95, corporate America is showing resilience. The soft-landing thesis appears to be playing out. The risk: oil-driven inflation re-ignition forces the Fed tighter for longer, eventually pressuring back-half margins.</div>
+  </div>
+</div>
+
+<!-- ===== UPCOMING CATALYSTS ===== -->
+<div class="section-gap" id="catalysts">
+  <div class="section-header">
+    <span class="section-num">03</span>
+    <h2>Upcoming Catalysts</h2>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">1. Intel Q2 2026 Earnings — After Close TODAY</div>
+      <div class="badges">
+        <span class="badge badge-today">🔴 TODAY</span>
+        <span class="badge badge-stage">July 23, 2026</span>
+      </div>
+    </div>
+    <div class="meta-grid">
+      <div class="meta-item">
+        <div class="meta-label">Consensus</div>
+        <div class="meta-value">$14.42B revenue, $0.21–0.22 non-GAAP EPS; options pricing 15% swing</div>
+        <div class="meta-label" style="margin-top:10px">Surprise Scenario</div>
+        <div class="meta-value">18A yield improvements trigger guidance raise / foundry delay commentary triggers sharp reversal of 163% YTD rally</div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">Exposed Tickers</div>
+        <div class="tickers"><span class="ticker">INTC</span><span class="ticker">TSM</span><span class="ticker">NVDA</span><span class="ticker">AMD</span></div>
+        <div class="meta-label" style="margin-top:10px">Market Positioning</div>
+        <div class="meta-value">INTC up 163% YTD on foundry turnaround. Binary event. Options price 15% swing.</div>
+      </div>
+    </div>
+    <div class="summary-label">Summary</div>
+    <div class="summary-text">Intel reports after the close today — the single most actionable catalyst for the session. The 163% YTD rally reflects market conviction in the 18A process node turnaround and foundry-as-a-service positioning (Apple and Microsoft design wins reportedly in progress). If Data Center & AI continues momentum from Q1's $5.1B (22% growth) and gross margin holds above guided 39%, the rally could extend. Any foundry delay commentary would likely cause a sharp reversal. This is a binary event.</div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">2. FOMC Rate Decision — July 28–29, 2026</div>
+      <div class="badges">
+        <span class="badge badge-high">HIGH IMPACT</span>
+        <span class="badge badge-stage">July 28–29</span>
+      </div>
+    </div>
+    <div class="meta-grid">
+      <div class="meta-item">
+        <div class="meta-label">Consensus</div>
+        <div class="meta-value">Hold at 3.50–3.75%. Market pricing 74.9% no change; 25.1% hike probability. No updated dot plot.</div>
+        <div class="meta-label" style="margin-top:10px">Surprise Scenario</div>
+        <div class="meta-value">Hawkish hike or aggressively hawkish hold statement driven by oil-price inflation re-ignition. Brent at $96 is new information for the committee.</div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">Exposed Tickers</div>
+        <div class="tickers"><span class="ticker">XLF</span><span class="ticker">XLRE</span><span class="ticker ticker-neg">TLT</span><span class="ticker">XLU</span><span class="ticker">GLD</span></div>
+        <div class="meta-label" style="margin-top:10px">Market Positioning</div>
+        <div class="meta-value">Market complacent on a hold. Oil spike adds upside inflation risk not priced when "hold" consensus formed.</div>
+      </div>
+    </div>
+    <div class="summary-label">Summary</div>
+    <div class="summary-text">The July 28–29 FOMC meeting takes on heightened significance: Brent crude spiking above $96 on Iran/Houthi escalation, and the June FOMC minutes revealed a deeply split committee (half for hold/cut, half for hike). Fed Chair Warsh has eliminated traditional forward guidance. The surprise scenario — a 25bps hike — is underpriced at 25.1% given the new oil-driven inflation impulse. Even a hold with an aggressively hawkish statement could materially reprice rate-cut expectations and hit growth stocks. Rates-sensitive longs (REITs, utilities, TLT) are vulnerable.</div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">3. Microsoft, Meta, Amazon Earnings — July 29–30</div>
+      <div class="badges">
+        <span class="badge badge-high">HIGH IMPACT</span>
+        <span class="badge badge-stage">July 29–30</span>
+      </div>
+    </div>
+    <div class="meta-grid">
+      <div class="meta-item">
+        <div class="meta-label">Consensus</div>
+        <div class="meta-value">All three report strong AI/cloud growth. Market expects AI monetization confirmation.</div>
+        <div class="meta-label" style="margin-top:10px">Surprise Scenario</div>
+        <div class="meta-value">Post-GOOGL selloff template punishes any capex raise. Capex stabilization or credible ROI timeline could trigger relief rally.</div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">Exposed Tickers</div>
+        <div class="tickers"><span class="ticker">MSFT</span><span class="ticker">META</span><span class="ticker">AMZN</span><span class="ticker">NVDA</span><span class="ticker">SMCI</span><span class="ticker">EQIX</span></div>
+        <div class="meta-label" style="margin-top:10px">Market Positioning</div>
+        <div class="meta-value">Post-GOOGL selloff, beat-and-sell risk being actively priced in for hyperscalers.</div>
+      </div>
+    </div>
+    <div class="summary-label">Summary</div>
+    <div class="summary-text">The most consequential 48-hour window in the earnings season arrives July 29–30. Microsoft ($120B+), Meta ($145B), and Amazon ($200B) represent a combined ~$465B capex program in 2026. The Alphabet template is set: beat revenues, raise capex, stock sells. Unless one company demonstrates AI capex translating into measurable margin expansion, all three face headwinds. Meta's core advertising business is the wildcard — accelerating ad revenue growth could override capex concerns.</div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">4. Section 301 Tariffs on 59+ Countries — Decision Imminent</div>
+      <div class="badges">
+        <span class="badge badge-medium">MEDIUM IMPACT</span>
+        <span class="badge badge-stage">Imminent</span>
+      </div>
+    </div>
+    <div class="meta-grid">
+      <div class="meta-item">
+        <div class="meta-label">Consensus</div>
+        <div class="meta-value">10–12.5% tariffs on goods from 59 countries. Comment period closed July 6; hearing July 7. Final decision pending.</div>
+        <div class="meta-label" style="margin-top:10px">Surprise Scenario</div>
+        <div class="meta-value">Tariffs apply faster than expected, hitting supply chains that diversified from China into Vietnam, India, Bangladesh — reversing multi-year corporate strategy.</div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">Exposed Tickers</div>
+        <div class="tickers"><span class="ticker ticker-neg">NKE</span><span class="ticker ticker-neg">DECK</span><span class="ticker ticker-neg">VFC</span><span class="ticker ticker-neg">WHR</span><span class="ticker ticker-neg">AMZN</span><span class="ticker ticker-neg">WMT</span></div>
+        <div class="meta-label" style="margin-top:10px">Market Positioning</div>
+        <div class="meta-value">Market focused on China tariffs; multi-country Section 301 tariffs critically underappreciated.</div>
+      </div>
+    </div>
+    <div class="summary-label">Summary</div>
+    <div class="summary-text">USTR's June 2 announcement proposed 10% tariffs for 15 partners and 12.5% for 45 partners under Section 301. This is critically underpriced: companies that diversified from China into Vietnam, Bangladesh, Mexico, and India may now find those alternatives also tariffed. Consumer goods, apparel, and footwear sectors are most exposed. This could re-ignite goods inflation regardless of Fed policy, compounding the oil-price shock.</div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">5. Crude Oil Trajectory — Ongoing Watch</div>
+      <div class="badges">
+        <span class="badge badge-high">HIGH IMPACT</span>
+        <span class="badge badge-stage">Ongoing</span>
+      </div>
+    </div>
+    <div class="meta-grid">
+      <div class="meta-item">
+        <div class="meta-label">Consensus</div>
+        <div class="meta-value">Geopolitical risk premium temporary; consensus for oil to soften in H2 2026.</div>
+        <div class="meta-label" style="margin-top:10px">Surprise Scenario</div>
+        <div class="meta-value">US-Iran conflict escalates beyond airstrikes — Strait of Hormuz closure — Brent spikes to $110+.</div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">Long</div>
+        <div class="tickers"><span class="ticker">XOM</span><span class="ticker">CVX</span><span class="ticker">OXY</span><span class="ticker">GLD</span><span class="ticker">TIP</span></div>
+        <div class="meta-label" style="margin-top:10px">Short</div>
+        <div class="tickers"><span class="ticker ticker-neg">UAL</span><span class="ticker ticker-neg">DAL</span><span class="ticker ticker-neg">AAL</span></div>
+        <div class="meta-label" style="margin-top:10px">Market Positioning</div>
+        <div class="meta-value">Oil spike very recent (last 48 hours). Most institutional portfolios not yet repositioned for $95+ Brent. Energy underweight.</div>
+      </div>
+    </div>
+    <div class="summary-label">Summary</div>
+    <div class="summary-text">Brent crude's move to $96.27 (highest since June 8) represents a potentially regime-changing event if sustained. Houthi tanker attacks and fresh US strikes on Iran have re-introduced genuine Strait of Hormuz risk — up to 5 million barrels per day of supply threatened. The most consequential risk is the intersection of $95+ oil with FOMC week: the Fed meets July 28–29 against a backdrop of rising energy inflation not priced a week ago. Energy sector exposure is underweight in most institutional portfolios.</div>
+  </div>
+</div>
+
+<!-- ===== ACTION ITEMS ===== -->
+<div class="section-gap" id="action">
+  <div class="section-header">
+    <span class="section-num">04</span>
+    <h2>Action Items</h2>
+  </div>
+
+  <div class="action-box">
+    <h3>Top 3 Tickers to Research Today</h3>
+    <div class="top-tickers">
+      <div class="top-ticker-card">
+        <div class="top-ticker-sym">#1 INTC</div>
+        <div class="top-ticker-why">Reports after close today. Up 163% YTD on foundry turnaround narrative. Options pricing 15% swing. Single best event-driven opportunity of the day. Binary outcome on 18A commentary.</div>
+      </div>
+      <div class="top-ticker-card">
+        <div class="top-ticker-sym">#2 SMCI</div>
+        <div class="top-ticker-why">$60B+ backlog + margin expansion from 8% → 15-17%. Market still processing magnitude of this shift. Look for pullback entry after 20% overnight surge. Cleanest AI infrastructure play.</div>
+      </div>
+      <div class="top-ticker-card">
+        <div class="top-ticker-sym">#3 XOM / CVX</div>
+        <div class="top-ticker-why">Brent at $96, portfolios underweight energy. Oil/FOMC double catalyst this week. Clean hedge against inflation re-ignition narrative. XLE for broader exposure.</div>
+      </div>
+    </div>
+
+    <h3>Position Adjustments</h3>
+    <ul class="bullet-list">
+      <li>Reduce or hedge hyperscaler longs (GOOGL, MSFT, META, AMZN) ahead of July 29–30 earnings — beat-and-sell template now established by GOOGL</li>
+      <li>Rotate into AI infrastructure from AI application: Long SMCI, NVDA, TSM vs. neutral/short hyperscalers on relative basis</li>
+      <li>Add energy exposure (XOM, CVX, XLE) as oil-spike / FOMC-hawkish-hold hedge</li>
+      <li>Flag rates-sensitive longs (XLRE, XLU, TLT) as vulnerable if FOMC surprises hawkish on July 29</li>
+    </ul>
+
+    <h3 style="margin-top:20px">Key Dates This Week</h3>
+    <table class="dates-table">
+      <thead>
+        <tr><th>Date</th><th>Event</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>TODAY — July 23</td><td>Intel Q2 earnings after close · Binary event on 18A foundry narrative</td></tr>
+        <tr><td>July 28–29</td><td>FOMC rate decision · Hold vs. hike risk elevated by oil spike</td></tr>
+        <tr><td>July 29</td><td>Microsoft Q4 FY2026 + Meta Q2 earnings · Beat-and-sell risk high</td></tr>
+        <tr><td>July 30</td><td>Amazon Q2 earnings · $200B capex commentary in focus</td></tr>
+        <tr><td>Ongoing</td><td>Brent crude trajectory / Iran-Houthi escalation headlines</td></tr>
+        <tr><td>Imminent</td><td>Section 301 tariff implementation decision (59+ countries)</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+</div><!-- /container -->
+
+<div class="footer">
+  Report generated: July 23, 2026 · Pre-Market Edition &nbsp;|&nbsp;
+  Sources: CNBC, Yahoo Finance, Seeking Alpha, Forbes, Futurum Group, FX Leaders, Electrive, Variety, TheStreet, X/Markets Today, Invezz
+</div>
+
+</body>
+</html>
